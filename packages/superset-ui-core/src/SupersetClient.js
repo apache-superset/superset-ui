@@ -22,6 +22,9 @@ class SupersetClient {
     this.csrfToken = null;
     this.didAuthSuccessfully = false;
     this.requestingCsrf = false;
+
+    this.getUnauthorizedError = this.getUnauthorizedError.bind(this);
+    this.waitForCSRF = this.waitForCSRF.bind(this);
   }
 
   isAuthenticated() {
@@ -86,7 +89,6 @@ class SupersetClient {
       return reject(this.getUnauthorizedError());
     }
 
-    // @TODO test that you can pass args this way
     setTimeout(this.waitForCSRF, AUTH_QUEUE_POLL_MS, resolve, reject);
 
     return null;
@@ -97,19 +99,6 @@ class SupersetClient {
       if (this.didAuthSuccessfully) {
         return resolve();
       } else if (this.requestingCsrf) {
-        // const waitForCSRF = () => {
-        //   /* eslint-disable react/no-this-in-sfc */
-        //   if (!this.requestingCsrf && this.didAuthSuccessfully) {
-        //     return resolve();
-        //   } else if (!this.requestingCsrf && !this.didAuthSuccessfully) {
-        //     return reject(this.getUnauthorizedError());
-        //   }
-        //   /* eslint-enable react/no-this-in-sfc */
-        //   setTimeout(waitForCSRF, AUTH_QUEUE_POLL_MS);
-        //
-        //   return null;
-        // };
-
         return this.waitForCSRF(resolve, reject);
       }
 

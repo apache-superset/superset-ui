@@ -268,7 +268,7 @@ describe('callApi', () => {
 
     it('clears the request timeout when a request returns', done => {
       expect.assertions(1);
-      jest.useFakeTimers();
+      jest.useFakeTimers(); // track clearTimeout calls
 
       callApi({ url: mockGetUrl, method: 'GET', timeout: 100 })
         .then(() => {
@@ -281,7 +281,7 @@ describe('callApi', () => {
 
     it('clears the request timeout when a request throws', done => {
       expect.assertions(1);
-      jest.useFakeTimers();
+      jest.useFakeTimers(); // track clearTimeout calls
 
       callApi({ url: mockErrorUrl, method: 'GET', timeout: 100 })
         .then(THROW_IF_CALLED)

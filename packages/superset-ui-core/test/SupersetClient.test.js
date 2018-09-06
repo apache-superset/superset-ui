@@ -162,15 +162,109 @@ describe('SupersetClient', () => {
       });
     });
 
-    // describe('authorization queuing', () => {
-    //   it('client.ensureAuth returns a promise that resolves if client.didAuthSuccessfully is true', done => {});
-    //
-    //   it('client.ensureAuth calls client.waitForCSRF if client.didAuthSuccessfully is false', done => {});
-    //
-    //   it('client.waitForCSRF resolves if', done => {});
-    //   it('client.waitForCSRF rejects if', done => {});
-    //   it('client.waitForCSRF calls itself if ', done => {});
-    // });
+    describe('CSRF queuing', () => {
+      it('client.ensureAuth() returns a promise that resolves if client.didAuthSuccessfully is true', done => {
+        expect.assertions(3);
+
+        const client = new SupersetClient({});
+        expect(client.didAuthSuccessfully).toBe(false);
+
+        client.didAuthSuccessfully = true;
+        const promise = client.ensureAuth();
+
+        expect(promise).toEqual(expect.any(Promise));
+
+        promise
+          .then(() => {
+            expect(client.didAuthSuccessfully).toBe(true);
+
+            return done();
+          })
+          .catch(THROW_IF_CALLED);
+      });
+
+      it(`client.ensureAuth() returns a promise that rejects
+        if (!client.didAuthSuccessfully && !client.requestingCsrf)`, done => {
+        expect.assertions(4);
+
+        const client = new SupersetClient({});
+        expect(client.didAuthSuccessfully).toBe(false);
+        expect(client.requestingCsrf).toBe(false);
+        const promise = client.ensureAuth();
+
+        expect(promise).toEqual(expect.any(Promise));
+
+        promise.then(THROW_IF_CALLED).catch(() => {
+          expect(client.didAuthSuccessfully).toBe(false);
+
+          return done();
+        });
+      });
+
+      it(`client.ensureAuth() calls client.waitForCSRF(resolve, reject)
+        if (!client.didAuthSuccessfully && client.requestingCsrf)`, () => {
+        const waitForCSRFSpy = sinon.stub(SupersetClient.prototype, 'waitForCSRF').resolves();
+        expect.assertions(3);
+
+        const client = new SupersetClient({});
+        expect(client.didAuthSuccessfully).toBe(false);
+        expect(client.requestingCsrf).toBe(false);
+        client.requestingCsrf = true;
+
+        client.ensureAuth();
+        expect(waitForCSRFSpy.callCount).toBe(1);
+        waitForCSRFSpy.restore();
+      });
+
+      it(`client.waitForCSRF(reject, resolve) sets a timeout for itself if
+        if (!client.didAuthSuccessfully && client.requestingCsrf)`, () => {
+        const waitForCSRFSpy = sinon.spy(SupersetClient.prototype, 'waitForCSRF');
+        expect.assertions(4);
+
+        const client = new SupersetClient({});
+        expect(client.didAuthSuccessfully).toBe(false);
+        expect(client.requestingCsrf).toBe(false);
+        client.requestingCsrf = true;
+
+        jest.useFakeTimers();
+        client.waitForCSRF();
+        expect(waitForCSRFSpy.callCount).toBe(1);
+        jest.runOnlyPendingTimers();
+        expect(waitForCSRFSpy.callCount).toBe(2);
+      });
+
+      it(`client.waitForCSRF(reject, resolve) resolves if (client.didAuthSuccessfully)`, () => {
+        expect.assertions(3);
+
+        const resolve = jest.fn();
+        const reject = jest.fn();
+        const client = new SupersetClient({});
+        expect(client.didAuthSuccessfully).toBe(false);
+        client.didAuthSuccessfully = true;
+
+        client.waitForCSRF(resolve, reject);
+
+        expect(resolve).toHaveBeenCalledTimes(1);
+        expect(reject).toHaveBeenCalledTimes(0);
+      });
+
+      it(`client.waitForCSRF(reject, resolve) rejects if
+        if (!client.didAuthSuccessfully && !client.requestingCsrf)`, () => {
+        expect.assertions(4);
+
+        const resolve = jest.fn();
+        const reject = jest.fn();
+        const client = new SupersetClient({});
+
+        expect(client.didAuthSuccessfully).toBe(false);
+        expect(client.requestingCsrf).toBe(false);
+
+        client.waitForCSRF(resolve, reject);
+
+        expect(resolve).toHaveBeenCalledTimes(0);
+        expect(reject).toHaveBeenCalledTimes(1);
+      });
+    });
 
     describe('requests', () => {
       afterEach(fetchMock.reset);
@@ -189,16 +283,20 @@ describe('SupersetClient', () => {
         const authSpy = sinon.stub(SupersetClient.prototype, 'ensureAuth').resolves();
         const client = new SupersetClient({ protocol, host });
 
-        client.init();
+        client
+          .init()
+          .then(() =>
+            Promise.all([client.get({ url: mockGetUrl }), client.post({ url: mockPostUrl })])
+              .then(() => {
+                expect(fetchMock.calls(mockGetUrl)).toHaveLength(1);
+                expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
+                expect(authSpy.callCount).toBe(2);
+                authSpy.restore();
 
-        Promise.all([client.get({ url: mockGetUrl }), client.post({ url: mockPostUrl })])
-          .then(() => {
-            expect(fetchMock.calls(mockGetUrl)).toHaveLength(1);
-            expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
-            expect(authSpy.callCount).toBe(2);
-
-            return done();
-          })
+                return done();
+              })
+              .catch(THROW_IF_CALLED),
+          )
           .catch(THROW_IF_CALLED);
       });
 
@@ -213,18 +311,21 @@ describe('SupersetClient', () => {
         };
 
         const client = new SupersetClient(clientConfig);
-        client.init();
-
         client
-          .get({ url: mockGetUrl })
-          .then(() => {
-            const fetchRequest = fetchMock.calls(mockGetUrl)[0][1];
-            expect(fetchRequest.mode).toBe(clientConfig.mode);
-            expect(fetchRequest.credentials).toBe(clientConfig.credentials);
-            expect(fetchRequest.headers).toEqual(expect.objectContaining(clientConfig.headers));
+          .init()
+          .then(() =>
+            client
+              .get({ url: mockGetUrl })
+              .then(() => {
+                const fetchRequest = fetchMock.calls(mockGetUrl)[0][1];
+                expect(fetchRequest.mode).toBe(clientConfig.mode);
+                expect(fetchRequest.credentials).toBe(clientConfig.credentials);
+                expect(fetchRequest.headers).toEqual(expect.objectContaining(clientConfig.headers));
 
-            return done();
-          })
+                return done();
+              })
+              .catch(THROW_IF_CALLED),
+          )
           .catch(THROW_IF_CALLED);
       });
 
@@ -232,14 +333,20 @@ describe('SupersetClient', () => {
         it('makes a request using url or endpoint', done => {
           expect.assertions(1);
           const client = new SupersetClient({ protocol, host });
-          client.init();
+          client
+            .init()
+            .then(() =>
+              Promise.all([
+                client.get({ url: mockGetUrl }),
+                client.get({ endpoint: mockGetEndpoint }),
+              ])
+                .then(() => {
+                  expect(fetchMock.calls(mockGetUrl)).toHaveLength(2);
 
-          Promise.all([client.get({ url: mockGetUrl }), client.get({ endpoint: mockGetEndpoint })])
-            .then(() => {
-              expect(fetchMock.calls(mockGetUrl)).toHaveLength(2);
-
-              return done();
-            })
+                  return done();
+                })
+                .catch(THROW_IF_CALLED),
+            )
             .catch(THROW_IF_CALLED);
         });
 
@@ -261,18 +368,23 @@ describe('SupersetClient', () => {
           };
 
           const client = new SupersetClient(clientConfig);
-          client.init();
-
           client
-            .get({ url: mockGetUrl, ...overrideConfig })
-            .then(() => {
-              const fetchRequest = fetchMock.calls(mockGetUrl)[0][1];
-              expect(fetchRequest.mode).toBe(overrideConfig.mode);
-              expect(fetchRequest.credentials).toBe(overrideConfig.credentials);
-              expect(fetchRequest.headers).toEqual(expect.objectContaining(overrideConfig.headers));
+            .init()
+            .then(() =>
+              client
+                .get({ url: mockGetUrl, ...overrideConfig })
+                .then(() => {
+                  const fetchRequest = fetchMock.calls(mockGetUrl)[0][1];
+                  expect(fetchRequest.mode).toBe(overrideConfig.mode);
+                  expect(fetchRequest.credentials).toBe(overrideConfig.credentials);
+                  expect(fetchRequest.headers).toEqual(
+                    expect.objectContaining(overrideConfig.headers),
+                  );
 
-              return done();
-            })
+                  return done();
+                })
+                .catch(THROW_IF_CALLED),
+            )
             .catch(THROW_IF_CALLED);
         });
       });
@@ -281,17 +393,20 @@ describe('SupersetClient', () => {
         it('makes a request using url or endpoint', done => {
           expect.assertions(1);
           const client = new SupersetClient({ protocol, host });
-          client.init();
+          client
+            .init()
+            .then(() =>
+              Promise.all([
+                client.post({ url: mockPostUrl }),
+                client.post({ endpoint: mockPostEndpoint }),
+              ])
+                .then(() => {
+                  expect(fetchMock.calls(mockPostUrl)).toHaveLength(2);
 
-          Promise.all([
-            client.post({ url: mockPostUrl }),
-            client.post({ endpoint: mockPostEndpoint }),
-          ])
-            .then(() => {
-              expect(fetchMock.calls(mockPostUrl)).toHaveLength(2);
-
-              return done();
-            })
+                  return done();
+                })
+                .catch(THROW_IF_CALLED),
+            )
             .catch(THROW_IF_CALLED);
         });
 
@@ -312,16 +427,24 @@ describe('SupersetClient', () => {
           };
 
           const client = new SupersetClient(clientConfig);
-          client.init();
-          client.post({ url: mockPostUrl, ...overrideConfig });
+          client
+            .init()
+            .then(() =>
+              client
+                .post({ url: mockPostUrl, ...overrideConfig })
+                .then(() => {
+                  const fetchRequest = fetchMock.calls(mockPostUrl)[0][1];
+                  expect(fetchRequest.mode).toBe(overrideConfig.mode);
+                  expect(fetchRequest.credentials).toBe(overrideConfig.credentials);
+                  expect(fetchRequest.headers).toEqual(
+                    expect.objectContaining(overrideConfig.headers),
+                  );
 
-          setTimeout(() => {
-            const fetchRequest = fetchMock.calls(mockPostUrl)[0][1];
-            expect(fetchRequest.mode).toBe(overrideConfig.mode);
-            expect(fetchRequest.credentials).toBe(overrideConfig.credentials);
-            expect(fetchRequest.headers).toEqual(expect.objectContaining(overrideConfig.headers));
-            done();
-          });
+                  return done();
+                })
+                .catch(THROW_IF_CALLED),
+            )
+            .catch(THROW_IF_CALLED);
         });
 
         it('passes postPayload key,values in the body', done => {
@@ -329,19 +452,22 @@ describe('SupersetClient', () => {
 
           const postPayload = { number: 123, array: [1, 2, 3] };
           const client = new SupersetClient({ protocol, host });
-          client.init();
-
           client
-            .post({ url: mockPostUrl, postPayload })
-            .then(() => {
-              const formData = fetchMock.calls(mockPostUrl)[0][1].body;
-              expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
-              Object.keys(postPayload).forEach(key => {
-                expect(formData.get(key)).toBe(JSON.stringify(postPayload[key]));
-              });
+            .init()
+            .then(() =>
+              client
+                .post({ url: mockPostUrl, postPayload })
+                .then(() => {
+                  const formData = fetchMock.calls(mockPostUrl)[0][1].body;
+                  expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
+                  Object.keys(postPayload).forEach(key => {
+                    expect(formData.get(key)).toBe(JSON.stringify(postPayload[key]));
+                  });
 
-              return done();
-            })
+                  return done();
+                })
+                .catch(THROW_IF_CALLED),
+            )
             .catch(THROW_IF_CALLED);
         });
 
@@ -349,19 +475,23 @@ describe('SupersetClient', () => {
           expect.assertions(3);
           const postPayload = { number: 123, array: [1, 2, 3] };
           const client = new SupersetClient({ protocol, host });
-          client.init();
 
           client
-            .post({ url: mockPostUrl, postPayload, stringify: false })
-            .then(() => {
-              const formData = fetchMock.calls(mockPostUrl)[0][1].body;
-              expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
-              Object.keys(postPayload).forEach(key => {
-                expect(formData.get(key)).toBe(String(postPayload[key]));
-              });
+            .init()
+            .then(() =>
+              client
+                .post({ url: mockPostUrl, postPayload, stringify: false })
+                .then(() => {
+                  const formData = fetchMock.calls(mockPostUrl)[0][1].body;
+                  expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
+                  Object.keys(postPayload).forEach(key => {
+                    expect(formData.get(key)).toBe(String(postPayload[key]));
+                  });
 
-              return done();
-            })
+                  return done();
+                })
+                .catch(THROW_IF_CALLED),
+            )
             .catch(THROW_IF_CALLED);
         });
       });
