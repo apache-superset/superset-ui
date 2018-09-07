@@ -1,5 +1,4 @@
 /* eslint promise/no-callback-in-promise: 'off' */
-import sinon from 'sinon';
 import fetchMock from 'fetch-mock';
 
 import PublicAPI, { SupersetClient } from '../src/SupersetClient';
@@ -39,30 +38,38 @@ describe('SupersetClient', () => {
 
     // this also tests that the ^above doesn't throw if configure is called appropriately
     it('calls appropriate SupersetClient methods when configured', () => {
-      const initSpy = sinon.stub(SupersetClient.prototype, 'init');
-      const getSpy = sinon.stub(SupersetClient.prototype, 'get');
-      const postSpy = sinon.stub(SupersetClient.prototype, 'post');
-      const authenticatedSpy = sinon.stub(SupersetClient.prototype, 'isAuthenticated');
-      const csrfSpy = sinon.stub(SupersetClient.prototype, 'getCSRFToken');
+      const mockGetUrl = '/mock/get/url';
+      const mockPostUrl = '/mock/post/url';
+      const mockGetPayload = { get: 'payload' };
+      const mockPostPayload = { post: 'payload' };
+      fetchMock.get(mockGetUrl, mockGetPayload);
+      fetchMock.post(mockPostUrl, mockPostPayload);
+
+      const initSpy = jest.spyOn(SupersetClient.prototype, 'init');
+      const getSpy = jest.spyOn(SupersetClient.prototype, 'get');
+      const postSpy = jest.spyOn(SupersetClient.prototype, 'post');
+      const authenticatedSpy = jest.spyOn(SupersetClient.prototype, 'isAuthenticated');
+      const csrfSpy = jest.spyOn(SupersetClient.prototype, 'getCSRFToken');
 
       PublicAPI.configure({});
       PublicAPI.init();
-      PublicAPI.get({});
-      PublicAPI.post({});
+      PublicAPI.get({ url: mockGetUrl });
+      PublicAPI.post({ url: mockPostUrl });
       PublicAPI.isAuthenticated();
       PublicAPI.reAuthenticate({});
 
-      expect(initSpy.callCount).toBe(1);
-      expect(getSpy.callCount).toBe(1);
-      expect(postSpy.callCount).toBe(1);
-      expect(authenticatedSpy.callCount).toBe(1);
-      expect(csrfSpy.callCount).toBe(1); // from reAuthenticate()
+      expect(initSpy).toHaveBeenCalledTimes(1);
+      expect(getSpy).toHaveBeenCalledTimes(1);
+      expect(postSpy).toHaveBeenCalledTimes(1);
+      expect(authenticatedSpy).toHaveBeenCalledTimes(1);
+      expect(csrfSpy).toHaveBeenCalledTimes(2); // from reAuthenticate()
 
-      initSpy.restore();
-      getSpy.restore();
-      postSpy.restore();
-      authenticatedSpy.restore();
-      csrfSpy.restore();
+      initSpy.mockRestore();
+      getSpy.mockRestore();
+      postSpy.mockRestore();
+      authenticatedSpy.mockRestore();
+      csrfSpy.mockRestore();
+      fetchMock.reset();
     });
   });
 
@@ -241,7 +248,7 @@ describe('SupersetClient', () => {
 
       it('checks for authentication before every get and post request', done => {
         expect.assertions(3);
-        const authSpy = sinon.stub(SupersetClient.prototype, 'ensureAuth').resolves();
+        const authSpy = jest.spyOn(SupersetClient.prototype, 'ensureAuth');
         const client = new SupersetClient({ protocol, host });
 
         client
@@ -251,8 +258,8 @@ describe('SupersetClient', () => {
               .then(() => {
                 expect(fetchMock.calls(mockGetUrl)).toHaveLength(1);
                 expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
-                expect(authSpy.callCount).toBe(2);
-                authSpy.restore();
+                expect(authSpy).toHaveBeenCalledTimes(2);
+                authSpy.mockRestore();
 
                 return done();
               })
