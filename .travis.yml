@@ -20,4 +20,5 @@ script:
   - 'cd ./packages/$PACKAGE && yarn install && yarn run lint && yarn run test'
 
 after_script:
+  - 'cat ./packages/$PACKAGE/coverage/lcov.info | ./coverage/lcov.info
   - './node_modules/.bin/codecov'
