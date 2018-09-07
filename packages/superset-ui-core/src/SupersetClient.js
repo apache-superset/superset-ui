@@ -21,10 +21,10 @@ class SupersetClient {
     this.credentials = credentials;
     this.csrfToken = null;
     this.didAuthSuccessfully = false;
-    this.requestingCsrf = false;
+    this.csrfPromise = null;
 
-    this.getUnauthorizedError = this.getUnauthorizedError.bind(this);
-    this.waitForCSRF = this.waitForCSRF.bind(this);
+    // this.getUnauthorizedError = this.getUnauthorizedError.bind(this);
+    // this.waitForCSRF = this.waitForCSRF.bind(this);
   }
 
   isAuthenticated() {
@@ -36,11 +36,9 @@ class SupersetClient {
   }
 
   getCSRFToken() {
-    this.requestingCsrf = true;
-
     // If we can request this resource successfully, it means that the user has
     // authenticated. If not we throw an error prompting to authenticate.
-    return callApi({
+    return (this.csrfPromise = callApi({
       credentials: this.credentials,
       headers: {
         ...this.headers,
@@ -49,8 +47,8 @@ class SupersetClient {
       mode: this.mode,
       timeout: this.timeout,
       url: this.getUrl({ endpoint: 'superset/csrf_token/', host: this.host }),
-    })
-      .then(response => {
+    }).then(
+      response => {
         if (response.json) {
           this.csrfToken = response.json.csrf_token;
           this.headers = { ...this.headers, 'X-CSRFToken': this.csrfToken };
@@ -61,49 +59,26 @@ class SupersetClient {
           return Promise.reject({ error: 'Failed to fetch CSRF token' });
         }
 
-        this.requestingCsrf = false;
-
         return response;
-      })
-      .catch(error => Promise.reject(error));
+      },
+      error => Promise.reject(error),
+    ));
   }
 
-  getUrl({ host = '', endpoint }) {
+  getUrl({ host = '', endpoint = '' }) {
     const cleanHost = host.slice(-1) === '/' ? host.slice(0, -1) : host; // no backslash
 
     return `${this.protocol}://${cleanHost}/${endpoint[0] === '/' ? endpoint.slice(1) : endpoint}`;
   }
 
-  getUnauthorizedError() {
-    return {
-      error: `No CSRF token, ensure you called client.init() or try logging into Superset instance at ${
-        this.host
-      }/login`,
-    };
-  }
-
-  waitForCSRF(resolve, reject) {
-    if (!this.requestingCsrf && this.didAuthSuccessfully) {
-      return resolve();
-    } else if (!this.requestingCsrf && !this.didAuthSuccessfully) {
-      return reject(this.getUnauthorizedError());
-    }
-
-    setTimeout(this.waitForCSRF, AUTH_QUEUE_POLL_MS, resolve, reject);
-
-    return null;
-  }
-
   ensureAuth() {
-    return new Promise((resolve, reject) => {
-      if (this.didAuthSuccessfully) {
-        return resolve();
-      } else if (this.requestingCsrf) {
-        return this.waitForCSRF(resolve, reject);
-      }
-
-      return reject(this.getUnauthorizedError());
-    });
+    return (
+      this.csrfPromise ||
+      Promise.reject({
+        error: `SupersetClient has no CSRF token, ensure it is initialized or
+        try logging into the Superset instance at ${this.getUrl('/login')}`,
+      })
+    );
   }
 
   get({ host, url, endpoint, mode, credentials, headers, body, timeout, signal }) {

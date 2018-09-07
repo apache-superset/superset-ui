@@ -67,13 +67,6 @@ describe('SupersetClient', () => {
   });
 
   describe('SupersetClient', () => {
-    it('client.getUnauthorizedError() returns an object with error string', () => {
-      const client = new SupersetClient({});
-      expect(client.getUnauthorizedError()).toEqual(
-        expect.objectContaining({ error: expect.any(String) }),
-      );
-    });
-
     describe('CSRF', () => {
       afterEach(fetchMock.reset);
 
@@ -106,7 +99,7 @@ describe('SupersetClient', () => {
           .catch(throwIfCalled);
       });
 
-      it('throws if superset/csrf_token/ returns an error', done => {
+      it('init() throws if superset/csrf_token/ returns an error', done => {
         expect.assertions(1);
 
         fetchMock.get(LOGIN_GLOB, () => Promise.reject({ status: 403 }), {
@@ -134,7 +127,7 @@ describe('SupersetClient', () => {
           });
       });
 
-      it('throws if superset/csrf_token/ does not return a token', done => {
+      it('init() throws if superset/csrf_token/ does not return a token', done => {
         expect.assertions(1);
         fetchMock.get(LOGIN_GLOB, {}, { overwriteRoutes: true });
 
@@ -160,106 +153,77 @@ describe('SupersetClient', () => {
     });
 
     describe('CSRF queuing', () => {
-      it('client.ensureAuth() returns a promise that resolves if client.didAuthSuccessfully is true', done => {
-        expect.assertions(3);
+      it(`client.ensureAuth() returns a promise that rejects init() has not been called`, done => {
+        expect.assertions(2);
 
         const client = new SupersetClient({});
-        expect(client.didAuthSuccessfully).toBe(false);
 
-        client.didAuthSuccessfully = true;
-        const promise = client.ensureAuth();
-
-        expect(promise).toEqual(expect.any(Promise));
-
-        promise
-          .then(() => {
-            expect(client.didAuthSuccessfully).toBe(true);
+        client
+          .ensureAuth()
+          .then(throwIfCalled)
+          .catch(error => {
+            expect(error).toEqual(expect.objectContaining({ error: expect.any(String) }));
+            expect(client.didAuthSuccessfully).toBe(false);
 
             return done();
-          })
+          });
+      });
+
+      it('client.ensureAuth() returns a promise that resolves if client.init() resolves successfully', done => {
+        expect.assertions(1);
+
+        const client = new SupersetClient({});
+
+        client
+          .init()
+          .then(() =>
+            client
+              .ensureAuth()
+              .then(throwIfCalled)
+              .catch(() => {
+                expect(client.didAuthSuccessfully).toBe(true);
+
+                return done();
+              }),
+          )
           .catch(throwIfCalled);
       });
 
-      it(`client.ensureAuth() returns a promise that rejects
-        if (!client.didAuthSuccessfully && !client.requestingCsrf)`, done => {
-        expect.assertions(4);
-
-        const client = new SupersetClient({});
-        expect(client.didAuthSuccessfully).toBe(false);
-        expect(client.requestingCsrf).toBe(false);
-        const promise = client.ensureAuth();
-
-        expect(promise).toEqual(expect.any(Promise));
-
-        promise.then(throwIfCalled).catch(() => {
-          expect(client.didAuthSuccessfully).toBe(false);
-
-          return done();
+      it(`client.ensureAuth() returns a promise that rejects if init() is unsuccessful`, done => {
+        const rejectValue = { status: 403 };
+        fetchMock.get(LOGIN_GLOB, () => Promise.reject(rejectValue), {
+          overwriteRoutes: true,
         });
-      });
 
-      it(`client.ensureAuth() calls client.waitForCSRF(resolve, reject)
-        if (!client.didAuthSuccessfully && client.requestingCsrf)`, () => {
-        const waitForCSRFSpy = sinon.stub(SupersetClient.prototype, 'waitForCSRF').resolves();
         expect.assertions(3);
 
         const client = new SupersetClient({});
-        expect(client.didAuthSuccessfully).toBe(false);
-        expect(client.requestingCsrf).toBe(false);
-        client.requestingCsrf = true;
 
-        client.ensureAuth();
-        expect(waitForCSRFSpy.callCount).toBe(1);
-        waitForCSRFSpy.restore();
-      });
+        client
+          .init()
+          .then(throwIfCalled)
+          .catch(error => {
+            expect(error).toEqual(expect.objectContaining(rejectValue));
 
-      it(`client.waitForCSRF(reject, resolve) sets a timeout for itself if
-        if (!client.didAuthSuccessfully && client.requestingCsrf)`, () => {
-        const waitForCSRFSpy = sinon.spy(SupersetClient.prototype, 'waitForCSRF');
-        expect.assertions(4);
+            return client
+              .ensureAuth()
+              .then(throwIfCalled)
+              .catch(error2 => {
+                expect(error2).toEqual(expect.objectContaining(rejectValue));
+                expect(client.didAuthSuccessfully).toBe(false);
 
-        const client = new SupersetClient({});
-        expect(client.didAuthSuccessfully).toBe(false);
-        expect(client.requestingCsrf).toBe(false);
-        client.requestingCsrf = true;
+                // reset
+                fetchMock.get(
+                  LOGIN_GLOB,
+                  { csrf_token: 1234 },
+                  {
+                    overwriteRoutes: true,
+                  },
+                );
 
-        jest.useFakeTimers();
-        client.waitForCSRF();
-        expect(waitForCSRFSpy.callCount).toBe(1);
-        jest.runOnlyPendingTimers();
-        expect(waitForCSRFSpy.callCount).toBe(2);
-      });
-
-      it(`client.waitForCSRF(reject, resolve) resolves if (client.didAuthSuccessfully)`, () => {
-        expect.assertions(3);
-
-        const resolve = jest.fn();
-        const reject = jest.fn();
-        const client = new SupersetClient({});
-        expect(client.didAuthSuccessfully).toBe(false);
-        client.didAuthSuccessfully = true;
-
-        client.waitForCSRF(resolve, reject);
-
-        expect(resolve).toHaveBeenCalledTimes(1);
-        expect(reject).toHaveBeenCalledTimes(0);
-      });
-
-      it(`client.waitForCSRF(reject, resolve) rejects if
-        if (!client.didAuthSuccessfully && !client.requestingCsrf)`, () => {
-        expect.assertions(4);
-
-        const resolve = jest.fn();
-        const reject = jest.fn();
-        const client = new SupersetClient({});
-
-        expect(client.didAuthSuccessfully).toBe(false);
-        expect(client.requestingCsrf).toBe(false);
-
-        client.waitForCSRF(resolve, reject);
-
-        expect(resolve).toHaveBeenCalledTimes(0);
-        expect(reject).toHaveBeenCalledTimes(1);
+                return done();
+              });
+          });
       });
     });
 
