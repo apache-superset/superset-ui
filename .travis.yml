@@ -11,7 +11,8 @@ matrix:
   fast_finish: true
 
 install:
-  - npm install && lerna bootstrap
+  - npm install
+  - lerna bootstrap
 
 env:
   - PACKAGE=superset-ui-core
@@ -20,4 +21,4 @@ script:
   - 'cd ./packages/$PACKAGE && yarn run lint && yarn run test'
 
 after_script:
-  - 'cat ./packages/$PACKAGE/coverage/lcov.info | coveralls'
+  - 'cat ./packages/$PACKAGE/coverage/lcov.info | ./node_modules/.bin/codecov'

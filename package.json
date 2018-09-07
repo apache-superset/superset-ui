@@ -27,7 +27,7 @@
   ],
   "license": "Apache-2.0",
   "devDependencies": {
-    "coveralls": "^3.0.2",
+    "codecov": "^3.1.0",
     "lerna": "^3.2.1",
     "yarn": "^1.9.4"
   },
