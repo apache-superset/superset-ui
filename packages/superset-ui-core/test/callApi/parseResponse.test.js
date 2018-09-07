@@ -6,7 +6,7 @@ import parseResponse from '../../src/callApi/parseResponse';
 import { LOGIN_GLOB } from '../fixtures/constants';
 import throwIfCalled from '../utils/throwIfCalled';
 
-describe('parseResponse', () => {
+describe('parseResponse()', () => {
   beforeAll(() => {
     fetchMock.get(LOGIN_GLOB, { csrf_token: '1234' });
   });

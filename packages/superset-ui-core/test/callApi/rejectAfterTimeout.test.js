@@ -2,7 +2,7 @@
 import rejectAfterTimeout from '../../src/callApi/rejectAfterTimeout';
 import throwIfCalled from '../utils/throwIfCalled';
 
-describe('rejectAfterTimeout', () => {
+describe('rejectAfterTimeout()', () => {
   it('returns a promise that rejects after the specified timeout', done => {
     expect.assertions(1);
     jest.useFakeTimers();

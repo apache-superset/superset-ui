@@ -5,7 +5,7 @@ import callApi from '../../src/callApi/callApi';
 import { LOGIN_GLOB } from '../fixtures/constants';
 import throwIfCalled from '../utils/throwIfCalled';
 
-describe('callApi', () => {
+describe('callApi()', () => {
   beforeAll(() => {
     fetchMock.get(LOGIN_GLOB, { csrf_token: '1234' });
   });

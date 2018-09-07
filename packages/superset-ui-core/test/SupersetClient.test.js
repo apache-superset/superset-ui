@@ -15,7 +15,7 @@ describe('SupersetClient', () => {
 
   afterEach(PublicAPI.reset);
 
-  describe('API', () => {
+  describe('Public API', () => {
     it('exposes reset, configure, init, get, post, isAuthenticated, and reAuthenticate methods', () => {
       expect(PublicAPI.configure).toEqual(expect.any(Function));
       expect(PublicAPI.init).toEqual(expect.any(Function));

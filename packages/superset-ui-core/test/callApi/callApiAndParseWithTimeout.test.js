@@ -11,7 +11,7 @@ import * as rejectAfterTimeout from '../../src/callApi/rejectAfterTimeout';
 import { LOGIN_GLOB } from '../fixtures/constants';
 import throwIfCalled from '../utils/throwIfCalled';
 
-describe('callApiAndParseWithTimeout', () => {
+describe('callApiAndParseWithTimeout()', () => {
   beforeAll(() => {
     fetchMock.get(LOGIN_GLOB, { csrf_token: '1234' });
   });
@@ -25,7 +25,7 @@ describe('callApiAndParseWithTimeout', () => {
   afterEach(fetchMock.reset);
 
   describe('callApi', () => {
-    it('calls callApi', () => {
+    it('calls callApi()', () => {
       const callApiSpy = jest.spyOn(callApi, 'default');
       callApiAndParseWithTimeout({ url: mockGetUrl, method: 'GET' });
 
@@ -35,7 +35,7 @@ describe('callApiAndParseWithTimeout', () => {
   });
 
   describe('parseResponse', () => {
-    it('calls parseResponse after callApi', () => {
+    it('calls parseResponse()', () => {
       const parseSpy = jest.spyOn(parseResponse, 'default');
       callApiAndParseWithTimeout({ url: mockGetUrl, method: 'GET' });
 
