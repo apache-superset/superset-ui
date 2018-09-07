@@ -1,0 +1,23 @@
+language: node_js
+
+node_js:
+  - '10.7'
+
+cache:
+  directories:
+    - node_modules
+
+matrix:
+  fast_finish: true
+
+install:
+  - npm install && lerna bootstrap
+
+env:
+  - PACKAGE=superset-ui-core
+
+script:
+  - 'cd ./packages/$PACKAGE && yarn run lint && yarn run test'
+
+after_script:
+  - 'cat ./packages/$PACKAGE/coverage/lcov.info | coveralls'
