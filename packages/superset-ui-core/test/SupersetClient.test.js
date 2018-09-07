@@ -53,6 +53,8 @@ describe('SupersetClient', () => {
 
       PublicAPI.configure({});
       PublicAPI.init();
+      expect(csrfSpy).toHaveBeenCalledTimes(1);
+
       PublicAPI.get({ url: mockGetUrl });
       PublicAPI.post({ url: mockPostUrl });
       PublicAPI.isAuthenticated();
@@ -62,13 +64,14 @@ describe('SupersetClient', () => {
       expect(getSpy).toHaveBeenCalledTimes(1);
       expect(postSpy).toHaveBeenCalledTimes(1);
       expect(authenticatedSpy).toHaveBeenCalledTimes(1);
-      expect(csrfSpy).toHaveBeenCalledTimes(2); // from reAuthenticate()
+      expect(csrfSpy).toHaveBeenCalledTimes(2); // from init() + reAuthenticate()
 
       initSpy.mockRestore();
       getSpy.mockRestore();
       postSpy.mockRestore();
       authenticatedSpy.mockRestore();
       csrfSpy.mockRestore();
+
       fetchMock.reset();
     });
   });

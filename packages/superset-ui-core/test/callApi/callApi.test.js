@@ -18,7 +18,7 @@ describe('callApi', () => {
 
   const mockGetPayload = { get: 'payload' };
   const mockPostPayload = { post: 'payload' };
-  const mockErrorPayload = { status: 500, statusText: 'Internal errorz!' };
+  const mockErrorPayload = { status: 500, statusText: 'Internal error' };
 
   fetchMock.get(mockGetUrl, mockGetPayload);
   fetchMock.post(mockPostUrl, mockPostPayload);

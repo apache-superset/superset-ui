@@ -66,9 +66,9 @@ The following flags can be passed on a per-request call `SupersetClient.get/post
   - `postPayload` (key values are added to a `new FormData()`)
   - `stringify` whether to call `JSON.stringify` on `postPayload` values
 
-##### Query aborting
+##### Request aborting
 
-Query aborting is implemented through the `AbortController` API:
+Per-request aborting is implemented through the `AbortController` API:
 
 ```javascript
 import { SupersetClient } from '@superset-ui/core';
@@ -77,7 +77,7 @@ import AbortController from 'abortcontroller-polyfill';
 const controller = new AbortController();
 const { signal } = controller;
 
-SupersetClient.get({}).then(...).catch(...);
+SupersetClient.get({ ..., signal }).then(...).catch(...);
 
 if (IWantToCancelForSomeReason) {
   signal.abort(); // Promise is rejected, request `catch` is invoked

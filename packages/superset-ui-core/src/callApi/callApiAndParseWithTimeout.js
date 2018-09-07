@@ -6,7 +6,7 @@ export default function callApiAndParseWithTimeout({ timeout, ...rest }) {
   const apiPromise = callApi(rest);
 
   const racedPromise =
-    typeof timeout === 'number'
+    typeof timeout === 'number' && timeout > 0
       ? Promise.race([rejectAfterTimeout(timeout), apiPromise])
       : apiPromise;
 
