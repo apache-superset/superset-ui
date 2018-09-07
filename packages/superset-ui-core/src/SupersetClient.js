@@ -1,7 +1,5 @@
 import callApi from './callApi';
 
-const AUTH_QUEUE_POLL_MS = 30;
-
 class SupersetClient {
   constructor(config) {
     const {
@@ -22,9 +20,6 @@ class SupersetClient {
     this.csrfToken = null;
     this.didAuthSuccessfully = false;
     this.csrfPromise = null;
-
-    // this.getUnauthorizedError = this.getUnauthorizedError.bind(this);
-    // this.waitForCSRF = this.waitForCSRF.bind(this);
   }
 
   isAuthenticated() {
@@ -38,7 +33,7 @@ class SupersetClient {
   getCSRFToken() {
     // If we can request this resource successfully, it means that the user has
     // authenticated. If not we throw an error prompting to authenticate.
-    return (this.csrfPromise = callApi({
+    this.csrfPromise = callApi({
       credentials: this.credentials,
       headers: {
         ...this.headers,
@@ -47,22 +42,21 @@ class SupersetClient {
       mode: this.mode,
       timeout: this.timeout,
       url: this.getUrl({ endpoint: 'superset/csrf_token/', host: this.host }),
-    }).then(
-      response => {
-        if (response.json) {
-          this.csrfToken = response.json.csrf_token;
-          this.headers = { ...this.headers, 'X-CSRFToken': this.csrfToken };
-          this.didAuthSuccessfully = !!this.csrfToken;
-        }
+    }).then(response => {
+      if (response.json) {
+        this.csrfToken = response.json.csrf_token;
+        this.headers = { ...this.headers, 'X-CSRFToken': this.csrfToken };
+        this.didAuthSuccessfully = !!this.csrfToken;
+      }
 
-        if (!this.csrfToken) {
-          return Promise.reject({ error: 'Failed to fetch CSRF token' });
-        }
+      if (!this.csrfToken) {
+        return Promise.reject({ error: 'Failed to fetch CSRF token' });
+      }
 
-        return response;
-      },
-      error => Promise.reject(error),
-    ));
+      return response;
+    });
+
+    return this.csrfPromise;
   }
 
   getUrl({ host = '', endpoint = '' }) {
