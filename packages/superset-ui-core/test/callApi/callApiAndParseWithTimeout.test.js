@@ -70,7 +70,7 @@ describe('callApiAndParseWithTimeout', () => {
       const unresolvingPromise = new Promise(() => {});
       fetchMock.get(mockTimeoutUrl, () => unresolvingPromise);
 
-      callApiAndParseWithTimeout({ url: mockTimeoutUrl, method: 'GET', timeout: 0 })
+      callApiAndParseWithTimeout({ url: mockTimeoutUrl, method: 'GET', timeout: 1 })
         .then(throwIfCalled)
         .catch(timeoutError => {
           expect(setTimeout).toHaveBeenCalledTimes(1);
