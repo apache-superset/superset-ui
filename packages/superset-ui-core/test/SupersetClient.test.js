@@ -4,11 +4,8 @@ import fetchMock from 'fetch-mock';
 
 import PublicAPI, { SupersetClient } from '../src/SupersetClient';
 
+import throwIfCalled from './utils/throwIfCalled';
 import { LOGIN_GLOB } from './fixtures/constants';
-
-const THROW_IF_CALLED = () => {
-  throw Error('No op error');
-};
 
 describe('SupersetClient', () => {
   beforeAll(() => {
@@ -91,7 +88,7 @@ describe('SupersetClient', () => {
 
             return done();
           })
-          .catch(THROW_IF_CALLED);
+          .catch(throwIfCalled);
       });
 
       it('isAuthenticated() returns true if there is a token and false if not', done => {
@@ -106,7 +103,7 @@ describe('SupersetClient', () => {
 
             return done();
           })
-          .catch(THROW_IF_CALLED);
+          .catch(throwIfCalled);
       });
 
       it('throws if superset/csrf_token/ returns an error', done => {
@@ -120,7 +117,7 @@ describe('SupersetClient', () => {
 
         client
           .init()
-          .then(THROW_IF_CALLED)
+          .then(throwIfCalled)
           .catch(error => {
             expect(error.status).toBe(403);
 
@@ -144,7 +141,7 @@ describe('SupersetClient', () => {
         const client = new SupersetClient({});
         client
           .init()
-          .then(THROW_IF_CALLED)
+          .then(throwIfCalled)
           .catch(error => {
             expect(error).toBeDefined();
 
@@ -180,7 +177,7 @@ describe('SupersetClient', () => {
 
             return done();
           })
-          .catch(THROW_IF_CALLED);
+          .catch(throwIfCalled);
       });
 
       it(`client.ensureAuth() returns a promise that rejects
@@ -194,7 +191,7 @@ describe('SupersetClient', () => {
 
         expect(promise).toEqual(expect.any(Promise));
 
-        promise.then(THROW_IF_CALLED).catch(() => {
+        promise.then(throwIfCalled).catch(() => {
           expect(client.didAuthSuccessfully).toBe(false);
 
           return done();
@@ -295,9 +292,9 @@ describe('SupersetClient', () => {
 
                 return done();
               })
-              .catch(THROW_IF_CALLED),
+              .catch(throwIfCalled),
           )
-          .catch(THROW_IF_CALLED);
+          .catch(throwIfCalled);
       });
 
       it('sets protocol, host, headers, mode, and credentials from config', done => {
@@ -324,9 +321,9 @@ describe('SupersetClient', () => {
 
                 return done();
               })
-              .catch(THROW_IF_CALLED),
+              .catch(throwIfCalled),
           )
-          .catch(THROW_IF_CALLED);
+          .catch(throwIfCalled);
       });
 
       describe('GET', () => {
@@ -345,9 +342,9 @@ describe('SupersetClient', () => {
 
                   return done();
                 })
-                .catch(THROW_IF_CALLED),
+                .catch(throwIfCalled),
             )
-            .catch(THROW_IF_CALLED);
+            .catch(throwIfCalled);
         });
 
         it('allows overriding host, headers, mode, and credentials per-request', done => {
@@ -383,9 +380,9 @@ describe('SupersetClient', () => {
 
                   return done();
                 })
-                .catch(THROW_IF_CALLED),
+                .catch(throwIfCalled),
             )
-            .catch(THROW_IF_CALLED);
+            .catch(throwIfCalled);
         });
       });
 
@@ -405,9 +402,9 @@ describe('SupersetClient', () => {
 
                   return done();
                 })
-                .catch(THROW_IF_CALLED),
+                .catch(throwIfCalled),
             )
-            .catch(THROW_IF_CALLED);
+            .catch(throwIfCalled);
         });
 
         it('allows overriding host, headers, mode, and credentials per-request', done => {
@@ -442,9 +439,9 @@ describe('SupersetClient', () => {
 
                   return done();
                 })
-                .catch(THROW_IF_CALLED),
+                .catch(throwIfCalled),
             )
-            .catch(THROW_IF_CALLED);
+            .catch(throwIfCalled);
         });
 
         it('passes postPayload key,values in the body', done => {
@@ -466,9 +463,9 @@ describe('SupersetClient', () => {
 
                   return done();
                 })
-                .catch(THROW_IF_CALLED),
+                .catch(throwIfCalled),
             )
-            .catch(THROW_IF_CALLED);
+            .catch(throwIfCalled);
         });
 
         it('respects the stringify parameter for postPayload key,values', done => {
@@ -490,9 +487,9 @@ describe('SupersetClient', () => {
 
                   return done();
                 })
-                .catch(THROW_IF_CALLED),
+                .catch(throwIfCalled),
             )
-            .catch(THROW_IF_CALLED);
+            .catch(throwIfCalled);
         });
       });
     });
