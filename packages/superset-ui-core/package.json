@@ -41,7 +41,8 @@
   "homepage": "https://github.com/apache-superset/superset-ui#readme",
   "devDependencies": {
     "@data-ui/build-config": "0.0.10",
-    "fetch-mock": "^6.5.2"
+    "fetch-mock": "^6.5.2",
+    "node-fetch": "^2.2.0"
   },
   "dependencies": {
     "url-search-params-polyfill": "^4.0.1",
