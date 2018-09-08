@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/apache-superset/superset-ui#readme",
   "devDependencies": {
-    "@data-ui/build-config": "0.0.11",
+    "@data-ui/build-config": "0.0.12",
     "fetch-mock": "^6.5.2",
     "node-fetch": "^2.2.0"
   },
@@ -66,13 +66,6 @@
         "prefer-promise-reject-errors": "off"
       }
     },
-    "jest": {
-      "testPathIgnorePatterns": [
-        "node_modules"
-      ],
-      "collectCoverageFrom": [
-        "<rootDir>/src/**/*.{js,jsx}"
-      ]
-    }
+    "jest": {}
   }
 }
