@@ -70,10 +70,8 @@
       "testPathIgnorePatterns": [
         "node_modules"
       ],
-      "coveragePathIgnorePatterns": [
-        "<rootDir>/node_modules/",
-        "<rootDir>/esm/",
-        "<rootDir>/lib/"
+      "collectCoverageFrom": [
+        "src/**/*.{js,jsx}"
       ]
     }
   }
