@@ -71,7 +71,7 @@
         "node_modules"
       ],
       "collectCoverageFrom": [
-        "src/**/*.{js,jsx}"
+        "<rootDir>/src/**/*.{js,jsx}"
       ]
     }
   }
