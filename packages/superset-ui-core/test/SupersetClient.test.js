@@ -243,11 +243,16 @@ describe('SupersetClient', () => {
       const host = 'HOST';
       const mockGetEndpoint = '/get/url';
       const mockPostEndpoint = '/post/url';
+      const mockTextEndpoint = '/text/endpoint';
       const mockGetUrl = `${protocol}://${host}${mockGetEndpoint}`;
       const mockPostUrl = `${protocol}://${host}${mockPostEndpoint}`;
+      const mockTextUrl = `${protocol}://${host}${mockTextEndpoint}`;
+      const mockTextJsonResponse = '{ "value": 9223372036854775807 }';
 
       fetchMock.get(mockGetUrl, 'Ok');
       fetchMock.post(mockPostUrl, 'Ok');
+      fetchMock.get(mockTextUrl, mockTextJsonResponse);
+      fetchMock.post(mockTextUrl, mockTextJsonResponse);
 
       it('checks for authentication before every get and post request', done => {
         expect.assertions(3);
@@ -313,6 +318,25 @@ describe('SupersetClient', () => {
               ])
                 .then(() => {
                   expect(fetchMock.calls(mockGetUrl)).toHaveLength(2);
+
+                  return done();
+                })
+                .catch(throwIfCalled),
+            )
+            .catch(throwIfCalled);
+        });
+
+        it('supports parsing a response as text', done => {
+          expect.assertions(2);
+          const client = new SupersetClient({ protocol, host });
+          client
+            .init()
+            .then(() =>
+              client
+                .get({ url: mockTextUrl, parseMethod: 'text' })
+                .then(({ text }) => {
+                  expect(fetchMock.calls(mockTextUrl)).toHaveLength(1);
+                  expect(text).toBe(mockTextJsonResponse);
 
                   return done();
                 })
@@ -410,6 +434,25 @@ describe('SupersetClient', () => {
                   expect(fetchRequest.headers).toEqual(
                     expect.objectContaining(overrideConfig.headers),
                   );
+
+                  return done();
+                })
+                .catch(throwIfCalled),
+            )
+            .catch(throwIfCalled);
+        });
+
+        it('supports parsing a response as text', done => {
+          expect.assertions(2);
+          const client = new SupersetClient({ protocol, host });
+          client
+            .init()
+            .then(() =>
+              client
+                .post({ url: mockTextUrl, parseMethod: 'text' })
+                .then(({ text }) => {
+                  expect(fetchMock.calls(mockTextUrl)).toHaveLength(1);
+                  expect(text).toBe(mockTextJsonResponse);
 
                   return done();
                 })
