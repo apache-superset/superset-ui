@@ -14,7 +14,7 @@ const PARSERS = {
 export default function parseResponse(apiPromise, parseMethod = 'json') {
   const responseParser = PARSERS[parseMethod] || PARSERS.json;
 
-  return apiPromise.then(responseParser).then(({ json, text, response }) => {
+  return apiPromise.then(responseParser).then(({ json, response, text }) => {
     // HTTP 404 or 500 are not rejected, ok is just set to false
     if (!response.ok) {
       return Promise.reject({
@@ -24,6 +24,6 @@ export default function parseResponse(apiPromise, parseMethod = 'json') {
       });
     }
 
-    return typeof text === 'undefined' ? { json, response } : { response, text };
+    return { json, response, text };
   });
 }
