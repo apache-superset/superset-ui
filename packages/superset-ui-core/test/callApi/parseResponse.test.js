@@ -72,14 +72,14 @@ describe('parseResponse()', () => {
     expect.assertions(3);
 
     // test with json + bigint to ensure that it was not first parsed as json
-    const mockTextUrl = '/mock/textparse/url';
+    const mockTextParseUrl = '/mock/textparse/url';
     const mockTextJsonResponse = '{ "value": 9223372036854775807 }';
-    fetchMock.get(mockTextUrl, mockTextJsonResponse);
+    fetchMock.get(mockTextParseUrl, mockTextJsonResponse);
 
-    const apiPromise = callApi({ url: mockTextUrl, method: 'GET', parseMethod: 'text' });
-    parseResponse(apiPromise)
+    const apiPromise = callApi({ url: mockTextParseUrl, method: 'GET' });
+    parseResponse(apiPromise, 'text')
       .then(args => {
-        expect(fetchMock.calls(mockTextUrl)).toHaveLength(1);
+        expect(fetchMock.calls(mockTextParseUrl)).toHaveLength(1);
         expect(Object.keys(args)).toEqual(expect.arrayContaining(['response', 'text']));
         expect(args.text).toBe(mockTextJsonResponse);
 
