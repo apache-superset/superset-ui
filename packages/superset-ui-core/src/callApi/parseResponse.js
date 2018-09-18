@@ -1,29 +1,25 @@
 const PARSERS = {
-  json: response =>
-    // first try to parse as json, and fall back to text (e.g., in the case of HTML stacktrace)
-    // cannot fall back to .text() without cloning the response because body is single-use
-    response
-      .clone()
-      .json()
-      .then(json => ({ json, response }))
-      .catch(() => /* jsonParseError */ response.text().then(text => ({ response, text }))),
-
+  json: response => response.json().then(json => ({ json, response })),
   text: response => response.text().then(text => ({ response, text })),
 };
 
 export default function parseResponse(apiPromise, parseMethod = 'json') {
+  if (parseMethod === null) return apiPromise;
+
   const responseParser = PARSERS[parseMethod] || PARSERS.json;
 
-  return apiPromise.then(responseParser).then(({ json, response, text }) => {
-    // HTTP 404 or 500 are not rejected, ok is just set to false
-    if (!response.ok) {
-      return Promise.reject({
-        error: response.error || (json && json.error) || text || 'An error occurred',
-        status: response.status,
-        statusText: response.statusText,
-      });
-    }
+  return apiPromise
+    .then(response => {
+      if (!response.ok) {
+        return Promise.reject({
+          error: response.error || 'An error occurred',
+          response,
+          status: response.status,
+          statusText: response.statusText,
+        });
+      }
 
-    return { json, response, text };
-  });
+      return response;
+    })
+    .then(responseParser);
 }
