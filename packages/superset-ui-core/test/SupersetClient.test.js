@@ -135,16 +135,11 @@ describe('SupersetClient', () => {
 
       it('isAuthenticated() returns true if a token is passed at configuration', () => {
         expect.assertions(2);
-        let client = new SupersetClient({ csrfToken: null });
-        expect(client.isAuthenticated()).toBe(false);
+        const clientWithoutToken = new SupersetClient({ csrfToken: null });
+        const clientWithToken = new SupersetClient({ csrfToken: 'token' });
 
-        client = new SupersetClient({ csrfToken: 'token' });
-
-        return client.init().then(() => {
-          expect(client.isAuthenticated()).toBe(true);
-
-          return Promise.resolve();
-        });
+        expect(clientWithoutToken.isAuthenticated()).toBe(false);
+        expect(clientWithToken.isAuthenticated()).toBe(true);
       });
 
       it('init() throws if superset/csrf_token/ returns an error', () => {
