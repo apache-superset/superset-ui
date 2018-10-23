@@ -1,2 +1,1 @@
-const x = 'test';
-export default x;
+export { default as SupersetTranslation } from './SupersetTranslation';

@@ -6,14 +6,23 @@
 
 ### SupersetTranslation
 
-
 #### Example usage
 
-```javascript
+```js
+import { t, SupersetTranslation } from '@superset-ui/translation';
+
+SupersetTranslation.configure({
+  languagePack: {...},
+});
+
+console.log(t('text to be translated'));
 ```
 
 #### API
 
+`SupersetTranslation.configure({ languagePack })`
+
+`t()`
 
 ### Development
 

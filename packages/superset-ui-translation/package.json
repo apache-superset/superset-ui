@@ -38,10 +38,16 @@
   },
   "homepage": "https://github.com/apache-superset/superset-ui#readme",
   "devDependencies": {
-    "@data-ui/build-config": "^0.0.23"
+    "@data-ui/build-config": "^0.0.23",
+    "react": "^16.4.1"
   },
   "dependencies": {
-    "@babel/runtime": "^7.1.2"
+    "@babel/runtime": "^7.1.2",
+    "jed": "^1.1.1",
+    "sprintf-js": "^1.1.1"
+  },
+  "peerDependencies": {
+    "react": "^16.4.1"
   },
   "beemo": {
     "module": "@data-ui/build-config",
