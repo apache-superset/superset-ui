@@ -1,1 +1,1 @@
-export { default as SupersetTranslation } from './SupersetTranslation';
+export { default as SupersetTranslation } from './TranslatorSingleton';
