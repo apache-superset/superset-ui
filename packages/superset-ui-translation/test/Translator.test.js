@@ -28,7 +28,7 @@ describe('Translator', () => {
     it('translates simple text', () => {
       expect(translator.translate('second')).toEqual('秒');
     });
-    it('translate text with sprintf template', () => {
+    it('translates template text with arguments', () => {
       expect(translator.translate('Copy of %s', 1)).toEqual('1 的副本');
     });
   });
