@@ -74,7 +74,7 @@
     }
   },
   "lint-staged": {
-    "./packages/**/*.{js,jsx}": [
+    "./packages/*/{src,test}/**/*.{js,jsx,json,md}": [
       "yarn run prettier --write",
       "git add"
     ]
