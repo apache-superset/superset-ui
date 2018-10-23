@@ -11,7 +11,7 @@
     "jest": "beemo jest --color --coverage",
     "prepare-release": "git checkout master && git pull --rebase origin master && lerna bootstrap && yarn run test",
     "prerelease": "yarn run build",
-    "pretest": "yarn run lint",
+    "pretest": "yarn run prettier && yarn run lint",
     "prettier": "beemo prettier \"./packages/*/{src,test}/**/*.{js,jsx,json,md}\"",
     "release": "yarn run prepare-release && lerna publish",
     "test": "yarn run jest"
