@@ -9,9 +9,9 @@
 #### Example usage
 
 ```js
-import { t, SupersetTranslation } from '@superset-ui/translation';
+import { configure, t } from '@superset-ui/translation';
 
-SupersetTranslation.configure({
+configure({
   languagePack: {...},
 });
 
@@ -20,9 +20,9 @@ console.log(t('text to be translated'));
 
 #### API
 
-`SupersetTranslation.configure({ languagePack })`
+`configure({ [languagePack] })`
 
-`t()`
+`t(text[, args])`
 
 ### Development
 
