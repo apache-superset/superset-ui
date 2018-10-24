@@ -22,7 +22,21 @@ console.log(t('text to be translated'));
 
 `configure({ [languagePack] })`
 
+- Initialize the translator
+- Initialize with the default language if no `languagePack` is specified.
+
 `t(text[, args])`
+
+- Translate `text` when no `args` is provided.
+- Translate `text` and substitute `args` into the placeholders specified within `text`.
+
+For example
+
+```js
+t('Hello %(name)s', user)
+```
+
+See [sprintf-js](https://github.com/alexei/sprintf.js) for more details on how to define placeholders.
 
 ### Development
 

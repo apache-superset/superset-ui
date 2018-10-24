@@ -9,6 +9,9 @@ describe('Translator', () => {
     it('initializes when config is not specified', () => {
       expect(new Translator()).toBeInstanceOf(Translator);
     });
+    it('initializes when config is an empty object', () => {
+      expect(new Translator({})).toBeInstanceOf(Translator);
+    });
     it('initializes when config is specified', () => {
       expect(new Translator({
         languagePack: languagePackZh,
