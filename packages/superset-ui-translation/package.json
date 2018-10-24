@@ -31,23 +31,19 @@
     "client",
     "translation"
   ],
-  "author": "",
+  "author": "Superset",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/apache-superset/superset-ui/issues"
   },
   "homepage": "https://github.com/apache-superset/superset-ui#readme",
   "devDependencies": {
-    "@data-ui/build-config": "^0.0.23",
-    "react": "^16.4.1"
+    "@data-ui/build-config": "^0.0.23"
   },
   "dependencies": {
     "@babel/runtime": "^7.1.2",
     "jed": "^1.1.1",
     "sprintf-js": "^1.1.1"
-  },
-  "peerDependencies": {
-    "react": "^16.4.1"
   },
   "beemo": {
     "module": "@data-ui/build-config",
@@ -61,11 +57,6 @@
         }
       },
       "prettier"
-    ],
-    "eslint": {
-      "rules": {
-        "prefer-promise-reject-errors": "off"
-      }
-    }
+    ]
   }
 }
