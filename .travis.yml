@@ -16,7 +16,7 @@ install:
 
 script:
   - yarn install
-  - yarn run test --debug --no-cache
+  - yarn run test
 
 after_script:
   - codecov
