@@ -8,7 +8,7 @@
     "build:cjs": "NODE_ENV=production beemo babel ./src --out-dir lib/ --minify --workspaces=*",
     "build:esm": "NODE_ENV=production beemo babel ./src --out-dir esm/ --esm --minify --workspaces=*",
     "lint": "beemo create-config prettier && beemo eslint \"./packages/*/{src,test}/**/*.{js,jsx}\"",
-    "jest": "beemo jest --color --coverage",
+    "jest": "beemo create-config jest && jest --color --coverage",
     "prepare-release": "git checkout master && git pull --rebase origin master && lerna bootstrap && yarn run test",
     "prerelease": "yarn run build",
     "pretest": "yarn run lint",
