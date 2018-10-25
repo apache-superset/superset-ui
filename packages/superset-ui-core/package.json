@@ -19,7 +19,7 @@
     "core",
     "data"
   ],
-  "author": "",
+  "author": "Superset",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/apache-superset/superset-ui/issues"
