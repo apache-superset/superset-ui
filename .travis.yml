@@ -13,9 +13,9 @@ matrix:
 install:
   - npm install
   - npm install -g codecov
-  - lerna bootstrap
 
 script:
+  - lerna bootstrap
   - yarn run test
 
 after_script:
