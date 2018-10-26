@@ -14,9 +14,15 @@ install:
   - npm install
   - npm install -g codecov
 
+env:
+  - PACKAGE=superset-ui-core
+  - PACKAGE=superset-ui-translation
+
 script:
-  - lerna bootstrap
-  - yarn run test
+  - cd ./packages/$PACKAGE
+  - yarn install
+  - cd ../..
+  - yarn run test ./packages/$PACKAGE
 
 after_script:
   - codecov
