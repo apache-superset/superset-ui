@@ -1,9 +1,12 @@
+/* eslint-disable sort-keys */
+
 import SequentialScheme from '../../SequentialScheme';
 
 const schemes = [
   {
     name: 'schemeBrBG',
     label: 'brown/green',
+    isDiverging: true,
     colors: [
       '#543005',
       '#8c510a',
@@ -16,11 +19,11 @@ const schemes = [
       '#01665e',
       '#003c30',
     ],
-    isDiverging: true,
   },
   {
     name: 'schemePRGn',
     label: 'purple/green',
+    isDiverging: true,
     colors: [
       '#40004b',
       '#762a83',
@@ -33,11 +36,11 @@ const schemes = [
       '#1b7837',
       '#00441b',
     ],
-    isDiverging: true,
   },
   {
     name: 'schemePiYG',
     label: 'pink/green',
+    isDiverging: true,
     colors: [
       '#8e0152',
       '#c51b7d',
@@ -50,11 +53,11 @@ const schemes = [
       '#4d9221',
       '#276419',
     ],
-    isDiverging: true,
   },
   {
     name: 'schemePuOr',
     label: 'purple/orange',
+    isDiverging: true,
     colors: [
       '#2d004b',
       '#542788',
@@ -67,11 +70,11 @@ const schemes = [
       '#b35806',
       '#7f3b08',
     ],
-    isDiverging: true,
   },
   {
     name: 'schemeRdBu',
     label: 'red/blue',
+    isDiverging: true,
     colors: [
       '#67001f',
       '#b2182b',
@@ -84,11 +87,11 @@ const schemes = [
       '#2166ac',
       '#053061',
     ],
-    isDiverging: true,
   },
   {
     name: 'schemeRdGy',
     label: 'red/gray/black',
+    isDiverging: true,
     colors: [
       '#67001f',
       '#b2182b',
@@ -101,7 +104,6 @@ const schemes = [
       '#4d4d4d',
       '#1a1a1a',
     ],
-    isDiverging: true,
   },
   {
     name: 'schemeRdYlBu',

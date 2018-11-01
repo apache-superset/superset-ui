@@ -1,3 +1,5 @@
+/* eslint-disable sort-keys */
+
 import SequentialScheme from '../../SequentialScheme';
 
 const schemes = [
@@ -28,8 +30,8 @@ const schemes = [
   {
     name: 'pink_grey',
     label: 'pink/grey',
-    colors: ['#E70B81', '#FAFAFA', '#666666'],
     isDiverging: true,
+    colors: ['#E70B81', '#FAFAFA', '#666666'],
   },
   {
     name: 'greens',
@@ -46,20 +48,20 @@ const schemes = [
   {
     name: 'red_yellow_blue',
     label: 'red/yellow/blue',
-    colors: ['#d7191c', '#fdae61', '#ffffbf', '#abd9e9', '#2c7bb6'],
     isDiverging: true,
+    colors: ['#d7191c', '#fdae61', '#ffffbf', '#abd9e9', '#2c7bb6'],
   },
   {
     name: 'brown_white_green',
     label: 'brown/white/green',
-    colors: ['#a6611a', '#dfc27d', '#f5f5f5', '#80cdc1', '#018571'],
     isDiverging: true,
+    colors: ['#a6611a', '#dfc27d', '#f5f5f5', '#80cdc1', '#018571'],
   },
   {
     name: 'purple_white_green',
     label: 'purple/white/green',
-    colors: ['#7b3294', '#c2a5cf', '#f7f7f7', '#a6dba0', '#008837'],
     isDiverging: true,
+    colors: ['#7b3294', '#c2a5cf', '#f7f7f7', '#a6dba0', '#008837'],
   },
 ].map(s => new SequentialScheme(s));
 
