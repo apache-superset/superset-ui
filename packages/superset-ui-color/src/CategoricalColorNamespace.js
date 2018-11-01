@@ -1,7 +1,7 @@
 import CategoricalColorScale from './CategoricalColorScale';
 import getCategoricalSchemeRegistry from './CategoricalSchemeRegistrySingleton';
 
-class CategoricalColorNamespace {
+export default class CategoricalColorNamespace {
   constructor(name) {
     this.name = name;
     this.scales = {};

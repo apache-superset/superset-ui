@@ -3,9 +3,9 @@ import CategoricalColorNamespace, {
   getScale,
   getColor,
   DEFAULT_NAMESPACE,
-} from '../../../../src/modules/colors/CategoricalColorNamespace';
-import getCategoricalSchemeRegistry from '../../../../src/modules/colors/CategoricalSchemeRegistrySingleton';
-import CategoricalScheme from '../../../../src/modules/colors/CategoricalScheme';
+} from '../src/CategoricalColorNamespace';
+import getCategoricalSchemeRegistry from '../src/CategoricalSchemeRegistrySingleton';
+import CategoricalScheme from '../src/CategoricalScheme';
 
 describe('CategoricalColorNamespace', () => {
   beforeAll(() => {

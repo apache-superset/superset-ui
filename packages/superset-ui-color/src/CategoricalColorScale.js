@@ -1,13 +1,8 @@
-import { TIME_SHIFT_PATTERN } from '../../utils/common';
-
 export function cleanValue(value) {
   // for superset series that should have the same color
   return String(value)
     .trim()
-    .toLowerCase()
-    .split(', ')
-    .filter(k => !TIME_SHIFT_PATTERN.test(k))
-    .join(', ');
+    .toLowerCase();
 }
 
 export default class CategoricalColorScale {

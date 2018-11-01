@@ -1,5 +1,5 @@
-import ColorSchemeRegistry from '../../../../src/modules/colors/ColorSchemeRegistry';
-import CategoricalScheme from '../../../../src/modules/colors/CategoricalScheme';
+import ColorSchemeRegistry from '../src/ColorSchemeRegistry';
+import CategoricalScheme from '../src/CategoricalScheme';
 
 describe('ColorSchemeRegistry', () => {
   const registry = new ColorSchemeRegistry();

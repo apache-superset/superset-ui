@@ -1,4 +1,4 @@
-import Registry from '../Registry';
+import { Registry } from '@superset-ui/core';
 
 class ColorSchemeRegistry extends Registry {
   getDefaultSchemeName() {

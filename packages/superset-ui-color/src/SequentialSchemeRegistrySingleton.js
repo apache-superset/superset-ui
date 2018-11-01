@@ -1,5 +1,5 @@
+import { makeSingleton } from '@superset-ui/core';
 import ColorSchemeRegistry from './ColorSchemeRegistry';
-import makeSingleton from '../../utils/makeSingleton';
 
 class SequentialSchemeRegistry extends ColorSchemeRegistry {}
 
