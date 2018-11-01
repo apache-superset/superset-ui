@@ -34,13 +34,14 @@ export default class CategoricalColorScale {
     }
 
     const seenColor = this.seen[cleanedValue];
-    const length = this.colors.length;
+    const { length } = this.colors;
     if (seenColor !== undefined) {
       return this.colors[seenColor % length];
     }
 
     const index = Object.keys(this.seen).length;
     this.seen[cleanedValue] = index;
+
     return this.colors[index % length];
   }
 
@@ -51,6 +52,7 @@ export default class CategoricalColorScale {
    */
   setColor(value, forcedColor) {
     this.forcedColors[value] = forcedColor;
+
     return this;
   }
 

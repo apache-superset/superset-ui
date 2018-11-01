@@ -7,6 +7,7 @@ class ColorSchemeRegistry extends Registry {
 
   setDefaultSchemeName(schemeName) {
     this.defaultSchemeName = schemeName;
+
     return this;
   }
 
@@ -20,6 +21,7 @@ class ColorSchemeRegistry extends Registry {
     if (!this.defaultSchemeName) {
       this.defaultSchemeName = schemeName;
     }
+
     return this;
   }
 
@@ -29,6 +31,7 @@ class ColorSchemeRegistry extends Registry {
     if (!this.defaultSchemeName) {
       this.defaultSchemeName = schemeName;
     }
+
     return this;
   }
 }

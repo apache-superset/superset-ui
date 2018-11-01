@@ -19,6 +19,7 @@ export default class CategoricalColorNamespace {
       this.forcedItems,
     );
     this.scales[name] = newScale;
+
     return newScale;
   }
 
@@ -31,6 +32,7 @@ export default class CategoricalColorNamespace {
    */
   setColor(value, forcedColor) {
     this.forcedItems[value] = forcedColor;
+
     return this;
   }
 }
@@ -45,6 +47,7 @@ export function getNamespace(name = DEFAULT_NAMESPACE) {
   }
   const newInstance = new CategoricalColorNamespace(name);
   namespaces[name] = newInstance;
+
   return newInstance;
 }
 

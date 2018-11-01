@@ -52,7 +52,7 @@ describe('CategoricalColorScale', () => {
       ];
       colors.forEach(color => {
         if (colorSet[color]) {
-          colorSet[color]++;
+          colorSet[color] += 1;
         } else {
           colorSet[color] = 1;
         }
