@@ -43,4 +43,11 @@ describe('Plugin', () => {
       expect(plugin.resetConfig()).toBe(plugin);
     });
   });
+
+  describe('.register()', () => {
+    it('returns the plugin itself', () => {
+      const plugin = new Plugin();
+      expect(plugin.register()).toBe(plugin);
+    });
+  });
 });

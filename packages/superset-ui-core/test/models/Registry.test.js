@@ -108,6 +108,13 @@ describe('Registry', () => {
 
       return registry.getAsPromise('a').then(value => expect(value).toBe('testValue'));
     });
+    it('returns same promise object for the same key unless user re-registers new value with the key.', () => {
+      const registry = new Registry();
+      registry.registerLoader('a', () => 'testValue');
+      const promise1 = registry.getAsPromise('a');
+      const promise2 = registry.getAsPromise('a');
+      expect(promise1).toBe(promise2);
+    });
     it('returns a rejected promise if the item with specified key does not exist', () => {
       const registry = new Registry();
 

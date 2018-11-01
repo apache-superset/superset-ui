@@ -19,15 +19,21 @@ export default class Registry {
   }
 
   registerValue(key, value) {
-    this.items[key] = { value };
-    delete this.promises[key];
+    const item = this.items[key];
+    if (!item || item.value !== value) {
+      this.items[key] = { value };
+      delete this.promises[key];
+    }
 
     return this;
   }
 
   registerLoader(key, loader) {
-    this.items[key] = { loader };
-    delete this.promises[key];
+    const item = this.items[key];
+    if (!item || item.loader !== loader) {
+      this.items[key] = { loader };
+      delete this.promises[key];
+    }
 
     return this;
   }
