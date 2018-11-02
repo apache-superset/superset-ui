@@ -11,11 +11,11 @@ matrix:
   fast_finish: true
 
 install:
-  - npm install -g yarn
   - npm install -g codecov
   - yarn install
 
 script:
+  - yarn run build
   - yarn run test
 
 after_script:
