@@ -1,6 +1,13 @@
 import { Registry } from '@superset-ui/core';
 
 class ColorSchemeRegistry extends Registry {
+  clear() {
+    super.clear();
+    this.defaultSchemeName = undefined;
+
+    return this;
+  }
+
   getDefaultSchemeName() {
     return this.defaultSchemeName;
   }

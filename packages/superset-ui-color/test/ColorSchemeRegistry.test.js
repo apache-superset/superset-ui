@@ -22,6 +22,20 @@ describe('ColorSchemeRegistry', () => {
     registry.registerValue('test2', SCHEME2);
     registry.setDefaultSchemeName('test');
   });
+  describe('.clear()', () => {
+    it('clears the entries', () => {
+      registry.clear();
+      expect(registry.has('test')).toBeFalsy();
+    });
+    it('clears default scheme name', () => {
+      registry.clear();
+      expect(registry.getDefaultSchemeName()).toBeUndefined();
+    });
+    it('returns the ColorSchemeRegistry instance', () => {
+      const instance = registry.clear();
+      expect(instance).toBe(registry);
+    });
+  });
   describe('.get()', () => {
     it('.get() returns default color scheme', () => {
       const scheme = registry.get();
@@ -58,6 +72,17 @@ describe('ColorSchemeRegistry', () => {
     });
     it('returns the ColorSchemeRegistry instance', () => {
       const instance = registry.registerValue('test3', SCHEME3);
+      expect(instance).toBe(registry);
+    });
+  });
+  describe('.registerLoader(name, colorsLoader)', () => {
+    it('sets schemename and color', () => {
+      registry.registerLoader('test3', () => SCHEME3);
+      const scheme = registry.get('test3');
+      expect(scheme).toEqual(SCHEME3);
+    });
+    it('returns the ColorSchemeRegistry instance', () => {
+      const instance = registry.registerLoader('test3', () => SCHEME3);
       expect(instance).toBe(registry);
     });
   });
