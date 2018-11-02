@@ -70,6 +70,10 @@ describe('ColorSchemeRegistry', () => {
       const scheme = registry.get('test3');
       expect(scheme).toEqual(SCHEME3);
     });
+    it('registers this scheme name as default if there is no default scheme', () => {
+      registry.clear().registerValue('test3', SCHEME3);
+      expect(registry.getDefaultSchemeName()).toEqual('test3');
+    });
     it('returns the ColorSchemeRegistry instance', () => {
       const instance = registry.registerValue('test3', SCHEME3);
       expect(instance).toBe(registry);
@@ -80,6 +84,10 @@ describe('ColorSchemeRegistry', () => {
       registry.registerLoader('test3', () => SCHEME3);
       const scheme = registry.get('test3');
       expect(scheme).toEqual(SCHEME3);
+    });
+    it('registers this scheme name as default if there is no default scheme', () => {
+      registry.clear().registerLoader('test3', () => SCHEME3);
+      expect(registry.getDefaultSchemeName()).toEqual('test3');
     });
     it('returns the ColorSchemeRegistry instance', () => {
       const instance = registry.registerLoader('test3', () => SCHEME3);
