@@ -15,7 +15,7 @@ install:
   - npm install -g codecov
 
 script:
-  - yarn install
+  - yarn install && lerna bootstrap
   - yarn run test
 
 after_script:
