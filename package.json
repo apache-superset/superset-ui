@@ -57,13 +57,11 @@
     ],
     "jest": {
       "coveragePathIgnorePatterns": [
-        "<rootDir>/packages/*/node_modules/",
-        "<rootDir>/packages/*/public/",
-        "<rootDir>/packages/*/build/",
-        "<rootDir>/packages/*/tmp/",
-        "<rootDir>/packages/*/dist/",
-        "esm",
-        "lib"
+        "node_modules/",
+        "public/",
+        "esm/",
+        "lib/",
+        "tmp/"
       ]
     }
   },
