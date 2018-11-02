@@ -16,7 +16,8 @@
     "prettier": "beemo prettier \"./packages/*/{src,test}/**/*.{js,jsx,json,md}\"",
     "release": "yarn run prepare-release && lerna publish",
     "test": "yarn run jest",
-    "test:watch": "beemo create-config jest && jest --watch"
+    "test:watch": "beemo create-config jest && jest --watch",
+    "mmm": "jest --color --coverage"
   },
   "repository": "https://github.com/apache-superset/superset-ui.git",
   "keywords": [
@@ -54,7 +55,18 @@
         }
       },
       "prettier"
-    ]
+    ],
+    "jest": {
+      "coveragePathIgnorePatterns": [
+        "<rootDir>/packages/*/node_modules/",
+        "<rootDir>/packages/*/public/",
+        "<rootDir>/packages/*/build/",
+        "<rootDir>/packages/*/tmp/",
+        "<rootDir>/packages/*/dist/",
+        "esm",
+        "lib"
+      ]
+    }
   },
   "workspaces": [
     "./packages/*"
