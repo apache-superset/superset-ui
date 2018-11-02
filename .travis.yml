@@ -12,6 +12,7 @@ matrix:
 
 install:
   - npm install
+  - npm install -g lerna
   - npm install -g codecov
 
 script:
