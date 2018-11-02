@@ -11,8 +11,9 @@ matrix:
   fast_finish: true
 
 install:
-  - yarn install
+  - npm install -g yarn
   - npm install -g codecov
+  - yarn install
 
 script:
   - yarn run test
