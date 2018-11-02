@@ -4,19 +4,18 @@ node_js:
   - 10.7
 
 cache:
-  directories:
-    - node_modules
+  - npm: true
+  - yarn: true
 
 matrix:
   fast_finish: true
 
 install:
   - npm install
-  - npm install -g lerna
   - npm install -g codecov
 
 script:
-  - yarn install && lerna bootstrap
+  - yarn install
   - yarn run test
 
 after_script:
