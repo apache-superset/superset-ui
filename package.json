@@ -6,8 +6,8 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "yarn run build:cjs && yarn run build:esm",
-    "build:cjs": "NODE_ENV=production beemo babel ./src --out-dir lib/ --minify --workspaces=\"@superset-ui/!(demo)\"",
-    "build:esm": "NODE_ENV=production beemo babel ./src --out-dir esm/ --esm --minify --workspaces=\"@superset-ui/!(demo)\"",
+    "build:cjs": "NODE_ENV=production beemo babel ./src --out-dir lib/ --minify --workspaces=\"@superset-ui/!(demo|generator-superset)\"",
+    "build:esm": "NODE_ENV=production beemo babel ./src --out-dir esm/ --esm --minify --workspaces=\"@superset-ui/!(demo|generator-superset)\"",
     "lint": "beemo create-config prettier && beemo eslint \"./packages/*/{src,test,storybook}/**/*.{js,jsx}\"",
     "jest": "beemo jest --color --coverage",
     "postrelease": "lerna run gh-pages",
@@ -55,7 +55,25 @@
         }
       },
       "prettier"
-    ]
+    ],
+    "jest": {
+      "projects": [
+        {
+          "displayName": "main",
+          "rootDir": "<rootDir>",
+          "testMatch": [
+            "<rootDir>/packages/superset-ui-*/**/?(*.)+(spec|test).{js,jsx}"
+          ]
+        },
+        {
+          "displayName": "generator-superset",
+          "rootDir": "<rootDir>/packages/generator-superset",
+          "testMatch": [
+            "<rootDir>/**/?(*.)+(spec|test).{js,jsx}"
+          ]
+        }
+      ]
+    }
   },
   "workspaces": [
     "./packages/*"
