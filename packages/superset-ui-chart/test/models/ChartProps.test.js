@@ -56,10 +56,9 @@ describe('ChartProps', () => {
       const props3 = selector({
         formData: RAW_FORM_DATA,
         datasource: RAW_DATASOURCE,
-      })
+      });
       expect(props1).not.toBe(props2);
       expect(props1).not.toBe(props3);
     });
   });
-
 });
