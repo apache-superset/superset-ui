@@ -26,15 +26,16 @@
   },
   "homepage": "https://github.com/apache-superset/superset-ui#readme",
   "dependencies": {
-    "react": "^16.6.0",
-    "react-dom": "^16.6.0"
-  },
-  "devDependencies": {
     "@babel/core": "^7.1.2",
     "@storybook/addon-knobs": "^4.0.2",
     "@storybook/addon-options": "^4.0.3",
     "@storybook/react": "^4.0.2",
+    "@superset-ui/color": "^0.4.0",
+    "@vx/legend": "^0.0.179",
+    "@vx/scale": "^0.0.179",
     "babel-loader": "^8.0.4",
+    "react": "^16.6.0",
+    "react-dom": "^16.6.0",
     "storybook-addon-jsx": "^5.4.0"
   }
 }

@@ -1,9 +1,9 @@
 import { configure } from '@storybook/react';
 
 function loadStorybook() {
-  require('../storybook/storybookInfo');
-  require('../storybook/stories');
-  // require as many files as needed
+  require('./storybook.css');
+  require('../storybook/storybookInfo'); // this customizes the UI (labels, etc.)
+  require('../storybook/stories'); // all of the stories
 }
 
 configure(loadStorybook, module);
