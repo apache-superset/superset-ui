@@ -57,20 +57,18 @@
       "prettier"
     ],
     "jest": {
+      "testPathIgnorePatterns": [
+        "<rootDir>/packages/generator-superset"
+      ],
       "projects": [
+        "<rootDir>",
         {
-          "displayName": "main",
-          "rootDir": "<rootDir>",
-          "testMatch": [
-            "<rootDir>/packages/superset-ui-*/**/?(*.)+(spec|test).{js,jsx}"
-          ]
-        },
-        {
-          "displayName": "generator-superset",
+          "displayName": "node",
           "rootDir": "<rootDir>/packages/generator-superset",
           "testMatch": [
             "<rootDir>/test/**/?(*.)+(spec|test).{js,jsx}"
-          ]
+          ],
+          "testEnvironment": "node"
         }
       ]
     }

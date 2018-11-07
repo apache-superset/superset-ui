@@ -33,8 +33,5 @@
     "chalk": "^2.4.1",
     "yosay": "^2.0.2"
   },
-  "jest": {
-    "testEnvironment": "node"
-  },
   "license": "Apache-2.0"
 }
