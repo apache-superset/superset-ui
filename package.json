@@ -69,7 +69,7 @@
           "displayName": "generator-superset",
           "rootDir": "<rootDir>/packages/generator-superset",
           "testMatch": [
-            "<rootDir>/packages/generator-superset/**/?(*.)+(spec|test).{js,jsx}"
+            "<rootDir>/test/**/?(*.)+(spec|test).{js,jsx}"
           ]
         }
       ]
