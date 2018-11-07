@@ -13,7 +13,7 @@ export default [
       ].map(({ palettes, storyName }) => (
         <RenderPalettes key={storyName} title={storyName} palettes={palettes} />
       )),
-    storyName: 'Sequential',
-    storyPath: '@superset-ui/color|Palettes',
+    storyName: 'Sequential Palettes',
+    storyPath: '@superset-ui/color',
   },
 ];

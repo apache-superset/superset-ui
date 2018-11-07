@@ -17,7 +17,7 @@ export default [
       ].map(({ palettes, storyName }) => (
         <RenderPalettes key={storyName} title={storyName} palettes={palettes} />
       )),
-    storyName: 'Categorical',
-    storyPath: '@superset-ui/color|Palettes',
+    storyName: 'Categorical Palettes',
+    storyPath: '@superset-ui/color',
   },
 ];
