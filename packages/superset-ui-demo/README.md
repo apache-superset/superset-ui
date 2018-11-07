@@ -3,7 +3,8 @@
 [![Version](https://img.shields.io/npm/v/@superset-ui/demo.svg?style=flat)](https://img.shields.io/npm/v/@superset-ui/demo.svg?style=flat)
 [![David (path)](https://img.shields.io/david/apache-superset/superset-ui.svg?path=packages%2Fsuperset-ui-demo&style=flat-square)](https://david-dm.org/apache-superset/superset-ui?path=packages/superset-ui-demo)
 
-Storybook of `@superset-ui` packages. See it live at (...coming soon!)
+Storybook of `@superset-ui` packages. See it live at
+[apache-superset.github.io/superset-ui](https://apache-superset.github.io/superset-ui)
 
 ### Development
 
@@ -41,7 +42,11 @@ If you are creating stories for a package that doesn't yet have any stories, fol
 ```javascript
  default export {
    examples: [
-     { storyPath: string, storyName: string, renderStory: fn() => node },
+     {
+       storyPath: <string>,
+       storyName: <string>,
+       renderStory: <func> () => node,
+     },
      ...
    ]
  };
