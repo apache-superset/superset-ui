@@ -1,6 +1,10 @@
-import { createRegistryWithDefaultKey } from '@superset-ui/core';
+import { RegistryWithDefaultKey } from '@superset-ui/core';
 
-export default class ColorSchemeRegistry extends createRegistryWithDefaultKey({
-  keyLabel: 'schemeName',
-  setFirstItemAsDefault: true,
-}) {}
+export default class ColorSchemeRegistry extends RegistryWithDefaultKey {
+  constructor() {
+    super({
+      name: 'ColorScheme',
+      setFirstItemAsDefault: true,
+    });
+  }
+}
