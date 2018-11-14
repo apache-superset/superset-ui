@@ -22,7 +22,7 @@ import { formatNumber } from '@superset-ui/number-format';
 console.log(formatNumber('.2f', 1000));
 ```
 
-It is powered by a registry to support registration of custom formatting.
+It is powered by a registry to support registration of custom formatting, with fallback to `d3.format` and handle error for invalid format string.
 
 ```js
 import { getNumberFormatterRegistry, formatNumber, NumberFormatter } from '@superset-ui/number-format';
