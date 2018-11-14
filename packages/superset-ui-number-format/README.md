@@ -36,6 +36,15 @@ console.log(formatNumber('my_format', 1000));
 // prints 'my special format of 1000'
 ```
 
+It also define constants for common d3 formats. See `formats.js`.
+
+```js
+import { Formats } from '@superset-ui-number-format';
+
+Formats.PERCENT // ,.2%
+Formats.PERCENT_3POINT // ,.3%
+```
+
 #### API
 
 `fn(args)`
