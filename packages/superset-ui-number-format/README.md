@@ -7,8 +7,32 @@ Description
 
 #### Example usage
 
+Functions `getNumberFormatter` and `formatNumber` should be used instead of calling `d3.format` directly.
+
 ```js
-import { xxx } from '@superset-ui/number-format';
+import { getNumberFormatter } from '@superset-ui/number-format';
+const formatter = getNumberFormatter('.2f');
+console.log(formatter.format(1000));
+```
+
+or
+
+```js
+import { formatNumber } from '@superset-ui/number-format';
+console.log(formatNumber('.2f', 1000));
+```
+
+It has registry to support custom formatting.
+
+```js
+import { getNumberFormatterRegistry, formatNumber, NumberFormatter } from '@superset-ui/number-format';
+getNumberFormatterRegistry().registerValue('my_format', new NumberFormatter({
+  name: 'my_format',
+  formatFn: v => `my special format of ${v}`
+});
+
+console.log(formatNumber('my_format', 1000));
+// prints 'my special format of 1000'
 ```
 
 #### API

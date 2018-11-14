@@ -1,7 +1,7 @@
 import {
   formatNumber,
   Formats,
-  getFormatter,
+  getNumberFormatter,
   getNumberFormatterRegistry,
   NumberFormatter,
   PREVIEW_VALUE,
@@ -12,7 +12,7 @@ describe('index', () => {
     [
       formatNumber,
       Formats,
-      getFormatter,
+      getNumberFormatter,
       getNumberFormatterRegistry,
       NumberFormatter,
       PREVIEW_VALUE,

@@ -1,5 +1,5 @@
 import getNumberFormatterRegistry, {
-  getFormatter,
+  getNumberFormatter,
   formatNumber,
 } from '../src/NumberFormatterRegistrySingleton';
 import NumberFormatterRegistry from '../src/NumberFormatterRegistry';
@@ -10,14 +10,14 @@ describe('NumberFormatterRegistrySingleton', () => {
       expect(getNumberFormatterRegistry()).toBeInstanceOf(NumberFormatterRegistry);
     });
   });
-  describe('getFormatter(format)', () => {
+  describe('getNumberFormatter(format)', () => {
     it('returns a format function', () => {
-      const format = getFormatter('.3s');
+      const format = getNumberFormatter('.3s');
       expect(format).toBeInstanceOf(Function);
       expect(format(12345)).toEqual('12.3k');
     });
     it('returns a format function even given invalid format', () => {
-      const format = getFormatter('xkcd');
+      const format = getNumberFormatter('xkcd');
       expect(format).toBeInstanceOf(Function);
       expect(format(12345)).toEqual('Invalid format: xkcd');
     });
