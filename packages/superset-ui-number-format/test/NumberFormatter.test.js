@@ -15,29 +15,40 @@ describe('NumberFormatter', () => {
       });
     });
     describe('if configOrFormatString is not string', () => {
-      it('requires field config.name', () => {
+      it('requires field config.formatName', () => {
         expect(() => new NumberFormatter({})).toThrow();
       });
-      it('if formatFn field is specified, use that as format function', () => {
+      it('if formatFunc field is specified, use that as format function', () => {
         const formatter = new NumberFormatter({
-          formatFn: () => 'haha',
-          name: 'haha-formatter',
+          formatFunc: () => 'haha',
+          formatName: 'haha-formatter',
         });
         expect(formatter.format(12345)).toEqual('haha');
       });
-      it('otherwise, use d3.format(config.name) as format function', () => {
-        const formatter = new NumberFormatter({ name: ',.4f' });
+      it('otherwise, use d3.format(config.formatName) as format function', () => {
+        const formatter = new NumberFormatter({ formatName: ',.4f' });
         expect(formatter.format(12345.67)).toEqual('12,345.6700');
       });
       it('if it is an invalid d3 format, the format function displays error message', () => {
-        const formatter = new NumberFormatter({ name: 'i-am-groot' });
+        const formatter = new NumberFormatter({ formatName: 'i-am-groot' });
         expect(formatter.format(12345.67)).toEqual('Invalid format: i-am-groot');
       });
     });
   });
+  describe('formatter is also a format function itself', () => {
+    it('returns formatted value', () => {
+      const formatter = new NumberFormatter({ formatName: ',.4%' });
+      expect(formatter(12345.67)).toEqual('1,234,567.0000%');
+    });
+    it('formatter(value) is the same with formatter.format(value)', () => {
+      const formatter = new NumberFormatter({ formatName: ',.4%' });
+      const value = 12345.67;
+      expect(formatter(value)).toEqual(formatter.format(value));
+    });
+  });
   describe('.format(value)', () => {
     it('returns formatted value', () => {
-      const formatter = new NumberFormatter({ name: ',.4%' });
+      const formatter = new NumberFormatter({ formatName: ',.4%' });
       expect(formatter.format(12345.67)).toEqual('1,234,567.0000%');
     });
   });

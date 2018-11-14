@@ -4,25 +4,39 @@ import { isRequired } from '@superset-ui/core';
 
 export const PREVIEW_VALUE = 12345.432;
 
-export default class NumberFormatter {
+/**
+ * From https://stackoverflow.com/questions/36871299/how-to-extend-function-with-es6-classes
+ */
+class ExtensibleFunction extends Function {
+  constructor(fn) {
+    return Object.setPrototypeOf(fn, new.target.prototype);
+  }
+}
+
+export default class NumberFormatter extends ExtensibleFunction {
   constructor(configOrFormatString = isRequired('configOrFormatString')) {
+    super((...args) => this.format(...args));
+
     const config = isString(configOrFormatString)
-      ? { name: configOrFormatString }
+      ? { formatName: configOrFormatString }
       : configOrFormatString;
 
-    const { name = isRequired('config.name'), label, description = '', formatFn } = config;
-    this.name = name;
-    this.label = label || name;
+    const {
+      formatName = isRequired('config.formatName'),
+      label,
+      description = '',
+      formatFunc,
+    } = config;
+
+    this.formatName = formatName;
+    this.label = label || formatName;
     this.description = description;
-    if (formatFn) {
-      this.format = formatFn;
-    } else {
-      try {
-        this.format = d3Format(name);
-      } catch (e) {
-        this.isInvalid = true;
-        this.format = () => `Invalid format: ${name}`;
-      }
+
+    try {
+      this.format = formatFunc || d3Format(formatName);
+    } catch (e) {
+      this.format = () => `Invalid format: ${formatName}`;
+      this.isInvalid = true;
     }
   }
 

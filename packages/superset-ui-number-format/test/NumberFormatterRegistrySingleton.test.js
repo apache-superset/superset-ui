@@ -13,12 +13,10 @@ describe('NumberFormatterRegistrySingleton', () => {
   describe('getNumberFormatter(format)', () => {
     it('returns a format function', () => {
       const format = getNumberFormatter('.3s');
-      expect(format).toBeInstanceOf(Function);
       expect(format(12345)).toEqual('12.3k');
     });
     it('returns a format function even given invalid format', () => {
       const format = getNumberFormatter('xkcd');
-      expect(format).toBeInstanceOf(Function);
       expect(format(12345)).toEqual('Invalid format: xkcd');
     });
   });

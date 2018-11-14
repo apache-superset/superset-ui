@@ -12,7 +12,7 @@ Functions `getNumberFormatter` and `formatNumber` should be used instead of call
 ```js
 import { getNumberFormatter } from '@superset-ui/number-format';
 const formatter = getNumberFormatter('.2f');
-console.log(formatter.format(1000));
+console.log(formatter(1000));
 ```
 
 or
@@ -22,13 +22,14 @@ import { formatNumber } from '@superset-ui/number-format';
 console.log(formatNumber('.2f', 1000));
 ```
 
-It has registry to support custom formatting.
+It is powered by a registry to support registration of custom formatting.
 
 ```js
 import { getNumberFormatterRegistry, formatNumber, NumberFormatter } from '@superset-ui/number-format';
+
 getNumberFormatterRegistry().registerValue('my_format', new NumberFormatter({
-  name: 'my_format',
-  formatFn: v => `my special format of ${v}`
+  formatName: 'my_format',
+  formatFunc: v => `my special format of ${v}`
 });
 
 console.log(formatNumber('my_format', 1000));

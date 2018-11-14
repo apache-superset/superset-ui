@@ -27,6 +27,6 @@ export default class NumberFormatterRegistry extends RegistryWithDefaultKey {
   }
 
   format(format, value) {
-    return this.get(format).format(value);
+    return this.get(format)(value);
   }
 }
