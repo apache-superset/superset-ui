@@ -1,4 +1,4 @@
-import * as NumberFormats from './formats';
+import * as NumberFormats from './NumberFormats';
 
 export {
   default as getNumberFormatterRegistry,

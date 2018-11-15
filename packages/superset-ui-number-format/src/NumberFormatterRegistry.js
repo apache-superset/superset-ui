@@ -1,6 +1,6 @@
 import { RegistryWithDefaultKey } from '@superset-ui/core';
 import D3Formatter from './formatters/D3Formatter';
-import { SI_3_DIGIT } from './formats';
+import { SI_3_DIGIT } from './NumberFormats';
 
 const DEFAULT_FORMAT = SI_3_DIGIT;
 
