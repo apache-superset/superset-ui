@@ -1,9 +1,5 @@
 import { ExtensibleFunction } from '@superset-ui/core';
-
-export function cleanValue(value) {
-  // for superset series that should have the same color
-  return String(value).trim();
-}
+import cleanValue from './cleanValue';
 
 export default class CategoricalColorScale extends ExtensibleFunction {
   /**
