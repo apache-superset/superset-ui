@@ -24,11 +24,23 @@ export default class NumberFormatter extends ExtensibleFunction {
     this.description = description;
 
     try {
-      this.format = formatFunc || d3Format(formatName);
+      this.formatFunc = formatFunc || d3Format(formatName);
     } catch (e) {
-      this.format = () => `Invalid format: ${formatName}`;
+      this.formatFunc = () => `Invalid format: ${formatName}`;
       this.isInvalid = true;
     }
+  }
+
+  format(value) {
+    if (value === null || value === undefined || Number.isNaN(value)) {
+      return value;
+    } else if (value === Number.POSITIVE_INFINITY) {
+      return '∞';
+    } else if (value === Number.NEGATIVE_INFINITY) {
+      return '-∞';
+    }
+
+    return this.formatFunc(value);
   }
 
   preview(value = PREVIEW_VALUE) {

@@ -6,7 +6,7 @@ const getInstance = makeSingleton(NumberFormatterRegistry);
 export default getInstance;
 
 export function getNumberFormatter(format) {
-  return getInstance().get(format).format;
+  return getInstance().get(format);
 }
 
 export function formatNumber(format, value) {

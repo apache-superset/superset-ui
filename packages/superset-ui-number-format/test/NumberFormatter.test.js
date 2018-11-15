@@ -47,8 +47,21 @@ describe('NumberFormatter', () => {
     });
   });
   describe('.format(value)', () => {
-    it('returns formatted value', () => {
-      const formatter = new NumberFormatter({ formatName: ',.4%' });
+    const formatter = new NumberFormatter({ formatName: ',.4%' });
+    it('handles null', () => {
+      expect(formatter.format(null)).toBeNull();
+    });
+    it('handles undefined', () => {
+      expect(formatter.format(undefined)).toBeUndefined();
+    });
+    it('handles NaN', () => {
+      expect(formatter.format(NaN)).toBeNaN();
+    });
+    it('handles positive and negative infinity', () => {
+      expect(formatter.format(Number.POSITIVE_INFINITY)).toEqual('∞');
+      expect(formatter.format(Number.NEGATIVE_INFINITY)).toEqual('-∞');
+    });
+    it('otherwise returns formatted value', () => {
       expect(formatter.format(12345.67)).toEqual('1,234,567.0000%');
     });
   });
