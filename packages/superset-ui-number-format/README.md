@@ -39,10 +39,10 @@ console.log(formatNumber('my_format', 1000));
 It also define constants for common d3 formats. See `formats.js`.
 
 ```js
-import { Formats } from '@superset-ui-number-format';
+import { NumberFormats } from '@superset-ui-number-format';
 
-Formats.PERCENT // ,.2%
-Formats.PERCENT_3POINT // ,.3%
+NumberFormats.PERCENT // ,.2%
+NumberFormats.PERCENT_3_POINT // ,.3%
 ```
 
 #### API
