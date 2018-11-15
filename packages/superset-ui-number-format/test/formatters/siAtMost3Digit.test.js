@@ -1,5 +1,5 @@
 import NumberFormatter from '../../src/NumberFormatter';
-import formatter from '../../src/formatters/siAtMost3Point';
+import formatter from '../../src/formatters/siAtMost3Digit';
 
 describe('Formatter: si_at_most_3_digit', () => {
   it('is an instance of NumberFormat', () => {
