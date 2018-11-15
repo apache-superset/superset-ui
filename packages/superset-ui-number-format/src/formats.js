@@ -26,6 +26,6 @@ export const PERCENT_CHANGE_2_POINT = '+,.2%';
 export const PERCENT_CHANGE_3_POINT = '+,.3%';
 export const PERCENT_CHANGE = PERCENT_CHANGE_2_POINT;
 
-export const SI_1_POINT = '.1s';
-export const SI_2_POINT = '.2s';
-export const SI_3_POINT = '.3s';
+export const SI_1_DIGIT = '.1s';
+export const SI_2_DIGIT = '.2s';
+export const SI_3_DIGIT = '.3s';

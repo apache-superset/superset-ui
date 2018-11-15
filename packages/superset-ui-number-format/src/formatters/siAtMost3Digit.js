@@ -6,8 +6,8 @@ import NumberFormatter from '../NumberFormatter';
 const siFormatter = d3Format('.3s');
 
 const formatter = new NumberFormatter({
-  formatName: 'si_at_most_3_point',
-  label: 'SI with at most 3 decimal points',
+  formatName: 'si_at_most_3_digit',
+  label: 'SI with at most 3 significant digits',
   formatFunc(n) {
     let si = siFormatter(n);
     // Removing trailing `.00` if any

@@ -1,8 +1,8 @@
 import { RegistryWithDefaultKey } from '@superset-ui/core';
 import NumberFormatter from './NumberFormatter';
-import { SI_3_POINT } from './formats';
+import { SI_3_DIGIT } from './formats';
 
-const DEFAULT_FORMAT = SI_3_POINT;
+const DEFAULT_FORMAT = SI_3_DIGIT;
 
 export default class NumberFormatterRegistry extends RegistryWithDefaultKey {
   constructor() {

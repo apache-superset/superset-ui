@@ -1,7 +1,7 @@
 import NumberFormatter from '../../src/NumberFormatter';
 import formatter from '../../src/formatters/siAtMost3Point';
 
-describe('Formatter: si_at_most_3_point', () => {
+describe('Formatter: si_at_most_3_digit', () => {
   it('is an instance of NumberFormat', () => {
     expect(formatter).toBeInstanceOf(NumberFormatter);
   });
