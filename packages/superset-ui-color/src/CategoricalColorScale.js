@@ -2,9 +2,7 @@ import { ExtensibleFunction } from '@superset-ui/core';
 
 export function cleanValue(value) {
   // for superset series that should have the same color
-  return String(value)
-    .trim()
-    .toLowerCase();
+  return String(value).trim();
 }
 
 export default class CategoricalColorScale extends ExtensibleFunction {
@@ -53,7 +51,7 @@ export default class CategoricalColorScale extends ExtensibleFunction {
    * @param {*} forcedColor forcedColor
    */
   setColor(value, forcedColor) {
-    this.forcedColors[value] = forcedColor;
+    this.forcedColors[cleanValue(value)] = forcedColor;
 
     return this;
   }
