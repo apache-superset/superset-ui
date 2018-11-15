@@ -1,3 +1,5 @@
+import { ExtensibleFunction } from '@superset-ui/core';
+
 export function cleanValue(value) {
   // for superset series that should have the same color
   return String(value)
@@ -5,7 +7,7 @@ export function cleanValue(value) {
     .toLowerCase();
 }
 
-export default class CategoricalColorScale {
+export default class CategoricalColorScale extends ExtensibleFunction {
   /**
    * Constructor
    * @param {*} colors an array of colors
@@ -13,11 +15,11 @@ export default class CategoricalColorScale {
    * (usually CategoricalColorNamespace) and supersede this.forcedColors
    */
   constructor(colors, parentForcedColors) {
+    super((...args) => this.getColor(...args));
     this.colors = colors;
     this.parentForcedColors = parentForcedColors;
     this.forcedColors = {};
     this.seen = {};
-    this.fn = value => this.getColor(value);
   }
 
   getColor(value) {
@@ -54,9 +56,5 @@ export default class CategoricalColorScale {
     this.forcedColors[value] = forcedColor;
 
     return this;
-  }
-
-  toFunction() {
-    return this.fn;
   }
 }
