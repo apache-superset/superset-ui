@@ -1,34 +1,20 @@
-import isString from 'lodash/isString';
-import { format as d3Format } from 'd3-format';
 import { ExtensibleFunction, isRequired } from '@superset-ui/core';
 
 export const PREVIEW_VALUE = 12345.432;
 
 export default class NumberFormatter extends ExtensibleFunction {
-  constructor(configOrFormatString = isRequired('configOrFormatString')) {
+  constructor({
+    formatName = isRequired('config.formatName'),
+    label,
+    description = '',
+    formatFunc = isRequired('config.formatFunc'),
+  } = {}) {
     super((...args) => this.format(...args));
-
-    const config = isString(configOrFormatString)
-      ? { formatName: configOrFormatString }
-      : configOrFormatString;
-
-    const {
-      formatName = isRequired('config.formatName'),
-      label,
-      description = '',
-      formatFunc,
-    } = config;
 
     this.formatName = formatName;
     this.label = label || formatName;
     this.description = description;
-
-    try {
-      this.formatFunc = formatFunc || d3Format(formatName);
-    } catch (e) {
-      this.formatFunc = () => `Invalid format: ${formatName}`;
-      this.isInvalid = true;
-    }
+    this.formatFunc = formatFunc;
   }
 
   format(value) {

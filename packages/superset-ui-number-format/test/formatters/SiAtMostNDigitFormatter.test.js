@@ -1,8 +1,9 @@
 import NumberFormatter from '../../src/NumberFormatter';
-import formatter from '../../src/formatters/siAtMost3Digit';
+import SiAtMostNDigitFormatter from '../../src/formatters/SiAtMostNDigitFormatter';
 
-describe('Formatter: si_at_most_3_digit', () => {
-  it('is an instance of NumberFormat', () => {
+describe('Formatter: si_at_most_n_digit', () => {
+  const formatter = new SiAtMostNDigitFormatter(3);
+  it('is a of NumberFormat', () => {
     expect(formatter).toBeInstanceOf(NumberFormatter);
   });
   it('formats the given value', () => {
