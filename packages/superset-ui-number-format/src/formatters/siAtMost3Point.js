@@ -6,9 +6,9 @@ import NumberFormatter from '../NumberFormatter';
 const siFormatter = d3Format('.3s');
 
 const formatter = new NumberFormatter({
-  name: 'si_with_at_most_three_points',
-  label: 'SI with <=3 decimal points',
-  formatFn(n) {
+  formatName: 'si_at_most_3_point',
+  label: 'SI with at most 3 decimal points',
+  formatFunc(n) {
     let si = siFormatter(n);
     // Removing trailing `.00` if any
     if (si.slice(-1) < 'A') {

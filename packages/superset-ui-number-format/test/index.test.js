@@ -1,6 +1,6 @@
 import {
   formatNumber,
-  Formats,
+  NumberFormats,
   getNumberFormatter,
   getNumberFormatterRegistry,
   NumberFormatter,
@@ -11,7 +11,7 @@ describe('index', () => {
   it('exports modules', () => {
     [
       formatNumber,
-      Formats,
+      NumberFormats,
       getNumberFormatter,
       getNumberFormatterRegistry,
       NumberFormatter,

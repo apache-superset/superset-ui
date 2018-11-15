@@ -1,5 +1,5 @@
 import NumberFormatterRegistry from '../src/NumberFormatterRegistry';
-import { NumberFormatter } from '../src';
+import NumberFormatter from '../src/NumberFormatter';
 
 describe('NumberFormatterRegistry', () => {
   let registry;

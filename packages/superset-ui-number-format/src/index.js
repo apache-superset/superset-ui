@@ -1,4 +1,4 @@
-import * as Formats from './formats';
+import * as NumberFormats from './formats';
 
 export {
   default as getNumberFormatterRegistry,
@@ -7,4 +7,4 @@ export {
 } from './NumberFormatterRegistrySingleton';
 
 export { default as NumberFormatter, PREVIEW_VALUE } from './NumberFormatter';
-export { Formats };
+export { NumberFormats };
