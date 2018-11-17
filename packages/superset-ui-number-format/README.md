@@ -36,7 +36,7 @@ console.log(formatNumber('my_format', 1000));
 // prints 'my special format of 1000'
 ```
 
-It also define constants for common d3 formats. See `formats.js`.
+It also define constants for common d3 formats. See the full list of formats  in [NumberFormats.js](https://github.com/apache-superset/superset-ui/blob/master/packages/superset-ui-number-format/src/NumberFormats.js).
 
 ```js
 import { NumberFormats } from '@superset-ui-number-format';

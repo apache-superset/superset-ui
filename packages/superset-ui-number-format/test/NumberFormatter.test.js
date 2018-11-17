@@ -20,7 +20,7 @@ describe('NumberFormatter', () => {
       formatFunc: value => value.toFixed(3),
     });
     it('returns formatted value', () => {
-      expect(formatter.format(12345.67)).toEqual('12345.670');
+      expect(formatter(12345.67)).toEqual('12345.670');
     });
     it('formatter(value) is the same with formatter.format(value)', () => {
       const value = 12345.67;

@@ -1,5 +1,3 @@
-/* eslint-disable sort-keys */
-
 import isString from 'lodash/isString';
 import { format as d3Format } from 'd3-format';
 import { isRequired } from '@superset-ui/core';
