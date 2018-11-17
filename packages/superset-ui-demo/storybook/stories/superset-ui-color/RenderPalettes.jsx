@@ -8,9 +8,9 @@ export default function RenderPalettes({ title, palettes }) {
       <table>
         <tbody>
           {palettes.map(({ colors, id, label }) => (
-            <tr key={label || id}>
+            <tr key={id}>
               <td className="palette-label">
-                <strong>{label || id}</strong>
+                <strong>{label}</strong>
               </td>
               <td>
                 <div className="palette-container">
