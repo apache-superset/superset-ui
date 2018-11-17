@@ -2,21 +2,21 @@ import NumberFormatter from '../src/NumberFormatter';
 
 describe('NumberFormatter', () => {
   describe('new NumberFormatter(config)', () => {
-    it('requires config.formatName', () => {
+    it('requires config.formatId', () => {
       expect(() => new NumberFormatter()).toThrow();
     });
     it('requires config.formatFunc', () => {
       expect(
         () =>
           new NumberFormatter({
-            formatName: 'my_format',
+            formatId: 'my_format',
           }),
       ).toThrow();
     });
   });
   describe('formatter is also a format function itself', () => {
     const formatter = new NumberFormatter({
-      formatName: 'fixed_3',
+      formatId: 'fixed_3',
       formatFunc: value => value.toFixed(3),
     });
     it('returns formatted value', () => {
@@ -29,7 +29,7 @@ describe('NumberFormatter', () => {
   });
   describe('.format(value)', () => {
     const formatter = new NumberFormatter({
-      formatName: 'fixed_3',
+      formatId: 'fixed_3',
       formatFunc: value => value.toFixed(3),
     });
     it('handles null', () => {
@@ -51,7 +51,7 @@ describe('NumberFormatter', () => {
   });
   describe('.preview(value)', () => {
     const formatter = new NumberFormatter({
-      formatName: 'fixed_2',
+      formatId: 'fixed_2',
       formatFunc: value => value.toFixed(2),
     });
     it('returns string comparing value before and after formatting', () => {

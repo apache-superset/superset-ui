@@ -12,15 +12,15 @@ describe('D3Formatter', () => {
       });
     });
     describe('if configOrFormatString is not string', () => {
-      it('requires field config.formatName', () => {
+      it('requires field config.formatId', () => {
         expect(() => new D3Formatter({})).toThrow();
       });
-      it('uses d3.format(config.formatName) as format function', () => {
-        const formatter = new D3Formatter({ formatName: ',.4f' });
+      it('uses d3.format(config.formatId) as format function', () => {
+        const formatter = new D3Formatter({ formatId: ',.4f' });
         expect(formatter.format(12345.67)).toEqual('12,345.6700');
       });
       it('if it is an invalid d3 format, the format function displays error message', () => {
-        const formatter = new D3Formatter({ formatName: 'i-am-groot' });
+        const formatter = new D3Formatter({ formatId: 'i-am-groot' });
         expect(formatter.format(12345.67)).toEqual('Invalid format: i-am-groot');
       });
     });

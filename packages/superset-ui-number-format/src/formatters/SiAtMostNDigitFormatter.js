@@ -12,7 +12,7 @@ export default class SiAtMostNDigitFormatter extends NumberFormatter {
         // Removing trailing `.00` if any
         return si.slice(-1) < 'A' ? parseFloat(si).toString() : si;
       },
-      formatName: `si_at_most_${n}_digit`,
+      formatId: `si_at_most_${n}_digit`,
       label: `SI with at most ${n} significant digits`,
     });
   }
