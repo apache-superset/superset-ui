@@ -1,6 +1,6 @@
 import CategoricalColorScale from './CategoricalColorScale';
 import getCategoricalSchemeRegistry from './CategoricalSchemeRegistrySingleton';
-import cleanValue from './cleanValue';
+import stringifyAndTrim from './stringifyAndTrim';
 
 export default class CategoricalColorNamespace {
   constructor(name) {
@@ -32,7 +32,7 @@ export default class CategoricalColorNamespace {
    * @param {*} forcedColor color
    */
   setColor(value, forcedColor) {
-    this.forcedItems[cleanValue(value)] = forcedColor;
+    this.forcedItems[stringifyAndTrim(value)] = forcedColor;
 
     return this;
   }

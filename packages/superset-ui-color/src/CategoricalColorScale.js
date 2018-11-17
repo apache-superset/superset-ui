@@ -1,5 +1,5 @@
 import { ExtensibleFunction } from '@superset-ui/core';
-import cleanValue from './cleanValue';
+import stringifyAndTrim from './stringifyAndTrim';
 
 export default class CategoricalColorScale extends ExtensibleFunction {
   /**
@@ -17,7 +17,7 @@ export default class CategoricalColorScale extends ExtensibleFunction {
   }
 
   getColor(value) {
-    const cleanedValue = cleanValue(value);
+    const cleanedValue = stringifyAndTrim(value);
 
     const parentColor = this.parentForcedColors && this.parentForcedColors[cleanedValue];
     if (parentColor) {
@@ -47,7 +47,7 @@ export default class CategoricalColorScale extends ExtensibleFunction {
    * @param {*} forcedColor forcedColor
    */
   setColor(value, forcedColor) {
-    this.forcedColors[cleanValue(value)] = forcedColor;
+    this.forcedColors[stringifyAndTrim(value)] = forcedColor;
 
     return this;
   }
