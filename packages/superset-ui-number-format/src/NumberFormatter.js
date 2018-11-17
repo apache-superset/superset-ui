@@ -4,15 +4,15 @@ export const PREVIEW_VALUE = 12345.432;
 
 export default class NumberFormatter extends ExtensibleFunction {
   constructor({
-    formatId = isRequired('config.formatId'),
+    id = isRequired('config.id'),
     label,
     description = '',
     formatFunc = isRequired('config.formatFunc'),
   } = {}) {
     super((...args) => this.format(...args));
 
-    this.formatId = formatId;
-    this.label = label || formatId;
+    this.id = id;
+    this.label = label || id;
     this.description = description;
     this.formatFunc = formatFunc;
   }

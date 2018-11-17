@@ -12,7 +12,7 @@ export default class D3Formatter extends NumberFormatter {
    * or accompany it with human-readable label and description
    *
    * new D3Formatter({
-   *   formatId: '.2f',
+   *   id: '.2f',
    *   label: 'Float with 2 decimal points',
    *   description: 'lorem ipsum dolor sit amet',
    * });
@@ -21,16 +21,16 @@ export default class D3Formatter extends NumberFormatter {
    */
   constructor(configOrFormatString = isRequired('configOrFormatString')) {
     const config = isString(configOrFormatString)
-      ? { formatId: configOrFormatString }
+      ? { id: configOrFormatString }
       : configOrFormatString;
 
     let formatFunc;
     let isInvalid = false;
 
     try {
-      formatFunc = d3Format(config.formatId);
+      formatFunc = d3Format(config.id);
     } catch (e) {
-      formatFunc = () => `Invalid format: ${config.formatId}`;
+      formatFunc = () => `Invalid format: ${config.id}`;
       isInvalid = true;
     }
 

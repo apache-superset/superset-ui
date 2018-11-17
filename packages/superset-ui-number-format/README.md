@@ -28,7 +28,7 @@ It is powered by a registry to support registration of custom formatting, with f
 import { getNumberFormatterRegistry, formatNumber, NumberFormatter } from '@superset-ui/number-format';
 
 getNumberFormatterRegistry().registerValue('my_format', new NumberFormatter({
-  formatId: 'my_format',
+  id: 'my_format',
   formatFunc: v => `my special format of ${v}`
 });
 

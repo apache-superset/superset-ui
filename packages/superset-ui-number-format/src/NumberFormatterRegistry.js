@@ -12,8 +12,8 @@ export default class NumberFormatterRegistry extends RegistryWithDefaultKey {
     });
   }
 
-  get(format) {
-    const targetFormat = format || this.defaultKey;
+  get(formatterId) {
+    const targetFormat = formatterId || this.defaultKey;
 
     if (this.has(targetFormat)) {
       return super.get(targetFormat);
@@ -26,7 +26,7 @@ export default class NumberFormatterRegistry extends RegistryWithDefaultKey {
     return formatter;
   }
 
-  format(format, value) {
-    return this.get(format)(value);
+  format(formatterId, value) {
+    return this.get(formatterId)(value);
   }
 }
