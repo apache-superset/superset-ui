@@ -1,5 +1,12 @@
+const OverwritePolicy = {
+  ALLOW: 'ALLOW',
+  WARN: 'WARN',
+  PROHIBIT: 'PROHIBIT',
+};
+
 export default class Registry {
-  constructor(name = '') {
+  constructor({ name = '', overwritePolicy = OverwritePolicy.ALLOW } = {}) {
+    this.overwritePolicy = overwritePolicy;
     this.name = name;
     this.items = {};
     this.promises = {};
@@ -20,6 +27,13 @@ export default class Registry {
 
   registerValue(key, value) {
     const item = this.items[key];
+    if (item && item.value !== value) {
+      if (this.overwritePolicy === OverwritePolicy.WARN) {
+        console.warn(`Item with key "${key}" already exists. You are assigning a new value.`);
+      } else if (this.overwritePolicy === OverwritePolicy.PROHIBIT) {
+        throw new Error(`Item with key "${key}" already exists. Cannot overwrite.`);
+      }
+    }
     if (!item || item.value !== value) {
       this.items[key] = { value };
       delete this.promises[key];
@@ -30,6 +44,13 @@ export default class Registry {
 
   registerLoader(key, loader) {
     const item = this.items[key];
+    if (item && item.loader !== loader) {
+      if (this.overwritePolicy === OverwritePolicy.WARN) {
+        console.warn(`Item with key "${key}" already exists. You are assigning a new value.`);
+      } else if (this.overwritePolicy === OverwritePolicy.PROHIBIT) {
+        throw new Error(`Item with key "${key}" already exists. Cannot overwrite.`);
+      }
+    }
     if (!item || item.loader !== loader) {
       this.items[key] = { loader };
       delete this.promises[key];
@@ -122,3 +143,5 @@ export default class Registry {
     return this;
   }
 }
+
+Registry.OverwritePolicy = OverwritePolicy;

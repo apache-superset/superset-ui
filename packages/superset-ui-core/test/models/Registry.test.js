@@ -11,7 +11,7 @@ describe('Registry', () => {
       expect(registry).toBeInstanceOf(Registry);
     });
     it('can create a new registry when name is given', () => {
-      const registry = new Registry('abc');
+      const registry = new Registry({ name: 'abc' });
       expect(registry).toBeInstanceOf(Registry);
       expect(registry.name).toBe('abc');
     });
