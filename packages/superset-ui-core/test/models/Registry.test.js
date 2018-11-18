@@ -5,12 +5,12 @@ describe('Registry', () => {
     expect(Registry !== undefined).toBe(true);
   });
 
-  describe('new Registry(name)', () => {
-    it('can create a new registry when name is not given', () => {
+  describe('new Registry(config)', () => {
+    it('can create a new registry when config.name is not given', () => {
       const registry = new Registry();
       expect(registry).toBeInstanceOf(Registry);
     });
-    it('can create a new registry when name is given', () => {
+    it('can create a new registry when config.name is given', () => {
       const registry = new Registry({ name: 'abc' });
       expect(registry).toBeInstanceOf(Registry);
       expect(registry.name).toBe('abc');
@@ -264,5 +264,11 @@ describe('Registry', () => {
       registry.registerValue('a', 'testValue');
       expect(registry.remove('a')).toBe(registry);
     });
+  });
+
+  describe('config.overwritePolicy', () => {
+    describe('=ALLOW', () => {});
+    describe('=WARN', () => {});
+    describe('=PROHIBIT', () => {});
   });
 });

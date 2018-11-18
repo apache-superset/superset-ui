@@ -1,7 +1,9 @@
+/* eslint no-console: 0 */
+
 const OverwritePolicy = {
   ALLOW: 'ALLOW',
-  WARN: 'WARN',
   PROHIBIT: 'PROHIBIT',
+  WARN: 'WARN',
 };
 
 export default class Registry {
