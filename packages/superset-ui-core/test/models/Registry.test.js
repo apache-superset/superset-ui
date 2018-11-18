@@ -1,3 +1,5 @@
+/* eslint no-console: 0 */
+import mockConsole from 'jest-mock-console';
 import Registry from '../../src/models/Registry';
 
 describe('Registry', () => {
@@ -267,8 +269,77 @@ describe('Registry', () => {
   });
 
   describe('config.overwritePolicy', () => {
-    describe('=ALLOW', () => {});
-    describe('=WARN', () => {});
-    describe('=PROHIBIT', () => {});
+    describe('=ALLOW', () => {
+      describe('.registerValue(key, value)', () => {
+        it('registers normally', () => {
+          const restoreConsole = mockConsole();
+          const registry = new Registry();
+          registry.registerValue('a', 'testValue');
+          expect(() => registry.registerValue('a', 'testValue2')).not.toThrow();
+          expect(registry.get('a')).toEqual('testValue2');
+          expect(console.warn).not.toHaveBeenCalled();
+          restoreConsole();
+        });
+      });
+      describe('.registerLoader(key, loader)', () => {
+        it('registers normally', () => {
+          const restoreConsole = mockConsole();
+          const registry = new Registry();
+          registry.registerLoader('a', () => 'testValue');
+          expect(() => registry.registerLoader('a', () => 'testValue2')).not.toThrow();
+          expect(registry.get('a')).toEqual('testValue2');
+          expect(console.warn).not.toHaveBeenCalled();
+          restoreConsole();
+        });
+      });
+    });
+    describe('=WARN', () => {
+      describe('.registerValue(key, value)', () => {
+        it('warns when overwrite', () => {
+          const restoreConsole = mockConsole();
+          const registry = new Registry({
+            overwritePolicy: Registry.OverwritePolicy.WARN,
+          });
+          registry.registerValue('a', 'testValue');
+          expect(() => registry.registerValue('a', 'testValue2')).not.toThrow();
+          expect(registry.get('a')).toEqual('testValue2');
+          expect(console.warn).toHaveBeenCalled();
+          restoreConsole();
+        });
+      });
+      describe('.registerLoader(key, loader)', () => {
+        it('warns when overwrite', () => {
+          const restoreConsole = mockConsole();
+          const registry = new Registry({
+            overwritePolicy: Registry.OverwritePolicy.WARN,
+          });
+          registry.registerLoader('a', () => 'testValue');
+          expect(() => registry.registerLoader('a', () => 'testValue2')).not.toThrow();
+          expect(registry.get('a')).toEqual('testValue2');
+          expect(console.warn).toHaveBeenCalled();
+          restoreConsole();
+        });
+      });
+    });
+    describe('=PROHIBIT', () => {
+      describe('.registerValue(key, value)', () => {
+        it('throws error when overwrite', () => {
+          const registry = new Registry({
+            overwritePolicy: Registry.OverwritePolicy.PROHIBIT,
+          });
+          registry.registerValue('a', 'testValue');
+          expect(() => registry.registerValue('a', 'testValue2')).toThrow();
+        });
+      });
+      describe('.registerLoader(key, loader)', () => {
+        it('warns when overwrite', () => {
+          const registry = new Registry({
+            overwritePolicy: Registry.OverwritePolicy.PROHIBIT,
+          });
+          registry.registerLoader('a', () => 'testValue');
+          expect(() => registry.registerLoader('a', () => 'testValue2')).toThrow();
+        });
+      });
+    });
   });
 });
