@@ -36,7 +36,6 @@ export default class D3TimeFormatter extends TimeFormatter {
     const formatFunc = useLocalTime ? timeFormat(formatString) : utcFormat(formatString);
 
     super({ description, formatFunc, id, label });
-    this.formatString = formatString;
     this.useLocalTime = useLocalTime;
   }
 }

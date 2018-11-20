@@ -9,6 +9,7 @@ export default class TimeFormatter extends ExtensibleFunction {
     label,
     description = '',
     formatFunc = isRequired('config.formatFunc'),
+    useLocalTime = false,
   } = {}) {
     super((...args) => this.format(...args));
 
@@ -16,6 +17,7 @@ export default class TimeFormatter extends ExtensibleFunction {
     this.label = label || id;
     this.description = description;
     this.formatFunc = formatFunc;
+    this.useLocalTime = useLocalTime;
   }
 
   format(value) {
