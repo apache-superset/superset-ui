@@ -1,3 +1,4 @@
+import { url } from 'inspector';
 import callApi from './callApi';
 
 class SupersetClient {
@@ -28,17 +29,85 @@ class SupersetClient {
       csrfToken = undefined,
     }: ClientConfig = config;
 
-    this.headers = { ...headers, 'X-CSRFToken': csrfToken };
+    this.headers = { ...headers };
     this.host = host;
     this.mode = mode;
     this.timeout = timeout;
     this.protocol = protocol;
     this.credentials = credentials;
     this.csrfToken = csrfToken;
-    this.csrfPromise =
-      this.csrfToken !== null && this.csrfToken !== undefined
-        ? Promise.resolve(this.csrfToken)
-        : Promise.reject('Either call Client.init() or pass csrfToken in configuration');
+    this.csrfPromise = Promise.reject({
+      error: `SupersetClient has no CSRF token, ensure it is initialized or
+      try logging into the Superset instance at ${this.getUrl({
+        host: this.host,
+        endpoint: '/login',
+      })}`,
+    });
+
+    if (typeof this.csrfToken === 'string') {
+      this.headers = { ...this.headers, 'X-CSRFToken': this.csrfToken };
+      this.csrfPromise = Promise.resolve(this.csrfToken);
+    }
+  }
+
+  public async get({
+    body,
+    credentials,
+    headers,
+    host,
+    endpoint,
+    mode,
+    parseMethod,
+    signal,
+    timeout,
+    url,
+  }: RequestConfig): Promise<any> {
+    return this.ensureAuth().then(() =>
+      callApi({
+        body,
+        credentials: credentials || this.credentials,
+        headers: { ...this.headers, ...headers },
+        method: 'GET',
+        mode: mode || this.mode,
+        parseMethod,
+        signal,
+        timeout: timeout || this.timeout,
+        url: this.getUrl({ endpoint, host: host || this.host, url }),
+      }),
+    );
+  }
+
+  public async post({
+    credentials,
+    endpoint,
+    headers,
+    host,
+    mode,
+    parseMethod,
+    postPayload,
+    signal,
+    stringify,
+    timeout,
+    url,
+  }: RequestConfig): Promise<any> {
+    return this.ensureAuth().then(() =>
+      callApi({
+        credentials: credentials || this.credentials,
+        headers: { ...this.headers, ...headers },
+        method: 'POST',
+        mode: mode || this.mode,
+        parseMethod,
+        postPayload,
+        signal,
+        stringify,
+        timeout: timeout || this.timeout,
+        url: this.getUrl({ endpoint, host: host || this.host, url }),
+      }),
+    );
+  }
+
+  private ensureAuth() {
+    return this.csrfPromise;
   }
 
   public isAuthenticated(): boolean {
@@ -54,7 +123,7 @@ class SupersetClient {
     return this.getCSRFToken();
   }
 
-  private getCSRFToken() {
+  private async getCSRFToken() {
     this.csrfToken = undefined;
 
     // If we can request this resource successfully, it means that the user has
@@ -84,79 +153,19 @@ class SupersetClient {
     return this.csrfPromise;
   }
 
-  private getUrl({ host = '', endpoint = '' }: { host: string; endpoint?: string }) {
+  private getUrl({
+    host = '',
+    endpoint = '',
+  }: {
+    endpoint?: string;
+    host?: string;
+    url?: string;
+  }): string {
+    if (typeof url === 'string') return url;
+
     const cleanHost = host.slice(-1) === '/' ? host.slice(0, -1) : host; // no backslash
 
     return `${this.protocol}//${cleanHost}/${endpoint[0] === '/' ? endpoint.slice(1) : endpoint}`;
-  }
-
-  private ensureAuth() {
-    return (
-      this.csrfPromise ||
-      Promise.reject({
-        error: `SupersetClient has no CSRF token, ensure it is initialized or
-        try logging into the Superset instance at ${this.getUrl({
-          host: this.host,
-          endpoint: '/login',
-        })}`,
-      })
-    );
-  }
-
-  public get({
-    body,
-    credentials,
-    headers,
-    host,
-    endpoint,
-    mode,
-    parseMethod,
-    signal,
-    timeout,
-    url,
-  }: RequestConfig): Promise<any> {
-    return this.ensureAuth().then(() =>
-      callApi({
-        body,
-        credentials: credentials || this.credentials,
-        headers: { ...this.headers, ...headers },
-        method: 'GET',
-        mode: mode || this.mode,
-        parseMethod,
-        signal,
-        timeout: timeout || this.timeout,
-        url: url || this.getUrl({ endpoint, host: host || this.host }),
-      }),
-    );
-  }
-
-  public post({
-    credentials,
-    headers,
-    host,
-    endpoint,
-    mode,
-    parseMethod,
-    postPayload,
-    signal,
-    stringify,
-    timeout,
-    url,
-  }: RequestConfig): Promise<any> {
-    return this.ensureAuth().then(() =>
-      callApi({
-        credentials: credentials || this.credentials,
-        headers: { ...this.headers, ...headers },
-        method: 'POST',
-        mode: mode || this.mode,
-        parseMethod,
-        postPayload,
-        signal,
-        stringify,
-        timeout: timeout || this.timeout,
-        url: url || this.getUrl({ endpoint, host: host || this.host }),
-      }),
-    );
   }
 }
 
