@@ -27,7 +27,7 @@ export default function createMultiFormatter({
   const formatMinute = format(minute);
   const formatHour = format(hour);
   const formatDay = format(day);
-  const formatWeek = format(week);
+  const formatFirstDayOfWeek = format(week);
   const formatMonth = format(month);
   const formatYear = format(year);
 
@@ -51,7 +51,7 @@ export default function createMultiFormatter({
     } else if (hasHour(date)) {
       return formatHour;
     } else if (isNotFirstDayOfMonth(date)) {
-      return isNotFirstDayOfWeek(date) ? formatDay : formatWeek;
+      return isNotFirstDayOfWeek(date) ? formatDay : formatFirstDayOfWeek;
     } else if (isNotFirstMonth(date)) {
       return formatMonth;
     }
