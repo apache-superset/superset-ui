@@ -1,13 +1,14 @@
 import callApi from './callApi';
 import rejectAfterTimeout from './rejectAfterTimeout';
 import parseResponse from './parseResponse';
+import { CallApi, ClientTimeout, SupersetClientResponse, ParseMethod } from '../types';
 
 export default function callApiAndParseWithTimeout({
   timeout,
   parseMethod,
   ...rest
-}: { timeout: timeout; parseMethod?: parseMethod } & CallApi): Promise<
-  Response | TextResponse | JsonResponse
+}: { timeout?: ClientTimeout; parseMethod?: ParseMethod } & CallApi): Promise<
+  SupersetClientResponse
 > {
   const apiPromise = callApi(rest);
 

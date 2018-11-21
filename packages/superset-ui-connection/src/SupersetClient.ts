@@ -1,34 +1,47 @@
-import { url } from 'inspector';
 import callApi from './callApi';
+import {
+  ClientTimeout,
+  Credentials,
+  Headers,
+  Host,
+  Mode,
+  SupersetClientResponse,
+  RequestConfig,
+} from './types';
+
+type CsrfToken = string;
+type CsrfPromise = Promise<string | undefined>;
+type Protocol = 'http:' | 'https:';
+
+export interface ClientConfig {
+  credentials?: Credentials;
+  csrfToken?: CsrfToken;
+  headers?: Headers;
+  host?: Host;
+  protocol?: Protocol;
+  mode?: Mode;
+  timeout?: ClientTimeout;
+}
 
 class SupersetClient {
-  private credentials: credentials;
+  credentials: Credentials;
+  csrfToken: CsrfToken | undefined;
+  csrfPromise: CsrfPromise;
+  protocol: Protocol;
+  host: Host;
+  headers: Headers;
+  mode: Mode;
+  timeout: ClientTimeout;
 
-  private csrfToken: csrfToken | void;
-
-  private csrfPromise: Promise<string | void>;
-
-  private protocol: protocol;
-
-  private host: host;
-
-  private headers: headers;
-
-  private mode: mode;
-
-  private timeout: timeout;
-
-  constructor(config: ClientConfig) {
-    const {
-      protocol = 'http:',
-      host = 'localhost',
-      headers = {},
-      mode = 'same-origin',
-      timeout,
-      credentials = undefined,
-      csrfToken = undefined,
-    }: ClientConfig = config;
-
+  constructor({
+    protocol = 'http:',
+    host = 'localhost',
+    headers = {},
+    mode = 'same-origin',
+    timeout,
+    credentials = undefined,
+    csrfToken = undefined,
+  }: ClientConfig = {}) {
     this.headers = { ...headers };
     this.host = host;
     this.mode = mode;
@@ -39,7 +52,6 @@ class SupersetClient {
     this.csrfPromise = Promise.reject({
       error: `SupersetClient has no CSRF token, ensure it is initialized or
       try logging into the Superset instance at ${this.getUrl({
-        host: this.host,
         endpoint: '/login',
       })}`,
     });
@@ -50,7 +62,20 @@ class SupersetClient {
     }
   }
 
-  public async get({
+  init(force: boolean = false) {
+    if (this.isAuthenticated() && !force) {
+      return this.csrfPromise;
+    }
+
+    return this.getCSRFToken();
+  }
+
+  isAuthenticated() {
+    // if CSRF protection is disabled in the Superset app, the token may be an empty string
+    return this.csrfToken !== null && this.csrfToken !== undefined;
+  }
+
+  async get({
     body,
     credentials,
     headers,
@@ -61,7 +86,7 @@ class SupersetClient {
     signal,
     timeout,
     url,
-  }: RequestConfig): Promise<Response | JsonResponse | TextResponse> {
+  }: RequestConfig): Promise<SupersetClientResponse> {
     return this.ensureAuth().then(() =>
       callApi({
         body,
@@ -72,12 +97,12 @@ class SupersetClient {
         parseMethod,
         signal,
         timeout: timeout || this.timeout,
-        url: this.getUrl({ endpoint, host: host || this.host, url }),
+        url: this.getUrl({ endpoint, host, url }),
       }),
     );
   }
 
-  public async post({
+  async post({
     credentials,
     endpoint,
     headers,
@@ -89,7 +114,7 @@ class SupersetClient {
     stringify,
     timeout,
     url,
-  }: RequestConfig): Promise<Response | JsonResponse | TextResponse> {
+  }: RequestConfig): Promise<SupersetClientResponse> {
     return this.ensureAuth().then(() =>
       callApi({
         credentials: credentials || this.credentials,
@@ -101,29 +126,16 @@ class SupersetClient {
         signal,
         stringify,
         timeout: timeout || this.timeout,
-        url: this.getUrl({ endpoint, host: host || this.host, url }),
+        url: this.getUrl({ endpoint, host, url }),
       }),
     );
   }
 
-  private ensureAuth() {
+  ensureAuth() {
     return this.csrfPromise;
   }
 
-  public isAuthenticated(): boolean {
-    // if CSRF protection is disabled in the Superset app, the token may be an empty string
-    return this.csrfToken !== null && this.csrfToken !== undefined;
-  }
-
-  public init(force: boolean = false) {
-    if (this.isAuthenticated() && !force) {
-      return this.csrfPromise;
-    }
-
-    return this.getCSRFToken();
-  }
-
-  private async getCSRFToken() {
+  async getCSRFToken() {
     this.csrfToken = undefined;
 
     // If we can request this resource successfully, it means that the user has
@@ -136,9 +148,9 @@ class SupersetClient {
       method: 'GET',
       mode: this.mode,
       timeout: this.timeout,
-      url: this.getUrl({ endpoint: 'superset/csrf_token/', host: this.host }),
-    }).then((response: JsonResponse | any) => {
-      if (response.json) {
+      url: this.getUrl({ endpoint: 'superset/csrf_token/' }),
+    }).then(response => {
+      if (typeof response.json === 'object') {
         this.csrfToken = response.json.csrf_token;
         if (typeof this.csrfToken === 'string') {
           this.headers = { ...this.headers, 'X-CSRFToken': this.csrfToken };
@@ -155,27 +167,29 @@ class SupersetClient {
     return this.csrfPromise;
   }
 
-  private getUrl({
-    host = '',
+  getUrl({
+    host: inputHost,
     endpoint = '',
+    url,
   }: {
     endpoint?: string;
-    host?: string;
+    host?: Host;
     url?: string;
-  }): string {
+  } = {}) {
     if (typeof url === 'string') return url;
 
+    const host = inputHost || this.host;
     const cleanHost = host.slice(-1) === '/' ? host.slice(0, -1) : host; // no backslash
 
     return `${this.protocol}//${cleanHost}/${endpoint[0] === '/' ? endpoint.slice(1) : endpoint}`;
   }
 }
 
-let singletonClient: SupersetClient;
+let singletonClient: SupersetClient | undefined;
 
-function hasInstance(): true | Error {
-  if (!singletonClient) {
-    return new Error('You must call SupersetClient.configure(...) before calling other methods');
+function hasInstance(maybeClient: SupersetClient | undefined): maybeClient is SupersetClient {
+  if (!maybeClient) {
+    throw new Error('You must call SupersetClient.configure(...) before calling other methods');
   }
 
   return true;
@@ -187,12 +201,14 @@ const PublicAPI = {
 
     return singletonClient;
   },
-  get: (request: RequestConfig): Promise<any> =>
-    hasInstance() && singletonClient && singletonClient.get(request),
-  init: (force: boolean): Promise<any> => hasInstance() && singletonClient.init(force),
-  isAuthenticated: (): boolean => hasInstance() && singletonClient.isAuthenticated(),
-  post: (request: RequestConfig): Promise<any> => hasInstance() && singletonClient.post(request),
-  reAuthenticate: (): Promise<any> => hasInstance() && singletonClient.init(/* force = */ true),
+  get: (request: RequestConfig) => hasInstance(singletonClient) && singletonClient.get(request),
+  init: (force?: boolean) => hasInstance(singletonClient) && singletonClient.init(force),
+  isAuthenticated: () => hasInstance(singletonClient) && singletonClient.isAuthenticated(),
+  post: (request: RequestConfig) => hasInstance(singletonClient) && singletonClient.post(request),
+  reAuthenticate: () => hasInstance(singletonClient) && singletonClient.init(/* force = */ true),
+  reset: () => {
+    singletonClient = undefined;
+  },
 };
 
 export { SupersetClient };

@@ -1,4 +1,5 @@
 import 'whatwg-fetch';
+import { CallApi } from '../types';
 
 // This function fetches an API response and returns the corresponding json
 export default function callApi({
