@@ -13,7 +13,7 @@ export default function callApi({
   signal,
   stringify = true,
   url,
-}: CallApi) {
+}: CallApi): Promise<Response> {
   const request = {
     body,
     cache,

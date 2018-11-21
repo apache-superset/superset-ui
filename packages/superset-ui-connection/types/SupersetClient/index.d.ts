@@ -1,6 +1,6 @@
 type body = RequestInit['body'];
 type cache = RequestInit['cache'];
-type credentials = RequestInit['credentials'];
+type credentials = RequestInit['credentials'] | void;
 type csrfToken = string;
 type endpoint = string;
 type headers = { [key: string]: string };
@@ -11,7 +11,7 @@ type postPayload = { [key: string]: any };
 type mode = RequestInit['mode'];
 type redirect = RequestInit['redirect'];
 type timeout = number | void;
-type parseMethod = 'json' | 'text' | null;
+type parseMethod = 'json' | 'text';
 type signal = RequestInit['signal'];
 type stringify = boolean;
 type url = string;
@@ -27,16 +27,16 @@ interface ClientConfig {
 }
 
 interface CallApi {
-  body: body;
-  cache: cache;
-  credentials: credentials;
-  headers: headers;
+  body?: body;
+  cache?: cache;
+  credentials?: credentials;
+  headers?: headers;
   method: method;
-  mode: mode;
-  postPayload: postPayload | void;
-  redirect: redirect;
-  signal: signal;
-  stringify: stringify;
+  mode?: mode;
+  postPayload?: postPayload;
+  redirect?: redirect;
+  signal?: signal;
+  stringify?: stringify;
   url: url;
 }
 
@@ -64,3 +64,13 @@ interface RequestWithUrl extends RequestBase {
 }
 
 type RequestConfig = RequestWithEndpoint | RequestWithUrl;
+
+interface JsonResponse {
+  json: { [key: string]: any };
+  response: Response;
+}
+
+interface TextResponse {
+  text: string;
+  response: Response;
+}

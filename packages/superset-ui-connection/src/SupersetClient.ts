@@ -2,11 +2,11 @@ import { url } from 'inspector';
 import callApi from './callApi';
 
 class SupersetClient {
-  private credentials: credentials | void;
+  private credentials: credentials;
 
   private csrfToken: csrfToken | void;
 
-  private csrfPromise: Promise<string>;
+  private csrfPromise: Promise<string | void>;
 
   private protocol: protocol;
 
@@ -25,7 +25,7 @@ class SupersetClient {
       headers = {},
       mode = 'same-origin',
       timeout,
-      credentials,
+      credentials = undefined,
       csrfToken = undefined,
     }: ClientConfig = config;
 
@@ -61,7 +61,7 @@ class SupersetClient {
     signal,
     timeout,
     url,
-  }: RequestConfig): Promise<any> {
+  }: RequestConfig): Promise<Response | JsonResponse | TextResponse> {
     return this.ensureAuth().then(() =>
       callApi({
         body,
@@ -89,7 +89,7 @@ class SupersetClient {
     stringify,
     timeout,
     url,
-  }: RequestConfig): Promise<any> {
+  }: RequestConfig): Promise<Response | JsonResponse | TextResponse> {
     return this.ensureAuth().then(() =>
       callApi({
         credentials: credentials || this.credentials,
@@ -137,17 +137,19 @@ class SupersetClient {
       mode: this.mode,
       timeout: this.timeout,
       url: this.getUrl({ endpoint: 'superset/csrf_token/', host: this.host }),
-    }).then((response: { json: { csrf_token: string } }) => {
+    }).then((response: JsonResponse | any) => {
       if (response.json) {
         this.csrfToken = response.json.csrf_token;
-        this.headers = { ...this.headers, 'X-CSRFToken': this.csrfToken };
+        if (typeof this.csrfToken === 'string') {
+          this.headers = { ...this.headers, 'X-CSRFToken': this.csrfToken };
+        }
       }
 
       if (!this.isAuthenticated()) {
         return Promise.reject({ error: 'Failed to fetch CSRF token' });
       }
 
-      return this.csrfToken;
+      return Promise.resolve(this.csrfToken);
     });
 
     return this.csrfPromise;
