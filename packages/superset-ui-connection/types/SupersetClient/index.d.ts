@@ -1,15 +1,18 @@
-type body = { [key: string]: any } | Object | string;
-type credentials = 'same-origin' | 'include' | 'omit';
+type body = RequestInit['body'];
+type cache = RequestInit['cache'];
+type credentials = RequestInit['credentials'];
 type csrfToken = string;
 type endpoint = string;
-type headers = { [key: string]: any } | Object;
+type headers = { [key: string]: string };
 type host = string;
+type method = RequestInit['method'];
 type protocol = 'http:' | 'https:' | 'file:';
-type postPayload = { [key: string]: any } | Object;
-type mode = 'cors' | 'no-cors' | 'same-origin';
+type postPayload = { [key: string]: any };
+type mode = RequestInit['mode'];
+type redirect = RequestInit['redirect'];
 type timeout = number | void;
 type parseMethod = 'json' | 'text' | null;
-type signal = AbortController;
+type signal = RequestInit['signal'];
 type stringify = boolean;
 type url = string;
 
@@ -21,6 +24,20 @@ interface ClientConfig {
   protocol?: protocol;
   mode?: mode;
   timeout?: timeout;
+}
+
+interface CallApi {
+  body: body;
+  cache: cache;
+  credentials: credentials;
+  headers: headers;
+  method: method;
+  mode: mode;
+  postPayload: postPayload | void;
+  redirect: redirect;
+  signal: signal;
+  stringify: stringify;
+  url: url;
 }
 
 interface RequestBase {
