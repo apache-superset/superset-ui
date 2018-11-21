@@ -32,7 +32,13 @@ describe('TimeFormatter', () => {
       id: 'year_only',
       formatFunc: value => `${value.getFullYear()}`,
     });
-    it('returns formatted value', () => {
+    it('handles null', () => {
+      expect(formatter.format(null)).toBeNull();
+    });
+    it('handles undefined', () => {
+      expect(formatter.format(undefined)).toBeUndefined();
+    });
+    it('otherwise returns formatted value', () => {
       expect(formatter.format(PREVIEW_TIME)).toEqual('2017');
     });
   });

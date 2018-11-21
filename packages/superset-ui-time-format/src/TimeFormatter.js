@@ -21,6 +21,10 @@ export default class TimeFormatter extends ExtensibleFunction {
   }
 
   format(value) {
+    if (value === null || value === undefined) {
+      return value;
+    }
+
     return this.formatFunc(value);
   }
 
