@@ -1,5 +1,5 @@
 import { RegistryWithDefaultKey } from '@superset-ui/core';
-import { DATABASE_DATETIME } from './TimeFormats';
+import { DATABASE_DATETIME, LOCAL_PREFIX } from './TimeFormats';
 import createD3TimeFormatter from './factories/createD3TimeFormatter';
 
 const DEFAULT_FORMAT = DATABASE_DATETIME;
@@ -20,8 +20,8 @@ export default class TimeFormatterRegistry extends RegistryWithDefaultKey {
     }
 
     // Create new formatter if does not exist
-    const useLocalTime = targetFormat.startsWith('local!');
-    const formatString = targetFormat.replace(/^(local)[!]/, '');
+    const useLocalTime = targetFormat.startsWith(LOCAL_PREFIX);
+    const formatString = targetFormat.replace(LOCAL_PREFIX, '');
     const formatter = createD3TimeFormatter({ formatString, useLocalTime });
     this.registerValue(targetFormat, formatter);
 
