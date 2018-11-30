@@ -60,7 +60,7 @@ export default class ChartClient {
     }
 
     // TODO: Implement
-    return Promise.reject(new Error('Not implemented'));
+    return Promise.reject(new Error('This feature is not implemented yet.'));
   }
 
   loadAnnotations(annotationLayers) {
