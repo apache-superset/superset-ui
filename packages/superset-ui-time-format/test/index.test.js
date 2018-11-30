@@ -5,6 +5,8 @@ import {
   getTimeFormatter,
   getTimeFormatterRegistry,
   PREVIEW_TIME,
+  smartDateFormatter,
+  smartDateVerboseFormatter,
   TimeFormats,
   TimeFormatter,
 } from '../src/index';
@@ -18,6 +20,8 @@ describe('index', () => {
       getTimeFormatter,
       getTimeFormatterRegistry,
       PREVIEW_TIME,
+      smartDateFormatter,
+      smartDateVerboseFormatter,
       TimeFormats,
       TimeFormatter,
     ].forEach(x => expect(x).toBeDefined());
