@@ -8,7 +8,7 @@
     "build": "yarn run build:cjs && yarn run build:esm && yarn run build:ts",
     "build:cjs": "NODE_ENV=production beemo babel ./src --out-dir lib/ --minify --workspaces=\"@superset-ui/!(demo|generator-superset)\"",
     "build:esm": "NODE_ENV=production beemo babel ./src --out-dir esm/ --esm --minify --workspaces=\"@superset-ui/!(demo|generator-superset)\"",
-    "build:ts": "NODE_ENV=production beemo typescript --workspaces=\"@superset-ui/(connection|chart)\"",
+    "build:ts": "NODE_ENV=production beemo typescript --workspaces=\"@superset-ui/(connection|chart|plugin-chart-word-cloud)\"",
     "lint": "beemo create-config prettier && beemo eslint \"./packages/*/{src,test,storybook}/!(@types)/**/*.{js,jsx,ts,tsx}\"",
     "jest": "beemo jest --color --coverage --react",
     "postrelease": "lerna run gh-pages",
