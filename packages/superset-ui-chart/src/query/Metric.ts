@@ -1,4 +1,4 @@
-import Column from './Column';
+import { Column } from './Column';
 import FormData from './FormData';
 
 export const LABEL_MAX_LENGTH = 43;
@@ -46,11 +46,9 @@ export type AdhocMetric = {
   optionName?: string;
 } & (AdhocMetricSimple | AdhocMetricSQL);
 
-type Metric = {
+export type Metric = {
   label: string;
 } & Partial<AdhocMetric>;
-
-export default Metric;
 
 export class Metrics {
   // Use Array to maintain insertion order for metrics that are order sensitive
@@ -64,6 +62,7 @@ export class Metrics {
         if (typeof metric === 'string') {
           return { label: metric };
         }
+
         // Note we further sanitize the metric label for BigQuery datasources
         // TODO: move this logic to the client once client has more info on the
         // the datasource
@@ -89,6 +88,7 @@ export class Metrics {
     } else {
       label = metric.sqlExpression;
     }
+
     return label.length <= LABEL_MAX_LENGTH
       ? label
       : `${label.substring(0, LABEL_MAX_LENGTH - 3)}...`;

@@ -3,13 +3,13 @@ export enum DatasourceType {
   Druid = 'druid',
 }
 
-export default interface DatasourceKey {
+interface DatasourceKey {
   id: number;
   type: DatasourceType;
 }
 
 // Declaration merging with the interface above. No need to redeclare id and type.
-export default class DatasourceKey {
+class DatasourceKey {
   constructor(key: string) {
     const [idStr, typeStr] = key.split('__');
     this.id = parseInt(idStr, 10);
@@ -27,3 +27,5 @@ export default class DatasourceKey {
     };
   }
 }
+
+export default DatasourceKey;

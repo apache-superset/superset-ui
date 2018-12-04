@@ -15,6 +15,8 @@ type BaseFormData = {
 
 // FormData is either sqla-based or druid-based
 type SqlaFormData = {
+  // FormData uses snake_cased keys.
+  // eslint-disable-next-line camelcase
   granularity_sqla: string;
 } & BaseFormData;
 

@@ -17,7 +17,7 @@ export enum ColumnType {
 }
 
 // TODO: fill out additional fields of the Column interface
-export default interface Column {
+export interface Column {
   id: number;
   type: ColumnType;
   columnName: string;

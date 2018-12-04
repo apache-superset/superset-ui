@@ -1,5 +1,5 @@
 import FormData, { getGranularity } from './FormData';
-import Metric, { Metrics } from './Metric';
+import { Metric, Metrics } from './Metric';
 
 // TODO: fill out the rest of the query object
 export interface QueryObject {
