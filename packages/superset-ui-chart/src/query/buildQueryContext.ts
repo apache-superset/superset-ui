@@ -1,5 +1,5 @@
 import buildQueryObject, { QueryObject } from './buildQueryObject';
-import DatasourceKey from './DatasourceKey';
+import { DatasourceKey } from './DatasourceKey';
 import FormData from './FormData';
 
 const WRAP_IN_ARRAY = (baseQueryObject: QueryObject) => [baseQueryObject];
