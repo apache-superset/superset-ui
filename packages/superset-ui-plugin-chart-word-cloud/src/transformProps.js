@@ -2,8 +2,8 @@ function transformData(data, formData) {
   const { metric, series } = formData;
 
   const transformedData = data.map(datum => ({
-    text: datum[series],
     size: datum[metric.label || metric],
+    text: datum[series],
   }));
 
   return transformedData;
@@ -14,11 +14,11 @@ export default function transformProps(chartProps) {
   const { colorScheme, rotation, sizeTo, sizeFrom } = formData;
 
   return {
-    width,
-    height,
-    data: transformData(payload.data, formData),
     colorScheme,
+    data: transformData(payload.data, formData),
+    height,
     rotation,
     sizeRange: [sizeFrom, sizeTo],
+    width,
   };
 }

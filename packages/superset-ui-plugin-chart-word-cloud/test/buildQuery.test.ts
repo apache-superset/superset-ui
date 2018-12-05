@@ -1,4 +1,4 @@
-import buildQuery from 'src/visualizations/wordcloud/buildQuery';
+import buildQuery from '../src/buildQuery';
 
 describe('WordCloud buildQuery', () => {
   const formData = {
