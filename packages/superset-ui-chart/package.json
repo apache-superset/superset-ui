@@ -28,13 +28,11 @@
   "dependencies": {
     "@superset-ui/core": "^0.3.0",
     "prop-types": "^15.6.2",
-    "react": "^16.4.1",
     "react-loadable": "^5.5.0",
     "reselect": "^4.0.0"
   },
   "devDependencies": {
-    "enzyme": "^3.3.0",
-    "enzyme-adapter-react-16": "^1.1.1"
+    "react": "^16.4.1"
   },
   "peerDependencies": {
     "react": "^16.4.1"
