@@ -4,23 +4,25 @@ import cloudLayout from 'd3-cloud';
 import { CategoricalColorNamespace } from '@superset-ui/color';
 
 const ROTATION = {
-  square: () => Math.floor(Math.random() * 2) * 90,
   flat: () => 0,
+  /* eslint-disable-next-line no-magic-numbers */
   random: () => Math.floor(Math.random() * 6 - 3) * 30,
+  /* eslint-disable-next-line no-magic-numbers */
+  square: () => Math.floor(Math.random() * 2) * 90,
 };
 
 const propTypes = {
+  colorScheme: PropTypes.string,
   data: PropTypes.arrayOf(
     PropTypes.shape({
       size: PropTypes.number,
       text: PropTypes.string,
     }),
   ),
-  width: PropTypes.number,
   height: PropTypes.number,
   rotation: PropTypes.string,
   sizeRange: PropTypes.arrayOf(PropTypes.number),
-  colorScheme: PropTypes.string,
+  width: PropTypes.number,
 };
 
 function WordCloud(element, props) {

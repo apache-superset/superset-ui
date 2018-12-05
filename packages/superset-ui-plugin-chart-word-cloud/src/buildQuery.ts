@@ -1,4 +1,4 @@
-import buildQueryContext from 'src/query';
+import buildQueryContext from '@superset-ui/chart';
 import FormData from './FormData';
 
 export default function buildQuery(formData: FormData) {

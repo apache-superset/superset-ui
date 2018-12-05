@@ -1,4 +1,4 @@
-import { FormData as GenericFormData } from 'src/query';
+import { FormData as GenericFormData } from '@superset-ui/chart';
 
 // FormData specific to the wordcloud viz
 interface WordCloudFormData {
@@ -8,4 +8,5 @@ interface WordCloudFormData {
 // FormData for wordcloud contains both common properties of all form data
 // and properties specific to wordcloud vizzes
 type FormData = GenericFormData & WordCloudFormData;
+
 export default FormData;
