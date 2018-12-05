@@ -1,5 +1,7 @@
-import d3 from 'd3';
 import PropTypes from 'prop-types';
+import { extent as d3Extent } from 'd3-array';
+import { scaleLinear } from 'd3-scale';
+import { select as d3Select } from 'd3-selection';
 import cloudLayout from 'd3-cloud';
 import { CategoricalColorNamespace } from '@superset-ui/color';
 
@@ -28,18 +30,18 @@ const propTypes = {
 function WordCloud(element, props) {
   const { data, width, height, rotation, sizeRange, colorScheme } = props;
 
-  const chart = d3.select(element);
+  const chart = d3Select(element);
   const size = [width, height];
   const rotationFn = ROTATION[rotation] || ROTATION.flat;
 
-  const scale = d3.scale
-    .linear()
+  const scale = scaleLinear()
     .range(sizeRange)
-    .domain(d3.extent(data, d => d.size));
+    .domain(d3Extent(data, d => d.size));
 
   const layout = cloudLayout()
     .size(size)
     .words(data)
+    /* eslint-disable-next-line no-magic-numbers */
     .padding(5)
     .rotate(rotationFn)
     .font('Helvetica')
