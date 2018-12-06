@@ -52,16 +52,35 @@ describe('reactify(renderFn)', () => {
       done();
     }, 20);
   });
-  it('inherits displayName from renderFn', () => {
-    expect(TheChart.displayName).toEqual('BoldText');
+  describe('displayName', () => {
+    it('has displayName if renderFn.displayName is defined', () => {
+      expect(TheChart.displayName).toEqual('BoldText');
+    });
+    it('does not have displayName if renderFn.displayName is not defined', () => {
+      const AnotherChart = reactify(() => {});
+      expect(AnotherChart.displayName).toBeUndefined();
+    });
   });
-  it('inherits propTypes from renderFn', () => {
-    /* eslint-disable-next-line react/forbid-foreign-prop-types */
-    expect(TheChart.propTypes).toBe(renderFn.propTypes);
+  describe('propTypes', () => {
+    it('has propTypes if renderFn.propTypes is defined', () => {
+      /* eslint-disable-next-line react/forbid-foreign-prop-types */
+      expect(TheChart.propTypes).toBe(renderFn.propTypes);
+    });
+    it('does not have propTypes if renderFn.propTypes is not defined', () => {
+      const AnotherChart = reactify(() => {});
+      /* eslint-disable-next-line react/forbid-foreign-prop-types */
+      expect(AnotherChart.propTypes).toBeUndefined();
+    });
   });
-  it('inherits defaultProps from renderFn', () => {
-    expect(TheChart.defaultProps).toBe(renderFn.defaultProps);
-    const wrapper = mount(<TheChart />);
-    expect(wrapper.html()).toEqual('<div><b>ghi</b></div>');
+  describe('defaultProps', () => {
+    it('has defaultProps if renderFn.defaultProps is defined', () => {
+      expect(TheChart.defaultProps).toBe(renderFn.defaultProps);
+      const wrapper = mount(<TheChart />);
+      expect(wrapper.html()).toEqual('<div><b>ghi</b></div>');
+    });
+    it('does not have defaultProps if renderFn.defaultProps is not defined', () => {
+      const AnotherChart = reactify(() => {});
+      expect(AnotherChart.defaultProps).toBeUndefined();
+    });
   });
 });
