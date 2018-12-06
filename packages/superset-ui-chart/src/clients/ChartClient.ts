@@ -1,5 +1,7 @@
 import { isDefined } from '@superset-ui/core';
-import { SupersetClient, RequestConfig } from '@superset-ui/connection';
+import { SupersetClient } from '@superset-ui/connection';
+import { RequestConfig } from '@superset-ui/connection/lib/types';
+import { SupersetClient as SupersetClientType } from '@superset-ui/connection/lib/SupersetClient';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
 import { FormData, AnnotationLayerMetadata } from '../query';
 
@@ -19,7 +21,7 @@ interface ChartData {
 }
 
 export default class ChartClient {
-  client: SupersetClient;
+  client: SupersetClientType;
 
   constructor({ client = SupersetClient } = {}) {
     this.client = client;
@@ -31,18 +33,21 @@ export default class ChartClient {
       const promise = this.client.get({
         endpoint: `/superset/slice_json/${input.sliceId}`,
         ...options,
-      });
+      } as RequestConfig);
 
       /*
        * If formData is also specified, override API result
        * with user-specified formData
        */
       return input.formData
-        ? promise.then((dbFormData: object) => ({
-            ...dbFormData,
-            ...input.formData,
-          }))
-        : promise;
+        ? promise.then(
+            (dbFormData: object) =>
+              ({
+                ...dbFormData,
+                ...input.formData,
+              } as FormData),
+          )
+        : promise.then((dbFormData: object) => dbFormData as FormData);
     }
 
     /* If sliceId is not provided, returned formData wrapped in a Promise */
@@ -51,24 +56,24 @@ export default class ChartClient {
       : Promise.reject(new Error('At least one of sliceId or formData must be specified'));
   }
 
-  loadQueryData(formData: FormData, options?: RequestConfig) {
+  loadQueryData(formData: FormData, options?: RequestConfig): Promise<object> {
     const buildQuery = getChartBuildQueryRegistry().get(formData.viz_type);
     if (buildQuery) {
       return this.client.post({
         endpoint: '/api/v1/query',
         postPayload: { query_context: buildQuery(formData) },
         ...options,
-      });
+      } as RequestConfig);
     }
 
     return Promise.reject(new Error(`Unknown chart type: ${formData.viz_type}`));
   }
 
-  loadDatasource(datasourceKey: string, options?: RequestConfig) {
+  loadDatasource(datasourceKey: string, options?: RequestConfig): Promise<object> {
     return this.client.get({
       endpoint: `/superset/fetch_datasource_metadata?datasourceKey=${datasourceKey}`,
       ...options,
-    });
+    } as RequestConfig);
   }
 
   loadAnnotation(annotationLayer: AnnotationLayerMetadata): Promise<object> {

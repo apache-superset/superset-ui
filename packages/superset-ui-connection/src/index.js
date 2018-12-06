@@ -1,3 +1,3 @@
 export { default as callApi } from './callApi';
-export { default as SupersetClient } from './SupersetClient';
+export { default as SupersetClient, SupersetClient as SupersetClientType } from './SupersetClient';
 export * from './types';
