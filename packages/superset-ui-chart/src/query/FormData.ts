@@ -9,8 +9,15 @@ import { AdhocMetric, MetricKey } from './Metric';
 // unified into a proper Metric type during buildQuery (see `/query/Metrics.ts`).
 type Metrics = Partial<Record<MetricKey, AdhocMetric | string>>;
 
+export type AnnotationLayerMetadata = {
+  name: string;
+  sourceType: string;
+};
+
 type BaseFormData = {
   datasource: string;
+  viz_type: string;
+  annotation_layers?: Array<AnnotationLayerMetadata>;
 } & Metrics;
 
 // FormData is either sqla-based or druid-based

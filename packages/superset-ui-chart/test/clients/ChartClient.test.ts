@@ -5,6 +5,8 @@ describe('ChartClient', () => {
     expect(ChartClient).toBeDefined();
   });
 
+  const chartClient = new ChartClient();
+
   describe('new ChartClient(config)', () => {
     it('creates a client without argument', () => {});
     it('creates a client with specified config.client', () => {});
