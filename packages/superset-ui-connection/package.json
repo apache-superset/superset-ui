@@ -4,6 +4,7 @@
   "description": "Superset UI connection",
   "sideEffects": false,
   "main": "lib/index.js",
+  "typings": "lib/types",
   "module": "esm/index.js",
   "files": [
     "esm",
