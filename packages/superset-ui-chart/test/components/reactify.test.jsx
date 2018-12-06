@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { mount } from 'enzyme';
-import reactify from '../../src/components/reactify';
+import { reactify } from '../../src';
 
 describe('reactify(renderFn)', () => {
   const renderFn = jest.fn((element, props) => {
