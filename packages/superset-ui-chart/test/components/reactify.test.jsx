@@ -83,4 +83,10 @@ describe('reactify(renderFn)', () => {
       expect(AnotherChart.defaultProps).toBeUndefined();
     });
   });
+  it('does not try to render if not mounted', () => {
+    const anotherRenderFn = jest.fn();
+    const AnotherChart = reactify(anotherRenderFn);
+    new AnotherChart().execute();
+    expect(anotherRenderFn).not.toHaveBeenCalled();
+  });
 });
