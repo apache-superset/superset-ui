@@ -6,27 +6,30 @@ interface PlainObject {
 }
 
 type AnnotationData = PlainObject;
-type CamelCaseFormData = PlainObject;
 type CamelCaseDatasource = PlainObject;
 type SnakeCaseDatasource = PlainObject;
+type CamelCaseFormData = PlainObject;
+type SnakeCaseFormData = PlainObject;
 type QueryData = PlainObject;
 type Filters = Array<any>;
 type HandlerFunction = (...args: any[]) => void;
 type ChartPropsSelector = (c: ChartPropsConfig) => ChartProps;
 
 interface ChartPropsConfig {
-  annotationData: AnnotationData;
-  datasource: SnakeCaseDatasource;
-  filters: Filters;
-  formData: FormData;
+  annotationData?: AnnotationData;
+  datasource?: SnakeCaseDatasource;
+  filters?: Filters;
+  formData: SnakeCaseFormData;
   height: number;
-  onAddFilter: HandlerFunction;
-  onError: HandlerFunction;
+  onAddFilter?: HandlerFunction;
+  onError?: HandlerFunction;
   payload: QueryData;
-  setControlValue: HandlerFunction;
-  setTooltip: HandlerFunction;
+  setControlValue?: HandlerFunction;
+  setTooltip?: HandlerFunction;
   width: number;
 }
+
+function NOOP() {}
 
 export default class ChartProps {
   static createSelector: () => ChartPropsSelector;
@@ -36,7 +39,7 @@ export default class ChartProps {
   rawDatasource: SnakeCaseDatasource;
   filters: Filters;
   formData: CamelCaseFormData;
-  rawFormData: FormData;
+  rawFormData: SnakeCaseFormData;
   height: number;
   onAddFilter: HandlerFunction;
   onError: HandlerFunction;
@@ -48,17 +51,17 @@ export default class ChartProps {
   constructor(config: ChartPropsConfig) {
     this.width = config.width;
     this.height = config.height;
-    this.annotationData = config.annotationData;
+    this.annotationData = config.annotationData || {};
     this.datasource = convertKeysToCamelCase(config.datasource);
-    this.rawDatasource = config.datasource;
-    this.filters = config.filters;
+    this.rawDatasource = config.datasource || {};
+    this.filters = config.filters || [];
     this.formData = convertKeysToCamelCase(config.formData);
     this.rawFormData = config.formData;
-    this.onAddFilter = config.onAddFilter;
-    this.onError = config.onError;
+    this.onAddFilter = config.onAddFilter || NOOP;
+    this.onError = config.onError || NOOP;
     this.payload = config.payload;
-    this.setControlValue = config.setControlValue;
-    this.setTooltip = config.setTooltip;
+    this.setControlValue = config.setControlValue || NOOP;
+    this.setTooltip = config.setTooltip || NOOP;
   }
 }
 
