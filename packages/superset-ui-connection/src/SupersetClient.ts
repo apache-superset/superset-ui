@@ -23,7 +23,7 @@ export interface ClientConfig {
   timeout?: ClientTimeout;
 }
 
-class SupersetClient {
+export class SupersetClientClass {
   credentials: Credentials;
   csrfToken: CsrfToken | undefined;
   csrfPromise: CsrfPromise;
@@ -185,9 +185,11 @@ class SupersetClient {
   }
 }
 
-let singletonClient: SupersetClient | undefined;
+let singletonClient: SupersetClientClass | undefined;
 
-function hasInstance(maybeClient: SupersetClient | undefined): maybeClient is SupersetClient {
+function hasInstance(
+  maybeClient: SupersetClientClass | undefined,
+): maybeClient is SupersetClientClass {
   if (!maybeClient) {
     throw new Error('You must call SupersetClient.configure(...) before calling other methods');
   }
@@ -196,8 +198,8 @@ function hasInstance(maybeClient: SupersetClient | undefined): maybeClient is Su
 }
 
 const PublicAPI = {
-  configure: (config: ClientConfig = {}): SupersetClient => {
-    singletonClient = new SupersetClient(config);
+  configure: (config: ClientConfig = {}): SupersetClientClass => {
+    singletonClient = new SupersetClientClass(config);
 
     return singletonClient;
   },
@@ -210,7 +212,5 @@ const PublicAPI = {
     singletonClient = undefined;
   },
 };
-
-export { SupersetClient };
 
 export default PublicAPI;
