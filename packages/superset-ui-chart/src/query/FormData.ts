@@ -16,7 +16,9 @@ export type AnnotationLayerMetadata = {
 
 type BaseFormData = {
   datasource: string;
+  // eslint-disable-next-line camelcase
   viz_type: string;
+  // eslint-disable-next-line camelcase
   annotation_layers?: Array<AnnotationLayerMetadata>;
 } & Metrics;
 
