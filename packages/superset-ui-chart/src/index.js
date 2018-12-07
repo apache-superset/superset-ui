@@ -13,3 +13,5 @@ export { default as getChartMetadataRegistry } from './registries/ChartMetadataR
 export {
   default as getChartTransformPropsRegistry,
 } from './registries/ChartTransformPropsRegistrySingleton';
+
+export { default as buildQueryContext } from './query/buildQueryContext';
