@@ -35,7 +35,7 @@ export default class ChartClient {
     /* If sliceId is provided, use it to fetch stored formData from API */
     if (input.sliceId) {
       const promise = this.client.get({
-        endpoint: `/superset/slice_json/${input.sliceId}`,
+        endpoint: `/api/v1/form_data/?slice_id=${input.sliceId}`,
         ...options,
       } as RequestConfig);
 
