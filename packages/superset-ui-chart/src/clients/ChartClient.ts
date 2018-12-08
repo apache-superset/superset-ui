@@ -1,7 +1,6 @@
 import { isDefined } from '@superset-ui/core';
-import { SupersetClient } from '@superset-ui/connection';
+import { SupersetClient, SupersetClientClass } from '@superset-ui/connection/lib';
 import { RequestConfig } from '@superset-ui/connection/lib/types';
-import { SupersetClientClass } from '@superset-ui/connection/lib/SupersetClient';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
 import { FormData, AnnotationLayerMetadata } from '../query';
 
@@ -28,7 +27,7 @@ export default class ChartClient {
   readonly client: SupersetClientClass;
 
   constructor(config: ChartClientConfig = {}) {
-    const { client = SupersetClient } = config;
+    const { client = SupersetClient.configure() } = config;
     this.client = client;
   }
 
