@@ -10,8 +10,7 @@ import {
 } from './types';
 
 type CsrfToken = string;
-type Optional<T> = T | undefined;
-type CsrfPromise = Promise<Optional<string>>;
+type CsrfPromise = Promise<string | undefined>;
 type Protocol = 'http:' | 'https:';
 
 export interface ClientConfig {
