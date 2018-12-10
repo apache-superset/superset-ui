@@ -21,6 +21,7 @@ interface ChartData {
   annotationData: AnnotationData;
   datasource: object;
   queryData: object;
+  formData: object;
 }
 
 export default class ChartClient {
@@ -45,13 +46,13 @@ export default class ChartClient {
        */
       return input.formData
         ? promise.then(
-            (dbFormData: object) =>
+            ({ json: dbFormData }) =>
               ({
                 ...dbFormData,
                 ...input.formData,
               } as FormData),
           )
-        : promise.then((dbFormData: object) => dbFormData as FormData);
+        : promise.then(({ json: dbFormData }) => dbFormData as FormData);
     }
 
     /* If sliceId is not provided, returned formData wrapped in a Promise */
@@ -64,7 +65,7 @@ export default class ChartClient {
     const buildQuery = getChartBuildQueryRegistry().get(formData.viz_type);
     if (buildQuery) {
       return this.client.post({
-        endpoint: '/api/v1/query',
+        endpoint: '/api/v1/query/',
         postPayload: { query_context: buildQuery(formData) },
         ...options,
       } as RequestConfig);
@@ -115,6 +116,7 @@ export default class ChartClient {
         annotationData,
         datasource,
         queryData,
+        formData: finalFormData,
       })),
     );
   }

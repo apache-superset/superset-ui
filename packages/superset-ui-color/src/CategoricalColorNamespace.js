@@ -1,5 +1,5 @@
 import CategoricalColorScale from './CategoricalColorScale';
-import getCategoricalSchemeRegistry from './CategoricalSchemeRegistrySingleton';
+import getCategoricalSchemeRegistry from '@superset-ui/color/lib/CategoricalSchemeRegistrySingleton';
 import stringifyAndTrim from './stringifyAndTrim';
 
 export default class CategoricalColorNamespace {

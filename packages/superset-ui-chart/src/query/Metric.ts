@@ -1,5 +1,5 @@
 import { Column } from './Column';
-import FormData from './FormData';
+import FormData, { FormDataMetric } from './FormData';
 
 export const LABEL_MAX_LENGTH = 43;
 
@@ -55,22 +55,17 @@ export class Metrics {
   private metrics: Metric[];
 
   constructor(formData: FormData) {
-    this.metrics = Object.keys(MetricKey)
-      .map(key => formData[MetricKey[key as any] as MetricKey])
-      .filter(metric => metric)
-      .map(metric => {
-        if (typeof metric === 'string') {
-          return { label: metric };
+    this.metrics = [];
+    for (const key of Object.keys(MetricKey)) {
+      const metric = formData[MetricKey[key as any] as MetricKey] as FormDataMetric;
+      if (metric) {
+        if (Array.isArray(metric)) {
+          metric.forEach(m => this.add(m));
+        } else {
+          this.add(metric);
         }
-
-        // Note we further sanitize the metric label for BigQuery datasources
-        // TODO: move this logic to the client once client has more info on the
-        // the datasource
-        return {
-          ...metric,
-          label: (metric as Metric).label || this.getDefaultLabel(metric as AdhocMetric),
-        };
-      });
+      }
+    }
   }
 
   public getMetrics() {
@@ -79,6 +74,23 @@ export class Metrics {
 
   public getLabels() {
     return this.metrics.map(m => m.label);
+  }
+
+  private add(metric: FormDataMetric) {
+    if (typeof metric === 'string') {
+      this.metrics.push({
+        label: metric,
+      });
+    } else {
+      // Note we further sanitize the metric label for BigQuery datasources
+      // TODO: move this logic to the client once client has more info on the
+      // the datasource
+      const label = metric.label || this.getDefaultLabel(metric);
+      this.metrics.push({
+        ...metric,
+        label,
+      });
+    }
   }
 
   private getDefaultLabel(metric: AdhocMetric) {

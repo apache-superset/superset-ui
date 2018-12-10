@@ -3,7 +3,7 @@ import { extent as d3Extent } from 'd3-array';
 import { scaleLinear } from 'd3-scale';
 import { select as d3Select } from 'd3-selection';
 import cloudLayout from 'd3-cloud';
-import { CategoricalColorNamespace } from '@superset-ui/color';
+import { CategoricalColorNamespace } from '@superset-ui/color/lib';
 
 const ROTATION = {
   flat: () => 0,
