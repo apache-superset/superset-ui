@@ -19,11 +19,24 @@ describe('ChartProps', () => {
       const props = new ChartProps({
         width: 800,
         height: 600,
-        datasource: RAW_DATASOURCE,
         formData: RAW_FORM_DATA,
         payload: PAYLOAD,
       });
       expect(props).toBeInstanceOf(ChartProps);
+    });
+    it('sets all handlers to NOOP by default', () => {
+      const props = new ChartProps({
+        width: 800,
+        height: 600,
+        formData: RAW_FORM_DATA,
+        payload: PAYLOAD,
+      });
+      expect(() => {
+        props.onAddFilter();
+        props.onError();
+        props.setControlValue();
+        props.setTooltip();
+      }).not.toThrow();
     });
     it('processes formData and datasource to convert field names to camelCase', () => {
       const props = new ChartProps({
