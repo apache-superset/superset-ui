@@ -46,7 +46,7 @@ export default class ChartPlugin extends Plugin {
   constructor(config: ChartPluginConfig) {
     super();
     const {
-      metadata = isRequired('metadata'),
+      metadata,
       buildQuery,
       loadBuildQuery,
       transformProps = IDENTITY,
