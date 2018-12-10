@@ -49,7 +49,7 @@ export default class ChartMetadata {
     this.thumbnail = thumbnail;
   }
 
-  canBeAnnotationType(type: string) {
+  canBeAnnotationType(type: string): boolean {
     return this.canBeAnnotationTypesLookup[type] || false;
   }
 }
