@@ -15,3 +15,5 @@ export {
 } from './registries/ChartTransformPropsRegistrySingleton';
 
 export { default as buildQueryContext } from './query/buildQueryContext';
+export { DatasourceType, DatasourceKey } from './query/DatasourceKey';
+export { default as FormData } from './query/FormData';
