@@ -9,8 +9,17 @@ import { FormDataMetric, MetricKey } from './Metric';
 // unified into a proper Metric type during buildQuery (see `/query/Metrics.ts`).
 type Metrics = Partial<Record<MetricKey, FormDataMetric | FormDataMetric[]>>;
 
+export type AnnotationLayerMetadata = {
+  name: string;
+  sourceType: string;
+};
+
 type BaseFormData = {
   datasource: string;
+  // eslint-disable-next-line camelcase
+  viz_type: string;
+  // eslint-disable-next-line camelcase
+  annotation_layers?: Array<AnnotationLayerMetadata>;
 } & Metrics;
 
 // FormData is either sqla-based or druid-based
