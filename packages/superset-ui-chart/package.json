@@ -35,6 +35,7 @@
     "react": "^15 || ^16"
   },
   "peerDependencies": {
+    "@superset-ui/connection": "^0.7.0",
     "react": "^15 || ^16"
   }
 }
