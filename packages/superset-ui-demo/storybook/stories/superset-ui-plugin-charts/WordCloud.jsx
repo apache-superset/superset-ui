@@ -3,7 +3,7 @@ import React from 'react';
 import { getCategoricalSchemeRegistry } from '@superset-ui/color/lib';
 import AirbnbPalettes from '@superset-ui/color/lib/colorSchemes/categorical/airbnb';
 import WordCloudChartPlugin from '@superset-ui/plugin-chart-word-cloud/lib';
-import { SupersetClient } from '@superset-ui/connection';
+import { SupersetClient } from '@superset-ui/connection/lib';
 import { ChartClient, ChartProps } from '@superset-ui/chart/lib';
 import SuperChart from '@superset-ui/chart/lib/components/SuperChart';
 
@@ -28,7 +28,7 @@ class Demo extends React.Component {
 
   componentDidMount() {
     getCategoricalSchemeRegistry()
-      .registerValue('bnbColors', AirbnbPalettes)
+      .registerValue('bnbColors', AirbnbPalettes[0])
       .setDefaultKey('bnbColors');
     const client = new ChartClient({ client: SupersetClient });
     client.loadChartData({ sliceId: 433 }).then(({ queryData, formData }) => {
