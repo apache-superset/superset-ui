@@ -39,7 +39,7 @@ export interface ChartPluginConfig {
 
 export class ChartPlugin extends Plugin {
   metadata: ChartMetadata;
-  loadBuildQuery: PromiseOrValueLoader<BuildQueryFunction> | null;
+  loadBuildQuery?: PromiseOrValueLoader<BuildQueryFunction>;
   loadTransformProps: PromiseOrValueLoader<TransformPropsFunction>;
   loadChart: PromiseOrValueLoader<Function>;
 
@@ -55,7 +55,7 @@ export class ChartPlugin extends Plugin {
       loadChart,
     } = config;
     this.metadata = metadata;
-    this.loadBuildQuery = loadBuildQuery || (buildQuery ? () => buildQuery : null);
+    this.loadBuildQuery = loadBuildQuery || (buildQuery ? () => buildQuery : undefined);
     this.loadTransformProps = loadTransformProps || (() => transformProps);
 
     if (loadChart) {

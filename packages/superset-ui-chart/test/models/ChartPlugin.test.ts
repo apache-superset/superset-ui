@@ -47,7 +47,7 @@ describe('ChartPlugin', () => {
           metadata,
           Chart: FakeChart,
         });
-        expect(plugin.loadBuildQuery).toBeNull();
+        expect(plugin.loadBuildQuery).toBeUndefined();
       });
       it('uses loadBuildQuery field if specified', () => {
         const plugin = new ChartPlugin({
