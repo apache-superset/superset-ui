@@ -1,5 +1,12 @@
-import { ChartPlugin, ChartMetadata, FormData, DatasourceType, ChartProps } from '../../src/index';
-import { BuildQueryFunction, TransformPropsFunction } from '../../src/models/ChartPlugin';
+import {
+  ChartPlugin,
+  ChartMetadata,
+  FormData,
+  DatasourceType,
+  ChartProps,
+  BuildQueryFunction,
+  TransformPropsFunction,
+} from '../../src/index';
 
 describe('ChartPlugin', () => {
   const metadata = new ChartMetadata({

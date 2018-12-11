@@ -2,7 +2,7 @@ interface LookupTable {
   [key: string]: boolean;
 }
 
-interface ChartMetadataConfig {
+export interface ChartMetadataConfig {
   name: string;
   credits?: Array<string>;
   description?: string;
@@ -12,7 +12,7 @@ interface ChartMetadataConfig {
   thumbnail: string;
 }
 
-export default class ChartMetadata {
+export class ChartMetadata {
   name: string;
   credits: Array<string>;
   description: string;

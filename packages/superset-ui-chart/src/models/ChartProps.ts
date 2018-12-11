@@ -15,7 +15,7 @@ type Filters = Array<any>;
 type HandlerFunction = (...args: any[]) => void;
 type ChartPropsSelector = (c: ChartPropsConfig) => ChartProps;
 
-interface ChartPropsConfig {
+export interface ChartPropsConfig {
   annotationData?: AnnotationData;
   datasource?: SnakeCaseDatasource;
   filters?: Filters;
@@ -31,7 +31,7 @@ interface ChartPropsConfig {
 
 function NOOP() {}
 
-export default class ChartProps {
+export class ChartProps {
   static createSelector: () => ChartPropsSelector;
 
   annotationData: AnnotationData;

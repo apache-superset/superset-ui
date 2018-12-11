@@ -1,6 +1,6 @@
-import buildQueryObject, { QueryObject } from './buildQueryObject';
+import { buildQueryObject, QueryObject } from './buildQueryObject';
 import { DatasourceKey, DatasourceType } from './DatasourceKey';
-import FormData from './FormData';
+import { FormData } from './FormData';
 
 const WRAP_IN_ARRAY = (baseQueryObject: QueryObject) => [baseQueryObject];
 
@@ -12,7 +12,7 @@ export interface QueryContext {
   queries: Array<QueryObject>;
 }
 
-export default function buildQueryContext(
+export function buildQueryContext(
   formData: FormData,
   buildQuery: (baseQueryObject: QueryObject) => QueryObject[] = WRAP_IN_ARRAY,
 ): QueryContext {

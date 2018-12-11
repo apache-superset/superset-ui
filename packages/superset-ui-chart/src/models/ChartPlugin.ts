@@ -1,7 +1,7 @@
 import { isRequired, Plugin } from '@superset-ui/core';
-import ChartMetadata from './ChartMetadata';
-import ChartProps from './ChartProps';
-import FormData from '../query/FormData';
+import { ChartMetadata } from './ChartMetadata';
+import { ChartProps } from './ChartProps';
+import { FormData } from '../query/FormData';
 import { QueryContext } from '../query/buildQueryContext';
 import getChartMetadataRegistry from '../registries/ChartMetadataRegistrySingleton';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
@@ -37,7 +37,7 @@ export interface ChartPluginConfig {
   loadChart?: PromiseOrValueLoader<Function>;
 }
 
-export default class ChartPlugin extends Plugin {
+export class ChartPlugin extends Plugin {
   metadata: ChartMetadata;
   loadBuildQuery: PromiseOrValueLoader<BuildQueryFunction> | null;
   loadTransformProps: PromiseOrValueLoader<TransformPropsFunction>;
