@@ -4,17 +4,14 @@ import {
   RequestConfig,
   SupersetClientClass,
   SupersetClientResponse,
+  Json,
 } from '@superset-ui/connection';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
-import FormData, { AnnotationLayerMetadata } from '../query/FormData';
-
-interface ChartClientConfig {
-  client?: SupersetClientClass;
-}
+import { FormData, AnnotationLayerMetadata } from '../query/FormData';
 
 interface SliceIdAndOrFormData {
   sliceId?: number;
-  formData: FormData;
+  formData?: FormData;
 }
 
 interface AnnotationData {
@@ -28,7 +25,11 @@ interface ChartData {
   queryData: object;
 }
 
-export default class ChartClient {
+export interface ChartClientConfig {
+  client?: SupersetClientClass;
+}
+
+export class ChartClient {
   readonly client: {
     get: (config: RequestConfig) => Promise<SupersetClientResponse>;
     post: (config: RequestConfig) => Promise<SupersetClientResponse>;
@@ -42,10 +43,12 @@ export default class ChartClient {
   loadFormData(input: SliceIdAndOrFormData, options?: RequestConfig): Promise<FormData> {
     /* If sliceId is provided, use it to fetch stored formData from API */
     if (input.sliceId) {
-      const promise = this.client.get({
-        endpoint: `/superset/slice_json/${input.sliceId}`,
-        ...options,
-      } as RequestConfig);
+      const promise = this.client
+        .get({
+          endpoint: `/api/v1/formData/?slice_id=${input.sliceId}`,
+          ...options,
+        } as RequestConfig)
+        .then(response => response.json as Json);
 
       /*
        * If formData is also specified, override API result
