@@ -33,12 +33,15 @@ describe('ChartClient', () => {
         field1: 'abc',
         field2: 'def',
       });
+
       return chartClient.loadFormData({ sliceId: 123 }).then(value => {
         expect(value).toEqual({
           granularity: 'minute',
           field1: 'abc',
           field2: 'def',
         });
+
+        return value;
       });
     });
   });
