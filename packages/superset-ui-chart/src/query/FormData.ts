@@ -14,13 +14,13 @@ export type AnnotationLayerMetadata = {
   sourceType?: string;
 };
 
+/* eslint-disable camelcase */
 type BaseFormData = {
   datasource: string;
-  // eslint-disable-next-line camelcase
   viz_type: string;
-  // eslint-disable-next-line camelcase
   annotation_layers?: Array<AnnotationLayerMetadata>;
 } & Metrics;
+/* eslint-enable camelcase */
 
 // FormData is either sqla-based or druid-based
 type SqlaFormData = {
