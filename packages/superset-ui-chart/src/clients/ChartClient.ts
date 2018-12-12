@@ -74,21 +74,25 @@ export class ChartClient {
   loadQueryData(formData: FormData, options?: RequestConfig): Promise<object> {
     const buildQuery = getChartBuildQueryRegistry().get(formData.viz_type);
     if (buildQuery) {
-      return this.client.post({
-        endpoint: '/api/v1/query',
-        postPayload: { query_context: buildQuery(formData) },
-        ...options,
-      } as RequestConfig);
+      return this.client
+        .post({
+          endpoint: '/api/v1/query',
+          postPayload: { query_context: buildQuery(formData) },
+          ...options,
+        } as RequestConfig)
+        .then(response => response.json as Json);
     }
 
     return Promise.reject(new Error(`Unknown chart type: ${formData.viz_type}`));
   }
 
   loadDatasource(datasourceKey: string, options?: RequestConfig): Promise<object> {
-    return this.client.get({
-      endpoint: `/superset/fetch_datasource_metadata?datasourceKey=${datasourceKey}`,
-      ...options,
-    } as RequestConfig);
+    return this.client
+      .get({
+        endpoint: `/superset/fetch_datasource_metadata?datasourceKey=${datasourceKey}`,
+        ...options,
+      } as RequestConfig)
+      .then(response => response.json as Json);
   }
 
   loadAnnotation(annotationLayer: AnnotationLayerMetadata): Promise<object> {

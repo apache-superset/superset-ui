@@ -11,7 +11,7 @@ type Metrics = Partial<Record<MetricKey, FormDataMetric | FormDataMetric[]>>;
 
 export type AnnotationLayerMetadata = {
   name: string;
-  sourceType: string;
+  sourceType?: string;
 };
 
 type BaseFormData = {
