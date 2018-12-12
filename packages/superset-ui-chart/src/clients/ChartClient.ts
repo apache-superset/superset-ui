@@ -76,7 +76,7 @@ export class ChartClient {
     if (buildQuery) {
       return this.client
         .post({
-          endpoint: '/api/v1/query',
+          endpoint: '/api/v1/query/',
           postPayload: { query_context: buildQuery(formData) },
           ...options,
         } as RequestConfig)

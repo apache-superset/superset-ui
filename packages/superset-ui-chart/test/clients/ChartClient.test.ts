@@ -90,7 +90,7 @@ describe('ChartClient', () => {
       getChartBuildQueryRegistry().registerValue('word_cloud', (formData: FormData) =>
         buildQueryContext(formData),
       );
-      fetchMock.post('glob:*/api/v1/query', {
+      fetchMock.post('glob:*/api/v1/query/', {
         field1: 'abc',
         field2: 'def',
       });
@@ -188,7 +188,7 @@ describe('ChartClient', () => {
         schema: 'staging',
       });
 
-      fetchMock.post('glob:*/api/v1/query', {
+      fetchMock.post('glob:*/api/v1/query/', {
         lorem: 'ipsum',
         dolor: 'sit',
         amet: true,
