@@ -34,9 +34,11 @@ describe('ChartClient', () => {
   describe('.loadFormData({ sliceId, formData }, options)', () => {
     it('fetches formData if given only sliceId', () => {
       fetchMock.get('glob:*/api/v1/formData/?slice_id=123', {
-        granularity: 'minute',
-        field1: 'abc',
-        field2: 'def',
+        form_data: {
+          granularity: 'minute',
+          field1: 'abc',
+          field2: 'def',
+        },
       });
 
       return expect(chartClient.loadFormData({ sliceId: 123 })).resolves.toEqual({
@@ -47,9 +49,11 @@ describe('ChartClient', () => {
     });
     it('fetches formData from sliceId and merges with specify formData if both fields are specified', () => {
       fetchMock.get('glob:*/api/v1/formData/?slice_id=123', {
-        granularity: 'minute',
-        field1: 'abc',
-        field2: 'def',
+        form_data: {
+          granularity: 'minute',
+          field1: 'abc',
+          field2: 'def',
+        },
       });
 
       return expect(
@@ -177,10 +181,12 @@ describe('ChartClient', () => {
   describe('.loadChartData({ sliceId, formData })', () => {
     it('loadAllDataNecessaryForAChart', () => {
       fetchMock.get('glob:*/api/v1/formData/?slice_id=10120', {
-        granularity: 'minute',
-        viz_type: 'line',
-        datasource: '1__table',
-        color: 'living-coral',
+        form_data: {
+          granularity: 'minute',
+          viz_type: 'line',
+          datasource: '1__table',
+          color: 'living-coral',
+        },
       });
 
       fetchMock.get('glob:*/superset/fetch_datasource_metadata?datasourceKey=1__table', {
