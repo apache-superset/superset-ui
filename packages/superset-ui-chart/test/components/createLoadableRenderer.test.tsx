@@ -1,15 +1,16 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+import { LoadableComponent } from 'react-loadable';
 import { createLoadableRenderer } from '../../src';
 
 describe('createLoadableRenderer', () => {
   function TestComponent() {
     return <div className="test-component">test</div>;
   }
-  let loadChartSuccess;
-  let render;
-  let loading;
-  let LoadableRenderer;
+  let loadChartSuccess = () => {};
+  let render = () => null;
+  let loading = () => null;
+  let LoadableRenderer: any;
 
   beforeEach(() => {
     loadChartSuccess = jest.fn(() => Promise.resolve(TestComponent));

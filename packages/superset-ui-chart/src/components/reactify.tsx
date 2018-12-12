@@ -1,17 +1,17 @@
 import React from 'react';
 
-type ObjectOfProps = { [key: string]: React.ReactPropTypes };
+type ValueOf<T> = T[keyof T];
+type PropTypes = { [key: string]: ValueOf<React.ReactPropTypes> };
 
 export type ReactifyProps = {
   id: string;
   className?: string;
-} & ObjectOfProps;
+} & PropTypes;
 
-// pass along any defined proptypes even though this is not a true React.FunctionComponent
 export type RenderFuncType = ((container: HTMLDivElement, props: ReactifyProps) => void) & {
   displayName?: string;
-  defaultProps?: ObjectOfProps;
-  propTypes?: ObjectOfProps;
+  defaultProps?: { [key: string]: any };
+  propTypes?: PropTypes;
 };
 
 export default function reactify(renderFn: RenderFuncType): React.ComponentClass<ReactifyProps> {

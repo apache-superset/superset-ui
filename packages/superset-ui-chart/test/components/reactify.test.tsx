@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { mount } from 'enzyme';
-import { reactify } from '../../src';
+import reactify, { RenderFuncType } from '../../src/components/reactify';
 
 describe('reactify(renderFn)', () => {
-  const renderFn = jest.fn((element, props) => {
+  const renderFn: RenderFuncType = jest.fn((element, props) => {
     const container = element;
     container.innerHTML = '';
     const child = document.createElement('b');
@@ -22,8 +22,8 @@ describe('reactify(renderFn)', () => {
 
   const TheChart = reactify(renderFn);
 
-  class TestComponent extends React.PureComponent {
-    constructor(props) {
+  class TestComponent extends React.PureComponent<{}, { content: string }> {
+    constructor(props = {}) {
       super(props);
       this.state = { content: 'abc' };
     }
