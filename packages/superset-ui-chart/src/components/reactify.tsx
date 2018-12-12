@@ -1,8 +1,28 @@
 import React from 'react';
 
-export default function reactify(renderFn) {
-  class ReactifiedComponent extends React.Component {
-    constructor(props) {
+type ObjectOfProps = { [key: string]: React.ReactPropTypes };
+
+export type ReactifyProps = {
+  id: string;
+  className?: string;
+} & ObjectOfProps;
+
+// pass along any defined proptypes even though this is not a true React.FunctionComponent
+export type RenderFuncType = ((container: HTMLDivElement, props: ReactifyProps) => void) & {
+  displayName?: string;
+  defaultProps?: ObjectOfProps;
+  propTypes?: ObjectOfProps;
+};
+
+export default function reactify(renderFn: RenderFuncType): React.ComponentClass<ReactifyProps> {
+  class ReactifiedComponent extends React.Component<ReactifyProps> {
+    static displayName?: string;
+    static propTypes?: object;
+    static defaultProps?: object;
+
+    container?: HTMLDivElement;
+
+    constructor(props: ReactifyProps) {
       super(props);
       this.setContainerRef = this.setContainerRef.bind(this);
     }
@@ -16,11 +36,11 @@ export default function reactify(renderFn) {
     }
 
     componentWillUnmount() {
-      this.container = null;
+      this.container = undefined;
     }
 
-    setContainerRef(c) {
-      this.container = c;
+    setContainerRef(ref: HTMLDivElement) {
+      this.container = ref;
     }
 
     execute() {
