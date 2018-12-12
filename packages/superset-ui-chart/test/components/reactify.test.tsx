@@ -3,6 +3,10 @@ import React from 'react';
 import { mount } from 'enzyme';
 import reactify, { RenderFuncType } from '../../src/components/reactify';
 
+interface Constructable<T> {
+  new (): T;
+}
+
 describe('reactify(renderFn)', () => {
   const renderFn: RenderFuncType = jest.fn((element, props) => {
     const container = element;
@@ -22,7 +26,7 @@ describe('reactify(renderFn)', () => {
 
   const TheChart = reactify(renderFn);
 
-  class TestComponent extends React.PureComponent<{}, { content: string }> {
+  class TestComponent extends React.PureComponent<{}, { content: string }, any> {
     constructor(props = {}) {
       super(props);
       this.state = { content: 'abc' };
@@ -37,12 +41,13 @@ describe('reactify(renderFn)', () => {
     render() {
       const { content } = this.state;
 
-      return <TheChart content={content} />;
+      return <TheChart id="test" content={content} />;
     }
   }
 
   it('returns a React component class', done => {
     const wrapper = mount(<TestComponent />);
+
     expect(renderFn).toHaveBeenCalledTimes(1);
     expect(wrapper.html()).toEqual('<div><b>abc</b></div>');
     setTimeout(() => {
@@ -75,7 +80,7 @@ describe('reactify(renderFn)', () => {
   describe('defaultProps', () => {
     it('has defaultProps if renderFn.defaultProps is defined', () => {
       expect(TheChart.defaultProps).toBe(renderFn.defaultProps);
-      const wrapper = mount(<TheChart />);
+      const wrapper = mount(<TheChart id="test" />);
       expect(wrapper.html()).toEqual('<div><b>ghi</b></div>');
     });
     it('does not have defaultProps if renderFn.defaultProps is not defined', () => {
@@ -85,8 +90,8 @@ describe('reactify(renderFn)', () => {
   });
   it('does not try to render if not mounted', () => {
     const anotherRenderFn = jest.fn();
-    const AnotherChart = reactify(anotherRenderFn);
-    new AnotherChart().execute();
+    const AnotherChart = reactify(anotherRenderFn) as Constructable;
+    new AnotherChart({ id: 'test' }).execute();
     expect(anotherRenderFn).not.toHaveBeenCalled();
   });
 });

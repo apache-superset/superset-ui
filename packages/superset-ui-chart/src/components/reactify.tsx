@@ -1,28 +1,29 @@
 import React from 'react';
 
-type ValueOf<T> = T[keyof T];
-type PropTypes = { [key: string]: ValueOf<React.ReactPropTypes> };
-
 export type ReactifyProps = {
   id: string;
   className?: string;
-} & PropTypes;
-
-export type RenderFuncType = ((container: HTMLDivElement, props: ReactifyProps) => void) & {
+};
+export type RenderFuncType = (<P extends object>(
+  container: HTMLDivElement,
+  props: P & ReactifyProps,
+) => void) & {
   displayName?: string;
   defaultProps?: { [key: string]: any };
-  propTypes?: PropTypes;
+  propTypes?: { [key: string]: any };
 };
 
-export default function reactify(renderFn: RenderFuncType): React.ComponentClass<ReactifyProps> {
-  class ReactifiedComponent extends React.Component<ReactifyProps> {
+export default function reactify<P extends object>(
+  renderFn: RenderFuncType,
+): React.ComponentType<P & ReactifyProps> {
+  class ReactifiedComponent extends React.Component<P & ReactifyProps> {
     static displayName?: string;
-    static propTypes?: object;
-    static defaultProps?: object;
+    static propTypes: object = {};
+    static defaultProps: object = {};
 
     container?: HTMLDivElement;
 
-    constructor(props: ReactifyProps) {
+    constructor(props: P & ReactifyProps) {
       super(props);
       this.setContainerRef = this.setContainerRef.bind(this);
     }
