@@ -4,19 +4,19 @@ export type ReactifyProps = {
   id: string;
   className?: string;
 };
-export type RenderFuncType = (<P extends object>(
+export type RenderFuncType = ((
   container: HTMLDivElement,
-  props: P & ReactifyProps,
+  props: ReactifyProps & { [key: string]: any },
 ) => void) & {
   displayName?: string;
   defaultProps?: { [key: string]: any };
   propTypes?: { [key: string]: any };
 };
 
-export default function reactify<P extends object>(
+export default function reactify(
   renderFn: RenderFuncType,
-): React.ComponentType<P & ReactifyProps> {
-  class ReactifiedComponent extends React.Component<P & ReactifyProps> {
+): React.ComponentType<ReactifyProps & { [key: string]: any }> {
+  class ReactifiedComponent extends React.Component<ReactifyProps & { [key: string]: any }> {
     static displayName?: string;
     static propTypes: object = {};
     static defaultProps: object = {};
@@ -60,7 +60,6 @@ export default function reactify<P extends object>(
   if (renderFn.displayName) {
     ReactifiedComponent.displayName = renderFn.displayName;
   }
-  /* eslint-disable-next-line react/forbid-foreign-prop-types */
   if (renderFn.propTypes) {
     ReactifiedComponent.propTypes = renderFn.propTypes;
   }
