@@ -1,6 +1,6 @@
 import Registry from './Registry';
 
-export default class RegistryWithDefaultKey extends Registry {
+export default class RegistryWithDefaultKey<V> extends Registry<V> {
   initialDefaultKey?: string;
   defaultKey?: string;
   setFirstItemAsDefault: boolean;
@@ -19,11 +19,11 @@ export default class RegistryWithDefaultKey extends Registry {
     return this;
   }
 
-  get(key) {
-    return super.get(key || this.defaultKey);
+  get(key?: string) {
+    return super.get(key || this.defaultKey || '');
   }
 
-  registerValue(key: string, value: any) {
+  registerValue(key: string, value: V) {
     super.registerValue(key, value);
     // If there is no default, set as default
     if (this.setFirstItemAsDefault && !this.defaultKey) {
@@ -33,7 +33,7 @@ export default class RegistryWithDefaultKey extends Registry {
     return this;
   }
 
-  registerLoader(key: string, loader: () => any) {
+  registerLoader(key: string, loader: () => V | Promise<V>) {
     super.registerLoader(key, loader);
     // If there is no default, set as default
     if (this.setFirstItemAsDefault && !this.defaultKey) {

@@ -2,8 +2,8 @@ interface IClass<T> {
   new (...args: any[]): T;
 }
 
-export default function makeSingleton<T>(BaseClass: IClass<T>, ...args): () => T {
-  let singleton;
+export default function makeSingleton<T>(BaseClass: IClass<T>, ...args: any[]): () => T {
+  let singleton: T;
 
   return function getInstance() {
     if (!singleton) {

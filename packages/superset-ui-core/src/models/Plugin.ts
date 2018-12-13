@@ -1,10 +1,12 @@
+interface PlainObject {
+  [key: string]: any;
+}
+
 export default class Plugin {
-  config: {
-    [key: string]: any;
-  };
+  config: PlainObject;
 
   constructor() {
-    this.resetConfig();
+    this.config = {};
   }
 
   resetConfig(): Plugin {
@@ -15,12 +17,8 @@ export default class Plugin {
     return this;
   }
 
-  configure(config, replace = false): Plugin {
-    if (replace) {
-      this.config = config;
-    } else {
-      this.config = { ...this.config, ...config };
-    }
+  configure(config: PlainObject, replace: boolean = false): Plugin {
+    this.config = replace ? config : { ...this.config, ...config };
 
     return this;
   }

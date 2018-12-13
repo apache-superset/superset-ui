@@ -6,7 +6,7 @@ describe('RegistryWithDefaultKey', () => {
     expect(RegistryWithDefaultKey).toBeDefined();
   });
 
-  let registry;
+  let registry: RegistryWithDefaultKey;
 
   beforeEach(() => {
     registry = new RegistryWithDefaultKey();

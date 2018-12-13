@@ -6,15 +6,18 @@ export enum OverwritePolicy {
   WARN = 'WARN',
 }
 
-export default class Registry {
+export default class Registry<V> {
   name: string;
   overwritePolicy: OverwritePolicy;
   items: {
-    [key: string]: any;
+    [key: string]: {
+      value?: V;
+      loader?: () => V | Promise<V>;
+    };
   };
 
   promises: {
-    [key: string]: Promise<any>;
+    [key: string]: Promise<V>;
   };
 
   constructor({ name = '', overwritePolicy = OverwritePolicy.ALLOW } = {}) {
@@ -37,7 +40,7 @@ export default class Registry {
     return item !== null && item !== undefined;
   }
 
-  registerValue(key: string, value): Registry {
+  registerValue(key: string, value: V) {
     const item = this.items[key];
     if (item && item.value !== value) {
       if (this.overwritePolicy === OverwritePolicy.WARN) {
@@ -54,7 +57,7 @@ export default class Registry {
     return this;
   }
 
-  registerLoader(key: string, loader: () => any): Registry {
+  registerLoader(key: string, loader: () => V | Promise<V>) {
     const item = this.items[key];
     if (item && item.loader !== loader) {
       if (this.overwritePolicy === OverwritePolicy.WARN) {
@@ -71,16 +74,16 @@ export default class Registry {
     return this;
   }
 
-  get(key: string): any {
+  get(key: string): V | Promise<V> | undefined {
     const item = this.items[key];
     if (item) {
       return item.loader ? item.loader() : item.value;
     }
 
-    return null;
+    return undefined;
   }
 
-  getAsPromise(key: string): Promise<any> {
+  getAsPromise(key: string): Promise<V> {
     const promise = this.promises[key];
     if (promise) {
       return promise;
@@ -93,13 +96,13 @@ export default class Registry {
       return newPromise;
     }
 
-    return Promise.reject(new Error(`Item with key "${key}" is not registered.`));
+    return Promise.reject<V>(new Error(`Item with key "${key}" is not registered.`));
   }
 
-  getMap(): {
-    [key: string]: any;
-  } {
-    return this.keys().reduce((prev, key) => {
+  getMap() {
+    return this.keys().reduce<{
+      [key: string]: V | Promise<V> | undefined;
+    }>((prev, key) => {
       const map = prev;
       map[key] = this.get(key);
 
@@ -107,13 +110,13 @@ export default class Registry {
     }, {});
   }
 
-  getMapAsPromise(): Promise<{
-    [key: string]: any;
-  }> {
+  getMapAsPromise() {
     const keys = this.keys();
 
     return Promise.all(keys.map(key => this.getAsPromise(key))).then(values =>
-      values.reduce((prev, value, i) => {
+      values.reduce<{
+        [key: string]: V;
+      }>((prev, value, i) => {
         const map = prev;
         map[keys[i]] = value;
 
@@ -126,22 +129,22 @@ export default class Registry {
     return Object.keys(this.items);
   }
 
-  values(): Array<any> {
+  values(): Array<V | Promise<V> | undefined> {
     return this.keys().map(key => this.get(key));
   }
 
-  valuesAsPromise(): Promise<Array<any>> {
+  valuesAsPromise(): Promise<Array<V>> {
     return Promise.all(this.keys().map(key => this.getAsPromise(key)));
   }
 
-  entries(): Array<{ key: string; value: any }> {
+  entries(): Array<{ key: string; value: V | Promise<V> | undefined }> {
     return this.keys().map(key => ({
       key,
       value: this.get(key),
     }));
   }
 
-  entriesAsPromise(): Promise<Array<{ key: string; value: any }>> {
+  entriesAsPromise(): Promise<Array<{ key: string; value: V }>> {
     const keys = this.keys();
 
     return Promise.all(keys.map(key => this.getAsPromise(key))).then(values =>
@@ -152,7 +155,7 @@ export default class Registry {
     );
   }
 
-  remove(key: string): Registry {
+  remove(key: string) {
     delete this.items[key];
     delete this.promises[key];
 
