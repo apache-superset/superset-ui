@@ -21,7 +21,7 @@ export interface RenderFuncType<Props> {
   (container: HTMLDivElement, props: Readonly<Props & ReactifyProps>): void;
   displayName?: string;
   defaultProps?: Partial<Props & ReactifyProps>;
-  propTypes?: React.ValidationMap<Props & ReactifyProps>;
+  propTypes?: React.WeakValidationMap<Props & ReactifyProps>;
 }
 
 export default function reactify<Props extends object>(

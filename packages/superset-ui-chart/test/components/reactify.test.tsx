@@ -13,12 +13,11 @@ describe('reactify(renderFn)', () => {
   });
 
   renderFn.displayName = 'BoldText';
-  //
+
   renderFn.propTypes = {
-    id: PropTypes.string.isRequired,
-    className: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
+    content: PropTypes.string,
   };
+
   renderFn.defaultProps = {
     content: 'ghi',
   };
