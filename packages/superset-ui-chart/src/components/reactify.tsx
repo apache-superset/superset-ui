@@ -64,15 +64,16 @@ export default function reactify<Props extends object>(
     }
   }
 
-  const reactifiedClass: React.ComponentClass<Props & ReactifyProps> = ReactifiedComponent;
+  const ReactifiedClass: React.ComponentClass<Props & ReactifyProps> = ReactifiedComponent;
+
   if (renderFn.displayName) {
-    reactifiedClass.displayName = renderFn.displayName;
+    ReactifiedClass.displayName = renderFn.displayName;
   }
   if (renderFn.propTypes) {
-    reactifiedClass.propTypes = renderFn.propTypes;
+    ReactifiedClass.propTypes = renderFn.propTypes;
   }
   if (renderFn.defaultProps) {
-    reactifiedClass.defaultProps = renderFn.defaultProps;
+    ReactifiedClass.defaultProps = renderFn.defaultProps;
   }
 
   return ReactifiedComponent;
