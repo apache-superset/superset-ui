@@ -1,15 +1,27 @@
 import React from 'react';
 
+// TODO: Note that id and className can collide between Props and ReactifyProps
+// leading to (likely) unexpected behaviors. We should either require Props to not
+// contain an id/className, or not combine them (via intersection), instead preferring
+// wrapping (composition). As an example:
+// interface MyProps {
+//   id: number;
+// }
+// function myRender(container: HTMLDivElement, props: Readonly<MyProps>): void {
+//   props.id // unusable: id is string & number
+// }
+// new (reactify(myRender))({ id: 5 }); // error: id has to be string & number
+
 export type ReactifyProps = {
   id: string;
   className?: string;
 };
 
-export interface RenderFuncType<Props extends object> {
-  (container: HTMLDivElement, props: Props & ReactifyProps): void;
+export interface RenderFuncType<Props> {
+  (container: HTMLDivElement, props: Readonly<Props & ReactifyProps>): void;
   displayName?: string;
-  defaultProps?: Partial<Props>;
-  propTypes?: { [key: string]: any };
+  defaultProps?: Partial<Props & ReactifyProps>;
+  propTypes?: React.ValidationMap<Props & ReactifyProps>;
 }
 
 export default function reactify<Props extends object>(
@@ -41,7 +53,7 @@ export default function reactify<Props extends object>(
 
     execute() {
       if (this.container) {
-        renderFn(this.container, this.props as Props & ReactifyProps);
+        renderFn(this.container, this.props);
       }
     }
 
@@ -52,14 +64,15 @@ export default function reactify<Props extends object>(
     }
   }
 
+  const reactifiedClass: React.ComponentClass<Props & ReactifyProps> = ReactifiedComponent;
   if (renderFn.displayName) {
-    (ReactifiedComponent as any).displayName = renderFn.displayName;
+    reactifiedClass.displayName = renderFn.displayName;
   }
   if (renderFn.propTypes) {
-    (ReactifiedComponent as any).propTypes = renderFn.propTypes;
+    reactifiedClass.propTypes = renderFn.propTypes;
   }
   if (renderFn.defaultProps) {
-    (ReactifiedComponent as any).defaultProps = renderFn.defaultProps;
+    reactifiedClass.defaultProps = renderFn.defaultProps;
   }
 
   return ReactifiedComponent;
