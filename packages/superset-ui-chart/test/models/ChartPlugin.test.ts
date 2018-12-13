@@ -6,7 +6,6 @@ import {
   ChartProps,
   BuildQueryFunction,
   TransformPropsFunction,
-  ChartPluginConfig,
 } from '../../src';
 
 describe('ChartPlugin', () => {
