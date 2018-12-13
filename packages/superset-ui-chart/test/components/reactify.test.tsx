@@ -3,12 +3,8 @@ import React from 'react';
 import { mount } from 'enzyme';
 import reactify, { RenderFuncType } from '../../src/components/reactify';
 
-interface Constructable<T> {
-  new (): T;
-}
-
 describe('reactify(renderFn)', () => {
-  const renderFn: RenderFuncType = jest.fn((element, props) => {
+  const renderFn: RenderFuncType<{ content?: string }> = jest.fn((element, props) => {
     const container = element;
     container.innerHTML = '';
     const child = document.createElement('b');
@@ -90,7 +86,7 @@ describe('reactify(renderFn)', () => {
   });
   it('does not try to render if not mounted', () => {
     const anotherRenderFn = jest.fn();
-    const AnotherChart = reactify(anotherRenderFn) as Constructable;
+    const AnotherChart = reactify(anotherRenderFn) as any; // enables valid new AnotherChart() call
     new AnotherChart({ id: 'test' }).execute();
     expect(anotherRenderFn).not.toHaveBeenCalled();
   });

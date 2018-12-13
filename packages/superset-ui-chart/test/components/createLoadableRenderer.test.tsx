@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { createLoadableRenderer } from '../../src';
+import createLoadableRenderer from '../../src';
 
 describe('createLoadableRenderer', () => {
   function TestComponent() {
@@ -9,7 +9,7 @@ describe('createLoadableRenderer', () => {
   let loadChartSuccess = jest.fn(() => Promise.resolve(TestComponent));
   let render = () => null;
   let loading = () => null;
-  let LoadableRenderer: any;
+  let LoadableRenderer;
 
   beforeEach(() => {
     loadChartSuccess = jest.fn(() => Promise.resolve(TestComponent));

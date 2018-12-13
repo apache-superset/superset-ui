@@ -4,26 +4,21 @@ export type ReactifyProps = {
   id: string;
   className?: string;
 };
-export type RenderFuncType = ((
-  container: HTMLDivElement,
-  props: ReactifyProps & { [key: string]: any },
-) => void) & {
+
+export interface RenderFuncType<Props extends object> {
+  (container: HTMLDivElement, props: Props & ReactifyProps): void;
   displayName?: string;
-  defaultProps?: { [key: string]: any };
+  defaultProps?: Partial<Props>;
   propTypes?: { [key: string]: any };
-};
+}
 
-export default function reactify(
-  renderFn: RenderFuncType,
-): React.ComponentType<ReactifyProps & { [key: string]: any }> {
-  class ReactifiedComponent extends React.Component<ReactifyProps & { [key: string]: any }> {
-    static displayName?: string;
-    static propTypes: object = {};
-    static defaultProps: object = {};
-
+export default function reactify<Props extends object>(
+  renderFn: RenderFuncType<Props>,
+): React.ComponentClass<Props & ReactifyProps> {
+  class ReactifiedComponent extends React.Component<Props & ReactifyProps> {
     container?: HTMLDivElement;
 
-    constructor(props: P & ReactifyProps) {
+    constructor(props: Props & ReactifyProps) {
       super(props);
       this.setContainerRef = this.setContainerRef.bind(this);
     }
@@ -46,7 +41,7 @@ export default function reactify(
 
     execute() {
       if (this.container) {
-        renderFn(this.container, this.props);
+        renderFn(this.container, this.props as Props & ReactifyProps);
       }
     }
 
@@ -58,13 +53,13 @@ export default function reactify(
   }
 
   if (renderFn.displayName) {
-    ReactifiedComponent.displayName = renderFn.displayName;
+    (ReactifiedComponent as any).displayName = renderFn.displayName;
   }
   if (renderFn.propTypes) {
-    ReactifiedComponent.propTypes = renderFn.propTypes;
+    (ReactifiedComponent as any).propTypes = renderFn.propTypes;
   }
   if (renderFn.defaultProps) {
-    ReactifiedComponent.defaultProps = renderFn.defaultProps;
+    (ReactifiedComponent as any).defaultProps = renderFn.defaultProps;
   }
 
   return ReactifiedComponent;
