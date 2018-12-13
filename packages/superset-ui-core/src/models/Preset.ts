@@ -1,4 +1,11 @@
+import Plugin from './Plugin';
+
 export default class Preset {
+  name: string;
+  description: string;
+  presets: Array<Preset>;
+  plugins: Array<Plugin>;
+
   constructor({ name = '', description = '', presets = [], plugins = [] } = {}) {
     this.name = name;
     this.description = description;
@@ -6,7 +13,7 @@ export default class Preset {
     this.plugins = plugins;
   }
 
-  register() {
+  register(): Preset {
     this.presets.forEach(preset => {
       preset.register();
     });

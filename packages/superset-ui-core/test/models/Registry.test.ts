@@ -1,6 +1,6 @@
 /* eslint no-console: 0 */
 import mockConsole from 'jest-mock-console';
-import Registry from '../../src/models/Registry';
+import Registry, { OverwritePolicy } from '../../src/models/Registry';
 
 describe('Registry', () => {
   it('exists', () => {
@@ -298,7 +298,7 @@ describe('Registry', () => {
         it('warns when overwrite', () => {
           const restoreConsole = mockConsole();
           const registry = new Registry({
-            overwritePolicy: Registry.OverwritePolicy.WARN,
+            overwritePolicy: OverwritePolicy.WARN,
           });
           registry.registerValue('a', 'testValue');
           expect(() => registry.registerValue('a', 'testValue2')).not.toThrow();
@@ -311,7 +311,7 @@ describe('Registry', () => {
         it('warns when overwrite', () => {
           const restoreConsole = mockConsole();
           const registry = new Registry({
-            overwritePolicy: Registry.OverwritePolicy.WARN,
+            overwritePolicy: OverwritePolicy.WARN,
           });
           registry.registerLoader('a', () => 'testValue');
           expect(() => registry.registerLoader('a', () => 'testValue2')).not.toThrow();
@@ -325,7 +325,7 @@ describe('Registry', () => {
       describe('.registerValue(key, value)', () => {
         it('throws error when overwrite', () => {
           const registry = new Registry({
-            overwritePolicy: Registry.OverwritePolicy.PROHIBIT,
+            overwritePolicy: OverwritePolicy.PROHIBIT,
           });
           registry.registerValue('a', 'testValue');
           expect(() => registry.registerValue('a', 'testValue2')).toThrow();
@@ -334,7 +334,7 @@ describe('Registry', () => {
       describe('.registerLoader(key, loader)', () => {
         it('warns when overwrite', () => {
           const registry = new Registry({
-            overwritePolicy: Registry.OverwritePolicy.PROHIBIT,
+            overwritePolicy: OverwritePolicy.PROHIBIT,
           });
           registry.registerLoader('a', () => 'testValue');
           expect(() => registry.registerLoader('a', () => 'testValue2')).toThrow();

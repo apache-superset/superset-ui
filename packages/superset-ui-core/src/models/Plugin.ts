@@ -1,9 +1,13 @@
 export default class Plugin {
+  config: {
+    [key: string]: any;
+  };
+
   constructor() {
     this.resetConfig();
   }
 
-  resetConfig() {
+  resetConfig(): Plugin {
     // The child class can set default config
     // by overriding this function.
     this.config = {};
@@ -11,7 +15,7 @@ export default class Plugin {
     return this;
   }
 
-  configure(config, replace = false) {
+  configure(config, replace = false): Plugin {
     if (replace) {
       this.config = config;
     } else {
@@ -21,7 +25,7 @@ export default class Plugin {
     return this;
   }
 
-  register() {
+  register(): Plugin {
     return this;
   }
 }

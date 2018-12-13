@@ -1,12 +1,21 @@
 /* eslint no-console: 0 */
 
-const OverwritePolicy = {
-  ALLOW: 'ALLOW',
-  PROHIBIT: 'PROHIBIT',
-  WARN: 'WARN',
-};
+export enum OverwritePolicy {
+  ALLOW = 'ALLOW',
+  PROHIBIT = 'PROHIBIT',
+  WARN = 'WARN',
+}
 
 export default class Registry {
+  name: string;
+  overwritePolicy: OverwritePolicy;
+  items: {
+    [key: string]: any;
+  };
+  promises: {
+    [key: string]: Promise<any>;
+  };
+
   constructor({ name = '', overwritePolicy = OverwritePolicy.ALLOW } = {}) {
     this.overwritePolicy = overwritePolicy;
     this.name = name;
@@ -145,5 +154,3 @@ export default class Registry {
     return this;
   }
 }
-
-Registry.OverwritePolicy = OverwritePolicy;

@@ -1,6 +1,10 @@
 import Registry from './Registry';
 
 export default class RegistryWithDefaultKey extends Registry {
+  initialDefaultKey?: string;
+  defaultKey?: string;
+  setFirstItemAsDefault: boolean;
+
   constructor({ initialDefaultKey = undefined, setFirstItemAsDefault = false, ...rest } = {}) {
     super(rest);
     this.initialDefaultKey = initialDefaultKey;

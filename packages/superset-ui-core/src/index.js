@@ -1,7 +1,7 @@
 export { default as ExtensibleFunction } from './models/ExtensibleFunction';
 export { default as Plugin } from './models/Plugin';
 export { default as Preset } from './models/Preset';
-export { default as Registry } from './models/Registry';
+export { default as Registry, OverwritePolicy } from './models/Registry';
 export { default as RegistryWithDefaultKey } from './models/RegistryWithDefaultKey';
 
 export { default as convertKeysToCamelCase } from './utils/convertKeysToCamelCase';
