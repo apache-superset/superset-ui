@@ -26,9 +26,9 @@ export enum Aggregate {
 }
 
 export enum ExpressionType {
+  BUILTIN = 'BUILTIN',
   SIMPLE = 'SIMPLE',
   SQL = 'SQL',
-  BUILTIN = 'BUILTIN',
 }
 
 interface MetricSimple {
