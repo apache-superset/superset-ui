@@ -87,8 +87,8 @@ export class Metrics {
   private addMetric(metric: FormDataMetric) {
     if (typeof metric === 'string') {
       this.metrics.push({
-        label: metric,
         expressionType: ExpressionType.BUILTIN,
+        label: metric,
       });
     } else {
       // Note we further sanitize the metric label for BigQuery datasources
