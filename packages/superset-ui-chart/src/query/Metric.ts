@@ -28,32 +28,35 @@ export enum Aggregate {
 export enum ExpressionType {
   SIMPLE = 'SIMPLE',
   SQL = 'SQL',
+  BUILTIN = 'BUILTIN',
 }
 
-interface AdhocMetricSimple {
+interface MetricSimple {
   expressionType: ExpressionType.SIMPLE;
   column: Column;
   aggregate: Aggregate;
-}
-
-interface AdhocMetricSQL {
-  expressionType: ExpressionType.SQL;
-  sqlExpression: string;
-}
-
-export type AdhocMetric = {
   label?: string;
   optionName?: string;
-} & (AdhocMetricSimple | AdhocMetricSQL);
+}
+
+interface MetricSQL {
+  expressionType: ExpressionType.SQL;
+  sqlExpression: string;
+  label?: string;
+  optionName?: string;
+}
+
+interface MetriBuiltin {
+  expressionType: ExpressionType.BUILTIN;
+  label: string;
+}
 
 // Type of metrics in form data
-export type FormDataMetric = string | AdhocMetric;
+export type FormDataMetric = string | MetricSQL | MetricSimple;
 
 // Type of Metric the client provides to server after unifying various forms
 // of metrics in form data
-export type Metric = {
-  label: string;
-} & Partial<AdhocMetric>;
+export type Metric = MetriBuiltin | MetricSQL | MetricSimple;
 
 export class Metrics {
   // Use Array to maintain insertion order for metrics that are order sensitive
@@ -85,6 +88,7 @@ export class Metrics {
     if (typeof metric === 'string') {
       this.metrics.push({
         label: metric,
+        expressionType: ExpressionType.BUILTIN,
       });
     } else {
       // Note we further sanitize the metric label for BigQuery datasources
@@ -98,7 +102,7 @@ export class Metrics {
     }
   }
 
-  private getDefaultLabel(metric: AdhocMetric) {
+  private getDefaultLabel(metric: MetricSQL | MetricSimple) {
     let label: string;
     if (metric.expressionType === ExpressionType.SIMPLE) {
       label = `${metric.aggregate}(${metric.column.columnName})`;
