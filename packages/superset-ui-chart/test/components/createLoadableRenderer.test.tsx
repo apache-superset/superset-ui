@@ -98,7 +98,7 @@ describe('createLoadableRenderer', () => {
         render,
       });
 
-      expect(() => shallow(<FailedRenderer onRenderFailure={null} />)).not.toThrow();
+      expect(() => shallow(<FailedRenderer onRenderFailure={undefined} />)).not.toThrow();
     });
   });
 });
