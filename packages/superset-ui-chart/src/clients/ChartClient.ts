@@ -3,7 +3,6 @@ import {
   SupersetClient,
   SupersetClientInterface,
   RequestConfig,
-  SupersetClientResponse,
   Json,
   SupersetClientClass,
 } from '@superset-ui/connection';
@@ -31,10 +30,7 @@ export interface ChartClientConfig {
 }
 
 export class ChartClient {
-  readonly client: {
-    get: (config: RequestConfig) => Promise<SupersetClientResponse>;
-    post: (config: RequestConfig) => Promise<SupersetClientResponse>;
-  };
+  readonly client: SupersetClientInterface | SupersetClientClass;
 
   constructor(config: ChartClientConfig = {}) {
     const { client = SupersetClient } = config;
@@ -69,7 +65,7 @@ export class ChartClient {
 
     /* If sliceId is not provided, returned formData wrapped in a Promise */
     return input.formData
-      ? Promise.resolve(input.formData)
+      ? Promise.resolve(input.formData as FormData)
       : Promise.reject(new Error('At least one of sliceId or formData must be specified'));
   }
 
