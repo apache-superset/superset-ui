@@ -47,10 +47,10 @@ describe('reactify(renderFn)', () => {
     const wrapper = mount(<TestComponent />);
 
     expect(renderFn).toHaveBeenCalledTimes(1);
-    expect(wrapper.html()).toEqual('<div><b>abc</b></div>');
+    expect(wrapper.html()).toEqual('<div id="test"><b>abc</b></div>');
     setTimeout(() => {
       expect(renderFn).toHaveBeenCalledTimes(2);
-      expect(wrapper.html()).toEqual('<div><b>def</b></div>');
+      expect(wrapper.html()).toEqual('<div id="test"><b>def</b></div>');
       wrapper.unmount();
       done();
     }, 20);
@@ -67,19 +67,19 @@ describe('reactify(renderFn)', () => {
   describe('propTypes', () => {
     it('has propTypes if renderFn.propTypes is defined', () => {
       /* eslint-disable-next-line react/forbid-foreign-prop-types */
-      expect(TheChart.propTypes).toBe(renderFn.propTypes);
+      expect(Object.keys(TheChart.propTypes || {})).toEqual(['id', 'className', 'content']);
     });
     it('does not have propTypes if renderFn.propTypes is not defined', () => {
       const AnotherChart = reactify(() => {});
       /* eslint-disable-next-line react/forbid-foreign-prop-types */
-      expect(AnotherChart.propTypes).toBeUndefined();
+      expect(Object.keys(AnotherChart.propTypes || {})).toEqual(['id', 'className']);
     });
   });
   describe('defaultProps', () => {
     it('has defaultProps if renderFn.defaultProps is defined', () => {
       expect(TheChart.defaultProps).toBe(renderFn.defaultProps);
       const wrapper = mount(<TheChart id="test" />);
-      expect(wrapper.html()).toEqual('<div><b>ghi</b></div>');
+      expect(wrapper.html()).toEqual('<div id="test"><b>ghi</b></div>');
     });
     it('does not have defaultProps if renderFn.defaultProps is not defined', () => {
       const AnotherChart = reactify(() => {});
