@@ -28,6 +28,7 @@ export default function reactify<Props extends object>(
   renderFn: RenderFuncType<Props>,
 ): React.ComponentClass<Props & ReactifyProps> {
   class ReactifiedComponent extends React.Component<Props & ReactifyProps> {
+    // eslint-disable-next-line react/sort-comp
     container?: HTMLDivElement;
 
     constructor(props: Props & ReactifyProps) {
@@ -69,6 +70,7 @@ export default function reactify<Props extends object>(
   if (renderFn.displayName) {
     ReactifiedClass.displayName = renderFn.displayName;
   }
+  // eslint-disable-next-line react/forbid-foreign-prop-types
   if (renderFn.propTypes) {
     ReactifiedClass.propTypes = renderFn.propTypes;
   }

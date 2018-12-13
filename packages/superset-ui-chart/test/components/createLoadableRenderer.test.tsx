@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import createLoadableRenderer, {
-  LoadableRenderer,
+  LoadableRenderer as LoadableRendererType,
 } from '../../src/components/createLoadableRenderer';
 
 describe('createLoadableRenderer', () => {
@@ -11,7 +11,7 @@ describe('createLoadableRenderer', () => {
   let loadChartSuccess = jest.fn(() => Promise.resolve(TestComponent));
   let render = () => null;
   let loading = () => null;
-  let LoadableRenderer: LoadableRenderer<{}, {}>;
+  let LoadableRenderer: LoadableRendererType<{}, {}>;
 
   beforeEach(() => {
     loadChartSuccess = jest.fn(() => Promise.resolve(TestComponent));

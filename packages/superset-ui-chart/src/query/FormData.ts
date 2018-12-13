@@ -1,4 +1,4 @@
-// eslint camelcase: 0
+/* eslint camelcase: 0 */
 // FormData uses snake_cased keys.
 import { FormDataMetric, MetricKey } from './Metric';
 
