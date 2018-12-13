@@ -1,17 +1,18 @@
 import { isDefined } from '@superset-ui/core';
 import {
   SupersetClient,
+  SupersetClientInterface,
   RequestConfig,
-  SupersetClientClass,
   SupersetClientResponse,
   Json,
+  SupersetClientClass,
 } from '@superset-ui/connection';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
 import { FormData, AnnotationLayerMetadata } from '../query/FormData';
 
 interface SliceIdAndOrFormData {
   sliceId?: number;
-  formData?: FormData;
+  formData?: Partial<FormData>;
 }
 
 interface AnnotationData {
@@ -26,7 +27,7 @@ interface ChartData {
 }
 
 export interface ChartClientConfig {
-  client?: SupersetClientClass;
+  client?: SupersetClientInterface | SupersetClientClass;
 }
 
 export class ChartClient {
