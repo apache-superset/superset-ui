@@ -1,6 +1,6 @@
 /* eslint no-console: 0 */
 import mockConsole from 'jest-mock-console';
-import Registry, { OverwritePolicy } from '../../src/models/Registry';
+import { Registry, OverwritePolicy } from '../../src/models/Registry';
 
 describe('Registry', () => {
   it('exists', () => {
@@ -108,9 +108,9 @@ describe('Registry', () => {
       registry.registerLoader('b', () => 'testValue2');
       expect(registry.get('b')).toBe('testValue2');
     });
-    it('returns null if the item with specified key does not exist', () => {
+    it('returns undefined if the item with specified key does not exist', () => {
       const registry = new Registry();
-      expect(registry.get('a')).toBeNull();
+      expect(registry.get('a')).toBeUndefined();
     });
     it('If the key was registered multiple times, returns the most recent item.', () => {
       const registry = new Registry();
@@ -255,7 +255,7 @@ describe('Registry', () => {
       const registry = new Registry();
       registry.registerValue('a', 'testValue');
       registry.remove('a');
-      expect(registry.get('a')).toBeNull();
+      expect(registry.get('a')).toBeUndefined();
     });
     it('does not throw error if the key does not exist', () => {
       const registry = new Registry();
