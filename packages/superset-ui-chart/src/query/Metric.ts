@@ -31,7 +31,7 @@ export enum ExpressionType {
   SQL = 'SQL',
 }
 
-interface MetricSimple {
+interface SimpleMetric {
   expressionType: ExpressionType.SIMPLE;
   column: Column;
   aggregate: Aggregate;
@@ -39,24 +39,24 @@ interface MetricSimple {
   optionName?: string;
 }
 
-interface MetricSQL {
+interface SQLMetric {
   expressionType: ExpressionType.SQL;
   sqlExpression: string;
   label?: string;
   optionName?: string;
 }
 
-interface MetriBuiltin {
+interface BuiltInMetric {
   expressionType: ExpressionType.BUILTIN;
   label: string;
 }
 
 // Type of metrics in form data
-export type FormDataMetric = string | MetricSQL | MetricSimple;
+export type FormDataMetric = string | SQLMetric | SimpleMetric;
 
 // Type of Metric the client provides to server after unifying various forms
 // of metrics in form data
-export type Metric = MetriBuiltin | MetricSQL | MetricSimple;
+export type Metric = BuiltInMetric | SQLMetric | SimpleMetric;
 
 export class Metrics {
   // Use Array to maintain insertion order for metrics that are order sensitive
@@ -102,7 +102,7 @@ export class Metrics {
     }
   }
 
-  private getDefaultLabel(metric: MetricSQL | MetricSimple) {
+  private getDefaultLabel(metric: SQLMetric | SimpleMetric) {
     let label: string;
     if (metric.expressionType === ExpressionType.SIMPLE) {
       label = `${metric.aggregate}(${metric.column.columnName})`;
