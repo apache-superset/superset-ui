@@ -19,18 +19,21 @@ describe('Preset', () => {
       class Plugin1 extends Plugin {
         register() {
           values.push(1);
+
           return this;
         }
       }
       class Plugin2 extends Plugin {
         register() {
           values.push(2);
+
           return this;
         }
       }
       class Plugin3 extends Plugin {
         register() {
           values.push(3);
+
           return this;
         }
       }
@@ -38,6 +41,7 @@ describe('Preset', () => {
         register() {
           const { key } = this.config;
           values.push(key);
+
           return this;
         }
       }

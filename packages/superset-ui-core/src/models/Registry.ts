@@ -12,6 +12,7 @@ export default class Registry {
   items: {
     [key: string]: any;
   };
+
   promises: {
     [key: string]: Promise<any>;
   };
@@ -30,13 +31,13 @@ export default class Registry {
     return this;
   }
 
-  has(key) {
+  has(key: string) {
     const item = this.items[key];
 
     return item !== null && item !== undefined;
   }
 
-  registerValue(key, value) {
+  registerValue(key: string, value): Registry {
     const item = this.items[key];
     if (item && item.value !== value) {
       if (this.overwritePolicy === OverwritePolicy.WARN) {
@@ -53,7 +54,7 @@ export default class Registry {
     return this;
   }
 
-  registerLoader(key, loader) {
+  registerLoader(key: string, loader: () => any): Registry {
     const item = this.items[key];
     if (item && item.loader !== loader) {
       if (this.overwritePolicy === OverwritePolicy.WARN) {
@@ -70,7 +71,7 @@ export default class Registry {
     return this;
   }
 
-  get(key) {
+  get(key: string): any {
     const item = this.items[key];
     if (item) {
       return item.loader ? item.loader() : item.value;
@@ -79,7 +80,7 @@ export default class Registry {
     return null;
   }
 
-  getAsPromise(key) {
+  getAsPromise(key: string): Promise<any> {
     const promise = this.promises[key];
     if (promise) {
       return promise;
@@ -95,7 +96,9 @@ export default class Registry {
     return Promise.reject(new Error(`Item with key "${key}" is not registered.`));
   }
 
-  getMap() {
+  getMap(): {
+    [key: string]: any;
+  } {
     return this.keys().reduce((prev, key) => {
       const map = prev;
       map[key] = this.get(key);
@@ -104,7 +107,9 @@ export default class Registry {
     }, {});
   }
 
-  getMapAsPromise() {
+  getMapAsPromise(): Promise<{
+    [key: string]: any;
+  }> {
     const keys = this.keys();
 
     return Promise.all(keys.map(key => this.getAsPromise(key))).then(values =>
@@ -117,26 +122,26 @@ export default class Registry {
     );
   }
 
-  keys() {
+  keys(): Array<string> {
     return Object.keys(this.items);
   }
 
-  values() {
+  values(): Array<any> {
     return this.keys().map(key => this.get(key));
   }
 
-  valuesAsPromise() {
+  valuesAsPromise(): Promise<Array<any>> {
     return Promise.all(this.keys().map(key => this.getAsPromise(key)));
   }
 
-  entries() {
+  entries(): Array<{ key: string; value: any }> {
     return this.keys().map(key => ({
       key,
       value: this.get(key),
     }));
   }
 
-  entriesAsPromise() {
+  entriesAsPromise(): Promise<Array<{ key: string; value: any }>> {
     const keys = this.keys();
 
     return Promise.all(keys.map(key => this.getAsPromise(key))).then(values =>
@@ -147,7 +152,7 @@ export default class Registry {
     );
   }
 
-  remove(key) {
+  remove(key: string): Registry {
     delete this.items[key];
     delete this.promises[key];
 

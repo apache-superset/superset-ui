@@ -23,7 +23,7 @@ export default class RegistryWithDefaultKey extends Registry {
     return super.get(key || this.defaultKey);
   }
 
-  registerValue(key, value) {
+  registerValue(key: string, value: any) {
     super.registerValue(key, value);
     // If there is no default, set as default
     if (this.setFirstItemAsDefault && !this.defaultKey) {
@@ -33,7 +33,7 @@ export default class RegistryWithDefaultKey extends Registry {
     return this;
   }
 
-  registerLoader(key, loader) {
+  registerLoader(key: string, loader: () => any) {
     super.registerLoader(key, loader);
     // If there is no default, set as default
     if (this.setFirstItemAsDefault && !this.defaultKey) {
@@ -47,7 +47,7 @@ export default class RegistryWithDefaultKey extends Registry {
     return this.defaultKey;
   }
 
-  setDefaultKey(key) {
+  setDefaultKey(key: string) {
     this.defaultKey = key;
 
     return this;
