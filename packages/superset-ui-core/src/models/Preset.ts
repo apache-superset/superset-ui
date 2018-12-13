@@ -3,15 +3,15 @@ import Plugin from './Plugin';
 export interface PresetConfig {
   name?: string;
   description?: string;
-  presets?: Array<Preset>;
-  plugins?: Array<Plugin>;
+  presets?: Preset[];
+  plugins?: Plugin[];
 }
 
 export default class Preset {
   name: string;
   description: string;
-  presets: Array<Preset>;
-  plugins: Array<Plugin>;
+  presets: Preset[];
+  plugins: Plugin[];
 
   constructor(config: PresetConfig = {}) {
     const { name = '', description = '', presets = [], plugins = [] } = config;

@@ -148,7 +148,7 @@ export class Registry<V> {
     );
   }
 
-  keys(): Array<string> {
+  keys(): string[] {
     return Object.keys(this.items);
   }
 
@@ -156,7 +156,7 @@ export class Registry<V> {
     return this.keys().map(key => this.get(key));
   }
 
-  valuesAsPromise(): Promise<Array<V>> {
+  valuesAsPromise(): Promise<V[]> {
     return Promise.all(this.keys().map(key => this.getAsPromise(key)));
   }
 
