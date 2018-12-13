@@ -1,12 +1,18 @@
-import Registry from './Registry';
+import { Registry, RegistryConfig } from './Registry';
 
-export default class RegistryWithDefaultKey<V> extends Registry<V> {
+export interface RegistryWithDefaultKeyConfig extends RegistryConfig {
+  initialDefaultKey?: string;
+  setFirstItemAsDefault?: boolean;
+}
+
+export class RegistryWithDefaultKey<V> extends Registry<V> {
   initialDefaultKey?: string;
   defaultKey?: string;
   setFirstItemAsDefault: boolean;
 
-  constructor({ initialDefaultKey = undefined, setFirstItemAsDefault = false, ...rest } = {}) {
-    super(rest);
+  constructor(config: RegistryWithDefaultKeyConfig = {}) {
+    super(config);
+    const { initialDefaultKey = undefined, setFirstItemAsDefault = false } = config;
     this.initialDefaultKey = initialDefaultKey;
     this.defaultKey = initialDefaultKey;
     this.setFirstItemAsDefault = setFirstItemAsDefault;

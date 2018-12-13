@@ -1,12 +1,20 @@
 import Plugin from './Plugin';
 
+export interface PresetConfig {
+  name?: string;
+  description?: string;
+  presets?: Array<Preset>;
+  plugins?: Array<Plugin>;
+}
+
 export default class Preset {
   name: string;
   description: string;
   presets: Array<Preset>;
   plugins: Array<Plugin>;
 
-  constructor({ name = '', description = '', presets = [], plugins = [] } = {}) {
+  constructor(config: PresetConfig = {}) {
+    const { name = '', description = '', presets = [], plugins = [] } = config;
     this.name = name;
     this.description = description;
     this.presets = presets;

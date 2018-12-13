@@ -6,7 +6,12 @@ export enum OverwritePolicy {
   WARN = 'WARN',
 }
 
-export default class Registry<V> {
+export interface RegistryConfig {
+  name?: string;
+  overwritePolicy?: OverwritePolicy;
+}
+
+export class Registry<V> {
   name: string;
   overwritePolicy: OverwritePolicy;
   items: {
@@ -20,7 +25,8 @@ export default class Registry<V> {
     [key: string]: Promise<V>;
   };
 
-  constructor({ name = '', overwritePolicy = OverwritePolicy.ALLOW } = {}) {
+  constructor(config: RegistryConfig = {}) {
+    const { name = '', overwritePolicy = OverwritePolicy.ALLOW } = config;
     this.overwritePolicy = overwritePolicy;
     this.name = name;
     this.items = {};
