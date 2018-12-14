@@ -26,7 +26,9 @@ export class RegistryWithDefaultKey<V> extends Registry<V> {
   }
 
   get(key?: string) {
-    return super.get(key || this.defaultKey || '');
+    const targetKey = key || this.defaultKey;
+
+    return targetKey ? super.get(targetKey) : undefined;
   }
 
   registerValue(key: string, value: V) {
@@ -55,6 +57,12 @@ export class RegistryWithDefaultKey<V> extends Registry<V> {
 
   setDefaultKey(key: string) {
     this.defaultKey = key;
+
+    return this;
+  }
+
+  clearDefaultKey() {
+    this.defaultKey = undefined;
 
     return this;
   }

@@ -94,9 +94,9 @@ export class Registry<V> {
     if (item !== undefined) {
       if ('loader' in item) {
         return item.loader();
-      } else if ('value' in item) {
-        return item.value;
       }
+
+      return item.value;
     }
 
     return undefined;
