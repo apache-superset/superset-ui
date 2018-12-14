@@ -2,6 +2,7 @@ import fetchMock from 'fetch-mock';
 import { SupersetClientClass, SupersetClient } from '@superset-ui/connection';
 
 import { ChartClient, getChartBuildQueryRegistry, buildQueryContext, FormData } from '../../src';
+import { SliceIdAndOrFormData } from '../../src/clients/ChartClient';
 import { LOGIN_GLOB } from '../../../superset-ui-connection/test/fixtures/constants';
 
 describe('ChartClient', () => {
@@ -71,16 +72,18 @@ describe('ChartClient', () => {
       expect(
         chartClient.loadFormData({
           formData: {
+            datasource: '1__table',
             granularity: 'minute',
             viz_type: 'line',
           },
         }),
       ).resolves.toEqual({
+        datasource: '1__table',
         granularity: 'minute',
         viz_type: 'line',
       }));
     it('rejects if none of sliceId or formData is specified', () =>
-      expect(chartClient.loadFormData({})).rejects.toEqual(
+      expect(chartClient.loadFormData({} as SliceIdAndOrFormData)).rejects.toEqual(
         new Error('At least one of sliceId or formData must be specified'),
       ));
   });

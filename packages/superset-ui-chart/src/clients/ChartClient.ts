@@ -9,10 +9,14 @@ import {
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
 import { FormData, AnnotationLayerMetadata } from '../query/FormData';
 
-interface SliceIdAndOrFormData {
-  sliceId?: number;
-  formData?: Partial<FormData>;
-}
+export type SliceIdAndOrFormData =
+  | {
+      sliceId: number;
+      formData?: Partial<FormData>;
+    }
+  | {
+      formData: FormData;
+    };
 
 interface AnnotationData {
   [key: string]: object;
@@ -39,7 +43,7 @@ export class ChartClient {
 
   loadFormData(input: SliceIdAndOrFormData, options?: RequestConfig): Promise<FormData> {
     /* If sliceId is provided, use it to fetch stored formData from API */
-    if (input.sliceId) {
+    if ('sliceId' in input) {
       const promise = this.client
         .get({
           endpoint: `/api/v1/formData/?slice_id=${input.sliceId}`,
@@ -52,15 +56,10 @@ export class ChartClient {
        * If formData is also specified, override API result
        * with user-specified formData
        */
-      return input.formData
-        ? promise.then(
-            (dbFormData: object) =>
-              ({
-                ...dbFormData,
-                ...input.formData,
-              } as FormData),
-          )
-        : promise.then((dbFormData: object) => dbFormData as FormData);
+      return promise.then((dbFormData: FormData) => ({
+        ...dbFormData,
+        ...input.formData,
+      }));
     }
 
     /* If sliceId is not provided, returned formData wrapped in a Promise */
