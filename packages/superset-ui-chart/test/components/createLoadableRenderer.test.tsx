@@ -87,7 +87,7 @@ describe('createLoadableRenderer', () => {
       }, 10);
     });
 
-    it('does not throw if loading is delayed', () => {
+    it('does not throw if loaders are empty', () => {
       const NeverLoadingRenderer = createLoadableRenderer({
         loader: {},
         loading,
