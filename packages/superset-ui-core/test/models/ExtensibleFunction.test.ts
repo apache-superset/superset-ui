@@ -2,14 +2,14 @@ import ExtensibleFunction from '../../src/models/ExtensibleFunction';
 
 describe('ExtensibleFunction', () => {
   class Func1 extends ExtensibleFunction {
-    constructor(x) {
+    constructor(x: any) {
       super(() => x); // closure
     }
   }
   class Func2 extends ExtensibleFunction {
     x: any;
 
-    constructor(x) {
+    constructor(x: any) {
       super(() => this.x); // arrow function, refer to its own field
       this.x = x;
     }

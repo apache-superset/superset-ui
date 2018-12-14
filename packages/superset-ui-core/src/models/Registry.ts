@@ -6,20 +6,20 @@ export enum OverwritePolicy {
   WARN = 'WARN',
 }
 
-interface ItemWithValue<V> {
-  value: V;
+interface ItemWithValue<T> {
+  value: T;
 }
 
-function isItemWithValue<V>(item: any): item is ItemWithValue<V> {
-  return item && item.value;
+function isItemWithValue<T>(item: any): item is ItemWithValue<T> {
+  return item.value;
 }
 
-interface ItemWithLoader<V> {
-  loader: () => V | Promise<V>;
+interface ItemWithLoader<T> {
+  loader: () => T | Promise<T>;
 }
 
-function isItemWithLoader<V>(item: any): item is ItemWithLoader<V> {
-  return item && item.loader;
+function isItemWithLoader<T>(item: any): item is ItemWithLoader<T> {
+  return item.loader;
 }
 
 export interface RegistryConfig {
@@ -61,7 +61,8 @@ export class Registry<V> {
 
   registerValue(key: string, value: V) {
     const item = this.items[key];
-    if (isItemWithValue<V>(item) && item.value !== value) {
+    const willOverwrite = item && isItemWithValue<V>(item) && item.value !== value;
+    if (willOverwrite) {
       if (this.overwritePolicy === OverwritePolicy.WARN) {
         console.warn(`Item with key "${key}" already exists. You are assigning a new value.`);
       } else if (this.overwritePolicy === OverwritePolicy.PROHIBIT) {
@@ -70,7 +71,7 @@ export class Registry<V> {
 
       return this;
     }
-    if (!item || (isItemWithValue<V>(item) && item.value !== value)) {
+    if (!item || willOverwrite) {
       this.items[key] = { value };
       delete this.promises[key];
     }
@@ -79,15 +80,16 @@ export class Registry<V> {
   }
 
   registerLoader(key: string, loader: () => V | Promise<V>) {
-    const item = this.items[key];
-    if (isItemWithLoader<V>(item) && item.loader !== loader) {
+    const item: ItemWithLoader<V> | ItemWithValue<V> | undefined = this.items[key];
+    const willOverwrite = item && isItemWithLoader<V>(item) && item.loader !== loader;
+    if (willOverwrite) {
       if (this.overwritePolicy === OverwritePolicy.WARN) {
         console.warn(`Item with key "${key}" already exists. You are assigning a new value.`);
       } else if (this.overwritePolicy === OverwritePolicy.PROHIBIT) {
         throw new Error(`Item with key "${key}" already exists. Cannot overwrite.`);
       }
     }
-    if (!item || (isItemWithLoader<V>(item) && item.loader !== loader)) {
+    if (!item || willOverwrite) {
       this.items[key] = { loader };
       delete this.promises[key];
     }

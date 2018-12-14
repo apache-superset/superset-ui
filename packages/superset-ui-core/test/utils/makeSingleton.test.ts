@@ -3,9 +3,9 @@ import makeSingleton from '../../src/utils/makeSingleton';
 describe('makeSingleton()', () => {
   class Dog {
     name: string;
-    isSitting: boolean;
+    isSitting?: boolean;
 
-    constructor(name) {
+    constructor(name: string) {
       this.name = name;
     }
 
