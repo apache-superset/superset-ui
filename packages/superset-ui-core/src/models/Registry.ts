@@ -61,15 +61,13 @@ export class Registry<V> {
 
   registerValue(key: string, value: V) {
     const item = this.items[key];
-    const willOverwrite = item && 'value' in item && item.value !== value;
+    const willOverwrite = item !== undefined && 'value' in item && item.value !== value;
     if (willOverwrite) {
       if (this.overwritePolicy === OverwritePolicy.WARN) {
         console.warn(`Item with key "${key}" already exists. You are assigning a new value.`);
       } else if (this.overwritePolicy === OverwritePolicy.PROHIBIT) {
         throw new Error(`Item with key "${key}" already exists. Cannot overwrite.`);
       }
-
-      return this;
     }
     if (!item || willOverwrite) {
       this.items[key] = { value };
@@ -80,8 +78,8 @@ export class Registry<V> {
   }
 
   registerLoader(key: string, loader: () => V | Promise<V>) {
-    const item: ItemWithLoader<V> | ItemWithValue<V> | undefined = this.items[key];
-    const willOverwrite = item && 'loader' in item && item.loader !== loader;
+    const item = this.items[key];
+    const willOverwrite = item !== undefined && 'loader' in item && item.loader !== loader;
     if (willOverwrite) {
       if (this.overwritePolicy === OverwritePolicy.WARN) {
         console.warn(`Item with key "${key}" already exists. You are assigning a new value.`);
@@ -99,10 +97,10 @@ export class Registry<V> {
 
   get(key: string): V | Promise<V> | undefined {
     const item = this.items[key];
-    if (item) {
-      if (isItemWithLoader(item)) {
+    if (item !== undefined) {
+      if ('loader' in item) {
         return item.loader();
-      } else if (isItemWithValue(item)) {
+      } else if ('value' in item) {
         return item.value;
       }
     }
@@ -116,7 +114,7 @@ export class Registry<V> {
       return promise;
     }
     const item = this.get(key);
-    if (item) {
+    if (item !== undefined) {
       const newPromise = Promise.resolve(item);
       this.promises[key] = newPromise;
 
