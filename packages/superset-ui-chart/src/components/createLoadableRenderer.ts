@@ -36,10 +36,10 @@ export default function createLoadableRenderer<Props, Exports>(
       const { loaded, loading, error } = this.state;
       const { onRenderFailure, onRenderSuccess } = this.props;
       if (!loading) {
-        if (error && onRenderFailure) {
-          onRenderFailure(error);
-        } else if (loaded && Object.keys(loaded).length > 0 && onRenderSuccess) {
-          onRenderSuccess();
+        if (error) {
+          (onRenderFailure as Function)(error);
+        } else if (loaded && Object.keys(loaded).length > 0) {
+          (onRenderSuccess as Function)();
         }
       }
     }

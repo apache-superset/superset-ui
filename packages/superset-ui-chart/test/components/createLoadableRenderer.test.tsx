@@ -87,18 +87,14 @@ describe('createLoadableRenderer', () => {
       }, 10);
     });
 
-    // this gets branch coverage up, tho it doesn't make much sense
-    it('does not throw if when failure occurrs and onRenderFailure is not defined', () => {
-      const loadChartFailure = jest.fn(() => Promise.reject(new Error('Invalid chart')));
-      const FailedRenderer = createLoadableRenderer({
-        loader: {
-          Chart: loadChartFailure,
-        },
+    it('does not throw if loading is delayed', () => {
+      const NeverLoadingRenderer = createLoadableRenderer({
+        loader: {},
         loading,
         render,
       });
 
-      expect(() => shallow(<FailedRenderer onRenderFailure={undefined} />)).not.toThrow();
+      expect(() => shallow(<NeverLoadingRenderer />)).not.toThrow();
     });
   });
 });
