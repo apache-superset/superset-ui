@@ -1,9 +1,9 @@
 export { default as ExtensibleFunction } from './models/ExtensibleFunction';
 export { default as Plugin } from './models/Plugin';
-export { Preset, PresetConfig } from './models/Preset';
-export { Registry, RegistryConfig, OverwritePolicy } from './models/Registry';
+export { default as Preset, PresetConfig } from './models/Preset';
+export { default as Registry, RegistryConfig, OverwritePolicy } from './models/Registry';
 export {
-  RegistryWithDefaultKey,
+  default as RegistryWithDefaultKey,
   RegistryWithDefaultKeyConfig,
 } from './models/RegistryWithDefaultKey';
 

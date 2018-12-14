@@ -7,7 +7,7 @@ export interface PresetConfig {
   plugins?: Plugin[];
 }
 
-export class Preset {
+export default class Preset {
   name: string;
   description: string;
   presets: Preset[];

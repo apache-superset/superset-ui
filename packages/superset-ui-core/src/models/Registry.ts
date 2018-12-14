@@ -19,7 +19,7 @@ export interface RegistryConfig {
   overwritePolicy?: OverwritePolicy;
 }
 
-export class Registry<V> {
+export default class Registry<V> {
   name: string;
   overwritePolicy: OverwritePolicy;
   items: {

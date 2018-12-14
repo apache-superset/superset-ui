@@ -1,6 +1,6 @@
 /* eslint no-console: 0 */
 import mockConsole from 'jest-mock-console';
-import { Registry, OverwritePolicy } from '../../src/models/Registry';
+import Registry, { OverwritePolicy } from '../../src/models/Registry';
 
 describe('Registry', () => {
   it('exists', () => {
