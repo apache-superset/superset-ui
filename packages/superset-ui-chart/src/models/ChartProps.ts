@@ -31,7 +31,7 @@ export interface ChartPropsConfig {
 
 function NOOP() {}
 
-export class ChartProps {
+export default class ChartProps {
   static createSelector: () => ChartPropsSelector;
 
   annotationData: AnnotationData;

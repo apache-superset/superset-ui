@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createSelector } from 'reselect';
 import getChartComponentRegistry from '../registries/ChartBuildQueryRegistrySingleton';
 import getChartTransformPropsRegistry from '../registries/ChartTransformPropsRegistrySingleton';
-import { ChartProps } from '../models/ChartProps';
+import ChartProps from '../models/ChartProps';
 import createLoadableRenderer, { LoadableRenderer } from './createLoadableRenderer';
 
 const IDENTITY = (x: any) => x;
@@ -13,6 +13,7 @@ const EMPTY = () => null;
 const defaultProps = {
   id: '',
   className: '',
+  chartProps: {},
   preTransformProps: IDENTITY,
   overrideTransformProps: undefined,
   postTransformProps: IDENTITY,
@@ -42,7 +43,7 @@ interface RenderProps {
 export interface SuperChartProps {
   id?: string;
   className?: string;
-  chartProps: ChartProps;
+  chartProps?: ChartProps;
   chartType: string;
   preTransformProps?: TransformFunction;
   overrideTransformProps?: TransformFunction;
