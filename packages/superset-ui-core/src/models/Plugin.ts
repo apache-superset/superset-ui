@@ -9,7 +9,7 @@ export default class Plugin {
     this.config = {};
   }
 
-  resetConfig(): Plugin {
+  resetConfig() {
     // The child class can set default config
     // by overriding this function.
     this.config = {};
@@ -17,13 +17,13 @@ export default class Plugin {
     return this;
   }
 
-  configure(config: PlainObject, replace: boolean = false): Plugin {
+  configure(config: PlainObject, replace: boolean = false) {
     this.config = replace ? config : { ...this.config, ...config };
 
     return this;
   }
 
-  register(): Plugin {
+  register() {
     return this;
   }
 }

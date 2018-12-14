@@ -10,16 +10,8 @@ interface ItemWithValue<T> {
   value: T;
 }
 
-function isItemWithValue<T>(item: any): item is ItemWithValue<T> {
-  return 'value' in item;
-}
-
 interface ItemWithLoader<T> {
   loader: () => T | Promise<T>;
-}
-
-function isItemWithLoader<T>(item: any): item is ItemWithLoader<T> {
-  return 'loader' in item;
 }
 
 export interface RegistryConfig {
@@ -61,7 +53,8 @@ export class Registry<V> {
 
   registerValue(key: string, value: V) {
     const item = this.items[key];
-    const willOverwrite = item !== undefined && 'value' in item && item.value !== value;
+    const willOverwrite =
+      this.has(key) && (('value' in item && item.value !== value) || 'loader' in item);
     if (willOverwrite) {
       if (this.overwritePolicy === OverwritePolicy.WARN) {
         console.warn(`Item with key "${key}" already exists. You are assigning a new value.`);
@@ -79,7 +72,8 @@ export class Registry<V> {
 
   registerLoader(key: string, loader: () => V | Promise<V>) {
     const item = this.items[key];
-    const willOverwrite = item !== undefined && 'loader' in item && item.loader !== loader;
+    const willOverwrite =
+      this.has(key) && (('loader' in item && item.loader !== loader) || 'value' in item);
     if (willOverwrite) {
       if (this.overwritePolicy === OverwritePolicy.WARN) {
         console.warn(`Item with key "${key}" already exists. You are assigning a new value.`);

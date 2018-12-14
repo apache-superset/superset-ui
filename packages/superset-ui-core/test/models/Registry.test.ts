@@ -66,6 +66,13 @@ describe('Registry', () => {
       const promise3 = registry.getAsPromise('a');
       expect(promise1).not.toBe(promise3);
     });
+    it('overwrites item with loader', () => {
+      const registry = new Registry();
+      registry.registerLoader('a', () => 'ironman');
+      expect(registry.get('a')).toBe('ironman');
+      registry.registerValue('a', 'hulk');
+      expect(registry.get('a')).toBe('hulk');
+    });
     it('returns the registry itself', () => {
       const registry = new Registry();
       expect(registry.registerValue('a', 'testValue')).toBe(registry);
@@ -90,6 +97,13 @@ describe('Registry', () => {
       registry.registerLoader('a', () => 'testValue');
       const promise3 = registry.getAsPromise('a');
       expect(promise1).not.toBe(promise3);
+    });
+    it('overwrites item with value', () => {
+      const registry = new Registry();
+      registry.registerValue('a', 'hulk');
+      expect(registry.get('a')).toBe('hulk');
+      registry.registerLoader('a', () => 'ironman');
+      expect(registry.get('a')).toBe('ironman');
     });
     it('returns the registry itself', () => {
       const registry = new Registry();

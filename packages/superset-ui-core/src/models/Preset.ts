@@ -7,7 +7,7 @@ export interface PresetConfig {
   plugins?: Plugin[];
 }
 
-export default class Preset {
+export class Preset {
   name: string;
   description: string;
   presets: Preset[];
@@ -21,7 +21,7 @@ export default class Preset {
     this.plugins = plugins;
   }
 
-  register(): Preset {
+  register() {
     this.presets.forEach(preset => {
       preset.register();
     });
