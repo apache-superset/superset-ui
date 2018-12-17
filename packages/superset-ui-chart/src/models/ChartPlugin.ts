@@ -67,7 +67,7 @@ export default class ChartPlugin extends Plugin {
     }
   }
 
-  register(): ChartPlugin {
+  register() {
     const { key = isRequired('config.key') } = this.config;
     getChartMetadataRegistry().registerValue(key, this.metadata);
     getChartBuildQueryRegistry().registerLoader(key, this.loadBuildQuery);
@@ -77,7 +77,9 @@ export default class ChartPlugin extends Plugin {
     return this;
   }
 
-  configure(config: { [key: string]: any }): ChartPlugin {
-    return super.configure(config);
+  configure(config: { [key: string]: any }, replace?: boolean) {
+    super.configure(config, replace);
+
+    return this;
   }
 }

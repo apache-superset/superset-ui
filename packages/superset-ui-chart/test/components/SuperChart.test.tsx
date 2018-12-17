@@ -1,13 +1,11 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import ChartMetadata from '../../src/models/ChartMetadata';
 import ChartPlugin from '../../src/models/ChartPlugin';
 import SuperChart from '../../src/components/SuperChart';
 
 describe('SuperChart', () => {
-  function TestComponent() {
-    return <div className="test-component">test</div>;
-  }
+  const TestComponent = () => <div className="test-component">test-component</div>;
 
   class MyChartPlugin extends ChartPlugin {
     constructor() {
@@ -29,7 +27,7 @@ describe('SuperChart', () => {
           name: 'another-chart',
           thumbnail: '',
         }),
-        Chart: () =>
+        loadChart: () =>
           new Promise(resolve => {
             setTimeout(() => {
               resolve(TestComponent);
@@ -40,29 +38,28 @@ describe('SuperChart', () => {
     }
   }
 
+  new MyChartPlugin().configure({ key: 'my-chart' }).register();
+  new AnotherChartPlugin().configure({ key: 'another-chart' }).register();
+
   it('renders registered chart', done => {
-    new MyChartPlugin().configure({ key: 'my-chart' }).register();
     const wrapper = shallow(<SuperChart chartType="my-chart" />);
     setTimeout(() => {
-      expect(wrapper.find(TestComponent)).toHaveLength(1);
+      expect(wrapper.render().find('div.test-component')).toHaveLength(1);
       done();
-    }, 100);
+    }, 10);
   });
-  it('renders unregistered chart', done => {
-    const wrapper = shallow(<SuperChart chartType="4d-pie-chart" />);
+  it('renders error message for unregistered chart', done => {
+    const wrapper = mount(<SuperChart chartType="4d-pie-chart" />);
     setTimeout(() => {
-      expect(wrapper.find('div')).toHaveLength(1);
+      expect(wrapper.render().find('.alert')).toHaveLength(1);
       done();
     }, 10);
   });
   it('renders loading', done => {
-    new AnotherChartPlugin().configure({ key: 'another-chart' }).register();
     const wrapper = shallow(<SuperChart chartType="another-chart" />);
     setTimeout(() => {
-      const div = wrapper.find('div.alert');
-      console.log('innerHTML', wrapper.html());
-      expect(div).toHaveLength(1);
+      expect(wrapper.render().find('.alert')).toHaveLength(0);
       done();
-    }, 20);
+    }, 10);
   });
 });

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { createSelector } from 'reselect';
-import getChartComponentRegistry from '../registries/ChartBuildQueryRegistrySingleton';
+import getChartComponentRegistry from '../registries/ChartComponentRegistrySingleton';
 import getChartTransformPropsRegistry from '../registries/ChartTransformPropsRegistrySingleton';
 import ChartProps from '../models/ChartProps';
 import createLoadableRenderer, { LoadableRenderer } from './createLoadableRenderer';
@@ -161,7 +161,7 @@ class SuperChart extends React.PureComponent<SuperChartProps, {}> {
         <div className="alert alert-warning" role="alert">
           <strong>ERROR</strong>&nbsp;
           <code>chartType=&quot;{chartType}&quot;</code> &mdash;
-          {JSON.stringify(error)}
+          {error.toString()}
         </div>
       );
     }
@@ -191,8 +191,19 @@ class SuperChart extends React.PureComponent<SuperChartProps, {}> {
       return null;
     }
 
+    const containerProps: {
+      id?: string;
+      className?: string;
+    } = {};
+    if (id) {
+      containerProps.id = id;
+    }
+    if (className) {
+      containerProps.className = className;
+    }
+
     return (
-      <div id={id} className={className}>
+      <div {...containerProps}>
         <Renderer
           preTransformProps={preTransformProps}
           postTransformProps={postTransformProps}
