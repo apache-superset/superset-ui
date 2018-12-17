@@ -13,7 +13,6 @@ const EMPTY = () => null;
 const defaultProps = {
   id: '',
   className: '',
-  chartProps: {},
   preTransformProps: IDENTITY,
   overrideTransformProps: undefined,
   postTransformProps: IDENTITY,
@@ -40,10 +39,12 @@ interface RenderProps {
   postTransformProps?: TransformFunction;
 }
 
+const BLANK_CHART_PROPS = new ChartProps();
+
 export interface SuperChartProps {
   id?: string;
   className?: string;
-  chartProps?: ChartProps;
+  chartProps?: ChartProps | null;
   chartType: string;
   preTransformProps?: TransformFunction;
   overrideTransformProps?: TransformFunction;
@@ -79,7 +80,7 @@ class SuperChart extends React.PureComponent<SuperChartProps, {}> {
       input => input.postTransformProps,
       input => input.chartProps,
       (pre = IDENTITY, transform = IDENTITY, post = IDENTITY, chartProps) =>
-        post(transform(pre(chartProps))),
+        chartProps ? post(transform(pre(chartProps))) : chartProps,
     );
 
     const componentRegistry = getChartComponentRegistry();
@@ -175,7 +176,7 @@ class SuperChart extends React.PureComponent<SuperChartProps, {}> {
       className,
       preTransformProps,
       postTransformProps,
-      chartProps,
+      chartProps = BLANK_CHART_PROPS,
       onRenderSuccess,
       onRenderFailure,
     } = this.props;
@@ -184,10 +185,10 @@ class SuperChart extends React.PureComponent<SuperChartProps, {}> {
     // the lazy-loaded Chart components
     const Renderer = this.createLoadableRenderer(this.props);
 
-    // Do not render if chartProps is not available.
+    // Do not render if chartProps is set to null.
     // but the pre-loading has been started in this.createLoadableRenderer
     // to prepare for rendering once chartProps becomes available.
-    if (!chartProps) {
+    if (chartProps === null) {
       return null;
     }
 

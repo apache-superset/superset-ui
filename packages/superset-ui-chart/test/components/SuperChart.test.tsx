@@ -1,11 +1,10 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import ChartMetadata from '../../src/models/ChartMetadata';
-import ChartPlugin from '../../src/models/ChartPlugin';
-import SuperChart from '../../src/components/SuperChart';
+import { ChartProps, ChartMetadata, ChartPlugin, SuperChart } from '../../src';
 
 describe('SuperChart', () => {
   const TestComponent = () => <div className="test-component">test-component</div>;
+  const chartProps = new ChartProps();
 
   class MyChartPlugin extends ChartPlugin {
     constructor() {
@@ -38,27 +37,44 @@ describe('SuperChart', () => {
     }
   }
 
-  new MyChartPlugin().configure({ key: 'my-chart' }).register();
   new AnotherChartPlugin().configure({ key: 'another-chart' }).register();
+  new MyChartPlugin().configure({ key: 'my-chart' }).register();
 
-  it('renders registered chart', done => {
-    const wrapper = shallow(<SuperChart chartType="my-chart" />);
-    setTimeout(() => {
-      expect(wrapper.render().find('div.test-component')).toHaveLength(1);
-      done();
-    }, 10);
+  describe('registered charts', () => {
+    it('renders registered chart', done => {
+      const wrapper = shallow(<SuperChart chartType="my-chart" chartProps={chartProps} />);
+      setTimeout(() => {
+        expect(wrapper.render().find('div.test-component')).toHaveLength(1);
+        done();
+      }, 10);
+    });
+    it('renders loading while waiting for Chart code to load', done => {
+      const wrapper = shallow(<SuperChart chartType="another-chart" />);
+      setTimeout(() => {
+        expect(wrapper.render().find('.alert')).toHaveLength(0);
+        done();
+      }, 10);
+    });
+    it('renders if chartProps is not specified', done => {
+      const wrapper = shallow(<SuperChart chartType="my-chart" />);
+      setTimeout(() => {
+        expect(wrapper.render().find('div.test-component')).toHaveLength(1);
+        done();
+      }, 10);
+    });
+    it('does not render if chartProps is null', done => {
+      const wrapper = shallow(<SuperChart chartType="my-chart" chartProps={null} />);
+      setTimeout(() => {
+        expect(wrapper.render().find('div.test-component')).toHaveLength(0);
+        done();
+      }, 10);
+    });
   });
+
   it('renders error message for unregistered chart', done => {
-    const wrapper = mount(<SuperChart chartType="4d-pie-chart" />);
+    const wrapper = mount(<SuperChart chartType="4d-pie-chart" chartProps={chartProps} />);
     setTimeout(() => {
       expect(wrapper.render().find('.alert')).toHaveLength(1);
-      done();
-    }, 10);
-  });
-  it('renders loading', done => {
-    const wrapper = shallow(<SuperChart chartType="another-chart" />);
-    setTimeout(() => {
-      expect(wrapper.render().find('.alert')).toHaveLength(0);
       done();
     }, 10);
   });
