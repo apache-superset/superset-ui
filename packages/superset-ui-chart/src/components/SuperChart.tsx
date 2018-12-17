@@ -57,7 +57,7 @@ function getModule<T>(value: any): T {
   return (value.default ? value.default : value) as T;
 }
 
-class SuperChart extends React.PureComponent<SuperChartProps, {}> {
+export default class SuperChart extends React.PureComponent<SuperChartProps, {}> {
   static defaultProps = defaultProps;
 
   constructor(props: SuperChartProps) {
@@ -80,7 +80,7 @@ class SuperChart extends React.PureComponent<SuperChartProps, {}> {
       input => input.postTransformProps,
       input => input.chartProps,
       (pre = IDENTITY, transform = IDENTITY, post = IDENTITY, chartProps) =>
-        chartProps ? post(transform(pre(chartProps))) : chartProps,
+        post(transform(pre(chartProps))),
     );
 
     const componentRegistry = getChartComponentRegistry();
@@ -216,5 +216,3 @@ class SuperChart extends React.PureComponent<SuperChartProps, {}> {
     );
   }
 }
-
-export default SuperChart;

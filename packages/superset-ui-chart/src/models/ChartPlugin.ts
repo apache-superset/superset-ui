@@ -11,7 +11,7 @@ import getChartTransformPropsRegistry from '../registries/ChartTransformPropsReg
 const IDENTITY = (x: any) => x;
 
 type PromiseOrValue<T> = Promise<T> | T;
-type PromiseOrValueLoader<T> = () => PromiseOrValue<T>;
+type PromiseOrValueLoader<T> = () => PromiseOrValue<T> | PromiseOrValue<{ default: T }>;
 
 export type BuildQueryFunction = (formData: FormData) => QueryContext;
 
