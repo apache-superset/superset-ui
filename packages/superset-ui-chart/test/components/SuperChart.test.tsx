@@ -42,7 +42,7 @@ describe('SuperChart', () => {
           thumbnail: '',
         }),
         loadChart: () =>
-          new Promise(resolve => {
+          new Promise<Function>(resolve => {
             setTimeout(() => {
               resolve(TestComponent);
             }, 1000);
@@ -165,8 +165,8 @@ describe('SuperChart', () => {
       const chart = new SuperChart({
         chartType: 'my-chart',
       });
-      const chartProps = new ChartProps();
-      expect(chart.processChartProps({ chartProps })).toBe(chartProps);
+      const chartProps2 = new ChartProps();
+      expect(chart.processChartProps({ chartProps: chartProps2 })).toBe(chartProps2);
     });
   });
 });
