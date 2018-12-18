@@ -8,7 +8,7 @@ export default class ColorSchemeRegistry<T> extends RegistryWithDefaultKey<T> {
     });
   }
 
-  get(key?: string): T | undefined {
+  get(key?: string) {
     return super.get(key) as T | undefined;
   }
 }

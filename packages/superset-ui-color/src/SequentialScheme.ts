@@ -1,4 +1,4 @@
-import { scaleLinear, ScaleLinear } from 'd3-scale';
+import { scaleLinear } from 'd3-scale';
 import ColorScheme, { ColorSchemeConfig } from './ColorScheme';
 
 function range(count: number): number[] {
@@ -23,7 +23,7 @@ export default class SequentialScheme extends ColorScheme {
     this.isDiverging = isDiverging;
   }
 
-  createLinearScale(extent: number[] = [0, 1]): ScaleLinear<string, string> {
+  createLinearScale(extent: number[] = [0, 1]) {
     // Create matching domain
     // because D3 continuous scale uses piecewise mapping
     // between domain and range.
