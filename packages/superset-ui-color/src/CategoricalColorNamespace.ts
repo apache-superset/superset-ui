@@ -18,15 +18,14 @@ export default class CategoricalColorNamespace {
   }
 
   getScale(schemeId?: string) {
-    const id = schemeId || getCategoricalSchemeRegistry().getDefaultKey();
+    const id = schemeId || getCategoricalSchemeRegistry().getDefaultKey() || '';
     const scale = this.scales[id];
     if (scale) {
       return scale;
     }
-    const newScale = new CategoricalColorScale(
-      getCategoricalSchemeRegistry().get(id).colors,
-      this.forcedItems,
-    );
+    const scheme = getCategoricalSchemeRegistry().get(id);
+
+    const newScale = new CategoricalColorScale((scheme && scheme.colors) || [], this.forcedItems);
     this.scales[id] = newScale;
 
     return newScale;

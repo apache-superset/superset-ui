@@ -1,5 +1,3 @@
-import { isRequired } from '@superset-ui/core';
-
 export interface ColorSchemeConfig {
   colors: string[];
   description?: string;
@@ -14,12 +12,7 @@ export default class ColorScheme {
   label: string;
 
   constructor(config: ColorSchemeConfig) {
-    const {
-      colors = isRequired('colors'),
-      description = '',
-      id = isRequired('id'),
-      label,
-    } = config;
+    const { colors, description = '', id, label } = config;
     this.id = id;
     this.label = label || id;
     this.colors = colors;
