@@ -52,7 +52,7 @@ const namespaces: {
 
 export const DEFAULT_NAMESPACE = 'GLOBAL';
 
-export function getNamespace(name?: string = DEFAULT_NAMESPACE) {
+export function getNamespace(name: string = DEFAULT_NAMESPACE) {
   const instance = namespaces[name];
   if (instance) {
     return instance;

@@ -1,10 +1,10 @@
-import { ExtensibleFunction } from '@superset-ui/core';
 import { ColorsLookup } from './types';
+import { ExtensibleFunction } from '@superset-ui/core';
 import stringifyAndTrim from './stringifyAndTrim';
 
 export default class CategoricalColorScale extends ExtensibleFunction {
   colors: string[];
-  parentForcedColors: ColorsLookup;
+  parentForcedColors?: ColorsLookup;
   forcedColors: ColorsLookup;
   seen: { [key: string]: number };
 
@@ -15,7 +15,7 @@ export default class CategoricalColorScale extends ExtensibleFunction {
    * (usually CategoricalColorNamespace) and supersede this.forcedColors
    */
   constructor(colors: string[], parentForcedColors?: ColorsLookup) {
-    super(value => this.getColor(value));
+    super((value: string) => this.getColor(value));
     this.colors = colors;
     this.parentForcedColors = parentForcedColors;
     this.forcedColors = {};
