@@ -21,11 +21,15 @@ const defaultProps = {
 };
 /* eslint-enable sort-keys */
 
-type TransformFunction = (x: any) => any;
+type TransformFunction<Input = PlainProps, Output = PlainProps> = (x: Input) => Output;
 type HandlerFunction = (...args: any[]) => void;
 
 interface LoadingProps {
   error: any;
+}
+
+interface PlainProps {
+  [key: string]: any;
 }
 
 interface LoadedModules {
@@ -35,7 +39,7 @@ interface LoadedModules {
 
 interface RenderProps {
   chartProps: ChartProps;
-  preTransformProps?: TransformFunction;
+  preTransformProps?: TransformFunction<ChartProps>;
   postTransformProps?: TransformFunction;
 }
 
@@ -46,7 +50,7 @@ export interface SuperChartProps {
   className?: string;
   chartProps?: ChartProps | null;
   chartType: string;
-  preTransformProps?: TransformFunction;
+  preTransformProps?: TransformFunction<ChartProps>;
   overrideTransformProps?: TransformFunction;
   postTransformProps?: TransformFunction;
   onRenderSuccess?: HandlerFunction;
@@ -122,7 +126,7 @@ export default class SuperChart extends React.PureComponent<SuperChartProps, {}>
   processChartProps: (
     input: {
       chartProps: ChartProps;
-      preTransformProps?: TransformFunction;
+      preTransformProps?: TransformFunction<ChartProps>;
       transformProps?: TransformFunction;
       postTransformProps?: TransformFunction;
     },
