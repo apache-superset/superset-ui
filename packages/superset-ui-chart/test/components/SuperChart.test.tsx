@@ -62,28 +62,28 @@ describe('SuperChart', () => {
       setTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(1);
         done();
-      }, 5);
+      }, 0);
     });
     it('renders registered chart with default export', done => {
       const wrapper = shallow(<SuperChart chartType="second-chart" />);
       setTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(1);
         done();
-      }, 5);
+      }, 0);
     });
     it('adds id to container if specified', done => {
       const wrapper = shallow(<SuperChart chartType="my-chart" id="the-chart" />);
       setTimeout(() => {
         expect(wrapper.render().attr('id')).toEqual('the-chart');
         done();
-      }, 5);
+      }, 0);
     });
     it('adds class to container if specified', done => {
       const wrapper = shallow(<SuperChart chartType="my-chart" className="the-chart" />);
       setTimeout(() => {
         expect(wrapper.hasClass('the-chart')).toBeTruthy();
         done();
-      }, 5);
+      }, 0);
     });
     it('uses overrideTransformProps when specified', done => {
       const wrapper = shallow(
@@ -97,7 +97,7 @@ describe('SuperChart', () => {
             .text(),
         ).toEqual('hulk');
         done();
-      }, 5);
+      }, 0);
     });
     it('uses preTransformProps when specified', done => {
       const wrapper = shallow(
@@ -111,7 +111,7 @@ describe('SuperChart', () => {
             .text(),
         ).toEqual('hulk');
         done();
-      }, 5);
+      }, 0);
     });
     it('uses postTransformProps when specified', done => {
       const wrapper = shallow(
@@ -125,28 +125,28 @@ describe('SuperChart', () => {
             .text(),
         ).toEqual('hulk');
         done();
-      }, 5);
+      }, 0);
     });
     it('renders if chartProps is not specified', done => {
       const wrapper = shallow(<SuperChart chartType="my-chart" />);
       setTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(1);
         done();
-      }, 5);
+      }, 0);
     });
     it('does not render anything while waiting for Chart code to load', done => {
       const wrapper = shallow(<SuperChart chartType="slow-chart" />);
       setTimeout(() => {
         expect(wrapper.render().children()).toHaveLength(0);
         done();
-      }, 5);
+      }, 0);
     });
     it('does not render if chartProps is null', done => {
       const wrapper = shallow(<SuperChart chartType="my-chart" chartProps={null} />);
       setTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(0);
         done();
-      }, 5);
+      }, 0);
     });
   });
 
@@ -156,7 +156,7 @@ describe('SuperChart', () => {
       setTimeout(() => {
         expect(wrapper.render().find('.alert')).toHaveLength(1);
         done();
-      }, 5);
+      }, 0);
     });
   });
 
