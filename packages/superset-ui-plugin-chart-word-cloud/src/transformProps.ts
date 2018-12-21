@@ -1,4 +1,6 @@
-function transformData(data, formData) {
+import { ChartProps } from '@superset-ui/chart';
+
+function transformData(data: ChartProps['payload'][], formData: ChartProps['formData']) {
   const { metric, series } = formData;
 
   const transformedData = data.map(datum => ({
@@ -9,7 +11,7 @@ function transformData(data, formData) {
   return transformedData;
 }
 
-export default function transformProps(chartProps) {
+export default function transformProps(chartProps: ChartProps) {
   const { width, height, formData, payload } = chartProps;
   const { colorScheme, rotation, sizeTo, sizeFrom } = formData;
 

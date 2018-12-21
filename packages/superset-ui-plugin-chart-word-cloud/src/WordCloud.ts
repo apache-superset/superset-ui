@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { extent as d3Extent } from 'd3-array';
 import { scaleLinear } from 'd3-scale';
 import { select as d3Select } from 'd3-selection';
@@ -13,32 +12,34 @@ const ROTATION = {
   square: () => Math.floor(Math.random() * 2) * 90,
 };
 
-const propTypes = {
-  colorScheme: PropTypes.string,
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      size: PropTypes.number,
-      text: PropTypes.string,
-    }),
-  ),
-  height: PropTypes.number,
-  rotation: PropTypes.string,
-  sizeRange: PropTypes.arrayOf(PropTypes.number),
-  width: PropTypes.number,
-};
+interface Datum {
+  size: number;
+  text: string;
+}
 
-function WordCloud(element, props) {
+export interface Props {
+  colorScheme: string;
+  data: Datum[];
+  height: number;
+  rotation: 'flat' | 'random' | 'square';
+  sizeRange: number[];
+  width: number;
+}
+
+function WordCloud(element: Element, props: Props) {
   const { data, width, height, rotation, sizeRange, colorScheme } = props;
 
   const chart = d3Select(element);
-  const size = [width, height];
+  const size: [number, number] = [width, height];
   const rotationFn = ROTATION[rotation] || ROTATION.flat;
 
   const scale = scaleLinear()
     .range(sizeRange)
-    .domain(d3Extent(data, d => d.size));
+    .domain(d3Extent(data, d => d.size) as [number, number]);
 
-  const layout = cloudLayout()
+  // TODO: Remove the type casting once the following PR is merged
+  // https://github.com/DefinitelyTyped/DefinitelyTyped/pull/30479
+  const layout = (cloudLayout as () => d3.layout.Cloud<Datum>)()
     .size(size)
     .words(data)
     /* eslint-disable-next-line no-magic-numbers */
@@ -50,7 +51,7 @@ function WordCloud(element, props) {
 
   const colorFn = CategoricalColorNamespace.getScale(colorScheme);
 
-  function draw(words) {
+  function draw(words: d3.layout.cloud.Word[]) {
     chart.selectAll('*').remove();
 
     const [w, h] = layout.size();
@@ -71,13 +72,12 @@ function WordCloud(element, props) {
       .style('fill', d => colorFn(d.text))
       .attr('text-anchor', 'middle')
       .attr('transform', d => `translate(${d.x}, ${d.y}) rotate(${d.rotate})`)
-      .text(d => d.text);
+      .text(d => d.text!);
   }
 
   layout.on('end', draw).start();
 }
 
 WordCloud.displayName = 'WordCloud';
-WordCloud.propTypes = propTypes;
 
 export default WordCloud;
