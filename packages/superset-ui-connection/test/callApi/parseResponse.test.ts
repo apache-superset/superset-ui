@@ -47,7 +47,7 @@ describe('parseResponse()', () => {
   });
 
   it('throws if `parseMethod=json` and .json() fails', () => {
-    expect.assertions(3);
+    expect.assertions(2);
 
     const mockTextUrl = '/mock/text/url';
     const mockTextResponse =
@@ -60,8 +60,7 @@ describe('parseResponse()', () => {
       .then(throwIfCalled)
       .catch(error => {
         expect(fetchMock.calls(mockTextUrl)).toHaveLength(1);
-        expect(error.stack).toBeDefined();
-        expect(error.message.includes('Unexpected token')).toBe(true);
+        expect(error.message.includes('Unexpected')).toBe(true);
 
         return Promise.resolve();
       });

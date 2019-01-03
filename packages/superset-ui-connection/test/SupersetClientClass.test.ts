@@ -1,5 +1,6 @@
 import fetchMock from 'fetch-mock';
 
+import { BigNumber } from 'bignumber.js';
 import { SupersetClientClass, ClientConfig } from '../src/SupersetClientClass';
 import throwIfCalled from './utils/throwIfCalled';
 import { LOGIN_GLOB } from './fixtures/constants';
@@ -246,7 +247,8 @@ describe('SupersetClientClass', () => {
     const mockGetUrl = `${protocol}//${host}${mockGetEndpoint}`;
     const mockPostUrl = `${protocol}//${host}${mockPostEndpoint}`;
     const mockTextUrl = `${protocol}//${host}${mockTextEndpoint}`;
-    const mockTextJsonResponse = '{ "value": 9223372036854775807 }';
+    const mockBigNumber = '9223372036854775807';
+    const mockTextJsonResponse = `{ "value": ${mockBigNumber} }`;
 
     fetchMock.get(mockGetUrl, { json: 'payload' });
     fetchMock.post(mockPostUrl, { json: 'payload' });
@@ -309,6 +311,23 @@ describe('SupersetClientClass', () => {
             client.get({ endpoint: mockGetEndpoint }),
           ]).then(() => {
             expect(fetchMock.calls(mockGetUrl)).toHaveLength(2);
+
+            return Promise.resolve();
+          }),
+        );
+      });
+
+      it('supports parsing a response as JSON using BigNumber', () => {
+        expect.assertions(3);
+        const client = new SupersetClientClass({ protocol, host });
+
+        return client.init().then(() =>
+          client.get({ url: mockTextUrl }).then(({ json }) => {
+            expect(fetchMock.calls(mockTextUrl)).toHaveLength(1);
+            // @ts-ignore
+            expect(json.value.constructor.name).toBe('BigNumber');
+            // @ts-ignore
+            expect(json.value.toString()).toBe(new BigNumber(mockBigNumber).toString());
 
             return Promise.resolve();
           }),
@@ -418,6 +437,23 @@ describe('SupersetClientClass', () => {
             expect(fetchRequest.headers).toEqual(
               expect.objectContaining(overrideConfig.headers as Object),
             );
+
+            return Promise.resolve();
+          }),
+        );
+      });
+
+      it('supports parsing a response as JSON using BigNumber', () => {
+        expect.assertions(3);
+        const client = new SupersetClientClass({ protocol, host });
+
+        return client.init().then(() =>
+          client.post({ url: mockTextUrl }).then(({ json }) => {
+            expect(fetchMock.calls(mockTextUrl)).toHaveLength(1);
+            // @ts-ignore
+            expect(json.value.constructor.name).toBe('BigNumber');
+            // @ts-ignore
+            expect(json.value.toString()).toBe(new BigNumber(mockBigNumber).toString());
 
             return Promise.resolve();
           }),
