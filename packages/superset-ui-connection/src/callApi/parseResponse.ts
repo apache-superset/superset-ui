@@ -7,6 +7,15 @@ function rejectIfNotOkay(response: Response): Promise<Response> {
   return Promise.resolve<Response>(response);
 }
 
+function parseJson(text: string): any {
+  try {
+    return JSONbig.parse(text);
+  } catch (e) {
+    // if JSONbig.parse fails, it throws an object (not a proper Error), so let's re-wrap the message.
+    throw new Error(e.message);
+  }
+}
+
 export default function parseResponse(
   apiPromise: Promise<Response>,
   parseMethod: ParseMethod = 'json',
@@ -19,7 +28,7 @@ export default function parseResponse(
     return checkedPromise.then(response => response.text().then(text => ({ response, text })));
   } else if (parseMethod === 'json') {
     return checkedPromise.then(response =>
-      response.text().then(text => ({ json: JSONbig.parse(text), response })),
+      response.text().then(text => ({ json: parseJson(text), response })),
     );
   }
 
