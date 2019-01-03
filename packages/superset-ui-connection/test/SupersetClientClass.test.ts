@@ -317,15 +317,13 @@ describe('SupersetClientClass', () => {
         );
       });
 
-      it('supports parsing a response as JSON using BigNumber', () => {
-        expect.assertions(3);
+      it('supports parsing a response as JSON while preserving precision of large numbers', () => {
+        expect.assertions(2);
         const client = new SupersetClientClass({ protocol, host });
 
         return client.init().then(() =>
           client.get({ url: mockTextUrl }).then(({ json }) => {
             expect(fetchMock.calls(mockTextUrl)).toHaveLength(1);
-            // @ts-ignore
-            expect(json.value.constructor.name).toBe('BigNumber');
             // @ts-ignore
             expect(json.value.toString()).toBe(new BigNumber(mockBigNumber).toString());
 
@@ -443,15 +441,13 @@ describe('SupersetClientClass', () => {
         );
       });
 
-      it('supports parsing a response as JSON using BigNumber', () => {
-        expect.assertions(3);
+      it('supports parsing a response as JSON while preserving precision of large numbers', () => {
+        expect.assertions(2);
         const client = new SupersetClientClass({ protocol, host });
 
         return client.init().then(() =>
           client.post({ url: mockTextUrl }).then(({ json }) => {
             expect(fetchMock.calls(mockTextUrl)).toHaveLength(1);
-            // @ts-ignore
-            expect(json.value.constructor.name).toBe('BigNumber');
             // @ts-ignore
             expect(json.value.toString()).toBe(new BigNumber(mockBigNumber).toString());
 

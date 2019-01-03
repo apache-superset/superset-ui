@@ -19,11 +19,7 @@ export default function parseResponse(
     return checkedPromise.then(response => response.text().then(text => ({ response, text })));
   } else if (parseMethod === 'json') {
     return checkedPromise.then(response =>
-      response.text().then(text => {
-        const json = JSONbig.parse(text);
-
-        return { json, response };
-      }),
+      response.text().then(text => ({ json: JSONbig.parse(text), response })),
     );
   }
 
