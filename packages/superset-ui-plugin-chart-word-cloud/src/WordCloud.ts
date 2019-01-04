@@ -37,9 +37,7 @@ function WordCloud(element: Element, props: Props) {
     .range(sizeRange)
     .domain(d3Extent(data, d => d.size) as [number, number]);
 
-  // TODO: Remove the type casting once the following PR is merged
-  // https://github.com/DefinitelyTyped/DefinitelyTyped/pull/30479
-  const layout = (cloudLayout as () => d3.layout.Cloud<Datum>)()
+  const layout = cloudLayout<Datum>()
     .size(size)
     .words(data)
     /* eslint-disable-next-line no-magic-numbers */
