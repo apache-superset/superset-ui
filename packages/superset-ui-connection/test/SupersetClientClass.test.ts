@@ -126,6 +126,7 @@ describe('SupersetClientClass', () => {
     it('does not set csrfToken if response is not json', () => {
       fetchMock.get(LOGIN_GLOB, '123', {
         overwriteRoutes: true,
+        // @ts-ignore
         sendAsJson: false,
       });
 
@@ -478,7 +479,7 @@ describe('SupersetClientClass', () => {
 
         return client.init().then(() =>
           client.post({ url: mockPostUrl, postPayload }).then(() => {
-            const formData = fetchMock.calls(mockPostUrl)[0][1].body;
+            const formData = fetchMock.calls(mockPostUrl)[0][1].body as FormData;
             expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
             Object.keys(postPayload).forEach(key => {
               expect(formData.get(key)).toBe(JSON.stringify(postPayload[key]));
@@ -496,7 +497,7 @@ describe('SupersetClientClass', () => {
 
         return client.init().then(() =>
           client.post({ url: mockPostUrl, postPayload, stringify: false }).then(() => {
-            const formData = fetchMock.calls(mockPostUrl)[0][1].body;
+            const formData = fetchMock.calls(mockPostUrl)[0][1].body as FormData;
             expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
             Object.keys(postPayload).forEach(key => {
               expect(formData.get(key)).toBe(String(postPayload[key]));
