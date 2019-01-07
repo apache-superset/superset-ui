@@ -5,11 +5,10 @@ import stringifyAndTrim from './stringifyAndTrim';
 
 export default class CategoricalColorNamespace {
   name: string;
+  forcedItems: ColorsLookup;
   scales: {
     [key: string]: CategoricalColorScale;
   };
-
-  forcedItems: ColorsLookup;
 
   constructor(name: string) {
     this.name = name;

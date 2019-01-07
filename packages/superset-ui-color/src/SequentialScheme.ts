@@ -1,7 +1,7 @@
 import { scaleLinear } from 'd3-scale';
 import ColorScheme, { ColorSchemeConfig } from './ColorScheme';
 
-function range(count: number): number[] {
+function range(count: number) {
   const values = [];
   for (let i = 0; i < count; i += 1) {
     values.push(i);
