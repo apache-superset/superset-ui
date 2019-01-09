@@ -1,17 +1,33 @@
 import { ExtensibleFunction, isRequired } from '@superset-ui/core';
+import { FormatFunction } from './types';
 
 export const PREVIEW_VALUE = 12345.432;
 
-export default class NumberFormatter extends ExtensibleFunction {
-  constructor({
-    id = isRequired('config.id'),
-    label,
-    description = '',
-    formatFunc = isRequired('config.formatFunc'),
-    isInvalid = false,
-  } = {}) {
-    super((...args) => this.format(...args));
+export interface NumberFormatterConfig {
+  id: string;
+  label?: string;
+  description?: string;
+  formatFunc: FormatFunction;
+  isInvalid?: boolean;
+}
 
+export default class NumberFormatter extends ExtensibleFunction {
+  id: string;
+  label: string;
+  description: string;
+  formatFunc: FormatFunction;
+  isInvalid: boolean;
+
+  constructor(config: NumberFormatterConfig) {
+    super((value: number) => this.format(value));
+
+    const {
+      id = isRequired('config.id'),
+      label,
+      description = '',
+      formatFunc = isRequired('config.formatFunc'),
+      isInvalid = false,
+    } = config;
     this.id = id;
     this.label = label || id;
     this.description = description;
@@ -19,7 +35,7 @@ export default class NumberFormatter extends ExtensibleFunction {
     this.isInvalid = isInvalid;
   }
 
-  format(value) {
+  format(value: number | null | undefined) {
     if (value === null || value === undefined || Number.isNaN(value)) {
       return value;
     } else if (value === Number.POSITIVE_INFINITY) {
@@ -31,7 +47,7 @@ export default class NumberFormatter extends ExtensibleFunction {
     return this.formatFunc(value);
   }
 
-  preview(value = PREVIEW_VALUE) {
+  preview(value: number = PREVIEW_VALUE) {
     return `${value} => ${this.format(value)}`;
   }
 }
