@@ -1,5 +1,5 @@
 import { ExtensibleFunction, isRequired } from '@superset-ui/core';
-import { FormatFunction } from './types';
+import { NumberFormatFunction } from './types';
 
 export const PREVIEW_VALUE = 12345.432;
 
@@ -7,7 +7,7 @@ export interface NumberFormatterConfig {
   id: string;
   label?: string;
   description?: string;
-  formatFunc: FormatFunction;
+  formatFunc: NumberFormatFunction;
   isInvalid?: boolean;
 }
 
@@ -15,7 +15,7 @@ export default class NumberFormatter extends ExtensibleFunction {
   id: string;
   label: string;
   description: string;
-  formatFunc: FormatFunction;
+  formatFunc: NumberFormatFunction;
   isInvalid: boolean;
 
   constructor(config: NumberFormatterConfig) {
@@ -37,7 +37,7 @@ export default class NumberFormatter extends ExtensibleFunction {
 
   format(value: number | null | undefined) {
     if (value === null || value === undefined || Number.isNaN(value)) {
-      return value;
+      return `${value}`;
     } else if (value === Number.POSITIVE_INFINITY) {
       return '∞';
     } else if (value === Number.NEGATIVE_INFINITY) {
