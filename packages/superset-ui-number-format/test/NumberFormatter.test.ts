@@ -20,13 +20,13 @@ describe('NumberFormatter', () => {
       formatFunc: value => value.toFixed(3),
     });
     it('handles null', () => {
-      expect(formatter.format(null)).toBeNull();
+      expect(formatter.format(null)).toEqual('null');
     });
     it('handles undefined', () => {
-      expect(formatter.format(undefined)).toBeUndefined();
+      expect(formatter.format(undefined)).toEqual('undefined');
     });
     it('handles NaN', () => {
-      expect(formatter.format(NaN)).toBeNaN();
+      expect(formatter.format(NaN)).toEqual('NaN');
     });
     it('handles positive and negative infinity', () => {
       expect(formatter.format(Number.POSITIVE_INFINITY)).toEqual('∞');

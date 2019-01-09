@@ -8,7 +8,7 @@ export default function createD3NumberFormatter(config: {
   formatString: string;
   label?: string;
 }) {
-  const { description, formatString = isRequired('formatString'), label } = config;
+  const { description, formatString = isRequired('config.formatString'), label } = config;
 
   let formatFunc: NumberFormatFunction;
   let isInvalid = false;
