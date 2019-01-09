@@ -22,15 +22,11 @@ function getInstance() {
   return singleton;
 }
 
-function t(input: string | undefined | null, ...args: any[]) {
+function t(input: string, ...args: any[]) {
   return getInstance().translate(input, ...args);
 }
 
-function tn(
-  singular: string | undefined | null,
-  plural: string | undefined | null,
-  ...args: any[]
-) {
+function tn(singular: string, plural: string, ...args: any[]) {
   return getInstance().translateWithNumber(singular, plural, ...args);
 }
 

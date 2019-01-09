@@ -27,27 +27,11 @@ export default class Translator {
     this.i18n = new Jed(languagePack);
   }
 
-  translate(input: string | undefined | null, ...args: any[]): string | undefined | null {
-    if (input === null || input === undefined) {
-      return input;
-    }
-
+  translate(input: string, ...args: any[]): string {
     return this.i18n.translate(input).fetch(...args);
   }
 
-  translateWithNumber(
-    singular: string | undefined | null,
-    plural: string | undefined | null,
-    num: number = 0,
-    ...args: any[]
-  ): string | undefined | null {
-    if (singular === null || singular === undefined) {
-      return singular;
-    }
-    if (plural === null || plural === undefined) {
-      return plural;
-    }
-
+  translateWithNumber(singular: string, plural: string, num: number = 0, ...args: any[]): string {
     return this.i18n
       .translate(singular)
       .ifPlural(num, plural)
