@@ -1,5 +1,5 @@
 import Translator from '../src/Translator';
-import languagePackZh from './languagePacks/zh.json';
+import languagePackZh from './languagePacks/zh';
 
 describe('Translator', () => {
   it('exists', () => {
