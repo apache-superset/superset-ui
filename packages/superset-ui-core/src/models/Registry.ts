@@ -19,6 +19,17 @@ export interface RegistryConfig {
   overwritePolicy?: OverwritePolicy;
 }
 
+/**
+ * Registry class
+ *
+ * Can use generic to specify type of item in the registry
+ * @type V Type of value
+ * @type W Type of value returned from loader function when using registerLoader().
+ * W can be either V, Promise<V> or V | Promise<V>
+ * Set W=V when does not support asynchronous loader.
+ * By default W is set to V | Promise<V> to support
+ * both synchronous and asynchronous loaders.
+ */
 export default class Registry<V, W extends V | Promise<V> = V | Promise<V>> {
   name: string;
   overwritePolicy: OverwritePolicy;
