@@ -1,5 +1,11 @@
 # @superset-ui : Change Log
 
+## v0.8.0
+
+### 🐞 Bug fixes
+
+* Handle BigNumber conversions to/from JSON without loss of precision
+
 ## v0.7.2
 
 ### ✨ Features
