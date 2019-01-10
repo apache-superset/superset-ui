@@ -3,7 +3,10 @@ import createD3NumberFormatter from './factories/createD3NumberFormatter';
 import NumberFormats from './NumberFormats';
 import NumberFormatter from './NumberFormatter';
 
-export default class NumberFormatterRegistry extends RegistryWithDefaultKey<NumberFormatter> {
+export default class NumberFormatterRegistry extends RegistryWithDefaultKey<
+  NumberFormatter,
+  NumberFormatter
+> {
   constructor() {
     super({
       initialDefaultKey: NumberFormats.SI,
@@ -11,7 +14,7 @@ export default class NumberFormatterRegistry extends RegistryWithDefaultKey<Numb
     });
   }
 
-  get(formatterId?: string): NumberFormatter {
+  get(formatterId?: string) {
     const targetFormat = `${formatterId || this.defaultKey}`.trim();
 
     if (this.has(targetFormat)) {
