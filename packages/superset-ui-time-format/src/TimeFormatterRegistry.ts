@@ -1,8 +1,9 @@
 import { RegistryWithDefaultKey } from '@superset-ui/core';
 import TimeFormats, { LOCAL_PREFIX } from './TimeFormats';
 import createD3TimeFormatter from './factories/createD3TimeFormatter';
+import TimeFormatter from './TimeFormatter';
 
-export default class TimeFormatterRegistry extends RegistryWithDefaultKey {
+export default class TimeFormatterRegistry extends RegistryWithDefaultKey<TimeFormatter> {
   constructor() {
     super({
       initialDefaultKey: TimeFormats.DATABASE_DATETIME,
@@ -10,11 +11,11 @@ export default class TimeFormatterRegistry extends RegistryWithDefaultKey {
     });
   }
 
-  get(format) {
+  get(format: string) {
     const targetFormat = (format || this.defaultKey).trim();
 
     if (this.has(targetFormat)) {
-      return super.get(targetFormat);
+      return super.get(targetFormat) as TimeFormatter;
     }
 
     // Create new formatter if does not exist
@@ -26,7 +27,7 @@ export default class TimeFormatterRegistry extends RegistryWithDefaultKey {
     return formatter;
   }
 
-  format(format, value) {
+  format(format: string, value: Date | null | undefined) {
     return this.get(format)(value);
   }
 }
