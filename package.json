@@ -41,6 +41,7 @@
     "husky": "^1.1.2",
     "lerna": "^3.2.1",
     "lint-staged": "^8.0.4",
+    "ts-jest": "^23.10.5",
     "yarn": "^1.9.4"
   },
   "engines": {
@@ -60,6 +61,13 @@
       "prettier",
       "typescript"
     ],
+    "typescript": {
+      "include": [
+        "./packages/**/src/**/*",
+        "./packages/**/types/**/*",
+        "./packages/**/test/**/*"
+      ]
+    },
     "jest": {
       "testPathIgnorePatterns": [
         "<rootDir>/packages/generator-superset"
@@ -74,7 +82,11 @@
           ],
           "testEnvironment": "node"
         }
-      ]
+      ],
+      "transform": {
+        "^.+\\.tsx?$": "ts-jest",
+        "^.+\\.jsx?$": "babel-jest"
+      }
     }
   },
   "workspaces": [
