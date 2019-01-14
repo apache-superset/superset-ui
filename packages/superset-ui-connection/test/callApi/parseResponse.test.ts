@@ -88,10 +88,10 @@ describe('parseResponse()', () => {
     });
   });
 
-  it('throw errors if parseMethod is not null|json|text', () => {
+  it('throws if parseMethod is not null|json|text', () => {
     const apiPromise = callApi({ url: mockNoParseUrl, method: 'GET' });
 
-    // @ts-ignore - 'something-else' is invalid type
+    // @ts-ignore - 'something-else' is *intentionally* an invalid type
     expect(() => parseResponse(apiPromise, 'something-else')).toThrow();
   });
 
