@@ -6,6 +6,8 @@
 
 * Add SuperChart and convert to TypeScript
 * Allow metrics arrays in form data
+* Moved query module from `incubator-superset` into `superset-ui`
+* Add `reactify` function from `incubator-superset`
 
 ### 🐞 Bug fixes
 
@@ -18,9 +20,7 @@
 * Migrated `@superset-ui/chart` to TypeScript
 * Migrated `@superset-ui/color` to TypeScript
 * Migrated `@superset-ui/core` to TypeScript
-* Moved query module from `incubator-superset` into `superset-ui`
 * Made `connection` and `color` packages peer dependencies
-* Add `reactify` function from `incubator-superset`
 
 ## v0.7.2
 
