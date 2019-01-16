@@ -29,23 +29,24 @@ import {
   utcSaturday,
   utcMonth,
   utcYear,
+  CountableTimeInterval,
 } from 'd3-time';
 
 function createUtils(useLocalTime = false) {
-  let floorSecond;
-  let floorMinute;
-  let floorHour;
-  let floorDay;
-  let floorWeek;
-  let floorWeekStartOnSunday;
-  let floorWeekStartOnMonday;
-  let floorWeekStartOnTuesday;
-  let floorWeekStartOnWednesday;
-  let floorWeekStartOnThursday;
-  let floorWeekStartOnFriday;
-  let floorWeekStartOnSaturday;
-  let floorMonth;
-  let floorYear;
+  let floorSecond: CountableTimeInterval;
+  let floorMinute: CountableTimeInterval;
+  let floorHour: CountableTimeInterval;
+  let floorDay: CountableTimeInterval;
+  let floorWeek: CountableTimeInterval;
+  let floorWeekStartOnSunday: CountableTimeInterval;
+  let floorWeekStartOnMonday: CountableTimeInterval;
+  let floorWeekStartOnTuesday: CountableTimeInterval;
+  let floorWeekStartOnWednesday: CountableTimeInterval;
+  let floorWeekStartOnThursday: CountableTimeInterval;
+  let floorWeekStartOnFriday: CountableTimeInterval;
+  let floorWeekStartOnSaturday: CountableTimeInterval;
+  let floorMonth: CountableTimeInterval;
+  let floorYear: CountableTimeInterval;
   if (useLocalTime) {
     floorSecond = timeSecond;
     floorMinute = timeMinute;

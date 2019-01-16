@@ -17,7 +17,7 @@ export default class TimeFormatter extends ExtensibleFunction {
     label?: string;
     description?: string;
     formatFunc: TimeFormatFunction;
-    useLocalTime: boolean;
+    useLocalTime?: boolean;
   }) {
     super((value: Date | null | undefined) => this.format(value));
 

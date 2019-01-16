@@ -23,8 +23,8 @@ export default function createMultiFormatter({
   id: string;
   label?: string;
   description?: string;
+  formats?: FormatsByStep;
   useLocalTime?: boolean;
-  formats: FormatsByStep;
 }) {
   const {
     millisecond = '.%L',
