@@ -20,10 +20,10 @@ describe('TimeFormatter', () => {
       formatFunc: value => `${value.getFullYear()}`,
     });
     it('handles null', () => {
-      expect(formatter.format(null)).toBeNull();
+      expect(formatter.format(null)).toEqual('null');
     });
     it('handles undefined', () => {
-      expect(formatter.format(undefined)).toBeUndefined();
+      expect(formatter.format(undefined)).toEqual('undefined');
     });
     it('otherwise returns formatted value', () => {
       expect(formatter.format(PREVIEW_TIME)).toEqual('2017');

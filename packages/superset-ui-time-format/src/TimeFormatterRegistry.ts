@@ -30,7 +30,7 @@ export default class TimeFormatterRegistry extends RegistryWithDefaultKey<
     return formatter;
   }
 
-  format(format: string, value: Date | null | undefined) {
+  format(format: string, value: Date | null | undefined): string {
     return this.get(format)(value);
   }
 }

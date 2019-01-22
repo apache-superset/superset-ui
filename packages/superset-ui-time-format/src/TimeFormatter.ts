@@ -38,7 +38,7 @@ export default class TimeFormatter extends ExtensibleFunction {
 
   format(value: Date | null | undefined) {
     if (value === null || value === undefined) {
-      return value;
+      return `${value}`;
     }
 
     return this.formatFunc(value);
