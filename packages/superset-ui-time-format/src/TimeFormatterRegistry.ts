@@ -3,7 +3,10 @@ import TimeFormats, { LOCAL_PREFIX } from './TimeFormats';
 import createD3TimeFormatter from './factories/createD3TimeFormatter';
 import TimeFormatter from './TimeFormatter';
 
-export default class TimeFormatterRegistry extends RegistryWithDefaultKey<TimeFormatter> {
+export default class TimeFormatterRegistry extends RegistryWithDefaultKey<
+  TimeFormatter,
+  TimeFormatter
+> {
   constructor() {
     super({
       initialDefaultKey: TimeFormats.DATABASE_DATETIME,
@@ -11,8 +14,8 @@ export default class TimeFormatterRegistry extends RegistryWithDefaultKey<TimeFo
     });
   }
 
-  get(format: string) {
-    const targetFormat = (format || this.defaultKey).trim();
+  get(format?: string) {
+    const targetFormat = `${format || this.defaultKey}`.trim();
 
     if (this.has(targetFormat)) {
       return super.get(targetFormat) as TimeFormatter;

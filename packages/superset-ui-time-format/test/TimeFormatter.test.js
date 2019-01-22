@@ -3,7 +3,12 @@ import TimeFormatter from '../src/TimeFormatter';
 describe('TimeFormatter', () => {
   describe('new TimeFormatter(config)', () => {
     it('requires config.id', () => {
-      expect(() => new TimeFormatter()).toThrow();
+      expect(
+        () =>
+          new TimeFormatter({
+            formatFunc: () => 'test',
+          }),
+      ).toThrow();
     });
     it('requires config.formatFunc', () => {
       expect(
