@@ -1,3 +1,4 @@
+import './external';
 import Jed, { LanguagePack } from 'jed';
 
 const DEFAULT_LANGUAGE_PACK = {

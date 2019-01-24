@@ -3,13 +3,15 @@ declare module 'jed' {
     domain: string;
     locale_data: {
       superset: {
-        [key: string]: string[] | {
-          domain: string;
-          plural_forms: string;
-          lang: string;
-        };
+        [key: string]:
+          | string[]
+          | {
+              domain: string;
+              plural_forms: string;
+              lang: string;
+            };
       };
-    }
+    };
   }
 
   export default class Jed {
