@@ -1,6 +1,26 @@
 import TimeFormatter, { PREVIEW_TIME } from '../src/TimeFormatter';
 
 describe('TimeFormatter', () => {
+  describe('new TimeFormatter(config)', () => {
+    it('requires config.id', () => {
+      expect(
+        () =>
+          // @ts-ignore -- intentionally pass invalid input
+          new TimeFormatter({
+            formatFunc: () => 'test',
+          }),
+      ).toThrow();
+    });
+    it('requires config.formatFunc', () => {
+      expect(
+        () =>
+          // @ts-ignore -- intentionally pass invalid input
+          new TimeFormatter({
+            id: 'my_format',
+          }),
+      ).toThrow();
+    });
+  });
   describe('formatter is also a format function itself', () => {
     const formatter = new TimeFormatter({
       id: 'year_only',
