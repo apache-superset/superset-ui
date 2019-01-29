@@ -38,9 +38,9 @@ describe('SupersetClient', () => {
   it('calls appropriate SupersetClient methods when configured', () => {
     const mockGetUrl = '/mock/get/url';
     const mockPostUrl = '/mock/post/url';
+    const mockRequestUrl = '/mock/request/url';
     const mockGetPayload = { get: 'payload' };
     const mockPostPayload = { post: 'payload' };
-    const mockRequestUrl = '/mock/request/url';
     fetchMock.get(mockGetUrl, mockGetPayload);
     fetchMock.post(mockPostUrl, mockPostPayload);
 
@@ -60,7 +60,7 @@ describe('SupersetClient', () => {
 
     SupersetClient.get({ url: mockGetUrl });
     SupersetClient.post({ url: mockPostUrl });
-    SupersetClient.request({ url: mockGetUrl });
+    SupersetClient.request({ url: mockRequestUrl });
     SupersetClient.isAuthenticated();
     SupersetClient.reAuthenticate();
 

@@ -71,7 +71,7 @@ export class SupersetClientClass {
   }
 
   async get(requestConfig: RequestConfig): Promise<SupersetClientResponse> {
-      return this.request({ ...requestConfig, method: 'GET' });
+    return this.request({ ...requestConfig, method: 'GET' });
   }
 
   async request({

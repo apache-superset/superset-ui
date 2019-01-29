@@ -278,20 +278,18 @@ describe('SupersetClientClass', () => {
 
       return client.init().then(() =>
         Promise.all([
-            client.get({ url: mockGetUrl }),
-            client.post({ url: mockPostUrl }),
-            client.request({ url: mockRequestUrl, method: 'DELETE' }),
-        ]).then(
-          () => {
-            expect(fetchMock.calls(mockGetUrl)).toHaveLength(1);
-            expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
-            expect(fetchMock.calls(mockRequestUrl)).toHaveLength(1);
-            expect(authSpy).toHaveBeenCalledTimes(2);
-            authSpy.mockRestore();
+          client.get({ url: mockGetUrl }),
+          client.post({ url: mockPostUrl }),
+          client.request({ url: mockRequestUrl, method: 'DELETE' }),
+        ]).then(() => {
+          expect(fetchMock.calls(mockGetUrl)).toHaveLength(1);
+          expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
+          expect(fetchMock.calls(mockRequestUrl)).toHaveLength(1);
+          expect(authSpy).toHaveBeenCalledTimes(2);
+          authSpy.mockRestore();
 
-            return Promise.resolve();
-          },
-        ),
+          return Promise.resolve();
+        }),
       );
     });
 
