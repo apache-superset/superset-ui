@@ -74,39 +74,25 @@ export class SupersetClientClass {
     return this.request({ ...requestConfig, method: 'GET' });
   }
 
+  async delete(requestConfig: RequestConfig): Promise<SupersetClientResponse> {
+    return this.request({ ...requestConfig, method: 'DELETE' });
+  }
+
+  async put(requestConfig: RequestConfig): Promise<SupersetClientResponse> {
+    return this.request({ ...requestConfig, method: 'PUT' });
+  }
+
+  async post(requestConfig: RequestConfig): Promise<SupersetClientResponse> {
+    return this.request({ ...requestConfig, method: 'POST' });
+  }
+
   async request({
     body,
     credentials,
+    endpoint,
     headers,
     host,
-    endpoint,
     method,
-    mode,
-    parseMethod,
-    signal,
-    timeout,
-    url,
-  }: RequestConfig): Promise<SupersetClientResponse> {
-    return this.ensureAuth().then(() =>
-      callApi({
-        body,
-        credentials: credentials || this.credentials,
-        headers: { ...this.headers, ...headers },
-        method,
-        mode: mode || this.mode,
-        parseMethod,
-        signal,
-        timeout: timeout || this.timeout,
-        url: this.getUrl({ endpoint, host, url }),
-      }),
-    );
-  }
-
-  async post({
-    credentials,
-    endpoint,
-    headers,
-    host,
     mode,
     parseMethod,
     postPayload,
@@ -117,9 +103,10 @@ export class SupersetClientClass {
   }: RequestConfig): Promise<SupersetClientResponse> {
     return this.ensureAuth().then(() =>
       callApi({
+        body,
         credentials: credentials || this.credentials,
         headers: { ...this.headers, ...headers },
-        method: 'POST',
+        method,
         mode: mode || this.mode,
         parseMethod,
         postPayload,

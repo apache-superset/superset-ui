@@ -39,6 +39,8 @@ describe('SupersetClient', () => {
     const mockGetUrl = '/mock/get/url';
     const mockPostUrl = '/mock/post/url';
     const mockRequestUrl = '/mock/request/url';
+    const mockPutUrl = '/mock/put/url';
+    const mockDeleteUrl = '/mock/delete/url';
     const mockGetPayload = { get: 'payload' };
     const mockPostPayload = { post: 'payload' };
     fetchMock.get(mockGetUrl, mockGetPayload);
@@ -47,6 +49,8 @@ describe('SupersetClient', () => {
     const initSpy = jest.spyOn(SupersetClientClass.prototype, 'init');
     const getSpy = jest.spyOn(SupersetClientClass.prototype, 'get');
     const postSpy = jest.spyOn(SupersetClientClass.prototype, 'post');
+    const putSpy = jest.spyOn(SupersetClientClass.prototype, 'put');
+    const deleteSpy = jest.spyOn(SupersetClientClass.prototype, 'delete');
     const authenticatedSpy = jest.spyOn(SupersetClientClass.prototype, 'isAuthenticated');
     const csrfSpy = jest.spyOn(SupersetClientClass.prototype, 'getCSRFToken');
     const requestSpy = jest.spyOn(SupersetClientClass.prototype, 'request');
@@ -60,17 +64,24 @@ describe('SupersetClient', () => {
 
     SupersetClient.get({ url: mockGetUrl });
     SupersetClient.post({ url: mockPostUrl });
+    SupersetClient.delete({ url: mockDeleteUrl });
+    SupersetClient.put({ url: mockPutUrl });
     SupersetClient.request({ url: mockRequestUrl });
     SupersetClient.isAuthenticated();
     SupersetClient.reAuthenticate();
 
     expect(initSpy).toHaveBeenCalledTimes(2);
-    expect(getSpy).toHaveBeenCalledTimes(1);
+    expect(deleteSpy).toHaveBeenCalledTimes(1);
+    expect(putSpy).toHaveBeenCalledTimes(1);
+    expect(getSpy).toHaveBeenCalledTimes(2);
     expect(postSpy).toHaveBeenCalledTimes(1);
+    expect(requestSpy).toHaveBeenCalledTimes(5); // request rewires to get
     expect(csrfSpy).toHaveBeenCalledTimes(2); // from init() + reAuthenticate()
 
     initSpy.mockRestore();
     getSpy.mockRestore();
+    putSpy.mockRestore();
+    deleteSpy.mockRestore();
     requestSpy.mockRestore();
     postSpy.mockRestore();
     authenticatedSpy.mockRestore();
