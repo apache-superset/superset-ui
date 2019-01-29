@@ -19,6 +19,7 @@ describe('SupersetClient', () => {
     expect(SupersetClient.post).toEqual(expect.any(Function));
     expect(SupersetClient.isAuthenticated).toEqual(expect.any(Function));
     expect(SupersetClient.reAuthenticate).toEqual(expect.any(Function));
+    expect(SupersetClient.request).toEqual(expect.any(Function));
     expect(SupersetClient.reset).toEqual(expect.any(Function));
   });
 
@@ -28,6 +29,7 @@ describe('SupersetClient', () => {
     expect(SupersetClient.post).toThrow();
     expect(SupersetClient.isAuthenticated).toThrow();
     expect(SupersetClient.reAuthenticate).toThrow();
+    expect(SupersetClient.request).toThrow();
 
     expect(SupersetClient.configure).not.toThrow();
   });
@@ -38,6 +40,7 @@ describe('SupersetClient', () => {
     const mockPostUrl = '/mock/post/url';
     const mockGetPayload = { get: 'payload' };
     const mockPostPayload = { post: 'payload' };
+    const mockRequestUrl = '/mock/request/url';
     fetchMock.get(mockGetUrl, mockGetPayload);
     fetchMock.post(mockPostUrl, mockPostPayload);
 
@@ -46,6 +49,7 @@ describe('SupersetClient', () => {
     const postSpy = jest.spyOn(SupersetClientClass.prototype, 'post');
     const authenticatedSpy = jest.spyOn(SupersetClientClass.prototype, 'isAuthenticated');
     const csrfSpy = jest.spyOn(SupersetClientClass.prototype, 'getCSRFToken');
+    const requestSpy = jest.spyOn(SupersetClientClass.prototype, 'request');
 
     SupersetClient.configure({});
     SupersetClient.init();
@@ -56,6 +60,7 @@ describe('SupersetClient', () => {
 
     SupersetClient.get({ url: mockGetUrl });
     SupersetClient.post({ url: mockPostUrl });
+    SupersetClient.request({ url: mockGetUrl });
     SupersetClient.isAuthenticated();
     SupersetClient.reAuthenticate();
 
@@ -66,6 +71,7 @@ describe('SupersetClient', () => {
 
     initSpy.mockRestore();
     getSpy.mockRestore();
+    requestSpy.mockRestore();
     postSpy.mockRestore();
     authenticatedSpy.mockRestore();
     csrfSpy.mockRestore();

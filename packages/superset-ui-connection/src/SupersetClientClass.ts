@@ -70,12 +70,17 @@ export class SupersetClientClass {
     return this.csrfToken !== null && this.csrfToken !== undefined;
   }
 
-  async get({
+  async get(requestConfig: RequestConfig): Promise<SupersetClientResponse> {
+      return this.request({ ...requestConfig, method: 'GET' });
+  }
+
+  async request({
     body,
     credentials,
     headers,
     host,
     endpoint,
+    method,
     mode,
     parseMethod,
     signal,
@@ -87,7 +92,7 @@ export class SupersetClientClass {
         body,
         credentials: credentials || this.credentials,
         headers: { ...this.headers, ...headers },
-        method: 'GET',
+        method,
         mode: mode || this.mode,
         parseMethod,
         signal,

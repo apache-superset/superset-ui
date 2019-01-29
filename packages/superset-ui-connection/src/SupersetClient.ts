@@ -19,6 +19,7 @@ export interface SupersetClientInterface {
   isAuthenticated: () => boolean;
   post: (request: RequestConfig) => Promise<SupersetClientResponse>;
   reAuthenticate: () => Promise<string | undefined>;
+  request: (request: RequestConfig) => Promise<SupersetClientResponse>;
   reset: () => void;
 }
 
@@ -34,6 +35,7 @@ const SupersetClient: SupersetClientInterface = {
   isAuthenticated: () => getInstance(singletonClient).isAuthenticated(),
   post: (request: RequestConfig) => getInstance(singletonClient).post(request),
   reAuthenticate: () => getInstance(singletonClient).init(/* force = */ true),
+  request: (request: RequestConfig) => getInstance(singletonClient).get(request),
   reset: () => {
     singletonClient = undefined;
   },

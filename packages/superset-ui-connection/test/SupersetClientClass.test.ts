@@ -256,9 +256,11 @@ describe('SupersetClientClass', () => {
     const protocol = 'https:';
     const host = 'HOST';
     const mockGetEndpoint = '/get/url';
+    const mockRequestEndpoint = '/get/url';
     const mockPostEndpoint = '/post/url';
     const mockTextEndpoint = '/text/endpoint';
     const mockGetUrl = `${protocol}//${host}${mockGetEndpoint}`;
+    const mockRequestUrl = `${protocol}//${host}${mockRequestEndpoint}`;
     const mockPostUrl = `${protocol}//${host}${mockPostEndpoint}`;
     const mockTextUrl = `${protocol}//${host}${mockTextEndpoint}`;
     const mockBigNumber = '9223372036854775807';
@@ -275,10 +277,15 @@ describe('SupersetClientClass', () => {
       const client = new SupersetClientClass({ protocol, host });
 
       return client.init().then(() =>
-        Promise.all([client.get({ url: mockGetUrl }), client.post({ url: mockPostUrl })]).then(
+        Promise.all([
+            client.get({ url: mockGetUrl }),
+            client.post({ url: mockPostUrl }),
+            client.request({ url: mockRequestUrl, method: 'DELETE' }),
+        ]).then(
           () => {
             expect(fetchMock.calls(mockGetUrl)).toHaveLength(1);
             expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
+            expect(fetchMock.calls(mockRequestUrl)).toHaveLength(1);
             expect(authSpy).toHaveBeenCalledTimes(2);
             authSpy.mockRestore();
 
