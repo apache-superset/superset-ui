@@ -23,7 +23,9 @@ module.exports = class extends Generator {
         type: 'input',
         name: 'description',
         message: 'Description:',
-        default: '',
+        default: _.capitalize(
+          _.startCase(this.appname.replace('superset ui legacy plugin chart', '').trim()),
+        ), // Default to current folder name
       },
     ]);
   }

@@ -8,9 +8,10 @@ describe('generator-superset:app', () => {
   beforeAll(() => {
     dir = process.cwd();
 
-    return helpers
-      .run(path.join(__dirname, '../generators/app'))
-      .withPrompts({ name: 'my-package' });
+    return helpers.run(path.join(__dirname, '../generators/app')).withPrompts({
+      subgenerator: 'package',
+      name: 'my-package',
+    });
   });
 
   it('creates files', () => {
