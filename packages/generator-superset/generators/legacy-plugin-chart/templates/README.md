@@ -10,9 +10,9 @@ This plugin provides <%= description %> for Superset.
 Configure `key`, which can be any `string`, and register the plugin. This `key` will be used to lookup this chart throughout the app.
 
 ```js
-import ChordChartPlugin from '@superset-ui/legacy-plugin-chart-<%= packageName %>';
+import <%= packageLabel %>ChartPlugin from '@superset-ui/legacy-plugin-chart-<%= packageName %>';
 
-new ChordChartPlugin()
+new <%= packageLabel %>ChartPlugin()
   .configure({ key: '<%= packageName %>' })
   .register();
 ```

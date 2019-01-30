@@ -36,10 +36,9 @@ module.exports = class extends Generator {
       this.destinationPath('package.json'),
       this.answers,
     );
-    this.fs.copyTpl(
-      this.templatePath('README.md'),
-      this.destinationPath('README.md'),
-      this.answers,
-    );
+    this.fs.copyTpl(this.templatePath('README.md'), this.destinationPath('README.md'), {
+      ...this.answers,
+      packageLabel: _.capitalize(_.camelCase(this.answers.packageName)),
+    });
   }
 };
