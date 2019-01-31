@@ -23,7 +23,7 @@ module.exports = class extends Generator {
         type: 'input',
         name: 'description',
         message: 'Description:',
-        default: _.capitalize(
+        default: _.upperFirst(
           _.startCase(this.appname.replace('superset ui legacy plugin chart', '').trim()),
         ), // Default to current folder name
       },
@@ -38,7 +38,7 @@ module.exports = class extends Generator {
     );
     this.fs.copyTpl(this.templatePath('README.md'), this.destinationPath('README.md'), {
       ...this.answers,
-      packageLabel: _.capitalize(_.camelCase(this.answers.packageName)),
+      packageLabel: _.upperFirst(_.camelCase(this.answers.packageName)),
     });
   }
 };
