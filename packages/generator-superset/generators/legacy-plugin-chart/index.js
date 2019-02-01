@@ -1,15 +1,10 @@
 /* eslint-disable sort-keys */
 
 const Generator = require('yeoman-generator');
-const chalk = require('chalk');
-const yosay = require('yosay');
 const _ = require('lodash');
 
 module.exports = class extends Generator {
   async prompting() {
-    // Have Yeoman greet the user.
-    this.log(yosay(`Welcome to the rad ${chalk.red('generator-superset')} generator!`));
-
     this.option('skipInstall');
 
     this.answers = await this.prompt([
