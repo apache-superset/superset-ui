@@ -1,8 +1,14 @@
-import { isDefined } from '@superset-ui/core';
 import { TextStyle } from './types';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
-const STYLE_FIELDS = ['font', 'fontWeight', 'fontStyle', 'fontSize', 'fontFamily', 'letterSpacing'];
+const STYLE_FIELDS: (keyof TextStyle)[] = [
+  'font',
+  'fontWeight',
+  'fontStyle',
+  'fontSize',
+  'fontFamily',
+  'letterSpacing',
+];
 
 export interface GetTextDimensionInput {
   className?: string;
@@ -11,21 +17,26 @@ export interface GetTextDimensionInput {
   text: string;
 }
 
-export default function getTextDimension(input: GetTextDimensionInput) {
-  const { text, className, style, container = document.body } = input;
+const DEFAULT_DIMENSION = { height: 20, width: 100 };
+
+export default function getTextDimension(
+  input: GetTextDimensionInput,
+  defaultDimension = DEFAULT_DIMENSION,
+) {
+  const { text, className, style = {}, container = document.body } = input;
 
   const textNode = document.createElementNS(SVG_NS, 'text');
   textNode.textContent = text;
 
-  if (isDefined(className)) {
+  if (className !== undefined) {
     textNode.setAttribute('class', className);
   }
 
-  if (isDefined(style)) {
-    STYLE_FIELDS.filter(field => isDefined(style[field])).forEach(field => {
-      textNode.style[field] = style[field];
-    });
-  }
+  STYLE_FIELDS.filter((field: keyof TextStyle) => style[field] !== undefined).forEach(
+    (field: keyof TextStyle) => {
+      textNode.style[field] = `${style[field]}`;
+    },
+  );
 
   const svg = document.createElementNS(SVG_NS, 'svg');
   svg.style.position = 'absolute'; // so it won't disrupt page layout
@@ -33,7 +44,7 @@ export default function getTextDimension(input: GetTextDimensionInput) {
   svg.appendChild(textNode);
   container.appendChild(svg);
 
-  const bbox = textNode.getBBox ? textNode.getBBox() : { height: 100, width: 100 };
+  const bbox = textNode.getBBox ? textNode.getBBox() : defaultDimension;
   container.removeChild(svg);
 
   return {

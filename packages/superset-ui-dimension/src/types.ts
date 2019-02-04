@@ -3,7 +3,8 @@
 export interface TextStyle {
   font?: string;
   fontFamily?: string;
-  fontSize?: number | string;
+  fontSize?: string | number;
   fontStyle?: string;
-  fontWeight?: number | string;
+  fontWeight?: string | number;
+  letterSpacing?: string | number;
 }
