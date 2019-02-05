@@ -28,15 +28,15 @@ export default function getTextDimension(
   const textNode = document.createElementNS(SVG_NS, 'text');
   textNode.textContent = text;
 
-  if (className !== undefined) {
+  if (className !== undefined && className !== null) {
     textNode.setAttribute('class', className);
   }
 
-  STYLE_FIELDS.filter((field: keyof TextStyle) => style[field] !== undefined).forEach(
-    (field: keyof TextStyle) => {
-      textNode.style[field] = `${style[field]}`;
-    },
-  );
+  STYLE_FIELDS.filter(
+    (field: keyof TextStyle) => style[field] !== undefined && style[field] !== null,
+  ).forEach((field: keyof TextStyle) => {
+    textNode.style[field] = `${style[field]}`;
+  });
 
   const svg = document.createElementNS(SVG_NS, 'svg');
   svg.style.position = 'absolute'; // so it won't disrupt page layout

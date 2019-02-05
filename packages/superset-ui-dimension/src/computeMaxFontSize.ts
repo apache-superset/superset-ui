@@ -1,5 +1,20 @@
 import getTextDimension, { GetTextDimensionInput } from './getTextDimension';
 
+function decreaseSizeUntil(
+  startSize: number,
+  computeDimension: (size: number) => { height: number; width: number },
+  condition: (dimension: { height: number; width: number }) => boolean,
+): number {
+  let size = startSize;
+  let dimension = computeDimension(size);
+  while (!condition(dimension)) {
+    size -= 1;
+    dimension = computeDimension(size);
+  }
+
+  return size;
+}
+
 export default function computeMaxFontSize(
   input: GetTextDimensionInput & {
     maxWidth?: number;
@@ -10,9 +25,9 @@ export default function computeMaxFontSize(
   const { idealFontSize, maxWidth, maxHeight, style, ...rest } = input;
 
   let size: number;
-  if (idealFontSize !== undefined) {
+  if (idealFontSize !== undefined && idealFontSize !== null) {
     size = idealFontSize;
-  } else if (maxHeight === undefined) {
+  } else if (maxHeight === undefined || maxHeight === null) {
     throw new Error('You must specify at least one of maxHeight or idealFontSize');
   } else {
     size = Math.floor(maxHeight);
@@ -25,22 +40,12 @@ export default function computeMaxFontSize(
     });
   }
 
-  let textDimension = computeDimension(size);
-
-  // Decrease size until textWidth is less than maxWidth
-  if (maxWidth !== undefined) {
-    while (textDimension.width > maxWidth) {
-      size -= 1;
-      textDimension = computeDimension(size);
-    }
+  if (maxWidth !== undefined && maxWidth !== null) {
+    size = decreaseSizeUntil(size, computeDimension, dim => dim.width <= maxWidth);
   }
 
-  // Decrease size until textHeight is less than maxHeight
-  if (maxHeight !== undefined) {
-    while (textDimension.height > maxHeight) {
-      size -= 1;
-      textDimension = computeDimension(size);
-    }
+  if (maxHeight !== undefined && maxHeight !== null) {
+    size = decreaseSizeUntil(size, computeDimension, dim => dim.height <= maxHeight);
   }
 
   return size;
