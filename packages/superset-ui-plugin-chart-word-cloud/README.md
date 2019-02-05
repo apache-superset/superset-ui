@@ -1,23 +1,34 @@
 ## @superset-ui/plugin-chart-word-cloud
 
-[![Version](https://img.shields.io/npm/v/@superset-ui/plugin-chart-word-cloud.svg?style=flat)](https://img.shields.io/npm/v/@superset-ui/plugin-chart-word-cloud.svg?style=flat)
+[![Version](https://img.shields.io/npm/v/@superset-ui/plugin-chart-word-cloud.svg?style=flat-square)](https://img.shields.io/npm/v/@superset-ui/plugin-chart-word-cloud.svg?style=flat-square)
 [![David (path)](https://img.shields.io/david/apache-superset/superset-ui.svg?path=packages%2Fsuperset-ui-plugin-chart-word-cloud&style=flat-square)](https://david-dm.org/apache-superset/superset-ui?path=packages/superset-ui-plugin-chart-word-cloud)
 
-Description
+This plugin provides Word Cloud for Superset.
 
-#### Example usage
+### Usage
+
+Configure `key`, which can be any `string`, and register the plugin. This `key` will be used to lookup this chart throughout the app.
 
 ```js
-import { xxx } from '@superset-ui/plugin-chart-word-cloud';
+import WordCloudChartPlugin from '@superset-ui/legacy-plugin-chart-word-cloud';
+
+new WordCloudChartPlugin()
+  .configure({ key: 'word-cloud' })
+  .register();
 ```
 
-#### API
+Then use it via `SuperChart`. See [storybook](https://apache-superset.github.io/superset-ui-legacy/?selectedKind=plugin-chart-word-cloud) for more details.
 
-`fn(args)`
-
-- Do something
-
-### Development
-
-`@data-ui/build-config` is used to manage the build configuration for this package including babel
-builds, jest testing, eslint, and prettier.
+```js
+<SuperChart
+  chartType="word-cloud"
+  chartProps={{
+    width: 600,
+    height: 600,
+    formData: {...},
+    payload: {
+      data: {...},
+    },
+  }}
+/>
+```
