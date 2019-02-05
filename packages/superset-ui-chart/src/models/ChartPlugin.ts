@@ -37,7 +37,7 @@ export interface ChartPluginConfig<T extends FormData> {
   loadChart?: PromiseOrValueLoader<Function>;
 }
 
-export default class ChartPlugin<T extends FormData> extends Plugin {
+export default class ChartPlugin<T extends FormData = FormData> extends Plugin {
   metadata: ChartMetadata;
   loadBuildQuery?: PromiseOrValueLoader<BuildQueryFunction<T>>;
   loadTransformProps: PromiseOrValueLoader<TransformPropsFunction>;
