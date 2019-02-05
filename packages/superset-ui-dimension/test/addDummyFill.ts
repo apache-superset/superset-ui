@@ -1,15 +1,17 @@
+export const SAMPLE_TEXT = 'dummy text. does not really matter';
+
 export default function addDummyFill() {
   // @ts-ignore - fix jsdom
   SVGElement.prototype.getBBox = function getBBox() {
     let width = 200;
     let height = 20;
 
-    if (this.style.fontFamily === 'Lobster') {
-      width = 250;
-    }
-
     if (this.getAttribute('class') === 'test-class') {
       width = 100;
+    }
+
+    if (this.style.fontFamily === 'Lobster') {
+      width = 250;
     }
 
     if (this.style.fontSize) {
