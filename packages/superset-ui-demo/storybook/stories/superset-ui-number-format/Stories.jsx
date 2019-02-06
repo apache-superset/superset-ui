@@ -16,11 +16,13 @@ class NumberFormatValidator extends React.PureComponent {
         987654321,
         12345.6789,
         3000,
+        400.14,
         70.00002,
         1,
         0,
         -1,
         -70.00002,
+        -400.14,
         -3000,
         -12345.6789,
         -987654321,
@@ -46,7 +48,24 @@ class NumberFormatValidator extends React.PureComponent {
 
     return (
       <div className="container">
-        <div className="row" style={{ margin: '20px' }}>
+        <div className="row" style={{ margin: '40px 20px 0 20px' }}>
+          <div className="col-sm">
+            <p>
+              This <code>@superset-ui/number-format</code> package enriches <code>d3-format</code>{' '}
+              to handle invalid formats as well as edge case values. Use the validator below to
+              preview outputs from the specified format string. See{' '}
+              <a
+                href="https://github.com/d3/d3-format#locale_format"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                D3 Format Reference
+              </a>{' '}
+              for how to write a D3 format string.
+            </p>
+          </div>
+        </div>
+        <div className="row" style={{ margin: '10px 0 30px 0' }}>
           <div className="col-sm" />
           <div className="col-sm-6">
             <div className="form-inline">
