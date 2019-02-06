@@ -1,34 +1,23 @@
 /* eslint-disable no-magic-numbers, jsx-a11y/label-has-for, jsx-a11y/label-has-associated-control */
 
 import React from 'react';
-import { formatNumber } from '@superset-ui/number-format';
+import { formatTime } from '@superset-ui/time-format';
 
 const propTypes = {};
 const defaultProps = {};
 
-class NumberFormatValidator extends React.PureComponent {
+class TimeFormatValidator extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      formatString: '.3~s',
+      formatString: '%Y-%m-%d %H:%M:%S',
       testValues: [
-        987654321,
-        12345.6789,
-        3000,
-        400.14,
-        70.00002,
-        1,
+        new Date(Date.UTC(1986, 5, 14, 8, 30, 53)),
+        new Date(Date.UTC(2001, 9, 27, 13, 45, 2, 678)),
+        new Date(Date.UTC(2009, 1, 1, 0, 0, 0)),
+        new Date(Date.UTC(2018, 1, 1, 10, 20, 33)),
         0,
-        -1,
-        -70.00002,
-        -400.14,
-        -3000,
-        -12345.6789,
-        -987654321,
-        Number.POSITIVE_INFINITY,
-        Number.NEGATIVE_INFINITY,
-        NaN,
         null,
         undefined,
       ],
@@ -51,17 +40,17 @@ class NumberFormatValidator extends React.PureComponent {
         <div className="row" style={{ margin: '40px 20px 0 20px' }}>
           <div className="col-sm">
             <p>
-              This <code>@superset-ui/number-format</code> package enriches <code>d3-format</code>{' '}
-              to handle invalid formats as well as edge case values. Use the validator below to
-              preview outputs from the specified format string. See{' '}
+              This <code>@superset-ui/time-format</code> package enriches{' '}
+              <code>d3-time-format</code> to handle invalid formats as well as edge case values. Use
+              the validator below to preview outputs from the specified format string. See{' '}
               <a
-                href="https://github.com/d3/d3-format#locale_format"
+                href="https://github.com/d3/d3-time-format#locale_format"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                D3 Format Reference
+                D3 Time Format Reference
               </a>{' '}
-              for how to write a D3 format string.
+              for how to write a D3 time format string.
             </p>
           </div>
         </div>
@@ -70,7 +59,7 @@ class NumberFormatValidator extends React.PureComponent {
           <div className="col-sm-8">
             <div className="form">
               <div className="form-group">
-                <label>Enter D3 format string:&nbsp;&nbsp;</label>
+                <label>Enter D3 time format string:&nbsp;&nbsp;</label>
                 <input
                   id="formatString"
                   className="form-control form-control-lg"
@@ -88,7 +77,7 @@ class NumberFormatValidator extends React.PureComponent {
             <table className="table table-striped table-sm">
               <thead>
                 <tr>
-                  <th>Input (number)</th>
+                  <th>Input (time)</th>
                   <th>Formatted output (string)</th>
                 </tr>
               </thead>
@@ -96,10 +85,10 @@ class NumberFormatValidator extends React.PureComponent {
                 {testValues.map(v => (
                   <tr key={v}>
                     <td>
-                      <code>{`${v}`}</code>
+                      <code>{v instanceof Date ? v.toUTCString() : `${v}`}</code>
                     </td>
                     <td>
-                      <code>&quot;{formatNumber(formatString, v)}&quot;</code>
+                      <code>&quot;{formatTime(formatString, v)}&quot;</code>
                     </td>
                   </tr>
                 ))}
@@ -112,13 +101,13 @@ class NumberFormatValidator extends React.PureComponent {
   }
 }
 
-NumberFormatValidator.propTypes = propTypes;
-NumberFormatValidator.defaultProps = defaultProps;
+TimeFormatValidator.propTypes = propTypes;
+TimeFormatValidator.defaultProps = defaultProps;
 
 export default [
   {
-    renderStory: () => <NumberFormatValidator />,
+    renderStory: () => <TimeFormatValidator />,
     storyName: 'Validator',
-    storyPath: '@superset-ui/number-format',
+    storyPath: '@superset-ui/time-format',
   },
 ];
