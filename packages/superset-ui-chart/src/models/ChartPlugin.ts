@@ -1,12 +1,12 @@
 import { isRequired, Plugin } from '@superset-ui/core';
 import ChartMetadata from './ChartMetadata';
 import ChartProps from './ChartProps';
-import { FormData } from '../query/FormData';
-import { QueryContext } from '../query/buildQueryContext';
 import getChartMetadataRegistry from '../registries/ChartMetadataRegistrySingleton';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
 import getChartComponentRegistry from '../registries/ChartComponentRegistrySingleton';
 import getChartTransformPropsRegistry from '../registries/ChartTransformPropsRegistrySingleton';
+import { FormData } from '../types/FormData';
+import { QueryContext } from '../types/Query';
 
 const IDENTITY = (x: any) => x;
 

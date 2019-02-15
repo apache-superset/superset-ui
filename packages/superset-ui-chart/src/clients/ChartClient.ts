@@ -7,7 +7,8 @@ import {
   SupersetClientClass,
 } from '@superset-ui/connection';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
-import { FormData, AnnotationLayerMetadata } from '../query/FormData';
+import { AnnotationLayerMetadata } from '../types/Annotation';
+import { FormData } from '../types/FormData';
 
 export type SliceIdAndOrFormData =
   | {
