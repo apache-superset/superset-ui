@@ -21,7 +21,7 @@ export type TransformPropsFunction = (
   [key: string]: any;
 };
 
-export interface ChartPluginConfig<T extends FormData> {
+interface ChartPluginConfig<T extends FormData> {
   metadata: ChartMetadata;
   // use buildQuery for immediate value
   buildQuery?: BuildQueryFunction<T>;

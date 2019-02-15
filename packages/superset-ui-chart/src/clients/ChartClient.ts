@@ -29,14 +29,14 @@ interface ChartData {
   queryData: object;
 }
 
-export interface ChartClientConfig {
-  client?: SupersetClientInterface | SupersetClientClass;
-}
-
-export class ChartClient {
+export default class ChartClient {
   readonly client: SupersetClientInterface | SupersetClientClass;
 
-  constructor(config: ChartClientConfig = {}) {
+  constructor(
+    config: {
+      client?: SupersetClientInterface | SupersetClientClass;
+    } = {},
+  ) {
     const { client = SupersetClient } = config;
     this.client = client;
   }

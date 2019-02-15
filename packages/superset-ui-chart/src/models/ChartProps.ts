@@ -16,7 +16,7 @@ type Filters = Array<any>;
 type HandlerFunction = (...args: any[]) => void;
 type ChartPropsSelector = (c: ChartPropsConfig) => ChartProps;
 
-export interface ChartPropsConfig {
+interface ChartPropsConfig {
   annotationData?: AnnotationData;
   datasource?: SnakeCaseDatasource;
   filters?: Filters;
