@@ -5,20 +5,20 @@ interface LookupTable {
 export default class ChartMetadata {
   name: string;
   canBeAnnotationTypesLookup: LookupTable;
-  credits: Array<string>;
+  credits: string[];
   description: string;
   show: boolean;
-  supportedAnnotationTypes: Array<string>;
+  supportedAnnotationTypes: string[];
   thumbnail: string;
   useLegacyApi: boolean;
 
   constructor(config: {
     name: string;
-    canBeAnnotationTypes?: Array<string>;
-    credits?: Array<string>;
+    canBeAnnotationTypes?: string[];
+    credits?: string[];
     description?: string;
     show?: boolean;
-    supportedAnnotationTypes?: Array<string>;
+    supportedAnnotationTypes?: string[];
     thumbnail: string;
     useLegacyApi?: boolean;
   }) {

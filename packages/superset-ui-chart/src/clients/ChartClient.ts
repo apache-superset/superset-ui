@@ -103,7 +103,7 @@ export default class ChartClient {
     return Promise.reject(new Error('This feature is not implemented yet.'));
   }
 
-  loadAnnotations(annotationLayers?: Array<AnnotationLayerMetadata>): Promise<AnnotationData> {
+  loadAnnotations(annotationLayers?: AnnotationLayerMetadata[]): Promise<AnnotationData> {
     if (Array.isArray(annotationLayers) && annotationLayers.length > 0) {
       return Promise.all(annotationLayers.map(layer => this.loadAnnotation(layer))).then(results =>
         annotationLayers.reduce((prev, layer, i) => {

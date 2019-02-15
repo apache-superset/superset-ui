@@ -14,7 +14,7 @@ export interface QueryContext {
     id: number;
     type: DatasourceType;
   };
-  queries: Array<QueryObject>;
+  queries: QueryObject[];
 }
 
 export type BuildQueryFunction<T extends FormData> = (formData: T) => QueryContext;
