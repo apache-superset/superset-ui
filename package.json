@@ -94,5 +94,8 @@
       "yarn run prettier --write",
       "git add"
     ]
+  },
+  "dependencies": {
+    "codecov": "^3.2.0"
   }
 }
