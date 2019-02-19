@@ -10,8 +10,8 @@ export default class NumberFormatterRegistry extends RegistryWithDefaultKey<
   constructor() {
     super({
       initialDefaultKey: NumberFormats.SI,
-      overwritePolicy: OverwritePolicy.WARN,
       name: 'NumberFormatter',
+      overwritePolicy: OverwritePolicy.WARN,
     });
   }
 

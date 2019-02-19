@@ -10,8 +10,8 @@ export default class TimeFormatterRegistry extends RegistryWithDefaultKey<
   constructor() {
     super({
       initialDefaultKey: TimeFormats.DATABASE_DATETIME,
-      overwritePolicy: OverwritePolicy.WARN,
       name: 'TimeFormatter',
+      overwritePolicy: OverwritePolicy.WARN,
     });
   }
 
