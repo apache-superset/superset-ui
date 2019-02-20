@@ -2,6 +2,7 @@
 
 import { format as d3Format } from 'd3-format';
 import NumberFormatter from '../NumberFormatter';
+import NumberFormats from '../NumberFormats';
 
 export default function createSmartNumberFormatter(
   config: {
@@ -41,7 +42,7 @@ export default function createSmartNumberFormatter(
   return new NumberFormatter({
     description,
     formatFunc: value => `${getSign(value)}${formatValue(value)}`,
-    id: id || `smart_number${signed ? '_change' : ''}`,
+    id: id || signed ? NumberFormats.SMART_NUMBER_SIGNED : NumberFormats.SMART_NUMBER,
     label: label || 'Adaptive formatter',
   });
 }
