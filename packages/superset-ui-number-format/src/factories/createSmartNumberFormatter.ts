@@ -4,6 +4,10 @@ import { format as d3Format } from 'd3-format';
 import NumberFormatter from '../NumberFormatter';
 import NumberFormats from '../NumberFormats';
 
+const siFormatter = d3Format(`.3~s`);
+const float2PointFormatter = d3Format(`.2~f`);
+const float4PointFormatter = d3Format(`.4~f`);
+
 export default function createSmartNumberFormatter(
   config: {
     description?: string;
@@ -13,10 +17,6 @@ export default function createSmartNumberFormatter(
   } = {},
 ) {
   const { description, signed = false, id, label } = config;
-  const siFormatter = d3Format(`.3~s`);
-  const float2PointFormatter = d3Format(`.2~f`);
-  const float4PointFormatter = d3Format(`.4~f`);
-
   const getSign = signed ? (value: number) => (value > 0 ? '+' : '') : () => '';
 
   function formatValue(value: number) {
