@@ -59,10 +59,10 @@ export default class ChartMetadata {
 
   clone() {
     return new ChartMetadata({
-      name: this.name,
       canBeAnnotationTypes: this.canBeAnnotationTypes,
       credits: this.credits,
       description: this.description,
+      name: this.name,
       show: this.show,
       supportedAnnotationTypes: this.supportedAnnotationTypes,
       thumbnail: this.thumbnail,

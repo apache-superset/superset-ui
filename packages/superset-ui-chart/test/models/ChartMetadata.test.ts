@@ -18,9 +18,9 @@ describe('ChartMetadata', () => {
   describe('.canBeAnnotationType(type)', () => {
     const metadata = new ChartMetadata({
       name: 'test chart',
+      canBeAnnotationTypes: ['event'],
       credits: [],
       description: 'some kind of chart',
-      canBeAnnotationTypes: ['event'],
       thumbnail: 'test.png',
     });
     it('returns true if can', () => {
@@ -33,9 +33,9 @@ describe('ChartMetadata', () => {
   describe('.clone()', () => {
     const metadata = new ChartMetadata({
       name: 'test chart',
+      canBeAnnotationTypes: ['event'],
       credits: [],
       description: 'some kind of chart',
-      canBeAnnotationTypes: ['event'],
       thumbnail: 'test.png',
     });
     const clone = metadata.clone();
