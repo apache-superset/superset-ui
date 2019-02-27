@@ -30,4 +30,25 @@ describe('ChartMetadata', () => {
       expect(metadata.canBeAnnotationType('invalid-type')).toBeFalsy();
     });
   });
+  describe('.clone()', () => {
+    const metadata = new ChartMetadata({
+      name: 'test chart',
+      credits: [],
+      description: 'some kind of chart',
+      canBeAnnotationTypes: ['event'],
+      thumbnail: 'test.png',
+    });
+    const clone = metadata.clone();
+
+    it('returns a new instance', () => {
+      expect(metadata).not.toBe(clone);
+    });
+    it('returns a new instance with same field values', () => {
+      expect(metadata.name).toEqual(clone.name);
+      expect(metadata.credits).toEqual(clone.credits);
+      expect(metadata.description).toEqual(clone.description);
+      expect(metadata.canBeAnnotationTypes).toEqual(clone.canBeAnnotationTypes);
+      expect(metadata.thumbnail).toEqual(clone.thumbnail);
+    });
+  });
 });
