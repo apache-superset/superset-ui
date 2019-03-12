@@ -8,7 +8,9 @@ export interface QueryObject {
   granularity: string;
   groupby?: string[];
   metrics?: Metric[];
-  extras?: any;
+  extras?: {
+    [key: string]: string;
+  };
   timeseries_limit?: number;
   timeseries_limit_metric?: Metric | null;
   time_range?: string;
@@ -17,9 +19,9 @@ export interface QueryObject {
   row_limit?: number;
   order_desc?: boolean;
   is_timeseries?: boolean;
-  prequeries?: any[];
+  prequeries?: string[];
   is_prequery?: boolean;
-  orderby?: any[];
+  orderby?: Array<[Metric, boolean]>;
 }
 
 export interface QueryContext {

@@ -22,9 +22,8 @@ export default function buildQueryObject<T extends ChartFormData>(formData: T): 
     where: formData.where || '',
   };
 
-  const orgGroupby = formData.groupby || [];
-  const orgColumns = formData.columns || [];
-  const groupbySet = new Set(orgGroupby.concat(orgColumns));
+  const { columns = [], groupby = [] } = formData;
+  const groupbySet = new Set([...columns, ...groupby]);
   const limit = formData.limit ? Number(formData.limit) : 0;
   const rowLimit = Number(formData.row_limit);
   const orderDesc = formData.order_desc === undefined ? true : formData.order_desc;
@@ -45,7 +44,7 @@ export default function buildQueryObject<T extends ChartFormData>(formData: T): 
     time_range: formData.time_range,
     timeseries_limit: limit,
     timeseries_limit_metric: formData.timeseries_limit_metric
-      ? Metrics.convertMetric(formData.timeseries_limit_metric)
+      ? Metrics.formatMetric(formData.timeseries_limit_metric)
       : null,
     until: formData.until,
   };

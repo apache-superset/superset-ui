@@ -29,10 +29,10 @@ export default class Metrics {
     return this.metrics.map(m => m.label);
   }
 
-  static convertMetric(metric: FormDataMetric): Metric {
-    let convertedMetric;
+  static formatMetric(metric: FormDataMetric): Metric {
+    let formattedMetric;
     if (typeof metric === 'string') {
-      convertedMetric = {
+      formattedMetric = {
         label: metric,
       };
     } else {
@@ -40,17 +40,17 @@ export default class Metrics {
       // TODO: move this logic to the client once client has more info on the
       // the datasource
       const label = metric.label || this.getDefaultLabel(metric);
-      convertedMetric = {
+      formattedMetric = {
         ...metric,
         label,
       };
     }
 
-    return convertedMetric;
+    return formattedMetric;
   }
 
   private addMetric(metric: FormDataMetric) {
-    this.metrics.push(Metrics.convertMetric(metric));
+    this.metrics.push(Metrics.formatMetric(metric));
   }
 
   static getDefaultLabel(metric: AdhocMetric) {
