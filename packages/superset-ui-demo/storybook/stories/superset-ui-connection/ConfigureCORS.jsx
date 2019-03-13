@@ -12,22 +12,21 @@ class ConfigureCORS extends React.Component {
 
     this.state = {
       endpoint: '',
-      host: 'localhost',
+      host: '',
       method: 'POST',
-      port: '9000',
       postPayload: JSON.stringify({ form_data: bigNumberFormData }),
       status: null,
     };
   }
 
   handleConfigureCORS() {
-    const { endpoint, host, port, postPayload, method } = this.state;
+    const { endpoint, host, postPayload, method } = this.state;
 
     SupersetClient.reset();
 
     SupersetClient.configure({
       credentials: 'include',
-      host: `${host}${port ? ':' : ''}${port}`,
+      host,
       mode: 'cors',
     })
       .init()
@@ -52,18 +51,27 @@ class ConfigureCORS extends React.Component {
       });
   }
 
+  renderVerboseInstructions() {
+    return (
+      <>
+        This story helps you test CORS configuration with the Superset App. <br />
+        1) enable CORS for desired endpoints in Superset for this domain <br /> 2) enter its host
+        (with port) and desired endpoint here <br />
+        3) test requests from this domain
+      </>
+    );
+  }
+
   render() {
     const { verbose } = this.props;
-    const { host, port, endpoint, method, status, error, payload, postPayload } = this.state;
+    const { host, endpoint, method, status, error, payload, postPayload } = this.state;
 
     return (
       <div style={{ margin: 16 }}>
         <div className="row">
           <div className="col-sm-6">
             {verbose
-              ? `This widget helps you test CORS configuration with the Superset App. After enabling
-                CORS in Superset, enter its host, port, and desired endpoint here to test requests
-                from this domain.`
+              ? this.renderVerboseInstructions()
               : `Test your Superset App CORS configuration below.`}
           </div>
         </div>
@@ -78,20 +86,9 @@ class ConfigureCORS extends React.Component {
                   className="form-control form-control-sm"
                   type="text"
                   value={host}
+                  placeholder="e.g., localhost:9000"
                   onChange={e => {
                     this.setState({ host: e.target.value });
-                  }}
-                />
-              </div>
-              <div className="form-group">
-                <label>Superset Port:&nbsp;&nbsp;</label>
-                <input
-                  id="port"
-                  className="form-control form-control-sm"
-                  type="text"
-                  value={port}
-                  onChange={e => {
-                    this.setState({ port: e.target.value });
                   }}
                 />
               </div>
@@ -107,7 +104,7 @@ class ConfigureCORS extends React.Component {
                       onChange={e => {
                         this.setState({ endpoint: e.target.value });
                       }}
-                      placeholder="Empty to just test auth"
+                      placeholder="Leave empty to only test auth"
                     />
                   </div>
                   {endpoint && (
