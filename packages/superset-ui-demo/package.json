@@ -30,6 +30,7 @@
   "homepage": "https://github.com/apache-superset/superset-ui#readme",
   "dependencies": {
     "@babel/core": "^7.1.2",
+    "@babel/polyfill": "^7.2.5",
     "@storybook/addon-knobs": "^4.0.2",
     "@storybook/addon-options": "^4.0.3",
     "@storybook/react": "^4.0.2",
