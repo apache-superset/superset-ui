@@ -1,6 +1,10 @@
 import 'whatwg-fetch';
 import { CallApi } from '../types';
 
+const cacheAvailable = 'caches' in self;
+const NOT_MODIFIED = 304;
+const OK = 200;
+
 // This function fetches an API response and returns the corresponding json
 export default function callApi({
   body,
@@ -25,6 +29,41 @@ export default function callApi({
     redirect,
     signal,
   };
+
+  if (method === 'GET' && cacheAvailable) {
+    return caches.open('superset').then(supersetCache =>
+      supersetCache
+        .match(url)
+        .then(cachedResponse => {
+          if (cachedResponse) {
+            // if we have a cached response, send its ETag in the
+            // `If-None-Match` header in a conditional request
+            const etag = cachedResponse.headers.get('Etag');
+            if (etag) {
+              request.headers = request.headers || {};
+              request.headers['If-None-Match'] = etag;
+            }
+          }
+
+          return fetch(url, request); // eslint-disable-line compat/compat
+        })
+        .then(response => {
+          if (response.status === NOT_MODIFIED) {
+            return supersetCache.match(url).then(cachedResponse => {
+              if (cachedResponse) {
+                return cachedResponse.clone();
+              }
+              throw new Error('Received 304 but no content is cached!');
+            });
+          } else if (response.status === OK && response.headers.get('Etag')) {
+            supersetCache.delete(url);
+            supersetCache.put(url, response.clone());
+          }
+
+          return response;
+        }),
+    );
+  }
 
   if (
     (method === 'POST' || method === 'PATCH' || method === 'PUT') &&
