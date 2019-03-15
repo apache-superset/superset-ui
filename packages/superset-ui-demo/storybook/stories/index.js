@@ -37,7 +37,7 @@ requireContext.keys().forEach(packageName => {
 
       storiesOf(storyPath, module)
         .addParameters({ options })
-        .addDecorator(withKnobs)
+        .addDecorator(withKnobs({ escapeHTML: false }))
         .addWithJSX(storyName, renderStory);
     });
   }
