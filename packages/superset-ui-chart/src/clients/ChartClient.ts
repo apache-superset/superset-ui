@@ -7,27 +7,28 @@ import {
   SupersetClientClass,
 } from '@superset-ui/connection';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
+import getChartMetadataRegistry from '../registries/ChartMetadataRegistrySingleton';
 import { AnnotationLayerMetadata } from '../types/Annotation';
 import { ChartFormData } from '../types/ChartFormData';
+import { QueryData } from '../models/ChartProps';
 
-export type SliceIdAndOrFormData =
-  | {
-      sliceId: number;
-      formData?: Partial<ChartFormData>;
-    }
-  | {
-      formData: ChartFormData;
-    };
+// This expands to Partial<All> & (union of all possible single-property types)
+type AtLeastOne<All, Each = { [K in keyof All]: Pick<All, K> }> = Partial<All> & Each[keyof Each];
+
+export type SliceIdAndOrFormData = AtLeastOne<{
+  sliceId: number;
+  formData: Partial<ChartFormData>;
+}>;
 
 interface AnnotationData {
   [key: string]: object;
 }
 
-interface ChartData {
+export interface ChartData {
   annotationData: AnnotationData;
   datasource: object;
   formData: ChartFormData;
-  queryData: object;
+  queryData: QueryData;
 }
 
 export default class ChartClient {
@@ -70,18 +71,23 @@ export default class ChartClient {
   }
 
   loadQueryData(formData: ChartFormData, options?: RequestConfig): Promise<object> {
-    const buildQuery = getChartBuildQueryRegistry().get(formData.viz_type);
-    if (buildQuery) {
+    const { viz_type: visType } = formData;
+    const metaData = getChartMetadataRegistry().get(visType);
+    const buildQuery = getChartBuildQueryRegistry().get(visType);
+
+    if (buildQuery && metaData) {
       return this.client
         .post({
-          endpoint: '/api/v1/query/',
-          postPayload: { query_context: buildQuery(formData) },
+          endpoint: metaData.useLegacyApi ? '/superset/explore_json/' : '/api/v1/query/',
+          postPayload: {
+            [metaData.useLegacyApi ? 'form_data' : 'query_context']: buildQuery(formData),
+          },
           ...options,
         } as RequestConfig)
         .then(response => response.json as Json);
     }
 
-    return Promise.reject(new Error(`Unknown chart type: ${formData.viz_type}`));
+    return Promise.reject(new Error(`Unknown chart type: ${visType}`));
   }
 
   loadDatasource(datasourceKey: string, options?: RequestConfig): Promise<object> {
