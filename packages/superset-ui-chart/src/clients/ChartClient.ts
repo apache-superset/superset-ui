@@ -43,7 +43,10 @@ export default class ChartClient {
     this.client = client;
   }
 
-  loadFormData(input: SliceIdAndOrFormData, options?: RequestConfig): Promise<ChartFormData> {
+  loadFormData(
+    input: SliceIdAndOrFormData,
+    options?: Partial<RequestConfig>,
+  ): Promise<ChartFormData> {
     /* If sliceId is provided, use it to fetch stored formData from API */
     if ('sliceId' in input) {
       const promise = this.client
@@ -70,7 +73,7 @@ export default class ChartClient {
       : Promise.reject(new Error('At least one of sliceId or formData must be specified'));
   }
 
-  loadQueryData(formData: ChartFormData, options?: RequestConfig): Promise<object> {
+  loadQueryData(formData: ChartFormData, options?: Partial<RequestConfig>): Promise<object> {
     const { viz_type: visType } = formData;
     const metaData = getChartMetadataRegistry().get(visType);
     const buildQuery = getChartBuildQueryRegistry().get(visType);
@@ -90,7 +93,7 @@ export default class ChartClient {
     return Promise.reject(new Error(`Unknown chart type: ${visType}`));
   }
 
-  loadDatasource(datasourceKey: string, options?: RequestConfig): Promise<object> {
+  loadDatasource(datasourceKey: string, options?: Partial<RequestConfig>): Promise<object> {
     return this.client
       .get({
         endpoint: `/superset/fetch_datasource_metadata?datasourceKey=${datasourceKey}`,
