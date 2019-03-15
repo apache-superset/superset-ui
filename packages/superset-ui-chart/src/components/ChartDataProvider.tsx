@@ -6,9 +6,12 @@ import ChartClient, { SliceIdAndOrFormData } from '../clients/ChartClient';
 import { ChartFormData } from '../types/ChartFormData';
 import { QueryData } from '../models/ChartProps';
 
+type Datasource = object;
+
 interface Payload {
   formData: Partial<ChartFormData>;
   queryData: QueryData;
+  datasource?: Datasource;
 }
 
 export interface ProvidedProps {
@@ -25,13 +28,17 @@ export type Props =
     /** Superset client which is used to fetch data. It should already be configured and initialized. */
     client?: SupersetClientInterface;
     /** Will fetch and include datasource metadata for SliceIdAndOrFormData in the payload. */
-    loadDatasource: boolean;
+    loadDatasource?: boolean;
     /** Callback when an error occurs. Enables wrapping the Provider in an ErrorBoundary. */
     onError?: (error: ProvidedProps['error']) => void;
     /** Callback when data is loaded. */
     onLoaded?: (payload: ProvidedProps['payload']) => void;
-    /** Hook to override the request config */
-    requestOptions?: (requestConfig: RequestConfig) => RequestConfig;
+    /** Hook to override the formData request config. */
+    formDataRequestOptions?: Partial<RequestConfig>;
+    /** Hook to override the datasource request config. */
+    datasourceRequestOptions?: Partial<RequestConfig>;
+    /** Hook to override the queryData request config. */
+    queryRequestOptions?: Partial<RequestConfig>;
   };
 
 type State = {
@@ -74,19 +81,23 @@ class ChartDataProvider extends React.PureComponent<Props, State> {
   }
 
   private handleFetchData() {
-    const { loadDatasource } = this.props;
-    const sliceIdAndOrFormData = this.extractSliceIdAndFormData();
+    const {
+      loadDatasource,
+      formDataRequestOptions,
+      datasourceRequestOptions,
+      queryRequestOptions,
+    } = this.props;
 
     this.setState({ status: 'fetching' }, () => {
       try {
         this.chartClient
-          .loadFormData(sliceIdAndOrFormData)
+          .loadFormData(this.extractSliceIdAndFormData(), formDataRequestOptions)
           .then(formData =>
             Promise.all([
               loadDatasource
-                ? this.chartClient.loadDatasource(formData.datasource)
+                ? this.chartClient.loadDatasource(formData.datasource, datasourceRequestOptions)
                 : Promise.resolve(undefined),
-              this.chartClient.loadQueryData(formData),
+              this.chartClient.loadQueryData(formData, queryRequestOptions),
             ]).then(([datasource, queryData]) => ({
               datasource,
               formData,
