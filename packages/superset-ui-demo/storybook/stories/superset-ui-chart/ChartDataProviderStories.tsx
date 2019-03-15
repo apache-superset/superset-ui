@@ -1,29 +1,45 @@
 import React from 'react';
+import { text, select } from '@storybook/addon-knobs';
 
 import { SuperChart, ChartDataProvider, ChartProps } from '@superset-ui/chart';
 import { SupersetClient } from '@superset-ui/connection';
-import WordCloudLegacyPlugin from '@superset-ui/legacy-plugin-chart-word-cloud';
+import { BigNumberChartPlugin as LegacyBigNumberPlugin } from '@superset-ui/legacy-preset-chart-big-number';
+import LegacySankeyPlugin from '@superset-ui/legacy-plugin-chart-sankey';
+import LegacySunburstPlugin from '@superset-ui/legacy-plugin-chart-sunburst';
+import LegacyWordCloudPlugin from '@superset-ui/legacy-plugin-chart-word-cloud';
 import WordCloudPlugin from '@superset-ui/plugin-chart-word-cloud';
-import { BigNumberChartPlugin } from '@superset-ui/legacy-preset-chart-big-number';
-import { text, select } from '@storybook/addon-knobs';
+
 import { DataProviderProvidedProps } from '../../../../superset-ui-chart/src';
-
-import { wordCloudFormData, bigNumberFormData } from '../mocks/formData';
-
+import {
+  bigNumberFormData,
+  sankeyFormData,
+  sunburstFormData,
+  wordCloudFormData,
+} from '../mocks/formData';
 import Expandable from '../../shared/components/Expandable';
 import VerifyCORS, { renderError } from '../../shared/components/VerifyCORS';
 
-const WORD_CLOUD_LEGACY = wordCloudFormData.viz_type;
-const WORD_CLOUD = 'word_cloud_new';
 const BIG_NUMBER = bigNumberFormData.viz_type;
+const SANKEY = sankeyFormData.viz_type;
+const SUNBURST = sunburstFormData.viz_type;
+const WORD_CLOUD_LEGACY = wordCloudFormData.viz_type;
+const WORD_CLOUD = 'new_word_cloud';
 
-new WordCloudLegacyPlugin().configure({ key: WORD_CLOUD_LEGACY }).register();
+new LegacyBigNumberPlugin().configure({ key: BIG_NUMBER }).register();
+// @ts-ignore
+new LegacySankeyPlugin().configure({ key: SANKEY }).register();
+// @ts-ignore
+new LegacySunburstPlugin().configure({ key: SUNBURST }).register();
+// @ts-ignore
+new LegacyWordCloudPlugin().configure({ key: WORD_CLOUD_LEGACY }).register();
+// @ts-ignore
 new WordCloudPlugin().configure({ key: WORD_CLOUD }).register();
-new BigNumberChartPlugin().configure({ key: BIG_NUMBER }).register();
 
-const VIS_TYPES = [BIG_NUMBER, WORD_CLOUD, WORD_CLOUD_LEGACY];
+const VIS_TYPES = [BIG_NUMBER, SANKEY, SUNBURST, WORD_CLOUD, WORD_CLOUD_LEGACY];
 const FORM_DATA_LOOKUP = {
   [BIG_NUMBER]: bigNumberFormData,
+  [SANKEY]: sankeyFormData,
+  [SUNBURST]: sunburstFormData,
   [WORD_CLOUD]: { ...wordCloudFormData, viz_type: WORD_CLOUD },
   [WORD_CLOUD_LEGACY]: wordCloudFormData,
 };

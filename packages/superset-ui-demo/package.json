@@ -37,6 +37,8 @@
     "@superset-ui/chart": "^0.10.2",
     "@superset-ui/color": "^0.10.1",
     "@superset-ui/connection": "^0.10.2",
+    "@superset-ui/legacy-plugin-chart-sankey": "^0.10.0",
+    "@superset-ui/legacy-plugin-chart-sunburst": "^0.10.0",
     "@superset-ui/legacy-plugin-chart-word-cloud": "^0.10.0",
     "@superset-ui/legacy-preset-chart-big-number": "^0.10.0",
     "@superset-ui/number-format": "^0.10.1",
