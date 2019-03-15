@@ -19,9 +19,10 @@ export {
 export { default as buildQueryContext } from './query/buildQueryContext';
 export { default as DatasourceKey } from './query/DatasourceKey';
 
-export { default as DataProvider } from './components/DataProvider';
+export { default as ChartDataProvider } from './components/ChartDataProvider';
 
 export * from './types/Annotation';
 export * from './types/Datasource';
 export * from './types/ChartFormData';
 export * from './types/Query';
+export * from './types/DataProvider';
