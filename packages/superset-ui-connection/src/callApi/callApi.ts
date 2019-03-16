@@ -1,9 +1,9 @@
+/* eslint compat/compat: 'off' */
 import 'whatwg-fetch';
 import { CallApi } from '../types';
+import { CACHE_KEY, NOT_MODIFIED, OK } from '../constants';
 
-const cacheAvailable = 'caches' in self;
-const NOT_MODIFIED = 304;
-const OK = 200;
+const CACHE_AVAILABLE = 'caches' in self;
 
 // This function fetches an API response and returns the corresponding json
 export default function callApi({
@@ -30,8 +30,8 @@ export default function callApi({
     signal,
   };
 
-  if (method === 'GET' && cacheAvailable) {
-    return caches.open('superset').then(supersetCache =>
+  if (method === 'GET' && CACHE_AVAILABLE) {
+    return caches.open(CACHE_KEY).then(supersetCache =>
       supersetCache
         .match(url)
         .then(cachedResponse => {
@@ -40,12 +40,11 @@ export default function callApi({
             // `If-None-Match` header in a conditional request
             const etag = cachedResponse.headers.get('Etag');
             if (etag) {
-              request.headers = request.headers || {};
-              request.headers['If-None-Match'] = etag;
+              request.headers = { ...request.headers, 'If-None-Match': etag };
             }
           }
 
-          return fetch(url, request); // eslint-disable-line compat/compat
+          return fetch(url, request);
         })
         .then(response => {
           if (response.status === NOT_MODIFIED) {
@@ -83,5 +82,5 @@ export default function callApi({
     request.body = formData;
   }
 
-  return fetch(url, request); // eslint-disable-line compat/compat
+  return fetch(url, request);
 }
