@@ -2,9 +2,9 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import ChartClient from '../../src/clients/ChartClient';
 import ChartDataProvider, { Props } from '../../src/components/ChartDataProvider';
-import { bigNumberFormData } from '../../../superset-ui-demo/storybook/stories/mocks/formData';
+import { bigNumberFormData } from '../fixtures/formData';
 
-const mockQueryPayload = { query: 'payload' };
+const mockQueryPayload = [{ query: 'payload' }];
 const defaultMockLoadFormData = jest.fn(allProps => Promise.resolve(allProps.formData));
 let mockLoadFormData = defaultMockLoadFormData; // allows overriding in tests
 const mockLoadDatasource = jest.fn(datasource => Promise.resolve(datasource));
@@ -89,7 +89,7 @@ describe('ChartDataProvider', () => {
       setup({ loadDatasource: true });
       setTimeout(() => {
         expect(mockLoadDatasource.mock.calls).toHaveLength(1);
-        expect(mockLoadDatasource.mock.calls[0][0]).toEqual(props.formData.datasource);
+        expect(mockLoadDatasource.mock.calls[0][0]).toEqual(props.formData!.datasource);
         done();
       }, 0);
     });
@@ -113,7 +113,7 @@ describe('ChartDataProvider', () => {
 
       setTimeout(() => {
         expect(mockLoadDatasource.mock.calls).toHaveLength(2);
-        expect(mockLoadDatasource.mock.calls[0][0]).toEqual(props.formData.datasource);
+        expect(mockLoadDatasource.mock.calls[0][0]).toEqual(props.formData!.datasource);
         expect(mockLoadDatasource.mock.calls[1][0]).toEqual(newDatasource);
         done();
       }, 0);
@@ -126,6 +126,7 @@ describe('ChartDataProvider', () => {
       setup();
       setTimeout(() => {
         expect(mockLoadQueryData.mock.calls).toHaveLength(1);
+        // @ts-ignore unsure why mock.calls tuple length is "0"
         expect(mockLoadQueryData.mock.calls[0][0]).toEqual(props.formData);
         done();
       }, 0);
@@ -137,6 +138,7 @@ describe('ChartDataProvider', () => {
       setup({ queryRequestOptions: options });
       setTimeout(() => {
         expect(mockLoadQueryData.mock.calls).toHaveLength(1);
+        // @ts-ignore unsure why mock.calls tuple length is "0"
         expect(mockLoadQueryData.mock.calls[0][1]).toEqual(options);
         done();
       }, 0);
@@ -150,7 +152,9 @@ describe('ChartDataProvider', () => {
 
       setTimeout(() => {
         expect(mockLoadQueryData.mock.calls).toHaveLength(2);
+        // @ts-ignore unsure why mock.calls tuple length is "0"
         expect(mockLoadQueryData.mock.calls[0][0]).toEqual(props.formData);
+        // @ts-ignore unsure why mock.calls tuple length is "0"
         expect(mockLoadQueryData.mock.calls[1][0]).toEqual(newFormData);
         done();
       }, 0);
@@ -179,7 +183,7 @@ describe('ChartDataProvider', () => {
         expect(children.mock.calls[1][0]).toEqual({
           payload: {
             formData: props.formData,
-            datasource: props.formData.datasource,
+            datasource: props.formData!.datasource,
             queryData: mockQueryPayload,
           },
         });
@@ -190,6 +194,7 @@ describe('ChartDataProvider', () => {
     it('calls children({ error }) upon error', done => {
       expect.assertions(2);
       const children = jest.fn();
+      // @ts-ignore Type 'Mock<Promise<any>, []>' is not assignable to type 'Mock<Promise<any>, any[]>'
       mockLoadFormData = jest.fn(() => Promise.reject(Error('error')));
 
       setup({ children });
@@ -214,7 +219,7 @@ describe('ChartDataProvider', () => {
         // the values here directly depend on how the mock fns are defined above
         expect(onLoaded.mock.calls[0][0]).toEqual({
           formData: props.formData,
-          datasource: props.formData.datasource,
+          datasource: props.formData!.datasource,
           queryData: mockQueryPayload,
         });
         done();
@@ -224,6 +229,7 @@ describe('ChartDataProvider', () => {
     it('calls onError(error) upon error', done => {
       expect.assertions(2);
       const onError = jest.fn();
+      // @ts-ignore Type 'Mock<Promise<any>, []>' is not assignable to type 'Mock<Promise<any>, any[]>'
       mockLoadFormData = jest.fn(() => Promise.reject(Error('error')));
 
       setup({ onError });

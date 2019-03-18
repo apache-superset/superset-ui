@@ -9,13 +9,14 @@ import LegacySunburstPlugin from '@superset-ui/legacy-plugin-chart-sunburst';
 import LegacyWordCloudPlugin from '@superset-ui/legacy-plugin-chart-word-cloud';
 import WordCloudPlugin from '@superset-ui/plugin-chart-word-cloud';
 
-import { DataProviderProvidedProps } from '../../../../superset-ui-chart/src';
+import { DataProviderProvidedProps } from '@superset-ui/chart/src';
 import {
   bigNumberFormData,
   sankeyFormData,
   sunburstFormData,
   wordCloudFormData,
-} from '../mocks/formData';
+} from '@superset-ui/chart/test/fixtures/formData';
+
 import Expandable from '../../shared/components/Expandable';
 import VerifyCORS, { renderError } from '../../shared/components/VerifyCORS';
 
