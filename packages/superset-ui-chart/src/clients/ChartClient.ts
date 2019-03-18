@@ -75,15 +75,16 @@ export default class ChartClient {
 
   loadQueryData(formData: ChartFormData, options?: Partial<RequestConfig>): Promise<object> {
     const { viz_type: visType } = formData;
-    const metaData = getChartMetadataRegistry().get(visType);
-    const buildQuery = getChartBuildQueryRegistry().get(visType);
 
-    if (buildQuery && metaData) {
+    if (getChartMetadataRegistry().has(visType)) {
+      const { useLegacyApi } = getChartMetadataRegistry().get(visType);
+      const buildQuery = useLegacyApi ? () => formData : getChartBuildQueryRegistry().get(visType);
+
       return this.client
         .post({
-          endpoint: metaData.useLegacyApi ? '/superset/explore_json/' : '/api/v1/query/',
+          endpoint: useLegacyApi ? '/superset/explore_json/' : '/api/v1/query/',
           postPayload: {
-            [metaData.useLegacyApi ? 'form_data' : 'query_context']: buildQuery(formData),
+            [useLegacyApi ? 'form_data' : 'query_context']: buildQuery(formData),
           },
           ...options,
         } as RequestConfig)
