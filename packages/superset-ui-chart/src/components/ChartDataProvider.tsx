@@ -42,7 +42,7 @@ export type Props =
   };
 
 type State = {
-  status: 'unitialized' | 'fetching' | 'error' | 'loaded';
+  status: 'uninitialized' | 'loading' | 'error' | 'loaded';
   payload?: ProvidedProps['payload'];
   error?: ProvidedProps['error'];
 };
@@ -56,7 +56,7 @@ class ChartDataProvider extends React.PureComponent<Props, State> {
     this.handleReceiveData = this.handleReceiveData.bind(this);
     this.handleError = this.handleError.bind(this);
     this.chartClient = new ChartClient({ client: props.client });
-    this.state = { status: 'unitialized' };
+    this.state = { status: 'uninitialized' };
   }
 
   componentDidMount() {
@@ -88,7 +88,7 @@ class ChartDataProvider extends React.PureComponent<Props, State> {
       queryRequestOptions,
     } = this.props;
 
-    this.setState({ status: 'fetching' }, () => {
+    this.setState({ status: 'loading' }, () => {
       try {
         this.chartClient
           .loadFormData(this.extractSliceIdAndFormData(), formDataRequestOptions)
@@ -130,9 +130,9 @@ class ChartDataProvider extends React.PureComponent<Props, State> {
 
     const provided: ProvidedProps = {};
 
-    if (status === 'unitialized') {
+    if (status === 'uninitialized') {
       return null;
-    } else if (status === 'fetching') {
+    } else if (status === 'loading') {
       provided.loading = true;
     } else if (status === 'error') {
       provided.error = error;
