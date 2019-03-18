@@ -53,7 +53,7 @@ requests from domains outside your `Apache Superset` instance:
    }).init();
    ```
 
-3. Register any desired / needeed `@superset-ui` chart + color plugins.
+3. Register any desired / needed `@superset-ui` chart + color plugins.
 
    ```javascript
    import WordCloudPlugin from '@superset-ui/plugin-chart-word-cloud';
