@@ -7,15 +7,18 @@ Description
 
 #### Example usage
 
-##### `<SuperChart />`
+##### `<ChartDataProvider />`
 
-Coming
+This component is a React utility wrapper around the `@superset-ui/chart` `ChartClient` and will
+generally require you to setup `CORS` (CROSS ORIGIN RESOURCE SHARING) to accept cross-origin
+requests from domains outside your `Apache Superset` instance:
 
-##### `<DataProvider />`
+1. Configure `CORS` in your `Apache Superset` instance.
 
-1. Configure `CORS` (CROSS ORIGIN RESOURCE SHARING) in your `Apache Superset` instance.
+   a. Enable `CORS` requests to (minimally) the resources defined below.
 
-   a. Enable `CORS` requests to the following endpoints
+   b. Enable `CORS` requests from the relevant domains (i.e., the app in which you will embed
+   charts)
 
    ```python
    # config.py
@@ -25,38 +28,45 @@ Coming
        'allow_headers': [
            'X-CSRFToken', 'Content-Type', 'Origin', 'X-Requested-With', 'Accept',
        ],
-       'resources': ['/superset/explore_json/*', '/superset/csrf_token/'],
+       'resources': [
+            '/superset/csrf_token/'  # auth
+            '/api/v1/formData/',  # sliceId => formData
+            '/superset/explore_json/*',  # legacy query API, formData => queryData
+            '/api/v1/query/',  # new query API, queryContext => queryData
+            '/superset/fetch_datasource_metadata/'  # datasource metadata
+
+       ],
        'origins': ['http://myappdomain:9001'],
    }
    ```
 
-   b. Enable `CORS` requests from the relevant domains (i.e., the app in which you will embed
-   charts)
-
 2. Configure `SupersetClient` in the app where you will embed your charts. You can test this
    configuration in the `@superset-ui` storybook.
 
-3. Register the needeed `@superset-ui` chart + color plugins.
+   ```javascript
+   import { SupersetClient } from '@superset-ui/connection';
 
-4. Pass `SupersetClient` to the `DataProvider` along with the formData for the desired visualization
-   type.
+   SupersetClient.configure({
+     credentials: 'include',
+     host: `${SUPERSET_APP_HOST}`,
+     mode: 'cors',
+   }).init();
+   ```
+
+3. Register any desired / needeed `@superset-ui` chart + color plugins.
+
+   ```javascript
+   import WordCloudPlugin from '@superset-ui/plugin-chart-word-cloud';
+
+   new WordCloudPlugin().configure({ key: 'word_cloud' }).register();
+   ```
+
+4. Pass `SupersetClient` to the `ChartDataProvider` along with the formData for the desired
+   visualization type.
 
 ```javascript
-import { DataProvider } from '@superset-ui/chart';
-import { SupersetClient } from '@superset-ui/connection';
-import ChartPlugin from '@superset-ui/plugin-chart-chartname';
+import { ChartDataProvider } from '@superset-ui/chart';
 
-// initialize Superset
-SupersetClient.configure({
-  credentials: 'include',
-  host,
-  mode: 'cors',
-}).init();
-
-// Register visualization plugin
-new ChartPlugin().configure({ key: CHART_TYPE }).register();
-
-// Fetch data and render the Chart
 const render = () => (
   <DataProvider client={client} formData={formData}>
     {({ loading, error, payload }) => (
@@ -73,6 +83,10 @@ const render = () => (
   </DataProvider>
 );
 ```
+
+##### `<SuperChart />`
+
+Coming soon.
 
 ### Development
 
