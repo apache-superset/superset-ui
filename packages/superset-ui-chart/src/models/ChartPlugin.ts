@@ -47,7 +47,7 @@ export default class ChartPlugin<T extends ChartFormData = ChartFormData> extend
     super();
     const {
       metadata,
-      buildQuery = IDENTITY,
+      buildQuery,
       loadBuildQuery,
       transformProps = IDENTITY,
       loadTransformProps,
@@ -55,7 +55,7 @@ export default class ChartPlugin<T extends ChartFormData = ChartFormData> extend
       loadChart,
     } = config;
     this.metadata = metadata;
-    this.loadBuildQuery = loadBuildQuery || (() => buildQuery);
+    this.loadBuildQuery = loadBuildQuery || (buildQuery ? () => buildQuery : undefined);
     this.loadTransformProps = loadTransformProps || (() => transformProps);
 
     if (loadChart) {
