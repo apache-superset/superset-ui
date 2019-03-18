@@ -4,11 +4,13 @@ import ChartClient from '../../src/clients/ChartClient';
 import ChartDataProvider, { Props } from '../../src/components/ChartDataProvider';
 import { bigNumberFormData } from '../fixtures/formData';
 
-const mockQueryPayload = [{ query: 'payload' }];
+// Note: the mock implentatino of these function directly affects the expected results below
 const defaultMockLoadFormData = jest.fn(allProps => Promise.resolve(allProps.formData));
-let mockLoadFormData = defaultMockLoadFormData; // allows overriding in tests
+
+// coerce here else get: Type 'Mock<Promise<any>, []>' is not assignable to type 'Mock<Promise<any>, any[]>'
+let mockLoadFormData = defaultMockLoadFormData as jest.Mock<Promise<any>, any>;
 const mockLoadDatasource = jest.fn(datasource => Promise.resolve(datasource));
-const mockLoadQueryData = jest.fn(() => Promise.resolve(mockQueryPayload));
+const mockLoadQueryData = jest.fn(input => Promise.resolve(input));
 
 // ChartClient is now a mock
 jest.mock('../../src/clients/ChartClient', () =>
@@ -126,7 +128,6 @@ describe('ChartDataProvider', () => {
       setup();
       setTimeout(() => {
         expect(mockLoadQueryData.mock.calls).toHaveLength(1);
-        // @ts-ignore unsure why mock.calls tuple length is "0"
         expect(mockLoadQueryData.mock.calls[0][0]).toEqual(props.formData);
         done();
       }, 0);
@@ -138,7 +139,6 @@ describe('ChartDataProvider', () => {
       setup({ queryRequestOptions: options });
       setTimeout(() => {
         expect(mockLoadQueryData.mock.calls).toHaveLength(1);
-        // @ts-ignore unsure why mock.calls tuple length is "0"
         expect(mockLoadQueryData.mock.calls[0][1]).toEqual(options);
         done();
       }, 0);
@@ -152,9 +152,7 @@ describe('ChartDataProvider', () => {
 
       setTimeout(() => {
         expect(mockLoadQueryData.mock.calls).toHaveLength(2);
-        // @ts-ignore unsure why mock.calls tuple length is "0"
         expect(mockLoadQueryData.mock.calls[0][0]).toEqual(props.formData);
-        // @ts-ignore unsure why mock.calls tuple length is "0"
         expect(mockLoadQueryData.mock.calls[1][0]).toEqual(newFormData);
         done();
       }, 0);
@@ -178,13 +176,11 @@ describe('ChartDataProvider', () => {
 
       setTimeout(() => {
         expect(children.mock.calls).toHaveLength(2);
-        // note: since we have mocked the ChartClient
-        // the values here directly depend on how the mock fns are defined above
         expect(children.mock.calls[1][0]).toEqual({
           payload: {
             formData: props.formData,
             datasource: props.formData!.datasource,
-            queryData: mockQueryPayload,
+            queryData: props.formData,
           },
         });
         done();
@@ -194,7 +190,6 @@ describe('ChartDataProvider', () => {
     it('calls children({ error }) upon error', done => {
       expect.assertions(2);
       const children = jest.fn();
-      // @ts-ignore Type 'Mock<Promise<any>, []>' is not assignable to type 'Mock<Promise<any>, any[]>'
       mockLoadFormData = jest.fn(() => Promise.reject(Error('error')));
 
       setup({ children });
@@ -215,12 +210,10 @@ describe('ChartDataProvider', () => {
 
       setTimeout(() => {
         expect(onLoaded.mock.calls).toHaveLength(1);
-        // note: since we have mocked the ChartClient
-        // the values here directly depend on how the mock fns are defined above
         expect(onLoaded.mock.calls[0][0]).toEqual({
           formData: props.formData,
           datasource: props.formData!.datasource,
-          queryData: mockQueryPayload,
+          queryData: props.formData,
         });
         done();
       }, 0);
@@ -229,7 +222,6 @@ describe('ChartDataProvider', () => {
     it('calls onError(error) upon error', done => {
       expect.assertions(2);
       const onError = jest.fn();
-      // @ts-ignore Type 'Mock<Promise<any>, []>' is not assignable to type 'Mock<Promise<any>, any[]>'
       mockLoadFormData = jest.fn(() => Promise.reject(Error('error')));
 
       setup({ onError });
