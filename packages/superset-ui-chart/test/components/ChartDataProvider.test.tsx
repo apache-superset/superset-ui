@@ -35,7 +35,6 @@ describe('ChartDataProvider', () => {
 
   const props: Props = {
     formData: { ...bigNumberFormData },
-    sliceId: 123,
     children: () => <div />,
   };
 
@@ -67,7 +66,7 @@ describe('ChartDataProvider', () => {
 
     it('calls ChartClient.loadFormData when formData or sliceId change', () => {
       const wrapper = setup();
-      const newProps = { sliceId: undefined, formData: { test: 'test' } };
+      const newProps = { sliceId: 123, formData: undefined };
       expect(mockLoadFormData.mock.calls).toHaveLength(1);
 
       wrapper.setProps(newProps);
@@ -187,7 +186,7 @@ describe('ChartDataProvider', () => {
       }, 0);
     });
 
-    it('calls children({ error }) upon error', done => {
+    it('calls children({ error }) upon request error', done => {
       expect.assertions(2);
       const children = jest.fn();
       mockLoadFormData = jest.fn(() => Promise.reject(Error('error')));
@@ -197,6 +196,23 @@ describe('ChartDataProvider', () => {
       setTimeout(() => {
         expect(children.mock.calls).toHaveLength(2); // loading + error
         expect(children.mock.calls[1][0]).toEqual({ error: Error('error') });
+        done();
+      }, 0);
+    });
+
+    it('calls children({ error }) upon JS error', done => {
+      expect.assertions(2);
+      const children = jest.fn();
+
+      mockLoadFormData = jest.fn(() => {
+        throw new Error('non-async error');
+      });
+
+      setup({ children });
+
+      setTimeout(() => {
+        expect(children.mock.calls).toHaveLength(2); // loading + error
+        expect(children.mock.calls[1][0]).toEqual({ error: Error('non-async error') });
         done();
       }, 0);
     });
@@ -219,7 +235,7 @@ describe('ChartDataProvider', () => {
       }, 0);
     });
 
-    it('calls onError(error) upon error', done => {
+    it('calls onError(error) upon request error', done => {
       expect.assertions(2);
       const onError = jest.fn();
       mockLoadFormData = jest.fn(() => Promise.reject(Error('error')));
@@ -228,6 +244,22 @@ describe('ChartDataProvider', () => {
       setTimeout(() => {
         expect(onError.mock.calls).toHaveLength(1);
         expect(onError.mock.calls[0][0]).toEqual(Error('error'));
+        done();
+      }, 0);
+    });
+
+    it('calls onError(error) upon JS error', done => {
+      expect.assertions(2);
+      const onError = jest.fn();
+
+      mockLoadFormData = jest.fn(() => {
+        throw new Error('non-async error');
+      });
+
+      setup({ onError });
+      setTimeout(() => {
+        expect(onError.mock.calls).toHaveLength(1);
+        expect(onError.mock.calls[0][0]).toEqual(Error('non-async error'));
         done();
       }, 0);
     });

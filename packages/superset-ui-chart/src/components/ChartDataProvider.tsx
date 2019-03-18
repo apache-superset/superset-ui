@@ -128,19 +128,17 @@ class ChartDataProvider extends React.PureComponent<Props, State> {
     const { children } = this.props;
     const { status, payload, error } = this.state;
 
-    const provided: ProvidedProps = {};
-
-    if (status === 'uninitialized') {
-      return null;
-    } else if (status === 'loading') {
-      provided.loading = true;
-    } else if (status === 'error') {
-      provided.error = error;
-    } else if (status === 'loaded') {
-      provided.payload = payload;
+    switch (status) {
+      case 'loading':
+        return children({ loading: true });
+      case 'loaded':
+        return children({ payload });
+      case 'error':
+        return children({ error });
+      case 'uninitialized':
+      default:
+        return null;
     }
-
-    return children(provided);
   }
 }
 
