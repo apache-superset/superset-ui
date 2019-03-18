@@ -2,7 +2,6 @@
 import 'whatwg-fetch';
 import { CallApi } from '../types';
 import { CACHE_KEY, NOT_MODIFIED, OK } from '../constants';
-import invariant from 'invariant';
 
 const CACHE_AVAILABLE = 'caches' in self;
 
@@ -39,8 +38,7 @@ export default function callApi({
           if (cachedResponse) {
             // if we have a cached response, send its ETag in the
             // `If-None-Match` header in a conditional request
-            const etag = cachedResponse.headers.get('Etag');
-            invariant(etag, 'Cannot be null');
+            const etag = <string>cachedResponse.headers.get('Etag');
             request.headers = { ...request.headers, 'If-None-Match': etag };
           }
 
