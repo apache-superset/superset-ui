@@ -38,7 +38,7 @@ export default function callApi({
           if (cachedResponse) {
             // if we have a cached response, send its ETag in the
             // `If-None-Match` header in a conditional request
-            const etag = <string>cachedResponse.headers.get('Etag');
+            const etag = cachedResponse.headers.get('Etag') as string;
             request.headers = { ...request.headers, 'If-None-Match': etag };
           }
 
