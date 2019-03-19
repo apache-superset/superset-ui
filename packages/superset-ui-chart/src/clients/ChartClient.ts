@@ -11,6 +11,7 @@ import getChartMetadataRegistry from '../registries/ChartMetadataRegistrySinglet
 import { AnnotationLayerMetadata } from '../types/Annotation';
 import { ChartFormData } from '../types/ChartFormData';
 import { QueryData } from '../models/ChartProps';
+import { Datasource } from '../types/Datasource';
 
 // This expands to Partial<All> & (union of all possible single-property types)
 type AtLeastOne<All, Each = { [K in keyof All]: Pick<All, K> }> = Partial<All> & Each[keyof Each];
@@ -94,13 +95,13 @@ export default class ChartClient {
     return Promise.reject(new Error(`Unknown chart type: ${visType}`));
   }
 
-  loadDatasource(datasourceKey: string, options?: Partial<RequestConfig>): Promise<object> {
+  loadDatasource(datasourceKey: string, options?: Partial<RequestConfig>): Promise<Datasource> {
     return this.client
       .get({
         endpoint: `/superset/fetch_datasource_metadata?datasourceKey=${datasourceKey}`,
         ...options,
       } as RequestConfig)
-      .then(response => response.json as Json);
+      .then(response => response.json as Datasource);
   }
 
   loadAnnotation(annotationLayer: AnnotationLayerMetadata): Promise<object> {
