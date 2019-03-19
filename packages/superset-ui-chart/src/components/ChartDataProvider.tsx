@@ -4,9 +4,8 @@ import { SupersetClientInterface, RequestConfig } from '../../../superset-ui-con
 
 import ChartClient, { SliceIdAndOrFormData } from '../clients/ChartClient';
 import { ChartFormData } from '../types/ChartFormData';
+import { Datasource } from '../types/Datasource';
 import { QueryData } from '../models/ChartProps';
-
-type Datasource = object;
 
 interface Payload {
   formData: Partial<ChartFormData>;
