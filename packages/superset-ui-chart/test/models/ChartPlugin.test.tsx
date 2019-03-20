@@ -18,15 +18,16 @@ describe('ChartPlugin', () => {
     thumbnail: '',
   });
 
+  const buildQuery = (_: ChartFormData) => ({
+    datasource: { id: 1, type: DatasourceType.Table },
+    queries: [{ granularity: 'day' }],
+  });
+
   it('exists', () => {
     expect(ChartPlugin).toBeDefined();
   });
 
   describe('new ChartPlugin()', () => {
-    const buildQuery = (_: ChartFormData) => ({
-      datasource: { id: 1, type: DatasourceType.Table },
-      queries: [{ granularity: 'day' }],
-    });
     const FORM_DATA = {
       datasource: '1__table',
       granularity: 'day',
@@ -133,6 +134,7 @@ describe('ChartPlugin', () => {
     const plugin = new ChartPlugin({
       metadata,
       Chart: FakeChart,
+      buildQuery,
     });
     it('throws an error if key is not provided', () => {
       expect(() => plugin.register()).toThrowError(Error);
