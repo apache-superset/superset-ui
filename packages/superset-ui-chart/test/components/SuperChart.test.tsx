@@ -28,7 +28,7 @@ describe('SuperChart', () => {
           name: 'second-chart',
           thumbnail: '',
         }),
-        loadChart: () => Promise.resolve({ default: TestComponent }),
+        loadChart: () => Promise.resolve(TestComponent),
         transformProps: x => x,
       });
     }
@@ -42,7 +42,7 @@ describe('SuperChart', () => {
           thumbnail: '',
         }),
         loadChart: () =>
-          new Promise<Function>(resolve => {
+          new Promise(resolve => {
             setTimeout(() => {
               resolve(TestComponent);
             }, 1000);

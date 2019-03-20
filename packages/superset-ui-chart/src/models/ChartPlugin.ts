@@ -1,25 +1,19 @@
+import { FunctionComponent, ComponentType } from 'react';
 import { isRequired, Plugin } from '@superset-ui/core';
 import ChartMetadata from './ChartMetadata';
-import ChartProps from './ChartProps';
 import getChartMetadataRegistry from '../registries/ChartMetadataRegistrySingleton';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
 import getChartComponentRegistry from '../registries/ChartComponentRegistrySingleton';
 import getChartTransformPropsRegistry from '../registries/ChartTransformPropsRegistrySingleton';
 import { ChartFormData } from '../types/ChartFormData';
-import { QueryContext } from '../types/Query';
+import { BuildQueryFunction, TransformProps } from '../types/Query';
 
 const IDENTITY = (x: any) => x;
 
-type PromiseOrValue<T> = Promise<T> | T;
-type PromiseOrValueLoader<T> = () => PromiseOrValue<T> | PromiseOrValue<{ default: T }>;
+export type PromiseOrValue<T> = Promise<T> | T;
+export type PromiseOrValueLoader<T> = () => PromiseOrValue<T>;
 
-export type BuildQueryFunction<T extends ChartFormData> = (formData: T) => QueryContext;
-
-export type TransformPropsFunction = (
-  chartProps: ChartProps,
-) => {
-  [key: string]: any;
-};
+export type ChartType = ComponentType | FunctionComponent;
 
 interface ChartPluginConfig<T extends ChartFormData> {
   metadata: ChartMetadata;
@@ -28,20 +22,20 @@ interface ChartPluginConfig<T extends ChartFormData> {
   // use loadBuildQuery for dynamic import (lazy-loading)
   loadBuildQuery?: PromiseOrValueLoader<BuildQueryFunction<T>>;
   // use transformProps for immediate value
-  transformProps?: TransformPropsFunction;
+  transformProps?: TransformProps;
   // use loadTransformProps for dynamic import (lazy-loading)
-  loadTransformProps?: PromiseOrValueLoader<TransformPropsFunction>;
+  loadTransformProps?: PromiseOrValueLoader<TransformProps>;
   // use Chart for immediate value
-  Chart?: Function;
+  Chart?: ChartType;
   // use loadChart for dynamic import (lazy-loading)
-  loadChart?: PromiseOrValueLoader<Function>;
+  loadChart?: PromiseOrValueLoader<ChartType>;
 }
 
 export default class ChartPlugin<T extends ChartFormData = ChartFormData> extends Plugin {
   metadata: ChartMetadata;
   loadBuildQuery?: PromiseOrValueLoader<BuildQueryFunction<T>>;
-  loadTransformProps: PromiseOrValueLoader<TransformPropsFunction>;
-  loadChart: PromiseOrValueLoader<Function>;
+  loadTransformProps: PromiseOrValueLoader<TransformProps>;
+  loadChart: PromiseOrValueLoader<ChartType>;
 
   constructor(config: ChartPluginConfig<T>) {
     super();
@@ -70,9 +64,11 @@ export default class ChartPlugin<T extends ChartFormData = ChartFormData> extend
   register() {
     const { key = isRequired('config.key') } = this.config;
     getChartMetadataRegistry().registerValue(key, this.metadata);
-    getChartBuildQueryRegistry().registerLoader(key, this.loadBuildQuery);
     getChartComponentRegistry().registerLoader(key, this.loadChart);
     getChartTransformPropsRegistry().registerLoader(key, this.loadTransformProps);
+    if (this.loadBuildQuery) {
+      getChartBuildQueryRegistry().registerLoader(key, this.loadBuildQuery);
+    }
 
     return this;
   }
