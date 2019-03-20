@@ -81,7 +81,8 @@ describe('ChartPlugin', () => {
           metadata,
           loadChart,
         });
-        expect(plugin.loadChart).toBe(loadChart);
+        // the loader is sanitized, so assert on the value
+        expect(plugin.loadChart()).toBe(loadChart());
       });
       it('uses Chart field if specified', () => {
         const plugin = new ChartPlugin({

@@ -33,22 +33,18 @@ interface ChartPluginConfig<T extends ChartFormData> {
 
 /**
  * Loaders of the form `() => import('foo')` may return esmodules
- * which require the value to be extracted as module.default
+ * which require the value to be extracted as `module.default`
  * */
 function sanitizeLoader<T>(
   loader: PromiseOrValueLoader<ValueOrModuleWithValue<T>>,
 ): PromiseOrValueLoader<T> {
-  if (loader) {
-    return () => {
-      const loaded = loader();
+  return () => {
+    const loaded = loader();
 
-      return loaded instanceof Promise
-        ? (loaded.then(module => ('default' in module && module.default) || module) as Promise<T>)
-        : (loaded as T);
-    };
-  }
-
-  return loader;
+    return loaded instanceof Promise
+      ? (loaded.then(module => ('default' in module && module.default) || module) as Promise<T>)
+      : (loaded as T);
+  };
 }
 
 export default class ChartPlugin<T extends ChartFormData = ChartFormData> extends Plugin {
