@@ -28,7 +28,8 @@ describe('SuperChart', () => {
           name: 'second-chart',
           thumbnail: '',
         }),
-        loadChart: () => Promise.resolve(TestComponent),
+        // this mirrors `() => import(module)` syntax
+        loadChart: () => Promise.resolve({ default: TestComponent }),
         transformProps: x => x,
       });
     }

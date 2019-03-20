@@ -12,23 +12,43 @@ const IDENTITY = (x: any) => x;
 
 export type PromiseOrValue<T> = Promise<T> | T;
 export type PromiseOrValueLoader<T> = () => PromiseOrValue<T>;
-
 export type ChartType = ComponentType | FunctionComponent;
+type ValueOrModuleWithValue<T> = T | { default: T };
 
 interface ChartPluginConfig<T extends ChartFormData> {
   metadata: ChartMetadata;
   // use buildQuery for immediate value
   buildQuery?: BuildQueryFunction<T>;
   // use loadBuildQuery for dynamic import (lazy-loading)
-  loadBuildQuery?: PromiseOrValueLoader<BuildQueryFunction<T>>;
+  loadBuildQuery?: PromiseOrValueLoader<ValueOrModuleWithValue<BuildQueryFunction<T>>>;
   // use transformProps for immediate value
   transformProps?: TransformProps;
   // use loadTransformProps for dynamic import (lazy-loading)
-  loadTransformProps?: PromiseOrValueLoader<TransformProps>;
+  loadTransformProps?: PromiseOrValueLoader<ValueOrModuleWithValue<TransformProps>>;
   // use Chart for immediate value
   Chart?: ChartType;
   // use loadChart for dynamic import (lazy-loading)
-  loadChart?: PromiseOrValueLoader<ChartType>;
+  loadChart?: PromiseOrValueLoader<ValueOrModuleWithValue<ChartType>>;
+}
+
+/**
+ * Loaders of the form `() => import('foo')` may return esmodules
+ * which require the value to be extracted as module.default
+ * */
+function sanitizeLoader<T>(
+  loader: PromiseOrValueLoader<ValueOrModuleWithValue<T>>,
+): PromiseOrValueLoader<T> {
+  if (loader) {
+    return () => {
+      const loaded = loader();
+
+      return loaded instanceof Promise
+        ? (loaded.then(module => ('default' in module && module.default) || module) as Promise<T>)
+        : (loaded as T);
+    };
+  }
+
+  return loader;
 }
 
 export default class ChartPlugin<T extends ChartFormData = ChartFormData> extends Plugin {
@@ -49,11 +69,14 @@ export default class ChartPlugin<T extends ChartFormData = ChartFormData> extend
       loadChart,
     } = config;
     this.metadata = metadata;
-    this.loadBuildQuery = loadBuildQuery || (buildQuery ? () => buildQuery : undefined);
-    this.loadTransformProps = loadTransformProps || (() => transformProps);
+    this.loadBuildQuery =
+      (loadBuildQuery && sanitizeLoader(loadBuildQuery)) ||
+      (buildQuery && sanitizeLoader(() => buildQuery)) ||
+      undefined;
+    this.loadTransformProps = sanitizeLoader(loadTransformProps || (() => transformProps));
 
     if (loadChart) {
-      this.loadChart = loadChart;
+      this.loadChart = sanitizeLoader<ChartType>(loadChart);
     } else if (Chart) {
       this.loadChart = () => Chart;
     } else {
