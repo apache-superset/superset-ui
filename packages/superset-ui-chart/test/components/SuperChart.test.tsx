@@ -30,7 +30,8 @@ describe('SuperChart', () => {
         }),
         // this mirrors `() => import(module)` syntax
         loadChart: () => Promise.resolve({ default: TestComponent }),
-        transformProps: x => x,
+        // promise without .default
+        loadTransformProps: () => Promise.resolve((x: any) => x),
       });
     }
   }
