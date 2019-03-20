@@ -1,7 +1,7 @@
 import { Registry, makeSingleton, OverwritePolicy } from '@superset-ui/core';
-import { ChartMetaDataConfig } from '../models/ChartMetadata';
+import { ChartMetadataConfig } from '../models/ChartMetadata';
 
-class ChartMetadataRegistry extends Registry<ChartMetaDataConfig, ChartMetaDataConfig> {
+class ChartMetadataRegistry extends Registry<ChartMetadataConfig, ChartMetadataConfig> {
   constructor() {
     super({ name: 'ChartMetadata', overwritePolicy: OverwritePolicy.WARN });
   }

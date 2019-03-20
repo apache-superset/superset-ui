@@ -2,7 +2,7 @@ interface LookupTable {
   [key: string]: boolean;
 }
 
-export interface ChartMetaDataConfig {
+export interface ChartMetadataConfig {
   name: string;
   canBeAnnotationTypes?: string[];
   credits?: string[];
@@ -24,7 +24,7 @@ export default class ChartMetadata {
   thumbnail: string;
   useLegacyApi: boolean;
 
-  constructor(config: ChartMetaDataConfig) {
+  constructor(config: ChartMetadataConfig) {
     const {
       name,
       canBeAnnotationTypes = [],
