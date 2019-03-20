@@ -97,7 +97,7 @@ describe('ChartClient', () => {
 
   describe('.loadQueryData(formData, options)', () => {
     it('returns a promise of query data for known chart type', () => {
-      getChartMetadataRegistry().registerValue('word_cloud', { name: 'Word Cloud' });
+      getChartMetadataRegistry().registerValue('word_cloud', { name: 'Word Cloud', thumbnail: '' });
 
       getChartBuildQueryRegistry().registerValue('word_cloud', (formData: ChartFormData) =>
         buildQueryContext(formData),
@@ -131,6 +131,7 @@ describe('ChartClient', () => {
       // note legacy charts do not register a buildQuery function in the registry
       getChartMetadataRegistry().registerValue('word_cloud_legacy', {
         name: 'Legacy Word Cloud',
+        thumbnail: '.png',
         useLegacyApi: true,
       });
 
@@ -233,7 +234,7 @@ describe('ChartClient', () => {
         amet: true,
       });
 
-      getChartMetadataRegistry().registerValue('line', { name: 'Line' });
+      getChartMetadataRegistry().registerValue('line', { name: 'Line', thumbnail: '.gif' });
 
       getChartBuildQueryRegistry().registerValue('line', (formData: ChartFormData) =>
         buildQueryContext(formData),
