@@ -1,9 +1,7 @@
 /* eslint compat/compat: 'off' */
 import 'whatwg-fetch';
 import { CallApi } from '../types';
-import { CACHE_KEY, NOT_MODIFIED, OK } from '../constants';
-
-const CACHE_AVAILABLE = 'caches' in self;
+import { CACHE_AVAILABLE, CACHE_KEY, HTTP_STATUS_NOT_MODIFIED, HTTP_STATUS_OK } from '../constants';
 
 // This function fetches an API response and returns the corresponding json
 export default function callApi({
@@ -45,14 +43,14 @@ export default function callApi({
           return fetch(url, request);
         })
         .then(response => {
-          if (response.status === NOT_MODIFIED) {
+          if (response.status === HTTP_STATUS_NOT_MODIFIED) {
             return supersetCache.match(url).then(cachedResponse => {
               if (cachedResponse) {
                 return cachedResponse.clone();
               }
               throw new Error('Received 304 but no content is cached!');
             });
-          } else if (response.status === OK && response.headers.get('Etag')) {
+          } else if (response.status === HTTP_STATUS_OK && response.headers.get('Etag')) {
             supersetCache.delete(url);
             supersetCache.put(url, response.clone());
           }

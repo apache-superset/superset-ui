@@ -1,7 +1,7 @@
 /* eslint promise/no-callback-in-promise: 'off' */
 import fetchMock from 'fetch-mock';
 import callApi from '../../src/callApi/callApi';
-import { CACHE_KEY } from '../../src/constants';
+import * as constants from '../../src/constants';
 
 import { LOGIN_GLOB } from '../fixtures/constants';
 import throwIfCalled from '../utils/throwIfCalled';
@@ -305,7 +305,7 @@ describe('callApi()', () => {
       const calls = fetchMock.calls(mockCacheUrl);
       expect(calls).toHaveLength(1);
 
-      return caches.open(CACHE_KEY).then(supersetCache =>
+      return caches.open(constants.CACHE_KEY).then(supersetCache =>
         supersetCache.match(mockCacheUrl).then(cachedResponse => {
           expect(cachedResponse).toBeDefined();
 
@@ -313,6 +313,29 @@ describe('callApi()', () => {
         }),
       );
     }));
+
+  it('works when the Cache API is disabled', () => {
+    Object.defineProperty(constants, 'CACHE_AVAILABLE', { value: false });
+
+    return callApi({ url: mockCacheUrl, method: 'GET' }).then(firstResponse => {
+      const calls = fetchMock.calls(mockCacheUrl);
+      expect(calls).toHaveLength(1);
+      expect(firstResponse.body).toEqual('BODY');
+
+      return callApi({ url: mockCacheUrl, method: 'GET' }).then(secondResponse => {
+        const fetchParams = calls[1][1];
+        expect(calls).toHaveLength(2);
+
+        // second call should not have If-None-Match header
+        expect(fetchParams.headers).toBeUndefined();
+        expect(secondResponse.body).toEqual('BODY');
+
+        Object.defineProperty(constants, 'CACHE_AVAILABLE', { value: true });
+
+        return Promise.resolve();
+      });
+    });
+  });
 
   it('sends known ETags in the If-None-Match header', () =>
     // first call sets the cache
