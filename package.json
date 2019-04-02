@@ -80,6 +80,11 @@
           "testEnvironment": "node"
         }
       ]
+    },
+    "typescript": {
+      "include": [
+        "./storybook/**/*"
+      ]
     }
   },
   "workspaces": [
