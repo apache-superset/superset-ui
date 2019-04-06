@@ -5,11 +5,8 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "gh-pages:clean": "rm -rf _gh-pages",
-    "gh-pages:build": "build-storybook -o _gh-pages -c storybook-config",
-    "gh-pages:publish": "git-directory-deploy --directory _gh-pages",
-    "gh-pages": "npm run gh-pages:clean && npm run gh-pages:build && npm run gh-pages:publish && npm run gh-pages:clean",
-    "storybook": "start-storybook -p 9001 -c storybook-config"
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "repository": {
     "type": "git",
@@ -28,31 +25,15 @@
     "url": "https://github.com/apache-superset/superset-ui/issues"
   },
   "homepage": "https://github.com/apache-superset/superset-ui#readme",
-  "dependencies": {
-    "@babel/core": "^7.1.2",
-    "@babel/polyfill": "^7.2.5",
-    "@storybook/addon-knobs": "^4.0.2",
-    "@storybook/addon-options": "^4.0.3",
-    "@storybook/react": "^4.0.2",
-    "@superset-ui/chart": "^0.11.1",
-    "@superset-ui/color": "^0.11.0",
-    "@superset-ui/connection": "^0.11.0",
-    "@superset-ui/legacy-plugin-chart-sankey": "^0.10.0",
-    "@superset-ui/legacy-plugin-chart-sunburst": "^0.10.0",
-    "@superset-ui/legacy-plugin-chart-word-cloud": "^0.10.0",
-    "@superset-ui/legacy-preset-chart-big-number": "^0.10.0",
-    "@superset-ui/number-format": "^0.11.0",
-    "@superset-ui/plugin-chart-word-cloud": "^0.10.0",
-    "@superset-ui/time-format": "^0.11.2",
-    "babel-loader": "^8.0.4",
-    "bootstrap": "^4.2.1",
-    "git-directory-deploy": "^1.5.1",
-    "prop-types": "^15.6.2",
-    "react": "^16.6.0",
-    "react-dom": "^16.6.0",
-    "storybook-addon-jsx": "^5.4.0"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/storybook__addon-knobs": "^4.0.4"
+    "@babel/core": "^7.4.3",
+    "@storybook/addon-actions": "^5.0.6",
+    "@storybook/addon-knobs": "^5.0.6",
+    "@storybook/addon-links": "^5.0.6",
+    "@storybook/addons": "^5.0.6",
+    "@storybook/react": "^5.0.6",
+    "babel-loader": "^8.0.5",
+    "storybook-addon-jsx": "^7.1.0"
   }
 }
