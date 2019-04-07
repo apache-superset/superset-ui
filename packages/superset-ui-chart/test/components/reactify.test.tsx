@@ -22,7 +22,9 @@ describe('reactify(renderFn)', () => {
     content: 'ghi',
   };
 
-  const TheChart = reactify(renderFn);
+  const willUnmountCb = jest.fn();
+
+  const TheChart = reactify(renderFn, { willUnmount: willUnmountCb });
 
   class TestComponent extends React.PureComponent<{}, { content: string }, any> {
     constructor(props = {}) {
@@ -52,6 +54,7 @@ describe('reactify(renderFn)', () => {
       expect(renderFn).toHaveBeenCalledTimes(2);
       expect(wrapper.html()).toEqual('<div id="test"><b>def</b></div>');
       wrapper.unmount();
+      expect(willUnmountCb).toHaveBeenCalledTimes(1);
       done();
     }, 20);
   });
