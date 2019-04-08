@@ -25,7 +25,7 @@ describe('reactify(renderFn)', () => {
   const willUnmountCb = jest.fn();
 
   const TheChart = reactify(renderFn);
-  const TheChartWithWillUnmountHook = reactify(renderFn, { willUnmount: willUnmountCb });
+  const TheChartWithWillUnmountHook = reactify(renderFn, { componentWillUnmount: willUnmountCb });
 
   class TestComponent extends React.PureComponent<{}, { content: string }, any> {
     constructor(props = {}) {

@@ -19,7 +19,7 @@ export type ReactifyProps = {
 
 // TODO: add more React lifecycle callbacks as needed
 export type LifeCycleCallbacks = {
-  willUnmount?: () => void;
+  componentWillUnmount?: () => void;
 };
 
 export interface RenderFuncType<Props> {
@@ -52,8 +52,8 @@ export default function reactify<Props extends object>(
 
     componentWillUnmount() {
       this.container = undefined;
-      if (callbacks && callbacks.willUnmount) {
-        callbacks.willUnmount();
+      if (callbacks && callbacks.componentWillUnmount) {
+        callbacks.componentWillUnmount();
       }
     }
 
