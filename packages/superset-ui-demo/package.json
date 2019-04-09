@@ -9,7 +9,7 @@
     "demo:build": "build-storybook -o _gh-pages",
     "demo:publish": "gh-pages -d _gh-pages",
     "deploy-demo": "npm run demo:clean && npm run demo:build && npm run demo:publish && npm run demo:clean",
-    "storybook": "start-storybook -p 6006"
+    "storybook": "start-storybook -p 9001"
   },
   "repository": {
     "type": "git",
@@ -46,6 +46,7 @@
     "@superset-ui/number-format": "^0.11.0",
     "@superset-ui/plugin-chart-word-cloud": "^0.10.0",
     "@superset-ui/time-format": "^0.11.0",
+    "@types/storybook__addon-knobs": "^4.0.4",
     "react": "^16.6.0",
     "storybook-addon-jsx": "^7.1.0"
   },
