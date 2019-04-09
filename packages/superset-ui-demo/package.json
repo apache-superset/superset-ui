@@ -5,8 +5,11 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "gh-pages:clean": "rm -rf _gh-pages",
+    "gh-pages:publish": "git-directory-deploy --directory _gh-pages",
+    "gh-pages": "npm run gh-pages:clean && npm run build-storybook && npm run gh-pages:publish && npm run gh-pages:clean",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook -o _gh-pages"
   },
   "repository": {
     "type": "git",
@@ -25,15 +28,18 @@
     "url": "https://github.com/apache-superset/superset-ui/issues"
   },
   "homepage": "https://github.com/apache-superset/superset-ui#readme",
-  "dependencies": {},
-  "devDependencies": {
-    "@babel/core": "^7.4.3",
+  "dependencies": {
+    "bootstrap": "^4.3.1",
+    "@babel/polyfill": "^7.4.3",
     "@storybook/addon-actions": "^5.0.6",
     "@storybook/addon-knobs": "^5.0.6",
     "@storybook/addon-links": "^5.0.6",
     "@storybook/addons": "^5.0.6",
     "@storybook/react": "^5.0.6",
-    "babel-loader": "^8.0.5",
     "storybook-addon-jsx": "^7.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "babel-loader": "^8.0.5"
   }
 }
