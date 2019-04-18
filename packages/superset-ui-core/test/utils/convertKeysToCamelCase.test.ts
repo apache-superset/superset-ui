@@ -2,9 +2,11 @@ import convertKeysToCamelCase from '../../src/utils/convertKeysToCamelCase';
 
 describe('convertKeysToCamelCase(object)', () => {
   it('returns undefined for undefined input', () => {
+    // @ts-ignore
     expect(convertKeysToCamelCase(undefined)).toBeUndefined();
   });
   it('returns null for null input', () => {
+    // @ts-ignore
     expect(convertKeysToCamelCase(null)).toBeNull();
   });
   it('returns a new object that has all keys in camelCase', () => {

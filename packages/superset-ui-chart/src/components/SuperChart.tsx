@@ -40,7 +40,13 @@ interface RenderProps {
   postTransformProps?: PostTransformProps;
 }
 
-const BLANK_CHART_PROPS = new ChartProps();
+const BLANK_CHART_PROPS = new ChartProps({
+  formData: {
+    datasource: 'none',
+    granularity: 'day',
+    viz_type: 'none',
+  },
+});
 
 export interface SuperChartProps {
   id?: string;
