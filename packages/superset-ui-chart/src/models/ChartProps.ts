@@ -11,11 +11,12 @@ type AnnotationData = PlainObject;
 type CamelCaseDatasource = PlainObject;
 type SnakeCaseDatasource = PlainObject;
 type CamelCaseFormData = PlainObject;
-type SnakeCaseFormData = PlainObject;
 export type QueryData = PlainObject;
 type Filters = any[];
 type HandlerFunction = (...args: any[]) => void;
-type ChartPropsSelector<FormDataType> = (c: ChartPropsConfig<FormDataType>) => ChartProps;
+type ChartPropsSelector<FormDataType extends ChartFormData> = (
+  c: ChartPropsConfig<FormDataType>,
+) => ChartProps<FormDataType>;
 
 interface ChartPropsConfig<FormDataType> {
   annotationData?: AnnotationData;
