@@ -2,10 +2,11 @@ import camelCase from 'lodash/camelCase';
 import isPlainObject from 'lodash/isPlainObject';
 import mapKeys from 'lodash/mapKeys';
 
-export default function convertKeysToCamelCase(object: { [key: string]: any }) {
+export default function convertKeysToCamelCase<InputType extends {}>(object: InputType) {
   if (object === null || object === undefined) {
     return object;
   }
+
   if (isPlainObject(object)) {
     return mapKeys(object, (_, k) => camelCase(k));
   }
