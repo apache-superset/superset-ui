@@ -34,10 +34,20 @@ export default function callApi({
         .match(url)
         .then(cachedResponse => {
           if (cachedResponse) {
-            // if we have a cached response, send its ETag in the
+            // if we have a cached response and its expiration is still valid,
+            // use it directly; we don't have to worry about the cache being
+            // stale because Superset deletes them using the Cache API
+            const expires = cachedResponse.headers.get('Expires');
+            if (expires && Date.parse(expires) >= Date.now()) {
+              return cachedResponse;
+            }
+
+            // if we have an expired cached response, send its ETag in the
             // `If-None-Match` header in a conditional request
-            const etag = cachedResponse.headers.get('Etag') as string;
-            request.headers = { ...request.headers, 'If-None-Match': etag };
+            const etag = cachedResponse.headers.get('Etag');
+            if (etag) {
+              request.headers = { ...request.headers, 'If-None-Match': etag };
+            }
           }
 
           return fetch(url, request);
@@ -48,11 +58,19 @@ export default function callApi({
               if (cachedResponse) {
                 return cachedResponse.clone();
               }
+              // this could happen if the cache is invalidated while the
+              // request is in flight
               throw new Error('Received 304 but no content is cached!');
             });
-          } else if (response.status === HTTP_STATUS_OK && response.headers.get('Etag')) {
-            supersetCache.delete(url);
-            supersetCache.put(url, response.clone());
+          } else if (
+            response.status === HTTP_STATUS_OK &&
+            (response.headers.get('Etag') || response.headers.get('Expires'))
+          ) {
+            const clonedResponse = response.clone();
+            supersetCache
+              .delete(url)
+              .then(() => supersetCache.put(url, clonedResponse))
+              .catch(error => new Response(error, { status: 500 }));
           }
 
           return response;

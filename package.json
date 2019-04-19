@@ -109,5 +109,8 @@
       "yarn run prettier --write",
       "git add"
     ]
+  },
+  "dependencies": {
+    "@types/sinon": "^7.0.11"
   }
 }

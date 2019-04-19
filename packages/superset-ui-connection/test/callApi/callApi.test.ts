@@ -1,4 +1,5 @@
 /* eslint promise/no-callback-in-promise: 'off' */
+import sinon from 'sinon';
 import fetchMock from 'fetch-mock';
 import callApi from '../../src/callApi/callApi';
 import * as constants from '../../src/constants';
@@ -27,7 +28,7 @@ describe('callApi()', () => {
   const mockCachePayload = {
     status: 200,
     body: 'BODY',
-    headers: { Etag: 'etag' },
+    headers: { Etag: 'etag', Expires: 'Tue, 1 Jan 2019 00:00:00 GMT' },
   };
 
   fetchMock.get(mockGetUrl, mockGetPayload);
@@ -300,7 +301,7 @@ describe('callApi()', () => {
     });
   });
 
-  it('caches requests with ETags', () =>
+  it('caches requests with ETag/Expires header', () =>
     callApi({ url: mockCacheUrl, method: 'GET' }).then(() => {
       const calls = fetchMock.calls(mockCacheUrl);
       expect(calls).toHaveLength(1);
@@ -337,11 +338,28 @@ describe('callApi()', () => {
     });
   });
 
-  it('sends known ETags in the If-None-Match header', () =>
+  it("reuses cached responses if they haven't expired", () => {
+    // simulate date before Expires
+    const clock = sinon.useFakeTimers(new Date(2018, 1, 1).getTime());
+
+    return callApi({ url: mockCacheUrl, method: 'GET' }).then(() => {
+      const calls = fetchMock.calls(mockCacheUrl);
+      expect(calls).toHaveLength(0);
+      clock.restore();
+
+      return Promise.resolve();
+    });
+  });
+
+  it('sends known ETags in the If-None-Match header', () => {
+    // simulate date after Expires, so cached response is not reused
+    const clock = sinon.useFakeTimers(new Date(2020, 1, 1).getTime());
+
     // first call sets the cache
-    callApi({ url: mockCacheUrl, method: 'GET' }).then(() => {
+    return callApi({ url: mockCacheUrl, method: 'GET' }).then(() => {
       const calls = fetchMock.calls(mockCacheUrl);
       expect(calls).toHaveLength(1);
+      clock.restore();
 
       // second call sends the Etag in the If-None-Match header
       return callApi({ url: mockCacheUrl, method: 'GET' }).then(() => {
@@ -352,7 +370,8 @@ describe('callApi()', () => {
 
         return Promise.resolve();
       });
-    }));
+    });
+  });
 
   it('reuses cached responses on 304 status', () =>
     // first call sets the cache
