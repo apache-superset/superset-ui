@@ -14,6 +14,54 @@ describe('WithLegend', () => {
     expect(wrapper.hasClass('test-class')).toEqual(true);
   });
 
+  it('renders legend on the top', () => {
+    const wrapper = shallow(
+      <WithLegend
+        className="test-class"
+        position="top"
+        renderChart={() => <div className="chart" />}
+        renderLegend={() => <div className="legend" />}
+      />,
+    );
+    expect(wrapper.hasClass('test-class')).toEqual(true);
+  });
+
+  it('renders legend on the right', () => {
+    const wrapper = shallow(
+      <WithLegend
+        className="test-class"
+        position="right"
+        renderChart={() => <div className="chart" />}
+        renderLegend={() => <div className="legend" />}
+      />,
+    );
+    expect(wrapper.hasClass('test-class')).toEqual(true);
+  });
+
+  it('renders legend on the bottom', () => {
+    const wrapper = shallow(
+      <WithLegend
+        className="test-class"
+        position="bottom"
+        renderChart={() => <div className="chart" />}
+        renderLegend={() => <div className="legend" />}
+      />,
+    );
+    expect(wrapper.hasClass('test-class')).toEqual(true);
+  });
+
+  it('renders legend on the left', () => {
+    const wrapper = shallow(
+      <WithLegend
+        className="test-class"
+        position="left"
+        renderChart={() => <div className="chart" />}
+        renderLegend={() => <div className="legend" />}
+      />,
+    );
+    expect(wrapper.hasClass('test-class')).toEqual(true);
+  });
+
   // it('renders when renderLegend is not set', () => {
   //   const wrapper = shallow(
   //     <WithLegend

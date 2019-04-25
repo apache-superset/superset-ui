@@ -75,7 +75,6 @@ describe('TooltipFrame', () => {
         width={400}
         height={400}
         contentWidth={500}
-        contentHeight={300}
         renderContent={({ width, height }) => (
           <div className="chart">
             {width}/{height}
@@ -91,7 +90,6 @@ describe('TooltipFrame', () => {
       <ChartFrame
         width={400}
         height={400}
-        contentWidth={200}
         contentHeight={600}
         renderContent={({ width, height }) => (
           <div className="chart">
