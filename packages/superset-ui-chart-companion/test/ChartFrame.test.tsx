@@ -100,4 +100,9 @@ describe('TooltipFrame', () => {
     );
     expect(wrapper.find('div.chart').text()).toEqual('400/600');
   });
+
+  it('renders an empty frame when renderContent is not given', () => {
+    const wrapper = shallow(<ChartFrame width={400} height={400} />);
+    expect(wrapper.find('div').text()).toEqual('');
+  });
 });

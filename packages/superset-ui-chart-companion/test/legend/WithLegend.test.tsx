@@ -14,6 +14,29 @@ describe('WithLegend', () => {
     expect(wrapper.hasClass('test-class')).toEqual(true);
   });
 
+  it('renders legend at default position', () => {
+    const wrapper = shallow(
+      <WithLegend
+        className="test-class"
+        renderChart={() => <div className="chart" />}
+        renderLegend={() => <div className="legend" />}
+      />,
+    );
+    expect(wrapper.hasClass('test-class')).toEqual(true);
+  });
+
+  it('renders legend with justifyContent specified', () => {
+    const wrapper = shallow(
+      <WithLegend
+        className="test-class"
+        legendJustifyContent="flex-start"
+        renderChart={() => <div className="chart" />}
+        renderLegend={() => <div className="legend" />}
+      />,
+    );
+    expect(wrapper.hasClass('test-class')).toEqual(true);
+  });
+
   it('renders legend on the top', () => {
     const wrapper = shallow(
       <WithLegend

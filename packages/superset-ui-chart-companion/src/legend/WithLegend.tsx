@@ -42,17 +42,16 @@ class WithLegend extends PureComponent<Props, {}> {
 
   getContainerDirection(): CSS.FlexDirectionProperty {
     const { position } = this.props;
-    switch (position) {
-      case 'left':
-        return 'row';
-      case 'right':
-        return 'row-reverse';
-      case 'bottom':
-        return 'column-reverse';
-      default:
-      case 'top':
-        return 'column';
+
+    if (position === 'left') {
+      return 'row';
+    } else if (position === 'right') {
+      return 'row-reverse';
+    } else if (position === 'bottom') {
+      return 'column-reverse';
     }
+
+    return 'column';
   }
 
   getLegendJustifyContent() {
@@ -60,17 +59,12 @@ class WithLegend extends PureComponent<Props, {}> {
     if (legendJustifyContent) {
       return legendJustifyContent;
     }
-    switch (position) {
-      case 'left':
-        return 'flex-start';
-      case 'right':
-        return 'flex-start';
-      case 'bottom':
-        return 'flex-end';
-      default:
-      case 'top':
-        return 'flex-end';
+
+    if (position === 'left' || position === 'right') {
+      return 'flex-start';
     }
+
+    return 'flex-end';
   }
 
   render() {
