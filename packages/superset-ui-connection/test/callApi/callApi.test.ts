@@ -351,23 +351,20 @@ describe('callApi()', () => {
       });
     }));
 
-  it('reuses cached responses on 304 status', () =>
+  it('reuses cached responses on 304 status', async () => {
     // first call sets the cache
-    callApi({ url: mockCacheUrl, method: 'GET' }).then(() => {
-      const calls = fetchMock.calls(mockCacheUrl);
-      expect(calls).toHaveLength(1);
+    const firstResponse = await callApi({ url: mockCacheUrl, method: 'GET' });
+    const calls = fetchMock.calls(mockCacheUrl);
+    expect(calls).toHaveLength(1);
+    // second call reuses the cached payload on a 304
+    const mockCachedPayload = { status: 304 };
+    fetchMock.get(mockCacheUrl, mockCachedPayload, { overwriteRoutes: true });
 
-      // second call reuses the cached payload on a 304
-      const mockCachedPayload = { status: 304 };
-      fetchMock.get(mockCacheUrl, mockCachedPayload, { overwriteRoutes: true });
-
-      return callApi({ url: mockCacheUrl, method: 'GET' }).then(response => {
-        expect(calls).toHaveLength(2);
-        expect(response.body).toEqual('BODY');
-
-        return Promise.resolve();
-      });
-    }));
+    const secondResponse = await callApi({ url: mockCacheUrl, method: 'GET' });
+    expect(calls).toHaveLength(2);
+    const secondBody = await secondResponse.text();
+    expect(secondBody).toEqual('BODY');
+  });
 
   it('throws error when cache fails on 304', () => {
     // this should never happen, since a 304 is only returned if we have
