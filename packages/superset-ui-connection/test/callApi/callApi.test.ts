@@ -320,19 +320,22 @@ describe('callApi()', () => {
     return callApi({ url: mockCacheUrl, method: 'GET' }).then(firstResponse => {
       const calls = fetchMock.calls(mockCacheUrl);
       expect(calls).toHaveLength(1);
-      expect(firstResponse.body).toEqual('BODY');
 
-      return callApi({ url: mockCacheUrl, method: 'GET' }).then(secondResponse => {
-        const fetchParams = calls[1][1];
-        expect(calls).toHaveLength(2);
+      return firstResponse.text().then(text => {
+        expect(text).toEqual('BODY');
 
-        // second call should not have If-None-Match header
-        expect(fetchParams.headers).toBeUndefined();
-        expect(secondResponse.body).toEqual('BODY');
+        return callApi({ url: mockCacheUrl, method: 'GET' }).then(secondResponse => {
+          const fetchParams = calls[1][1];
+          expect(calls).toHaveLength(2);
 
-        Object.defineProperty(constants, 'CACHE_AVAILABLE', { value: true });
+          // second call should not have If-None-Match header
+          expect(fetchParams.headers).toBeUndefined();
+          expect(secondResponse.body).toEqual('BODY');
 
-        return Promise.resolve();
+          Object.defineProperty(constants, 'CACHE_AVAILABLE', { value: true });
+
+          return Promise.resolve();
+        });
       });
     });
   });
