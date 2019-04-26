@@ -76,12 +76,9 @@ class WithLegend extends PureComponent<Props, {}> {
       display: 'flex',
       flexDirection: this.getContainerDirection(),
     };
-    if (width) {
-      style.width = width;
-    }
-    if (height) {
-      style.height = height;
-    }
+
+    style.width = width;
+    style.height = height;
 
     const chartStyle: CSSProperties = { ...CHART_STYLE_BASE };
     if (isHorizontal) {
