@@ -54,6 +54,21 @@ describe('WithLegend', () => {
     }, 500);
   });
 
+  it('renders without width or height', done => {
+    const wrapper = mount(<WithLegend renderChart={renderChart} renderLegend={renderLegend} />);
+
+    triggerResizeObserver();
+    // Have to delay > 300ms
+    // because the default debounce time for ParentSize is 300.
+    setTimeout(() => {
+      expect(renderChart).toHaveBeenCalledTimes(1);
+      expect(renderLegend).toHaveBeenCalledTimes(1);
+      expect(wrapper.render().find('div.chart')).toHaveLength(1);
+      expect(wrapper.render().find('div.legend')).toHaveLength(1);
+      done();
+    }, 500);
+  });
+
   it('renders legend on the left', done => {
     const wrapper = mount(
       <WithLegend position="left" renderChart={renderChart} renderLegend={renderLegend} />,
