@@ -34,7 +34,6 @@ describe('TooltipTable', () => {
           },
           {
             key: 'Tyrion',
-            keyColumn: 'Tyrion',
             keyStyle: { padding: '10' },
             valueColumn: 2,
           },
