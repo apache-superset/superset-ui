@@ -2,7 +2,7 @@
 import React, { CSSProperties, ReactNode, PureComponent } from 'react';
 import { ParentSize } from '@vx/responsive';
 // eslint-disable-next-line import/no-unresolved
-import * as CSS from 'csstype';
+import { FlexDirectionProperty } from 'csstype';
 
 const defaultProps = {
   className: '',
@@ -13,6 +13,7 @@ const defaultProps = {
 
 type Props = {
   className: string;
+  debounceTime?: number;
   width: number | string;
   height: number | string;
   legendJustifyContent?: 'center' | 'flex-start' | 'flex-end';
@@ -40,7 +41,7 @@ const CHART_STYLE_BASE: CSSProperties = {
 class WithLegend extends PureComponent<Props, {}> {
   static defaultProps = defaultProps;
 
-  getContainerDirection(): CSS.FlexDirectionProperty {
+  getContainerDirection(): FlexDirectionProperty {
     const { position } = this.props;
 
     if (position === 'left') {
@@ -68,17 +69,24 @@ class WithLegend extends PureComponent<Props, {}> {
   }
 
   render() {
-    const { className, width, height, position, renderChart, renderLegend } = this.props;
+    const {
+      className,
+      debounceTime,
+      width,
+      height,
+      position,
+      renderChart,
+      renderLegend,
+    } = this.props;
 
     const isHorizontal = position === 'left' || position === 'right';
 
     const style: CSSProperties = {
       display: 'flex',
       flexDirection: this.getContainerDirection(),
+      height,
+      width,
     };
-
-    style.width = width;
-    style.height = height;
 
     const chartStyle: CSSProperties = { ...CHART_STYLE_BASE };
     if (isHorizontal) {
@@ -105,7 +113,7 @@ class WithLegend extends PureComponent<Props, {}> {
           </div>
         )}
         <div className="main-container" style={chartStyle}>
-          <ParentSize>
+          <ParentSize debounceTime={debounceTime}>
             {(parent: { width: number; height: number }) =>
               parent.width > 0 && parent.height > 0
                 ? // Only render when necessary
