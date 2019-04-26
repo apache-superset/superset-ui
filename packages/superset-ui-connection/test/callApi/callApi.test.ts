@@ -353,7 +353,7 @@ describe('callApi()', () => {
 
   it('reuses cached responses on 304 status', async () => {
     // first call sets the cache
-    const firstResponse = await callApi({ url: mockCacheUrl, method: 'GET' });
+    await callApi({ url: mockCacheUrl, method: 'GET' });
     const calls = fetchMock.calls(mockCacheUrl);
     expect(calls).toHaveLength(1);
     // second call reuses the cached payload on a 304
