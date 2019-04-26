@@ -35,7 +35,7 @@ describe('WithLegend', () => {
       expect(wrapper.render().find('div.chart')).toHaveLength(1);
       expect(wrapper.render().find('div.legend')).toHaveLength(0);
       done();
-    }, 10);
+    }, 100);
   });
 
   it('renders', done => {
@@ -57,7 +57,7 @@ describe('WithLegend', () => {
       expect(wrapper.render().find('div.chart')).toHaveLength(1);
       expect(wrapper.render().find('div.legend')).toHaveLength(1);
       done();
-    }, 10);
+    }, 100);
   });
 
   it('renders without width or height', done => {
@@ -73,7 +73,7 @@ describe('WithLegend', () => {
       expect(wrapper.render().find('div.chart')).toHaveLength(1);
       expect(wrapper.render().find('div.legend')).toHaveLength(1);
       done();
-    }, 10);
+    }, 100);
   });
 
   it('renders legend on the left', done => {
@@ -94,7 +94,7 @@ describe('WithLegend', () => {
       expect(wrapper.render().find('div.chart')).toHaveLength(1);
       expect(wrapper.render().find('div.legend')).toHaveLength(1);
       done();
-    }, 10);
+    }, 100);
   });
 
   it('renders legend on the right', done => {
@@ -115,7 +115,7 @@ describe('WithLegend', () => {
       expect(wrapper.render().find('div.chart')).toHaveLength(1);
       expect(wrapper.render().find('div.legend')).toHaveLength(1);
       done();
-    }, 10);
+    }, 100);
   });
 
   it('renders legend on the top', done => {
@@ -136,7 +136,7 @@ describe('WithLegend', () => {
       expect(wrapper.render().find('div.chart')).toHaveLength(1);
       expect(wrapper.render().find('div.legend')).toHaveLength(1);
       done();
-    }, 10);
+    }, 100);
   });
 
   it('renders legend on the bottom', done => {
@@ -157,7 +157,7 @@ describe('WithLegend', () => {
       expect(wrapper.render().find('div.chart')).toHaveLength(1);
       expect(wrapper.render().find('div.legend')).toHaveLength(1);
       done();
-    }, 10);
+    }, 100);
   });
 
   it('renders legend with justifyContent set', done => {
@@ -179,6 +179,6 @@ describe('WithLegend', () => {
       expect(wrapper.render().find('div.chart')).toHaveLength(1);
       expect(wrapper.render().find('div.legend')).toHaveLength(1);
       done();
-    }, 10);
+    }, 100);
   });
 });
