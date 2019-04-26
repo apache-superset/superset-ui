@@ -1,114 +1,146 @@
+/* eslint-disable import/first */
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
+
+jest.mock('resize-observer-polyfill');
+// @ts-ignore
+import { triggerResizeObserver } from 'resize-observer-polyfill';
 import { WithLegend } from '../../src';
 
+let renderChart = jest.fn();
+let renderLegend = jest.fn();
+
 describe('WithLegend', () => {
+  beforeEach(() => {
+    renderChart = jest.fn(() => <div className="chart" />);
+    renderLegend = jest.fn(() => <div className="legend" />);
+  });
+
   it('sets className', () => {
     const wrapper = shallow(
-      <WithLegend
-        className="test-class"
-        renderChart={() => <div className="chart" />}
-        renderLegend={() => <div className="legend" />}
-      />,
+      <WithLegend className="test-class" renderChart={renderChart} renderLegend={renderLegend} />,
     );
     expect(wrapper.hasClass('test-class')).toEqual(true);
   });
 
-  it('renders legend at default position', () => {
-    const wrapper = shallow(
-      <WithLegend
-        className="test-class"
-        renderChart={() => <div className="chart" />}
-        renderLegend={() => <div className="legend" />}
-      />,
-    );
-    expect(wrapper.hasClass('test-class')).toEqual(true);
+  it('renders when renderLegend is not set', done => {
+    const wrapper = mount(<WithLegend width={500} height={500} renderChart={renderChart} />);
+
+    triggerResizeObserver();
+    // Have to delay > 300ms
+    // because the default debounce time for ParentSize is 300.
+    setTimeout(() => {
+      expect(renderChart).toHaveBeenCalledTimes(1);
+      expect(wrapper.render().find('div.chart')).toHaveLength(1);
+      expect(wrapper.render().find('div.legend')).toHaveLength(0);
+      done();
+    }, 500);
   });
 
-  it('renders legend with justifyContent specified', () => {
-    const wrapper = shallow(
-      <WithLegend
-        className="test-class"
-        legendJustifyContent="flex-start"
-        renderChart={() => <div className="chart" />}
-        renderLegend={() => <div className="legend" />}
-      />,
+  it('renders', done => {
+    const wrapper = mount(
+      <WithLegend width={500} height={500} renderChart={renderChart} renderLegend={renderLegend} />,
     );
-    expect(wrapper.hasClass('test-class')).toEqual(true);
+
+    triggerResizeObserver();
+    // Have to delay > 300ms
+    // because the default debounce time for ParentSize is 300.
+    setTimeout(() => {
+      expect(renderChart).toHaveBeenCalledTimes(1);
+      expect(renderLegend).toHaveBeenCalledTimes(1);
+      expect(wrapper.render().find('div.chart')).toHaveLength(1);
+      expect(wrapper.render().find('div.legend')).toHaveLength(1);
+      done();
+    }, 500);
   });
 
-  it('renders legend on the top', () => {
-    const wrapper = shallow(
-      <WithLegend
-        className="test-class"
-        position="top"
-        renderChart={() => <div className="chart" />}
-        renderLegend={() => <div className="legend" />}
-      />,
+  it('renders legend on the left', done => {
+    const wrapper = mount(
+      <WithLegend position="left" renderChart={renderChart} renderLegend={renderLegend} />,
     );
-    expect(wrapper.hasClass('test-class')).toEqual(true);
+
+    triggerResizeObserver();
+    // Have to delay > 300ms
+    // because the default debounce time for ParentSize is 300.
+    setTimeout(() => {
+      expect(renderChart).toHaveBeenCalledTimes(1);
+      expect(renderLegend).toHaveBeenCalledTimes(1);
+      expect(wrapper.render().find('div.chart')).toHaveLength(1);
+      expect(wrapper.render().find('div.legend')).toHaveLength(1);
+      done();
+    }, 500);
   });
 
-  it('renders legend on the right', () => {
-    const wrapper = shallow(
+  it('renders legend on the right', done => {
+    const wrapper = mount(
+      <WithLegend position="right" renderChart={renderChart} renderLegend={renderLegend} />,
+    );
+
+    triggerResizeObserver();
+    // Have to delay > 300ms
+    // because the default debounce time for ParentSize is 300.
+    setTimeout(() => {
+      expect(renderChart).toHaveBeenCalledTimes(1);
+      expect(renderLegend).toHaveBeenCalledTimes(1);
+      expect(wrapper.render().find('div.chart')).toHaveLength(1);
+      expect(wrapper.render().find('div.legend')).toHaveLength(1);
+      done();
+    }, 500);
+  });
+
+  it('renders legend on the top', done => {
+    const wrapper = mount(
+      <WithLegend position="top" renderChart={renderChart} renderLegend={renderLegend} />,
+    );
+
+    triggerResizeObserver();
+    // Have to delay > 300ms
+    // because the default debounce time for ParentSize is 300.
+    setTimeout(() => {
+      expect(renderChart).toHaveBeenCalledTimes(1);
+      expect(renderLegend).toHaveBeenCalledTimes(1);
+      expect(wrapper.render().find('div.chart')).toHaveLength(1);
+      expect(wrapper.render().find('div.legend')).toHaveLength(1);
+      done();
+    }, 500);
+  });
+
+  it('renders legend on the bottom', done => {
+    const wrapper = mount(
+      <WithLegend position="bottom" renderChart={renderChart} renderLegend={renderLegend} />,
+    );
+
+    triggerResizeObserver();
+    // Have to delay > 300ms
+    // because the default debounce time for ParentSize is 300.
+    setTimeout(() => {
+      expect(renderChart).toHaveBeenCalledTimes(1);
+      expect(renderLegend).toHaveBeenCalledTimes(1);
+      expect(wrapper.render().find('div.chart')).toHaveLength(1);
+      expect(wrapper.render().find('div.legend')).toHaveLength(1);
+      done();
+    }, 500);
+  });
+
+  it('renders legend with justifyContent set', done => {
+    const wrapper = mount(
       <WithLegend
-        className="test-class"
         position="right"
-        renderChart={() => <div className="chart" />}
-        renderLegend={() => <div className="legend" />}
+        legendJustifyContent="flex-start"
+        renderChart={renderChart}
+        renderLegend={renderLegend}
       />,
     );
-    expect(wrapper.hasClass('test-class')).toEqual(true);
+
+    triggerResizeObserver();
+    // Have to delay > 300ms
+    // because the default debounce time for ParentSize is 300.
+    setTimeout(() => {
+      expect(renderChart).toHaveBeenCalledTimes(1);
+      expect(renderLegend).toHaveBeenCalledTimes(1);
+      expect(wrapper.render().find('div.chart')).toHaveLength(1);
+      expect(wrapper.render().find('div.legend')).toHaveLength(1);
+      done();
+    }, 500);
   });
-
-  it('renders legend on the bottom', () => {
-    const wrapper = shallow(
-      <WithLegend
-        className="test-class"
-        position="bottom"
-        renderChart={() => <div className="chart" />}
-        renderLegend={() => <div className="legend" />}
-      />,
-    );
-    expect(wrapper.hasClass('test-class')).toEqual(true);
-  });
-
-  it('renders legend on the left', () => {
-    const wrapper = shallow(
-      <WithLegend
-        className="test-class"
-        position="left"
-        renderChart={() => <div className="chart" />}
-        renderLegend={() => <div className="legend" />}
-      />,
-    );
-    expect(wrapper.hasClass('test-class')).toEqual(true);
-  });
-
-  // it('renders when renderLegend is not set', () => {
-  //   const wrapper = shallow(
-  //     <WithLegend
-  //       width={500}
-  //       height={500}
-  //       className="test-class"
-  //       renderChart={() => <div className="chart" />}
-  //     />,
-  //   );
-  //   expect(wrapper.find('div.chart')).toHaveLength(1);
-  //   expect(wrapper.find('div.legend')).toHaveLength(0);
-  // });
-
-  // it('renders', () => {
-  //   const renderChart = jest.fn(() => <div className="chart" />);
-  //   const renderLegend = jest.fn(() => <div className="legend" />);
-
-  //   const div = document.createElement('div');
-  //   document.body.appendChild(div);
-  //   const wrapper = mount(
-  //     <WithLegend width={500} height={500} renderChart={renderChart} renderLegend={renderLegend} />,
-  //     {
-  //       attachTo: div,
-  //     },
-  //   );
-  // });
 });
