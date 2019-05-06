@@ -28,7 +28,7 @@ Current master: https://superset-ui.netlify.com
 | [@superset-ui/generator-superset](https://github.com/apache-superset/superset-ui/tree/master/packages/superset-ui-generator-superset) | [![Version](https://img.shields.io/npm/v/@superset-ui/generator-superset.svg?style=flat-square)](https://img.shields.io/npm/v/@superset-ui/generator-superset.svg?style=flat-square) |
 | [@superset-ui/number-format](https://github.com/apache-superset/superset-ui/tree/master/packages/superset-ui-number-format) | [![Version](https://img.shields.io/npm/v/@superset-ui/number-format.svg?style=flat-square)](https://img.shields.io/npm/v/@superset-ui/number-format.svg?style=flat-square) |
 | [@superset-ui/time-format](https://github.com/apache-superset/superset-ui/tree/master/packages/superset-ui-time-format) | [![Version](https://img.shields.io/npm/v/@superset-ui/time-format.svg?style=flat-square)](https://img.shields.io/npm/v/@superset-ui/time-format.svg?style=flat-square) |
-| [@superset-ui/translation](https://github.com/apache-superset/superset-ui/tree/master/packages/superset-ui-translation) | [![Version](https://img.shields.io/npm/v/@superset-ui/translation.svg?style=flat-square)](https://img.shields.io/npm/v/@superset-ui/translation.svg?style=flat-square) |
+| [@superset-ui/translation](https://github.com/apache-superset/superset-ui/tree/master/packages/superset-ui-translation) | [![Version](https://img.shields.io/npm/v/@superset-ui/translation.svg?style=flat-square)](https://img.shields.io/npm/v/@superset-ui/translation.svg?style=flat-square) [![Greenkeeper badge](https://badges.greenkeeper.io/apache-superset/superset-ui.svg)](https://greenkeeper.io/) |
 
 
 ### Development
