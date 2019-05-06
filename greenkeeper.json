@@ -1,0 +1,20 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "package.json",
+        "packages/generator-superset/package.json",
+        "packages/superset-ui-chart-composition/package.json",
+        "packages/superset-ui-chart/package.json",
+        "packages/superset-ui-color/package.json",
+        "packages/superset-ui-connection/package.json",
+        "packages/superset-ui-core/package.json",
+        "packages/superset-ui-demo/package.json",
+        "packages/superset-ui-dimension/package.json",
+        "packages/superset-ui-number-format/package.json",
+        "packages/superset-ui-time-format/package.json",
+        "packages/superset-ui-translation/package.json"
+      ]
+    }
+  }
+}
