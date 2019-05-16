@@ -21,7 +21,7 @@ type ChartPropsSelector<Customization extends PlainObject> = (
 interface ChartPropsConfig<Customization> {
   annotationData?: AnnotationData;
   /**
-   * Support programmatic overrides
+   * Support programmatic hooks/overrides
    * such as tooltipRenderer, labelRenderer, legendRenderer
    * (only for advanced case that cannot be defined
    * in formData)
