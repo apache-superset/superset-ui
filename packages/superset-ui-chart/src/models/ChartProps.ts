@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import { convertKeysToCamelCase } from '@superset-ui/core';
-import { string } from 'prop-types';
 
 interface PlainObject {
   [key: string]: any;
