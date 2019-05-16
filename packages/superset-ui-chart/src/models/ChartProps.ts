@@ -14,10 +14,13 @@ type SnakeCaseFormData = PlainObject;
 export type QueryData = PlainObject;
 type Filters = any[];
 type HandlerFunction = (...args: any[]) => void;
-type ChartPropsSelector = (c: ChartPropsConfig) => ChartProps;
+type ChartPropsSelector<Customization extends PlainObject> = (
+  c: ChartPropsConfig<Customization>,
+) => ChartProps;
 
-interface ChartPropsConfig {
+interface ChartPropsConfig<Customization> {
   annotationData?: AnnotationData;
+  customization?: Customization;
   datasource?: SnakeCaseDatasource;
   filters?: Filters;
   formData?: SnakeCaseFormData;
@@ -35,10 +38,56 @@ function NOOP() {}
 const DEFAULT_WIDTH = 800;
 const DEFAULT_HEIGHT = 600;
 
-export default class ChartProps {
-  static createSelector: () => ChartPropsSelector;
+export default class ChartProps<Customization extends PlainObject = PlainObject> {
+  static createSelector = function create<Customization extends PlainObject>(): ChartPropsSelector<
+    Customization
+  > {
+    return createSelector(
+      (input: ChartPropsConfig<Customization>) => input.annotationData,
+      input => input.customization,
+      input => input.datasource,
+      input => input.filters,
+      input => input.formData,
+      input => input.height,
+      input => input.onAddFilter,
+      input => input.onError,
+      input => input.payload,
+      input => input.setControlValue,
+      input => input.setTooltip,
+      input => input.width,
+      (
+        annotationData,
+        customization,
+        datasource,
+        filters,
+        formData,
+        height,
+        onAddFilter,
+        onError,
+        payload,
+        setControlValue,
+        setTooltip,
+        width,
+      ) =>
+        new ChartProps({
+          annotationData,
+          customization,
+          datasource,
+          filters,
+          formData,
+          height,
+          onAddFilter,
+          onError,
+          payload,
+          setControlValue,
+          setTooltip,
+          width,
+        }),
+    );
+  };
 
   annotationData: AnnotationData;
+  customization: Customization;
   datasource: CamelCaseDatasource;
   rawDatasource: SnakeCaseDatasource;
   filters: Filters;
@@ -52,9 +101,10 @@ export default class ChartProps {
   setTooltip: HandlerFunction;
   width: number;
 
-  constructor(config: ChartPropsConfig = {}) {
+  constructor(config: ChartPropsConfig<Customization> = {}) {
     const {
       annotationData = {},
+      customization = {} as Customization,
       datasource = {},
       filters = [],
       formData = {},
@@ -69,6 +119,7 @@ export default class ChartProps {
     this.width = width;
     this.height = height;
     this.annotationData = annotationData;
+    this.customization = customization;
     this.datasource = convertKeysToCamelCase(datasource);
     this.rawDatasource = datasource;
     this.filters = filters;
@@ -81,45 +132,3 @@ export default class ChartProps {
     this.setTooltip = setTooltip;
   }
 }
-
-ChartProps.createSelector = function create(): ChartPropsSelector {
-  return createSelector(
-    (input: ChartPropsConfig) => input.annotationData,
-    input => input.datasource,
-    input => input.filters,
-    input => input.formData,
-    input => input.height,
-    input => input.onAddFilter,
-    input => input.onError,
-    input => input.payload,
-    input => input.setControlValue,
-    input => input.setTooltip,
-    input => input.width,
-    (
-      annotationData,
-      datasource,
-      filters,
-      formData,
-      height,
-      onAddFilter,
-      onError,
-      payload,
-      setControlValue,
-      setTooltip,
-      width,
-    ) =>
-      new ChartProps({
-        annotationData,
-        datasource,
-        filters,
-        formData,
-        height,
-        onAddFilter,
-        onError,
-        payload,
-        setControlValue,
-        setTooltip,
-        width,
-      }),
-  );
-};
