@@ -1,11 +1,12 @@
 import { ChartFormData } from '../types/ChartFormData';
-import { MetricKey, Metric, FormDataMetric, AdhocMetric, ExpressionType } from '../types/Metric';
+import { MetricKey, AdhocMetric, ExpressionType } from '../types/Metric';
+import { QueryObject } from '../types/Query';
 
 export const LABEL_MAX_LENGTH = 43;
 
 export default class Metrics {
   // Use Array to maintain insertion order for metrics that are order sensitive
-  private metrics: Metric[];
+  private metrics: QueryObject.Metric[];
 
   constructor(formData: ChartFormData) {
     this.metrics = [];
@@ -29,7 +30,7 @@ export default class Metrics {
     return this.metrics.map(m => m.label);
   }
 
-  static formatMetric(metric: FormDataMetric): Metric {
+  static formatMetric(metric: ChartFormData.Metric): QueryObject.Metric {
     let formattedMetric;
     if (typeof metric === 'string') {
       formattedMetric = {
@@ -49,7 +50,7 @@ export default class Metrics {
     return formattedMetric;
   }
 
-  private addMetric(metric: FormDataMetric) {
+  private addMetric(metric: ChartFormData.Metric) {
     this.metrics.push(Metrics.formatMetric(metric));
   }
 

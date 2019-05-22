@@ -1,28 +1,73 @@
 /* eslint camelcase: 0 */
 import { DatasourceType } from './Datasource';
 import { ChartFormData } from './ChartFormData';
-import { Metric } from './Metric';
+import { AdhocMetric } from './Metric';
 import ChartProps from '../models/ChartProps';
+import { BinaryOperator, SetOperator, UnaryOperator, TimeRange } from './Common';
 
-export interface QueryObject {
-  granularity: string;
+export namespace QueryObject {
+  export type FilterClause = {
+    col: string;
+  } & (
+    | {
+        op: BinaryOperator;
+        val: string;
+      }
+    | {
+        op: SetOperator;
+        val: string[];
+      }
+    | {
+        op: UnaryOperator;
+      });
+
+  export type Metric = {
+    label: string;
+  } & Partial<AdhocMetric>;
+}
+
+export type QueryObject = {
+  /** Columns to group by */
   groupby?: string[];
-  metrics?: Metric[];
+  /** Metrics */
+  metrics?: QueryObject.Metric[];
+
+  /** TODO: Doc */
   extras?: {
     [key: string]: string;
   };
-  timeseries_limit?: number;
-  timeseries_limit_metric?: Metric | null;
-  time_range?: string;
-  since?: string;
-  until?: string;
+
+  /** Granularity (for steps in time series) */
+  granularity: string;
+
+  /** Free-form WHERE SQL: multiple clauses are concatenated by AND */
+  where?: string;
+  /** Free-form HAVING SQL, multiple clauses are concatenated by AND */
+  having?: string;
+  /** SIMPLE having filters */
+  having_filters?: QueryObject.FilterClause[];
+  /** SIMPLE where filters */
+  filters?: QueryObject.FilterClause[];
+
+  /** Maximum numbers of rows to return */
   row_limit?: number;
+  /** Maximum number of series */
+  timeseries_limit?: number;
+  /** TODO: Doc */
+  timeseries_limit_metric?: QueryObject.Metric | null;
+
+  orderby?: Array<[QueryObject.Metric, boolean]>;
+  /** Direction to ordered by */
   order_desc?: boolean;
+
+  /** If set, will group by timestamp */
   is_timeseries?: boolean;
-  prequeries?: string[];
+
+  /** TODO: Doc */
   is_prequery?: boolean;
-  orderby?: Array<[Metric, boolean]>;
-}
+  /** TODO: Doc */
+  prequeries?: string[];
+} & TimeRange;
 
 export interface QueryContext {
   datasource: {

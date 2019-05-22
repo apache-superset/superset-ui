@@ -44,12 +44,3 @@ export type AdhocMetric = {
   label?: string;
   optionName?: string;
 } & (AdhocMetricSimple | AdhocMetricSQL);
-
-// Type of metrics in form data
-export type FormDataMetric = string | AdhocMetric;
-
-// Type of Metric the client provides to server after unifying various forms
-// of metrics in form data
-export type Metric = {
-  label: string;
-} & Partial<AdhocMetric>;
