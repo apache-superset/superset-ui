@@ -1,8 +1,7 @@
 import { ChartFormData, ChartFormDataMetric } from '../types/ChartFormData';
-import { MetricKey, AdhocMetric } from '../types/formData/Metric';
+import { MetricKey } from '../types/formData/Metric';
 import { QueryObjectMetric } from '../types/Query';
-
-export const LABEL_MAX_LENGTH = 43;
+import convertMetric from './convertMetric';
 
 export default class Metrics {
   // Use Array to maintain insertion order for metrics that are order sensitive
@@ -30,40 +29,7 @@ export default class Metrics {
     return this.metrics.map(m => m.label);
   }
 
-  static formatMetric(metric: ChartFormDataMetric): QueryObjectMetric {
-    let formattedMetric;
-    if (typeof metric === 'string') {
-      formattedMetric = {
-        label: metric,
-      };
-    } else {
-      // Note we further sanitize the metric label for BigQuery datasources
-      // TODO: move this logic to the client once client has more info on the
-      // the datasource
-      const label = metric.label || this.getDefaultLabel(metric);
-      formattedMetric = {
-        ...metric,
-        label,
-      };
-    }
-
-    return formattedMetric;
-  }
-
   private addMetric(metric: ChartFormDataMetric) {
-    this.metrics.push(Metrics.formatMetric(metric));
-  }
-
-  static getDefaultLabel(metric: AdhocMetric) {
-    let label: string;
-    if (metric.expressionType === 'SIMPLE') {
-      label = `${metric.aggregate}(${metric.column.columnName})`;
-    } else {
-      label = metric.sqlExpression;
-    }
-
-    return label.length <= LABEL_MAX_LENGTH
-      ? label
-      : `${label.substring(0, LABEL_MAX_LENGTH - 3)}...`;
+    this.metrics.push(convertMetric(metric));
   }
 }
