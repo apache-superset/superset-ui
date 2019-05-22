@@ -1,11 +1,20 @@
+/* eslint-disable camelcase */
 import Metrics from './Metrics';
-import { QueryObject } from '../types/Query';
+import { QueryObject, QueryObjectExtras } from '../types/Query';
 import { ChartFormData, DruidFormData, SqlaFormData } from '../types/ChartFormData';
 
 const DTTM_ALIAS = '__timestamp';
 
+function isDruidFormData(formData: ChartFormData): formData is DruidFormData {
+  return 'granularity' in formData;
+}
+
+function isSqlaFormData(formData: ChartFormData): formData is SqlaFormData {
+  return 'granularity_sqla' in formData;
+}
+
 function getGranularity(formData: ChartFormData): string {
-  return 'granularity_sqla' in formData ? formData.granularity_sqla : formData.granularity;
+  return isSqlaFormData(formData) ? formData.granularity_sqla : formData.granularity;
 }
 
 // Build the common segments of all query objects (e.g. the granularity field derived from
@@ -14,38 +23,51 @@ function getGranularity(formData: ChartFormData): string {
 // Note the type of the formData argument passed in here is the type of the formData for a
 // specific viz, which is a subtype of the generic formData shared among all viz types.
 export default function buildQueryObject<T extends ChartFormData>(formData: T): QueryObject {
-  const extras = {
-    druid_time_origin: (formData as DruidFormData).druid_time_origin || '',
-    having: (formData as SqlaFormData).having || '',
-    having_druid: (formData as DruidFormData).having_druid || '',
-    time_grain_sqla: (formData as SqlaFormData).time_grain_sqla || '',
-    where: formData.where || '',
-  };
+  const {
+    time_range,
+    since,
+    until,
+    columns = [],
+    groupby = [],
+    where = '',
+    order_desc,
+    row_limit,
+    limit,
+    timeseries_limit_metric,
+  } = formData;
 
-  const { columns = [], groupby = [] } = formData;
+  const extras: QueryObjectExtras = { where };
+  if (isDruidFormData(formData)) {
+    const { druid_time_origin, having_druid } = formData;
+    extras.druid_time_origin = druid_time_origin;
+    extras.having_druid = having_druid;
+  } else if (isSqlaFormData(formData)) {
+    const { time_grain_sqla, having } = formData;
+    extras.time_grain_sqla = time_grain_sqla;
+    extras.having = having;
+  }
+
   const groupbySet = new Set([...columns, ...groupby]);
-  const limit = formData.limit ? Number(formData.limit) : 0;
-  const rowLimit = Number(formData.row_limit);
-  const orderDesc = formData.order_desc === undefined ? true : formData.order_desc;
-  const isTimeseries = groupbySet.has(DTTM_ALIAS);
 
-  return {
+  const queryObject: QueryObject = {
     extras,
     granularity: getGranularity(formData),
     groupby: Array.from(groupbySet),
     is_prequery: false,
-    is_timeseries: isTimeseries,
+    is_timeseries: groupbySet.has(DTTM_ALIAS),
     metrics: new Metrics(formData).getMetrics(),
-    order_desc: orderDesc,
+    order_desc: order_desc === undefined ? true : order_desc,
     orderby: [],
     prequeries: [],
-    row_limit: rowLimit,
-    since: formData.since,
-    time_range: formData.time_range,
-    timeseries_limit: limit,
-    timeseries_limit_metric: formData.timeseries_limit_metric
-      ? Metrics.formatMetric(formData.timeseries_limit_metric)
+    row_limit: Number(row_limit),
+    since,
+    time_range,
+    timeseries_limit: limit ? Number(limit) : 0,
+    timeseries_limit_metric: timeseries_limit_metric
+      ? Metrics.formatMetric(timeseries_limit_metric)
       : null,
-    until: formData.until,
+    until,
   };
+
+  return queryObject;
 }

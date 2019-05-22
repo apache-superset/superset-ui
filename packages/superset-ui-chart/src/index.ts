@@ -26,4 +26,5 @@ export * from './types/Datasource';
 export * from './types/ChartFormData';
 export * from './types/Query';
 export * from './types/Metric';
-export * from './types/Common';
+export * from './types/Operator';
+export * from './types/Time';

@@ -1,5 +1,5 @@
 import { Column } from './Column';
-import { QueryObject } from './Query';
+import { QueryObjectMetric } from './Query';
 
 export enum DatasourceType {
   Table = 'table',
@@ -13,5 +13,5 @@ export interface Datasource {
   description?: string;
   type: DatasourceType;
   columns: Column[];
-  metrics: QueryObject.Metric[];
+  metrics: QueryObjectMetric[];
 }

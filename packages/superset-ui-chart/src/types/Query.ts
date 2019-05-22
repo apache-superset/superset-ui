@@ -3,39 +3,46 @@ import { DatasourceType } from './Datasource';
 import { ChartFormData } from './ChartFormData';
 import { AdhocMetric } from './Metric';
 import ChartProps from '../models/ChartProps';
-import { BinaryOperator, SetOperator, UnaryOperator, TimeRange } from './Common';
+import { BinaryOperator, SetOperator, UnaryOperator } from './Operator';
+import { TimeRange } from './Time';
 
-export namespace QueryObject {
-  export type FilterClause = {
-    col: string;
-  } & (
-    | {
-        op: BinaryOperator;
-        val: string;
-      }
-    | {
-        op: SetOperator;
-        val: string[];
-      }
-    | {
-        op: UnaryOperator;
-      });
+export type QueryObjectFilterClause = {
+  col: string;
+} & (
+  | {
+      op: BinaryOperator;
+      val: string;
+    }
+  | {
+      op: SetOperator;
+      val: string[];
+    }
+  | {
+      op: UnaryOperator;
+    });
 
-  export type Metric = {
-    label: string;
-  } & Partial<AdhocMetric>;
-}
+export type QueryObjectMetric = {
+  label: string;
+} & Partial<AdhocMetric>;
+
+export type QueryObjectExtras = Partial<{
+  /** HAVING condition for Druid */
+  having_druid: string;
+  druid_time_origin: string;
+  /** HAVING condition for SQLAlchemy */
+  having: string;
+  time_grain_sqla: string;
+  /** WHERE condition */
+  where: string;
+}>;
 
 export type QueryObject = {
   /** Columns to group by */
   groupby?: string[];
   /** Metrics */
-  metrics?: QueryObject.Metric[];
+  metrics?: QueryObjectMetric[];
 
-  /** TODO: Doc */
-  extras?: {
-    [key: string]: string;
-  };
+  extras?: QueryObjectExtras;
 
   /** Granularity (for steps in time series) */
   granularity: string;
@@ -45,18 +52,18 @@ export type QueryObject = {
   /** Free-form HAVING SQL, multiple clauses are concatenated by AND */
   having?: string;
   /** SIMPLE having filters */
-  having_filters?: QueryObject.FilterClause[];
+  having_filters?: QueryObjectFilterClause[];
   /** SIMPLE where filters */
-  filters?: QueryObject.FilterClause[];
+  filters?: QueryObjectFilterClause[];
 
   /** Maximum numbers of rows to return */
   row_limit?: number;
   /** Maximum number of series */
   timeseries_limit?: number;
   /** TODO: Doc */
-  timeseries_limit_metric?: QueryObject.Metric | null;
+  timeseries_limit_metric?: QueryObjectMetric | null;
 
-  orderby?: Array<[QueryObject.Metric, boolean]>;
+  orderby?: Array<[QueryObjectMetric, boolean]>;
   /** Direction to ordered by */
   order_desc?: boolean;
 
