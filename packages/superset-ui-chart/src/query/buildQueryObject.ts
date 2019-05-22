@@ -17,6 +17,20 @@ function getGranularity(formData: ChartFormData): string {
   return isSqlaFormData(formData) ? formData.granularity_sqla : formData.granularity;
 }
 
+function getExtras(formData: ChartFormData): QueryObjectExtras {
+  const { where = '' } = formData;
+
+  if (isDruidFormData(formData)) {
+    const { druid_time_origin, having_druid } = formData;
+
+    return { druid_time_origin, having_druid, where };
+  }
+
+  const { time_grain_sqla, having } = formData;
+
+  return { having, time_grain_sqla, where };
+}
+
 // Build the common segments of all query objects (e.g. the granularity field derived from
 // either sql alchemy or druid). The segments specific to each viz type is constructed in the
 // buildQuery method for each viz type (see `wordcloud/buildQuery.ts` for an example).
@@ -29,28 +43,21 @@ export default function buildQueryObject<T extends ChartFormData>(formData: T): 
     until,
     columns = [],
     groupby = [],
-    where = '',
     order_desc,
     row_limit,
     limit,
     timeseries_limit_metric,
   } = formData;
 
-  const extras: QueryObjectExtras = { where };
-  if (isDruidFormData(formData)) {
-    const { druid_time_origin, having_druid } = formData;
-    extras.druid_time_origin = druid_time_origin;
-    extras.having_druid = having_druid;
-  } else if (isSqlaFormData(formData)) {
-    const { time_grain_sqla, having } = formData;
-    extras.time_grain_sqla = time_grain_sqla;
-    extras.having = having;
-  }
-
   const groupbySet = new Set([...columns, ...groupby]);
 
+  // Logic formerly in viz.py
+  // utils.convert_legacy_filters_into_adhoc(self.form_data)
+  // merge_extra_filters(self.form_data)
+  // utils.split_adhoc_filters_into_base_filters(self.form_data)
+
   const queryObject: QueryObject = {
-    extras,
+    extras: getExtras(formData),
     granularity: getGranularity(formData),
     groupby: Array.from(groupbySet),
     is_prequery: false,
