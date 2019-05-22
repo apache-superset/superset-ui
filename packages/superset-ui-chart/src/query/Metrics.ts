@@ -1,5 +1,5 @@
 import { ChartFormData, ChartFormDataMetric } from '../types/ChartFormData';
-import { MetricKey, AdhocMetric, ExpressionType } from '../types/Metric';
+import { MetricKey, AdhocMetric } from '../types/formData/Metric';
 import { QueryObjectMetric } from '../types/Query';
 
 export const LABEL_MAX_LENGTH = 43;
@@ -56,7 +56,7 @@ export default class Metrics {
 
   static getDefaultLabel(metric: AdhocMetric) {
     let label: string;
-    if (metric.expressionType === ExpressionType.SIMPLE) {
+    if (metric.expressionType === 'SIMPLE') {
       label = `${metric.aggregate}(${metric.column.columnName})`;
     } else {
       label = metric.sqlExpression;

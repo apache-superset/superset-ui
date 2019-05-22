@@ -1,7 +1,7 @@
 /* eslint camelcase: 0 */
 import { DatasourceType } from './Datasource';
 import { ChartFormData } from './ChartFormData';
-import { AdhocMetric } from './Metric';
+import { AdhocMetric } from './formData/Metric';
 import ChartProps from '../models/ChartProps';
 import { BinaryOperator, SetOperator, UnaryOperator } from './Operator';
 import { TimeRange } from './Time';

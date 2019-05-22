@@ -1,17 +1,15 @@
 /* eslint-disable camelcase */
 import Metrics from './Metrics';
-import { QueryObject, QueryObjectExtras } from '../types/Query';
-import { ChartFormData, DruidFormData, SqlaFormData } from '../types/ChartFormData';
+import { QueryObject, QueryObjectExtras, QueryObjectFilterClause } from '../types/Query';
+import { ChartFormData, isSqlaFormData, isDruidFormData } from '../types/ChartFormData';
+import {
+  AdhocFilter,
+  SimpleAdhocFilter,
+  isUnaryAdhocFilter,
+  isBinaryAdhocFilter,
+} from '../types/formData/Filter';
 
 const DTTM_ALIAS = '__timestamp';
-
-function isDruidFormData(formData: ChartFormData): formData is DruidFormData {
-  return 'granularity' in formData;
-}
-
-function isSqlaFormData(formData: ChartFormData): formData is SqlaFormData {
-  return 'granularity_sqla' in formData;
-}
 
 function getGranularity(formData: ChartFormData): string {
   return isSqlaFormData(formData) ? formData.granularity_sqla : formData.granularity;
@@ -29,6 +27,86 @@ function getExtras(formData: ChartFormData): QueryObjectExtras {
   const { time_grain_sqla, having } = formData;
 
   return { having, time_grain_sqla, where };
+}
+
+function isSimpleAdhocFilter(filter: AdhocFilter): filter is SimpleAdhocFilter {
+  return filter.expressionType === 'SIMPLE';
+}
+
+function convertAdhocFilterToQueryObjectFilterClause(
+  filter: SimpleAdhocFilter,
+): QueryObjectFilterClause {
+  const { subject } = filter;
+  if (isUnaryAdhocFilter(filter)) {
+    const { operator } = filter;
+
+    return {
+      col: subject,
+      op: operator,
+    };
+  } else if (isBinaryAdhocFilter(filter)) {
+    const { operator } = filter;
+
+    return {
+      col: subject,
+      op: operator,
+      val: filter.comparator,
+    };
+  }
+
+  const { operator } = filter;
+
+  return {
+    col: subject,
+    op: operator,
+    val: filter.comparator,
+  };
+}
+
+/** Logic formerly in viz.py's process_query_filters */
+function getFilters(formData: ChartFormData) {
+  // TODO: Implement
+  // utils.convert_legacy_filters_into_adhoc(self.form_data)
+
+  // TODO: Implement
+  // merge_extra_filters(self.form_data)
+
+  // utils.split_adhoc_filters_into_base_filters(self.form_data)
+  const { adhoc_filters } = formData;
+  if (Array.isArray(adhoc_filters)) {
+    const simpleWhere: QueryObjectFilterClause[] = [];
+    const simpleHaving: QueryObjectFilterClause[] = [];
+    const freeformWhere: string[] = [];
+    const freeformHaving: string[] = [];
+
+    adhoc_filters.forEach(filter => {
+      const { clause } = filter;
+      if (isSimpleAdhocFilter(filter)) {
+        const filterClause = convertAdhocFilterToQueryObjectFilterClause(filter);
+        if (clause === 'WHERE') {
+          simpleWhere.push(filterClause);
+        } else {
+          simpleHaving.push(filterClause);
+        }
+      } else {
+        const { sqlExpression } = filter;
+        if (clause === 'WHERE') {
+          freeformWhere.push(sqlExpression);
+        } else {
+          freeformHaving.push(sqlExpression);
+        }
+      }
+    });
+
+    return {
+      filters: simpleWhere,
+      having: freeformHaving.map(exp => `(${exp})`).join(' AND '),
+      having_filters: simpleHaving,
+      where: freeformWhere.map(exp => `(${exp})`).join(' AND '),
+    };
+  }
+
+  return {};
 }
 
 // Build the common segments of all query objects (e.g. the granularity field derived from
@@ -51,11 +129,6 @@ export default function buildQueryObject<T extends ChartFormData>(formData: T): 
 
   const groupbySet = new Set([...columns, ...groupby]);
 
-  // Logic formerly in viz.py
-  // utils.convert_legacy_filters_into_adhoc(self.form_data)
-  // merge_extra_filters(self.form_data)
-  // utils.split_adhoc_filters_into_base_filters(self.form_data)
-
   const queryObject: QueryObject = {
     extras: getExtras(formData),
     granularity: getGranularity(formData),
@@ -74,6 +147,7 @@ export default function buildQueryObject<T extends ChartFormData>(formData: T): 
       ? Metrics.formatMetric(timeseries_limit_metric)
       : null,
     until,
+    ...getFilters(formData),
   };
 
   return queryObject;

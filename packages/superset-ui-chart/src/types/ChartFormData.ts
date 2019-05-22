@@ -1,38 +1,13 @@
 /* eslint camelcase: 0 */
 /* eslint-disable import/prefer-default-export */
 // FormData uses snake_cased keys.
-import { MetricKey, AdhocMetric, ExpressionType } from './Metric';
-import { AnnotationLayerMetadata } from './Annotation';
-import { UnaryOperator, SetOperator, BinaryOperator } from './Operator';
+import { MetricKey, AdhocMetric } from './formData/Metric';
+import { AnnotationLayerMetadata } from './formData/Annotation';
 import { TimeRange } from './Time';
+import { AdhocFilter } from './formData/Filter';
 
 // Type signature for formData shared by all viz types
 // It will be gradually filled out as we build out the query object
-
-export type SimpleAdhocFilter = {
-  expressionType: ExpressionType.SIMPLE;
-  clause: 'WHERE' | 'HAVING';
-  subject: string;
-} & (
-  | {
-      operator: BinaryOperator;
-      comparator: string;
-    }
-  | {
-      operator: SetOperator;
-      comparator: string[];
-    }
-  | {
-      operator: UnaryOperator;
-    });
-
-export interface FreeFormAdhocFilter {
-  expressionType: ExpressionType.SQL;
-  clause: 'WHERE' | 'HAVING';
-  sqlExpression: string;
-}
-
-export type AdhocFilter = SimpleAdhocFilter | FreeFormAdhocFilter;
 
 export type ChartFormDataMetric = string | AdhocMetric;
 
@@ -77,3 +52,15 @@ export type DruidFormData = {
 } & BaseFormData;
 
 export type ChartFormData = SqlaFormData | DruidFormData;
+
+//---------------------------------------------------
+// Type guards
+//---------------------------------------------------
+
+export function isDruidFormData(formData: ChartFormData): formData is DruidFormData {
+  return 'granularity' in formData;
+}
+
+export function isSqlaFormData(formData: ChartFormData): formData is SqlaFormData {
+  return 'granularity_sqla' in formData;
+}

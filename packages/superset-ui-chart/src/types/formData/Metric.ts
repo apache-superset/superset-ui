@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import { Column } from './Column';
+import { Column } from '../Column';
 
 // Note that the values of MetricKeys are lower_snake_case because they're
 // used as keys of form data jsons.
@@ -15,28 +15,16 @@ export enum MetricKey {
   SIZE = 'size',
 }
 
-export enum Aggregate {
-  AVG = 'AVG',
-  COUNT = 'COUNT ',
-  COUNT_DISTINCT = 'COUNT_DISTINCT',
-  MAX = 'MAX',
-  MIN = 'MIN',
-  SUM = 'SUM',
-}
-
-export enum ExpressionType {
-  SIMPLE = 'SIMPLE',
-  SQL = 'SQL',
-}
+export type Aggregate = 'AVG' | 'COUNT' | 'COUNT_DISTINCT' | 'MAX' | 'MIN' | 'SUM';
 
 interface AdhocMetricSimple {
-  expressionType: ExpressionType.SIMPLE;
+  expressionType: 'SIMPLE';
   column: Column;
   aggregate: Aggregate;
 }
 
 interface AdhocMetricSQL {
-  expressionType: ExpressionType.SQL;
+  expressionType: 'SQL';
   sqlExpression: string;
 }
 

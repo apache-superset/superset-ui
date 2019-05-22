@@ -1,5 +1,5 @@
 import { ColumnType } from '../../src/types/Column';
-import { AdhocMetric, Aggregate, ExpressionType } from '../../src/types/Metric';
+import { AdhocMetric } from '../../src/types/formData/Metric';
 import Metrics, { LABEL_MAX_LENGTH } from '../../src/query/Metrics';
 
 describe('Metrics', () => {
@@ -21,13 +21,13 @@ describe('Metrics', () => {
 
   it('should build metrics for simple adhoc metrics', () => {
     const adhocMetric: AdhocMetric = {
-      aggregate: Aggregate.AVG,
+      aggregate: 'AVG',
       column: {
         columnName: 'sum_girls',
         id: 5,
         type: ColumnType.BIGINT,
       },
-      expressionType: ExpressionType.SIMPLE,
+      expressionType: 'SIMPLE',
     };
     metrics = new Metrics({
       ...formData,
@@ -50,7 +50,7 @@ describe('Metrics', () => {
 
   it('should build metrics for SQL adhoc metrics', () => {
     const adhocMetric: AdhocMetric = {
-      expressionType: ExpressionType.SQL,
+      expressionType: 'SQL',
       sqlExpression: 'COUNT(sum_girls)',
     };
     metrics = new Metrics({
@@ -69,7 +69,7 @@ describe('Metrics', () => {
 
   it('should build metrics for adhoc metrics with custom labels', () => {
     const adhocMetric: AdhocMetric = {
-      expressionType: ExpressionType.SQL,
+      expressionType: 'SQL',
       label: 'foo',
       sqlExpression: 'COUNT(sum_girls)',
     };
@@ -89,7 +89,7 @@ describe('Metrics', () => {
 
   it('should truncate labels if they are too long', () => {
     const adhocMetric: AdhocMetric = {
-      expressionType: ExpressionType.SQL,
+      expressionType: 'SQL',
       sqlExpression: 'COUNT(verrrrrrrrry_loooooooooooooooooooooong_string)',
     };
     metrics = new Metrics({
