@@ -1,4 +1,11 @@
-import { UnaryOperator, BinaryOperator, SetOperator } from './Operator';
+import {
+  UnaryOperator,
+  BinaryOperator,
+  SetOperator,
+  isUnaryOperator,
+  isBinaryOperator,
+  isSetOperator,
+} from './Operator';
 
 interface BaseSimpleAdhocFilter {
   expressionType: 'SIMPLE';
@@ -29,3 +36,23 @@ export interface FreeFormAdhocFilter {
 }
 
 export type AdhocFilter = SimpleAdhocFilter | FreeFormAdhocFilter;
+
+//---------------------------------------------------
+// Type guards
+//---------------------------------------------------
+
+export function isSimpleAdhocFilter(filter: AdhocFilter): filter is SimpleAdhocFilter {
+  return filter.expressionType === 'SIMPLE';
+}
+
+export function isUnaryAdhocFilter(filter: SimpleAdhocFilter): filter is UnaryAdhocFilter {
+  return isUnaryOperator(filter.operator);
+}
+
+export function isBinaryAdhocFilter(filter: SimpleAdhocFilter): filter is BinaryAdhocFilter {
+  return isBinaryOperator(filter.operator);
+}
+
+export function isSetAdhocFilter(filter: SimpleAdhocFilter): filter is SetAdhocFilter {
+  return isSetOperator(filter.operator);
+}

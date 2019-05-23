@@ -1,8 +1,4 @@
-import {
-  SimpleAdhocFilter,
-  isUnaryAdhocFilter,
-  isBinaryAdhocFilter,
-} from '../types/formData/Filter';
+import { SimpleAdhocFilter, isBinaryAdhocFilter, isUnaryAdhocFilter } from '../types/Filter';
 import { QueryObjectFilterClause } from '../types/Query';
 
 export default function convertFilter(filter: SimpleAdhocFilter): QueryObjectFilterClause {
