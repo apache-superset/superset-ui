@@ -4,7 +4,7 @@ import { ChartFormData, isSqlaFormData } from '../types/ChartFormData';
 import convertMetric from './convertMetric';
 import processFilters from './processFilters';
 import processMetrics from './processMetrics';
-import processExtras from './processExtra';
+import processExtras from './processExtras';
 
 export const DTTM_ALIAS = '__timestamp';
 
@@ -31,15 +31,11 @@ export default function buildQueryObject<T extends ChartFormData>(formData: T): 
   } = formData;
 
   const groupbySet = new Set([...columns, ...groupby]);
-  const { having, having_filters, filters, where } = processFilters(formData);
 
   const queryObject: QueryObject = {
     extras: processExtras(formData),
-    filters,
     granularity: processGranularity(formData),
     groupby: Array.from(groupbySet),
-    having,
-    having_filters,
     is_prequery: false,
     is_timeseries: groupbySet.has(DTTM_ALIAS),
     metrics: processMetrics(formData),
@@ -54,7 +50,7 @@ export default function buildQueryObject<T extends ChartFormData>(formData: T): 
       ? convertMetric(timeseries_limit_metric)
       : null,
     until,
-    where,
+    ...processFilters(formData),
   };
 
   return queryObject;
