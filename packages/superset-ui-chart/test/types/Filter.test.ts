@@ -39,7 +39,7 @@ describe('Filter type guards', () => {
     });
     it('should return false otherwise', () => {
       expect(
-        isUnaryAdhocFilter({
+        isBinaryAdhocFilter({
           expressionType: 'SIMPLE',
           clause: 'WHERE',
           subject: 'tea',
