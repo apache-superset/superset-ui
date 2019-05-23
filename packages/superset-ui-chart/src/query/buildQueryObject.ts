@@ -39,7 +39,7 @@ export default function buildQueryObject<T extends ChartFormData>(formData: T): 
     is_prequery: false,
     is_timeseries: groupbySet.has(DTTM_ALIAS),
     metrics: processMetrics(formData),
-    order_desc: order_desc === undefined ? true : order_desc,
+    order_desc: typeof order_desc === 'undefined' ? true : order_desc,
     orderby: [],
     prequeries: [],
     row_limit: Number(row_limit),
