@@ -1,11 +1,11 @@
 /** List of operators that do not require another operand */
-export const UNARY_OPERATORS = ['IS NOT NULL', 'IS NULL'] as const;
+const UNARY_OPERATORS = ['IS NOT NULL', 'IS NULL'] as const;
 
 /** List of operators that require another operand that is a single value */
-export const BINARY_OPERATORS = ['=', '!=', '>', '<', '>=', '<=', 'like', 'regex'] as const;
+const BINARY_OPERATORS = ['=', '!=', '>', '<', '>=', '<=', 'like', 'regex'] as const;
 
 /** List of operators that require another operand that is a set */
-export const SET_OPERATORS = ['in', 'not in'] as const;
+const SET_OPERATORS = ['in', 'not in'] as const;
 
 //---------------------------------------------------
 // Derived types
