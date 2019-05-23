@@ -11,7 +11,12 @@ export default function processFilters(formData: ChartFormData) {
   // TODO: Implement
   // merge_extra_filters(self.form_data)
 
-  // utils.split_adhoc_filters_into_base_filters(self.form_data)
+  // Split adhoc_filters into four fields according to
+  // (1) clause (WHERE or HAVING)
+  // (2) expressionType
+  //     2.1 SIMPLE (subject + operator + comparator)
+  //     2.2 SQL (freeform SQL expression))
+
   // eslint-disable-next-line camelcase
   const { adhoc_filters } = formData;
   if (Array.isArray(adhoc_filters)) {

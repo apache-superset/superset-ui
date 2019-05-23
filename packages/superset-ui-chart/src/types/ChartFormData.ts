@@ -20,18 +20,32 @@ export type ChartFormDataMetrics = Partial<
 // It will be gradually filled out as we build out the query object
 
 export type BaseFormData = {
+  /** datasource identifier ${id}_${type} */
   datasource: string;
+  /**
+   * visualization type
+   * - necessary if you use the plugin and want to use
+   * buildQuery function from the plugin.
+   * This must match the key used when registering the plugin.
+   * - not necessary if you do not plan to use the
+   * buildQuery function from the plugin.
+   * Can put "custom" (or any string) in this field in that case.
+   */
   viz_type: string;
-
+  /** list of columns to group by */
   groupby?: string[];
   where?: string;
   columns?: string[];
   all_columns?: string[];
+  /** list of filters */
   adhoc_filters?: AdhocFilter[];
+  /** order descending */
   order_desc?: boolean;
-
+  /** limit number of time series */
   limit?: number;
+  /** limit number of row in the results */
   row_limit?: number;
+  /** The metric used to order timeseries for limiting */
   timeseries_limit_metric?: ChartFormDataMetric;
 
   annotation_layers?: AnnotationLayerMetadata[];
