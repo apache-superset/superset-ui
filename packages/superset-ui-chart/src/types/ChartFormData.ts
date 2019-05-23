@@ -1,13 +1,10 @@
 /* eslint camelcase: 0 */
 /* eslint-disable import/prefer-default-export */
 // FormData uses snake_cased keys.
-import { MetricKey, AdhocMetric } from './formData/Metric';
-import { AnnotationLayerMetadata } from './formData/Annotation';
+import { MetricKey, AdhocMetric } from './Metric';
+import { AnnotationLayerMetadata } from './Annotation';
 import { TimeRange } from './Time';
-import { AdhocFilter } from './formData/Filter';
-
-// Type signature for formData shared by all viz types
-// It will be gradually filled out as we build out the query object
+import { AdhocFilter } from './Filter';
 
 export type ChartFormDataMetric = string | AdhocMetric;
 
@@ -18,6 +15,9 @@ export type ChartFormDataMetric = string | AdhocMetric;
 export type ChartFormDataMetrics = Partial<
   Record<MetricKey, ChartFormDataMetric | ChartFormDataMetric[]>
 >;
+
+// Type signature for formData shared by all viz types
+// It will be gradually filled out as we build out the query object
 
 export type BaseFormData = {
   datasource: string;

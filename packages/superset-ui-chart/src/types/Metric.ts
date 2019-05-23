@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import { Column } from '../Column';
+import { Column } from './Column';
 
 // Note that the values of MetricKeys are lower_snake_case because they're
 // used as keys of form data jsons.

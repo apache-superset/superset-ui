@@ -8,7 +8,7 @@ import {
 } from '@superset-ui/connection';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
 import getChartMetadataRegistry from '../registries/ChartMetadataRegistrySingleton';
-import { AnnotationLayerMetadata } from '../types/formData/Annotation';
+import { AnnotationLayerMetadata } from '../types/Annotation';
 import { ChartFormData } from '../types/ChartFormData';
 import { QueryData } from '../models/ChartProps';
 import { Datasource } from '../types/Datasource';

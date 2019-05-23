@@ -21,8 +21,8 @@ export { default as DatasourceKey } from './query/DatasourceKey';
 
 export { default as ChartDataProvider } from './components/ChartDataProvider';
 
+export * from './types/Annotation';
 export * from './types/ChartFormData';
 export * from './types/Datasource';
+export * from './types/Metric';
 export * from './types/Query';
-export * from './types/formData/Annotation';
-export * from './types/formData/Metric';
