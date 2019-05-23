@@ -60,7 +60,7 @@ export type QueryObject = {
   row_limit?: number;
   /** Maximum number of series */
   timeseries_limit?: number;
-  /** TODO: Doc */
+  /** The metric used to sort the returned result. */
   timeseries_limit_metric?: QueryObjectMetric | null;
 
   orderby?: Array<[QueryObjectMetric, boolean]>;
