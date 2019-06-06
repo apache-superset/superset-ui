@@ -1,34 +1,47 @@
 import { createSelector } from 'reselect';
 import { convertKeysToCamelCase } from '@superset-ui/core';
+import {
+  AnnotationData,
+  SnakeCaseDatasource,
+  Filters,
+  SnakeCaseFormData,
+  Hooks,
+  HandlerFunction,
+  QueryData,
+  CamelCaseDatasource,
+  CamelCaseFormData,
+} from '../types/ChartProps';
 
-interface PlainObject {
-  [key: string]: any;
-}
-
-// TODO: more specific typing for these fields of ChartProps
-type AnnotationData = PlainObject;
-type CamelCaseDatasource = PlainObject;
-type SnakeCaseDatasource = PlainObject;
-type CamelCaseFormData = PlainObject;
-type SnakeCaseFormData = PlainObject;
-export type QueryData = PlainObject;
-type Filters = any[];
-type HandlerFunction = (...args: any[]) => void;
 type ChartPropsSelector = (c: ChartPropsConfig) => ChartProps;
 
-interface ChartPropsConfig {
-  annotationData?: AnnotationData;
+export interface ChartPropsConfig {
+  /** Metadata of the datasource */
   datasource?: SnakeCaseDatasource;
-  filters?: Filters;
+  /** Main configuration for the chart */
   formData?: SnakeCaseFormData;
-  height?: number;
-  hooks?: PlainObject;
-  onAddFilter?: HandlerFunction;
-  onError?: HandlerFunction;
+  /** Data for the chart  */
   payload?: QueryData;
-  setControlValue?: HandlerFunction;
-  setTooltip?: HandlerFunction;
+  /** Optional field for override hooks */
+  hooks?: Hooks;
+
+  /** Chart width */
   width?: number;
+  /** Chart height */
+  height?: number;
+
+  /** Legacy field:  */
+  annotationData?: AnnotationData;
+  /** Legacy field: initial values for filter_box */
+  filters?: Filters;
+
+  /** Legacy hook:  */
+  onAddFilter?: HandlerFunction;
+  /** Legacy hook:  */
+  onError?: HandlerFunction;
+  /** Legacy hook:  */
+  setControlValue?: HandlerFunction;
+  /** Legacy hook:  */
+  setTooltip?: HandlerFunction;
 }
 
 function NOOP() {}
@@ -46,7 +59,7 @@ export default class ChartProps {
   formData: CamelCaseFormData;
   rawFormData: SnakeCaseFormData;
   height: number;
-  hooks: PlainObject;
+  hooks: Hooks;
   onAddFilter: HandlerFunction;
   onError: HandlerFunction;
   payload: QueryData;

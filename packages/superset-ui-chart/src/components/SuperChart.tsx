@@ -1,11 +1,12 @@
-import * as React from 'react';
+import React from 'react';
 import { createSelector } from 'reselect';
 import getChartComponentRegistry from '../registries/ChartComponentRegistrySingleton';
 import getChartTransformPropsRegistry from '../registries/ChartTransformPropsRegistrySingleton';
 import ChartProps from '../models/ChartProps';
 import createLoadableRenderer, { LoadableRenderer } from './createLoadableRenderer';
 import { ChartType } from '../models/ChartPlugin';
-import { PreTransformProps, TransformProps, PostTransformProps } from '../types/Query';
+import { PreTransformProps, TransformProps, PostTransformProps } from '../types/TransformFunction';
+import { HandlerFunction } from '../types/ChartProps';
 
 const IDENTITY = (x: any) => x;
 
@@ -22,8 +23,6 @@ const defaultProps = {
   onRenderFailure() {},
 };
 /* eslint-enable sort-keys */
-
-type HandlerFunction = (...args: any[]) => void;
 
 interface LoadingProps {
   error: any;
