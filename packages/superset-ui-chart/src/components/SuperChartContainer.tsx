@@ -21,11 +21,17 @@ type WrapperProps = {
 };
 
 /** SuperChart Props for version 0.11 and below */
-type ClassicProps = SuperChartProps & WrapperProps & typeof defaultProps;
+type ClassicProps = Omit<SuperChartProps, 'chartProps'> & {
+  chartProps?: ChartProps | ChartPropsConfig;
+} & WrapperProps &
+  typeof defaultProps;
 
 /** SuperChart Props */
 type ModernProps = Omit<SuperChartProps, 'chartProps'> &
-  Omit<ChartPropsConfig, 'width' | 'height'> &
+  Omit<
+    ChartPropsConfig,
+    'width' | 'height' | 'onAddFilter' | 'onError' | 'setControlValue' | 'setTooltip'
+  > &
   WrapperProps &
   typeof defaultProps;
 
@@ -44,25 +50,12 @@ export default class SuperChartContainer extends React.PureComponent<Props, {}> 
 
   createChartProps = ChartProps.createSelector();
 
-  getChartPropsConfig() {
+  getChartPropsConfig = () => {
     if (isClassicProps(this.props)) {
-      const { chartProps } = this.props;
-
-      return chartProps;
+      return this.props.chartProps;
     }
     if (isModernProps(this.props)) {
-      const {
-        annotationData,
-        datasource,
-        filters,
-        formData,
-        hooks,
-        onAddFilter,
-        onError,
-        payload,
-        setControlValue,
-        setTooltip,
-      } = this.props;
+      const { annotationData, datasource, filters, formData, hooks, payload } = this.props;
 
       return {
         annotationData,
@@ -70,16 +63,12 @@ export default class SuperChartContainer extends React.PureComponent<Props, {}> 
         filters,
         formData,
         hooks,
-        onAddFilter,
-        onError,
         payload,
-        setControlValue,
-        setTooltip,
       };
     }
 
     return {};
-  }
+  };
 
   renderChart = ({ width, height }: { width: number; height: number }) => {
     const {
@@ -110,7 +99,7 @@ export default class SuperChartContainer extends React.PureComponent<Props, {}> 
     );
   };
 
-  renderResponsiveChart() {
+  renderResponsiveChart = () => {
     let inputWidth: string | number = defaultProps.width;
     let inputHeight: string | number = defaultProps.height;
 
@@ -146,7 +135,7 @@ export default class SuperChartContainer extends React.PureComponent<Props, {}> 
       height: heightInfo.value,
       width: widthInfo.value,
     });
-  }
+  };
 
   render() {
     const { disableErrorBoundary, FallbackComponent, onErrorBoundary } = this.props;

@@ -1,16 +1,26 @@
 import { createSelector } from 'reselect';
 import { convertKeysToCamelCase } from '@superset-ui/core';
-import {
-  AnnotationData,
-  SnakeCaseDatasource,
-  Filters,
-  SnakeCaseFormData,
-  Hooks,
-  HandlerFunction,
-  QueryData,
-  CamelCaseDatasource,
-  CamelCaseFormData,
-} from '../types/ChartProps';
+import { PlainObject, HandlerFunction } from '../types/Base';
+
+// TODO: more specific typing for these fields of ChartProps
+type AnnotationData = PlainObject;
+type CamelCaseDatasource = PlainObject;
+type SnakeCaseDatasource = PlainObject;
+type CamelCaseFormData = PlainObject;
+type SnakeCaseFormData = PlainObject;
+export type QueryData = PlainObject;
+type Filters = any[];
+type Hooks = {
+  /** Legacy hook:  */
+  onAddFilter?: HandlerFunction;
+  /** Legacy hook:  */
+  onError?: HandlerFunction;
+  /** Legacy hook:  */
+  setControlValue?: HandlerFunction;
+  /** Legacy hook:  */
+  setTooltip?: HandlerFunction;
+  [key: string]: any;
+};
 
 type ChartPropsSelector = (c: ChartPropsConfig) => ChartProps;
 

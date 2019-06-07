@@ -6,7 +6,7 @@ import ChartProps from '../models/ChartProps';
 import createLoadableRenderer, { LoadableRenderer } from './createLoadableRenderer';
 import { ChartType } from '../models/ChartPlugin';
 import { PreTransformProps, TransformProps, PostTransformProps } from '../types/TransformFunction';
-import { HandlerFunction } from '../types/ChartProps';
+import { HandlerFunction } from '../types/Base';
 
 const IDENTITY = (x: any) => x;
 
