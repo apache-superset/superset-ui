@@ -4,6 +4,7 @@ import AirbnbPalettes from '@superset-ui/color/lib/colorSchemes/categorical/airb
 import D3Palettes from '@superset-ui/color/lib/colorSchemes/categorical/d3';
 import GooglePalettes from '@superset-ui/color/lib/colorSchemes/categorical/google';
 import LyftPalettes from '@superset-ui/color/lib/colorSchemes/categorical/lyft';
+import PresetPalettes from '@superset-ui/color/lib/colorSchemes/categorical/preset';
 import RenderPalettes from './RenderPalettes';
 
 export default [
@@ -14,6 +15,7 @@ export default [
         { palettes: D3Palettes, storyName: 'd3' },
         { palettes: GooglePalettes, storyName: 'Google' },
         { palettes: LyftPalettes, storyName: 'Lyft' },
+        { palettes: PresetPalettes, storyName: 'Preset' },
       ].map(({ palettes, storyName }) => (
         <RenderPalettes key={storyName} title={storyName} palettes={palettes} />
       )),
