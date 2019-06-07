@@ -50,7 +50,7 @@ export default class SuperChartContainer extends React.PureComponent<Props, {}> 
 
   createChartProps = ChartProps.createSelector();
 
-  getChartPropsConfig = () => {
+  getChartPropsConfig() {
     if (isClassicProps(this.props)) {
       return this.props.chartProps;
     }
@@ -68,9 +68,9 @@ export default class SuperChartContainer extends React.PureComponent<Props, {}> 
     }
 
     return {};
-  };
+  }
 
-  renderChart = ({ width, height }: { width: number; height: number }) => {
+  renderChart(width: number, height: number) {
     const {
       id,
       className,
@@ -97,9 +97,9 @@ export default class SuperChartContainer extends React.PureComponent<Props, {}> 
         onRenderFailure={onRenderFailure}
       />
     );
-  };
+  }
 
-  renderResponsiveChart = () => {
+  renderResponsiveChart() {
     let inputWidth: string | number = defaultProps.width;
     let inputHeight: string | number = defaultProps.height;
 
@@ -127,15 +127,24 @@ export default class SuperChartContainer extends React.PureComponent<Props, {}> 
     // Parse them in case they are % or 'auto'
     const widthInfo = parseWidthOrHeight(inputWidth);
     const heightInfo = parseWidthOrHeight(inputHeight);
+    // If any of the dimension is dynamic, get parent's dimension
     if (widthInfo.isDynamic || heightInfo.isDynamic) {
-      return <ParentSize>{this.renderChart}</ParentSize>;
+      return (
+        <ParentSize>
+          {({ width, height }) =>
+            width > 0 &&
+            height > 0 &&
+            this.renderChart(
+              widthInfo.isDynamic ? width * widthInfo.percent : widthInfo.value,
+              heightInfo.isDynamic ? height * heightInfo.percent : heightInfo.value,
+            )
+          }
+        </ParentSize>
+      );
     }
 
-    return this.renderChart({
-      height: heightInfo.value,
-      width: widthInfo.value,
-    });
-  };
+    return this.renderChart(widthInfo.value, heightInfo.value);
+  }
 
   render() {
     const { disableErrorBoundary, FallbackComponent, onErrorBoundary } = this.props;

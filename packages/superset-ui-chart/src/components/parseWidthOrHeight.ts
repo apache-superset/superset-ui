@@ -6,7 +6,8 @@ export default function parseWidthOrHeight(
   if (input === 'auto' || input === '100%') {
     return HUNDRED_PERCENT;
   } else if (typeof input === 'string' && input.length > 0 && input[input.length - 1] === '%') {
-    return { isDynamic: true, percent: parseFloat(input.substring(0, input.length - 1)) };
+    // eslint-disable-next-line no-magic-numbers
+    return { isDynamic: true, percent: parseFloat(input.substring(0, input.length - 1)) / 100 };
   }
   const value = typeof input === 'number' ? input : parseFloat(input);
 

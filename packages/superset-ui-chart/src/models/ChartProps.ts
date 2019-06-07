@@ -9,7 +9,7 @@ type SnakeCaseDatasource = PlainObject;
 type CamelCaseFormData = PlainObject;
 type SnakeCaseFormData = PlainObject;
 export type QueryData = PlainObject;
-type Filters = any[];
+type Filters = PlainObject;
 type Hooks = {
   /** Legacy hook:  */
   onAddFilter?: HandlerFunction;
