@@ -1,97 +1,106 @@
 import React from 'react';
 import ErrorBoundary, { ErrorBoundaryProps } from 'react-error-boundary';
-import SuperChart from './SuperChart';
+import { ParentSize } from '@vx/responsive';
+import SuperChart, { SuperChartProps } from './SuperChart';
 import DefaultFallbackComponent from './FallbackComponent';
 import ChartProps, { ChartPropsConfig } from '../models/ChartProps';
-import { PreTransformProps, TransformProps, PostTransformProps } from '../types/TransformFunction';
-import {
-  HandlerFunction,
-  SnakeCaseDatasource,
-  SnakeCaseFormData,
-  QueryData,
-  Hooks,
-  AnnotationData,
-  Filters,
-} from '../types/ChartProps';
+import parseWidthOrHeight from './parseWidthOrHeight';
 
 const defaultProps = {
   FallbackComponent: DefaultFallbackComponent,
   height: 400,
-  width: 'auto',
+  width: '100%',
 };
 
-export type Props = {
-  id?: string;
-  className?: string;
-  chartType: string;
-  preTransformProps?: PreTransformProps;
-  overrideTransformProps?: TransformProps;
-  postTransformProps?: PostTransformProps;
-  onRenderSuccess?: HandlerFunction;
-  onRenderFailure?: HandlerFunction;
-  chartProps: ChartPropsConfig | ChartProps;
+type WrapperProps = {
   disableErrorBoundary?: boolean;
   FallbackComponent?: ErrorBoundaryProps['FallbackComponent'];
   onErrorBoundary?: ErrorBoundaryProps['onError'];
-  height?: number | 'auto';
-  width?: number | 'auto';
+  height?: number | string;
+  width?: number | string;
+};
 
-  /** Metadata of the datasource */
-  datasource?: SnakeCaseDatasource;
-  /** Main configuration for the chart */
-  formData?: SnakeCaseFormData;
-  /** Optional field for override hooks */
-  hooks?: Hooks;
-  /** Data for the chart  */
-  payload?: QueryData;
+/** SuperChart Props for version 0.11 and below */
+type ClassicProps = SuperChartProps & WrapperProps & typeof defaultProps;
 
-  /** Legacy field:  */
-  annotationData?: AnnotationData;
-  /** Legacy field:  */
-  filters?: Filters;
-  /** Legacy hook:  */
-  onAddFilter?: HandlerFunction;
-  /** Legacy hook:  */
-  onError?: HandlerFunction;
-  /** Legacy hook:  */
-  setControlValue?: HandlerFunction;
-  /** Legacy hook:  */
-  setTooltip?: HandlerFunction;
-} & typeof defaultProps;
+/** SuperChart Props */
+type ModernProps = Omit<SuperChartProps, 'chartProps'> &
+  Omit<ChartPropsConfig, 'width' | 'height'> &
+  WrapperProps &
+  typeof defaultProps;
+
+export type Props = ClassicProps | ModernProps;
+
+function isClassicProps(props: Props): props is ClassicProps {
+  return 'chartProps' in props;
+}
+
+function isModernProps(props: Props): props is ModernProps {
+  return 'formData' in props || 'payload' in props;
+}
 
 export default class SuperChartContainer extends React.PureComponent<Props, {}> {
   static defaultProps = defaultProps;
 
   createChartProps = ChartProps.createSelector();
 
-  renderChart() {}
+  getChartPropsConfig() {
+    if (isClassicProps(this.props)) {
+      const { chartProps } = this.props;
 
-  renderResponsiveChart() {}
+      return chartProps;
+    }
+    if (isModernProps(this.props)) {
+      const {
+        annotationData,
+        datasource,
+        filters,
+        formData,
+        hooks,
+        onAddFilter,
+        onError,
+        payload,
+        setControlValue,
+        setTooltip,
+      } = this.props;
 
-  render() {
+      return {
+        annotationData,
+        datasource,
+        filters,
+        formData,
+        hooks,
+        onAddFilter,
+        onError,
+        payload,
+        setControlValue,
+        setTooltip,
+      };
+    }
+
+    return {};
+  }
+
+  renderChart = ({ width, height }: { width: number; height: number }) => {
     const {
       id,
       className,
       chartType,
-      chartProps,
       preTransformProps,
       overrideTransformProps,
       postTransformProps,
       onRenderSuccess,
       onRenderFailure,
-      disableErrorBoundary,
-      FallbackComponent,
-      onErrorBoundary,
-      height,
-      width,
     } = this.props;
 
-    const component = (
+    const chartPropsConfig = this.getChartPropsConfig();
+
+    return (
       <SuperChart
         id={id}
         className={className}
         chartType={chartType}
-        chartProps={this.createChartProps({ ...chartProps, height, width })}
+        chartProps={this.createChartProps({ ...chartPropsConfig, height, width })}
         preTransformProps={preTransformProps}
         overrideTransformProps={overrideTransformProps}
         postTransformProps={postTransformProps}
@@ -99,6 +108,50 @@ export default class SuperChartContainer extends React.PureComponent<Props, {}> 
         onRenderFailure={onRenderFailure}
       />
     );
+  };
+
+  renderResponsiveChart() {
+    let inputWidth: string | number = defaultProps.width;
+    let inputHeight: string | number = defaultProps.height;
+
+    // Check if the chartProps contain any width or height
+    if ('chartProps' in this.props) {
+      const { width: w = undefined, height: h = undefined } = this.props.chartProps || {};
+      if (typeof w !== 'undefined') {
+        inputWidth = w;
+      }
+      if (typeof h !== 'undefined') {
+        inputHeight = h;
+      }
+    }
+
+    // Now check if there are props width or height,
+    // which takes higher precedent
+    const { width: w2, height: h2 } = this.props;
+    if (typeof w2 !== 'undefined') {
+      inputWidth = w2;
+    }
+    if (typeof h2 !== 'undefined') {
+      inputHeight = h2;
+    }
+
+    // Parse them in case they are % or 'auto'
+    const widthInfo = parseWidthOrHeight(inputWidth);
+    const heightInfo = parseWidthOrHeight(inputHeight);
+    if (widthInfo.isDynamic || heightInfo.isDynamic) {
+      return <ParentSize>{this.renderChart}</ParentSize>;
+    }
+
+    return this.renderChart({
+      height: heightInfo.value,
+      width: widthInfo.value,
+    });
+  }
+
+  render() {
+    const { disableErrorBoundary, FallbackComponent, onErrorBoundary } = this.props;
+
+    const component = this.renderResponsiveChart();
 
     return disableErrorBoundary === true ? (
       component

@@ -1,4 +1,4 @@
-interface PlainObject {
+export interface PlainObject {
   [key: string]: any;
 }
 

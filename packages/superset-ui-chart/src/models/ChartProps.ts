@@ -74,14 +74,11 @@ export default class ChartProps {
       filters = [],
       formData = {},
       hooks = {},
-      onAddFilter = NOOP,
-      onError = NOOP,
       payload = {},
-      setControlValue = NOOP,
-      setTooltip = NOOP,
       width = DEFAULT_WIDTH,
       height = DEFAULT_HEIGHT,
     } = config;
+
     this.width = width;
     this.height = height;
     this.annotationData = annotationData;
@@ -91,9 +88,18 @@ export default class ChartProps {
     this.formData = convertKeysToCamelCase(formData);
     this.hooks = hooks;
     this.rawFormData = formData;
+    this.payload = payload;
+
+    // These fields should be killed when we are ready to make breaking changes.
+    // They are the original hooks for use in main Superset app.
+    // Right now we provide backward compatibility by also exposing as top level fields
+    // The preferred way is to nest them under hooks.
+    const onAddFilter = hooks.onAddFilter || config.onAddFilter || NOOP;
+    const onError = hooks.onError || config.onError || NOOP;
+    const setControlValue = hooks.setControlValue || config.setControlValue || NOOP;
+    const setTooltip = hooks.setTooltip || config.setTooltip || NOOP;
     this.onAddFilter = onAddFilter;
     this.onError = onError;
-    this.payload = payload;
     this.setControlValue = setControlValue;
     this.setTooltip = setTooltip;
   }
