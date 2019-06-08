@@ -100,18 +100,14 @@ export default class ChartProps {
     this.rawFormData = formData;
     this.payload = payload;
 
-    // These fields should be killed when we are ready to make breaking changes.
+    // These fields should be killed in the next breaking changes.
     // They are the original hooks for use in main Superset app.
     // Right now we provide backward compatibility by also exposing as top level fields
     // The preferred way is to nest them under hooks.
-    const onAddFilter = hooks.onAddFilter || config.onAddFilter || NOOP;
-    const onError = hooks.onError || config.onError || NOOP;
-    const setControlValue = hooks.setControlValue || config.setControlValue || NOOP;
-    const setTooltip = hooks.setTooltip || config.setTooltip || NOOP;
-    this.onAddFilter = onAddFilter;
-    this.onError = onError;
-    this.setControlValue = setControlValue;
-    this.setTooltip = setTooltip;
+    this.onAddFilter = hooks.onAddFilter || config.onAddFilter || NOOP;
+    this.onError = hooks.onError || config.onError || NOOP;
+    this.setControlValue = hooks.setControlValue || config.setControlValue || NOOP;
+    this.setTooltip = hooks.setTooltip || config.setTooltip || NOOP;
   }
 }
 

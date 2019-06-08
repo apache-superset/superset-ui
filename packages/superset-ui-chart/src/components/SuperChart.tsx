@@ -1,209 +1,167 @@
 import React from 'react';
-import { createSelector } from 'reselect';
-import getChartComponentRegistry from '../registries/ChartComponentRegistrySingleton';
-import getChartTransformPropsRegistry from '../registries/ChartTransformPropsRegistrySingleton';
-import ChartProps from '../models/ChartProps';
-import createLoadableRenderer, { LoadableRenderer } from './createLoadableRenderer';
-import { ChartType } from '../models/ChartPlugin';
-import { PreTransformProps, TransformProps, PostTransformProps } from '../types/TransformFunction';
-import { HandlerFunction } from '../types/Base';
+import ErrorBoundary, { ErrorBoundaryProps } from 'react-error-boundary';
+import { ParentSize } from '@vx/responsive';
+import SuperChartKernel, { SuperChartKernelProps } from './SuperChartKernel';
+import DefaultFallbackComponent from './FallbackComponent';
+import ChartProps, { ChartPropsConfig } from '../models/ChartProps';
+import parseWidthOrHeight from './parseWidthOrHeight';
 
-const IDENTITY = (x: any) => x;
+// Only use these two when both top-level props
+// and inside chartProps are not specified
+// so they are not included in defaultProps
+const DEFAULT_HEIGHT = 400;
+const DEFAULT_WIDTH = '100%';
 
-const EMPTY = () => null;
-
-/* eslint-disable sort-keys */
 const defaultProps = {
-  id: '',
-  className: '',
-  preTransformProps: IDENTITY,
-  overrideTransformProps: undefined,
-  postTransformProps: IDENTITY,
-  onRenderSuccess() {},
-  onRenderFailure() {},
+  FallbackComponent: DefaultFallbackComponent,
 };
-/* eslint-enable sort-keys */
 
-interface LoadingProps {
-  error: any;
+type WrapperProps = {
+  disableErrorBoundary?: boolean;
+  FallbackComponent?: ErrorBoundaryProps['FallbackComponent'];
+  onErrorBoundary?: ErrorBoundaryProps['onError'];
+  height?: number | string;
+  width?: number | string;
+};
+
+/** SuperChart Props for version 0.11 and below */
+type ClassicProps = Omit<SuperChartKernelProps, 'chartProps'> & {
+  chartProps?: ChartProps | ChartPropsConfig;
+} & WrapperProps &
+  Readonly<typeof defaultProps>;
+
+/** SuperChart Props */
+type ModernProps = Omit<SuperChartKernelProps, 'chartProps'> &
+  Omit<
+    ChartPropsConfig,
+    'width' | 'height' | 'onAddFilter' | 'onError' | 'setControlValue' | 'setTooltip'
+  > &
+  WrapperProps &
+  Readonly<typeof defaultProps>;
+
+export type Props = ClassicProps | ModernProps;
+
+function isClassicProps(props: Props): props is ClassicProps {
+  return 'chartProps' in props;
 }
 
-interface LoadedModules {
-  Chart: ChartType;
-  transformProps: TransformProps;
+function isModernProps(props: Props): props is ModernProps {
+  return 'formData' in props || 'payload' in props;
 }
 
-interface RenderProps {
-  chartProps: ChartProps;
-  preTransformProps?: PreTransformProps;
-  postTransformProps?: PostTransformProps;
-}
-
-const BLANK_CHART_PROPS = new ChartProps();
-
-export interface SuperChartProps {
-  id?: string;
-  className?: string;
-  chartProps?: ChartProps | null;
-  chartType: string;
-  preTransformProps?: PreTransformProps;
-  overrideTransformProps?: TransformProps;
-  postTransformProps?: PostTransformProps;
-  onRenderSuccess?: HandlerFunction;
-  onRenderFailure?: HandlerFunction;
-}
-
-export default class SuperChart extends React.PureComponent<SuperChartProps, {}> {
+export default class SuperChart extends React.PureComponent<Props, {}> {
   static defaultProps = defaultProps;
 
-  processChartProps: (input: {
-    chartProps: ChartProps;
-    preTransformProps?: PreTransformProps;
-    transformProps?: TransformProps;
-    postTransformProps?: PostTransformProps;
-  }) => any;
+  createChartProps = ChartProps.createSelector();
 
-  createLoadableRenderer: (input: {
-    chartType: string;
-    overrideTransformProps?: TransformProps;
-  }) => LoadableRenderer<RenderProps, LoadedModules> | (() => null);
+  getChartPropsConfig() {
+    if (isClassicProps(this.props)) {
+      return this.props.chartProps;
+    }
+    if (isModernProps(this.props)) {
+      const { annotationData, datasource, filters, formData, hooks, payload } = this.props;
 
-  constructor(props: SuperChartProps) {
-    super(props);
-
-    this.renderChart = this.renderChart.bind(this);
-    this.renderLoading = this.renderLoading.bind(this);
-
-    // memoized function so it will not recompute
-    // and return previous value
-    // unless one of
-    // - preTransformProps
-    // - transformProps
-    // - postTransformProps
-    // - chartProps
-    // is changed.
-    this.processChartProps = createSelector(
-      input => input.preTransformProps,
-      input => input.transformProps,
-      input => input.postTransformProps,
-      input => input.chartProps,
-      (pre = IDENTITY, transform = IDENTITY, post = IDENTITY, chartProps) =>
-        post(transform(pre(chartProps))),
-    );
-
-    const componentRegistry = getChartComponentRegistry();
-    const transformPropsRegistry = getChartTransformPropsRegistry();
-
-    // memoized function so it will not recompute
-    // and return previous value
-    // unless one of
-    // - chartType
-    // - overrideTransformProps
-    // is changed.
-    this.createLoadableRenderer = createSelector(
-      input => input.chartType,
-      input => input.overrideTransformProps,
-      (chartType, overrideTransformProps) => {
-        if (chartType) {
-          const Renderer = createLoadableRenderer({
-            loader: {
-              Chart: () => componentRegistry.getAsPromise(chartType),
-              transformProps: overrideTransformProps
-                ? () => Promise.resolve(overrideTransformProps)
-                : () => transformPropsRegistry.getAsPromise(chartType),
-            },
-            loading: (loadingProps: LoadingProps) => this.renderLoading(loadingProps, chartType),
-            render: this.renderChart,
-          });
-
-          // Trigger preloading.
-          Renderer.preload();
-
-          return Renderer;
-        }
-
-        return EMPTY;
-      },
-    );
-  }
-
-  renderChart(loaded: LoadedModules, props: RenderProps) {
-    const { Chart, transformProps } = loaded;
-    const { chartProps, preTransformProps, postTransformProps } = props;
-
-    return (
-      <Chart
-        {...this.processChartProps({
-          /* eslint-disable sort-keys */
-          chartProps,
-          preTransformProps,
-          transformProps,
-          postTransformProps,
-          /* eslint-enable sort-keys */
-        })}
-      />
-    );
-  }
-
-  renderLoading(loadingProps: LoadingProps, chartType: string) {
-    const { error } = loadingProps;
-
-    if (error) {
-      return (
-        <div className="alert alert-warning" role="alert">
-          <strong>ERROR</strong>&nbsp;
-          <code>chartType=&quot;{chartType}&quot;</code> &mdash;
-          {error.toString()}
-        </div>
-      );
+      return {
+        annotationData,
+        datasource,
+        filters,
+        formData,
+        hooks,
+        payload,
+      };
     }
 
-    return null;
+    return {};
   }
 
-  render() {
+  renderChart(width: number, height: number) {
     const {
       id,
       className,
+      chartType,
       preTransformProps,
+      overrideTransformProps,
       postTransformProps,
-      chartProps = BLANK_CHART_PROPS,
       onRenderSuccess,
       onRenderFailure,
     } = this.props;
 
-    // Create LoadableRenderer and start preloading
-    // the lazy-loaded Chart components
-    const Renderer = this.createLoadableRenderer(this.props);
-
-    // Do not render if chartProps is set to null.
-    // but the pre-loading has been started in this.createLoadableRenderer
-    // to prepare for rendering once chartProps becomes available.
-    if (chartProps === null) {
-      return null;
-    }
-
-    const containerProps: {
-      id?: string;
-      className?: string;
-    } = {};
-    if (id) {
-      containerProps.id = id;
-    }
-    if (className) {
-      containerProps.className = className;
-    }
+    const chartPropsConfig = this.getChartPropsConfig();
 
     return (
-      <div {...containerProps}>
-        <Renderer
-          preTransformProps={preTransformProps}
-          postTransformProps={postTransformProps}
-          chartProps={chartProps}
-          onRenderSuccess={onRenderSuccess}
-          onRenderFailure={onRenderFailure}
-        />
-      </div>
+      <SuperChartKernel
+        id={id}
+        className={className}
+        chartType={chartType}
+        chartProps={this.createChartProps({ ...chartPropsConfig, height, width })}
+        preTransformProps={preTransformProps}
+        overrideTransformProps={overrideTransformProps}
+        postTransformProps={postTransformProps}
+        onRenderSuccess={onRenderSuccess}
+        onRenderFailure={onRenderFailure}
+      />
+    );
+  }
+
+  renderResponsiveChart() {
+    let inputWidth: string | number = DEFAULT_WIDTH;
+    let inputHeight: string | number = DEFAULT_HEIGHT;
+
+    // Check if the chartProps contain any width or height
+    if ('chartProps' in this.props) {
+      const { width: w = undefined, height: h = undefined } = this.props.chartProps || {};
+      if (typeof w !== 'undefined') {
+        inputWidth = w;
+      }
+      if (typeof h !== 'undefined') {
+        inputHeight = h;
+      }
+    }
+
+    // Now check if there are props width or height,
+    // which takes higher precedent
+    const { width: w2, height: h2 } = this.props;
+    if (typeof w2 !== 'undefined') {
+      inputWidth = w2;
+    }
+    if (typeof h2 !== 'undefined') {
+      inputHeight = h2;
+    }
+
+    // Parse them in case they are % or 'auto'
+    const widthInfo = parseWidthOrHeight(inputWidth);
+    const heightInfo = parseWidthOrHeight(inputHeight);
+
+    // If any of the dimension is dynamic, get parent's dimension
+    if (widthInfo.isDynamic || heightInfo.isDynamic) {
+      return (
+        <ParentSize>
+          {({ width, height }) =>
+            width > 0 &&
+            height > 0 &&
+            this.renderChart(
+              widthInfo.isDynamic ? Math.floor(width * widthInfo.multiplier) : widthInfo.value,
+              heightInfo.isDynamic ? Math.floor(height * heightInfo.multiplier) : heightInfo.value,
+            )
+          }
+        </ParentSize>
+      );
+    }
+
+    return this.renderChart(widthInfo.value, heightInfo.value);
+  }
+
+  render() {
+    const { disableErrorBoundary, FallbackComponent, onErrorBoundary } = this.props;
+
+    const component = this.renderResponsiveChart();
+
+    return disableErrorBoundary === true ? (
+      component
+    ) : (
+      <ErrorBoundary FallbackComponent={FallbackComponent} onError={onErrorBoundary}>
+        {component}
+      </ErrorBoundary>
     );
   }
 }
