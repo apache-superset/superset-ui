@@ -1,74 +1,33 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { ChartProps, ChartMetadata, ChartPlugin, ChartFormData } from '../../src';
+import { ChartProps } from '../../src';
 import SuperChartKernel from '../../src/components/SuperChartKernel';
+import {
+  DiligentChartPlugin,
+  LazyChartPlugin,
+  SlowChartPlugin,
+  ChartKeys,
+} from './MockChartPlugins';
 
 describe('SuperChartKernel', () => {
-  const TestComponent = (props: any) => (
-    <div className="test-component">{props.character || 'test-component'}</div>
-  );
   const chartProps = new ChartProps();
 
-  class MyChartPlugin extends ChartPlugin<ChartFormData> {
-    constructor() {
-      super({
-        metadata: new ChartMetadata({
-          name: 'my-chart',
-          thumbnail: '',
-        }),
-        Chart: TestComponent,
-        transformProps: x => x,
-      });
-    }
-  }
-
-  class SecondChartPlugin extends ChartPlugin<ChartFormData> {
-    constructor() {
-      super({
-        metadata: new ChartMetadata({
-          name: 'second-chart',
-          thumbnail: '',
-        }),
-        // this mirrors `() => import(module)` syntax
-        loadChart: () => Promise.resolve({ default: TestComponent }),
-        // promise without .default
-        loadTransformProps: () => Promise.resolve((x: any) => x),
-      });
-    }
-  }
-
-  class SlowChartPlugin extends ChartPlugin<ChartFormData> {
-    constructor() {
-      super({
-        metadata: new ChartMetadata({
-          name: 'slow-chart',
-          thumbnail: '',
-        }),
-        loadChart: () =>
-          new Promise(resolve => {
-            setTimeout(() => {
-              resolve(TestComponent);
-            }, 1000);
-          }),
-        transformProps: x => x,
-      });
-    }
-  }
-
-  new MyChartPlugin().configure({ key: 'my-chart' }).register();
-  new SecondChartPlugin().configure({ key: 'second-chart' }).register();
-  new SlowChartPlugin().configure({ key: 'slow-chart' }).register();
+  new DiligentChartPlugin().configure({ key: ChartKeys.DILIGENT }).register();
+  new LazyChartPlugin().configure({ key: ChartKeys.LAZY }).register();
+  new SlowChartPlugin().configure({ key: ChartKeys.SLOW }).register();
 
   describe('registered charts', () => {
     it('renders registered chart', done => {
-      const wrapper = shallow(<SuperChartKernel chartType="my-chart" chartProps={chartProps} />);
+      const wrapper = shallow(
+        <SuperChartKernel chartType={ChartKeys.DILIGENT} chartProps={chartProps} />,
+      );
       setTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(1);
         done();
       }, 0);
     });
     it('renders registered chart with default export', done => {
-      const wrapper = shallow(<SuperChartKernel chartType="second-chart" />);
+      const wrapper = shallow(<SuperChartKernel chartType={ChartKeys.LAZY} />);
       setTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(1);
         done();
@@ -83,14 +42,16 @@ describe('SuperChartKernel', () => {
       }, 5);
     });
     it('adds id to container if specified', done => {
-      const wrapper = shallow(<SuperChartKernel chartType="my-chart" id="the-chart" />);
+      const wrapper = shallow(<SuperChartKernel chartType={ChartKeys.DILIGENT} id="the-chart" />);
       setTimeout(() => {
         expect(wrapper.render().attr('id')).toEqual('the-chart');
         done();
       }, 0);
     });
     it('adds class to container if specified', done => {
-      const wrapper = shallow(<SuperChartKernel chartType="my-chart" className="the-chart" />);
+      const wrapper = shallow(
+        <SuperChartKernel chartType={ChartKeys.DILIGENT} className="the-chart" />,
+      );
       setTimeout(() => {
         expect(wrapper.hasClass('the-chart')).toBeTruthy();
         done();
@@ -99,15 +60,15 @@ describe('SuperChartKernel', () => {
     it('uses overrideTransformProps when specified', done => {
       const wrapper = shallow(
         <SuperChartKernel
-          chartType="my-chart"
-          overrideTransformProps={() => ({ character: 'hulk' })}
+          chartType={ChartKeys.DILIGENT}
+          overrideTransformProps={() => ({ message: 'hulk' })}
         />,
       );
       setTimeout(() => {
         expect(
           wrapper
             .render()
-            .find('div.test-component')
+            .find('span.message')
             .text(),
         ).toEqual('hulk');
         done();
@@ -115,11 +76,11 @@ describe('SuperChartKernel', () => {
     });
     it('uses preTransformProps when specified', done => {
       const chartPropsWithPayload = new ChartProps({
-        payload: { character: 'hulk' },
+        payload: { message: 'hulk' },
       });
       const wrapper = shallow(
         <SuperChartKernel
-          chartType="my-chart"
+          chartType={ChartKeys.DILIGENT}
           preTransformProps={() => chartPropsWithPayload}
           overrideTransformProps={props => props.payload}
         />,
@@ -128,7 +89,7 @@ describe('SuperChartKernel', () => {
         expect(
           wrapper
             .render()
-            .find('div.test-component')
+            .find('span.message')
             .text(),
         ).toEqual('hulk');
         done();
@@ -137,36 +98,38 @@ describe('SuperChartKernel', () => {
     it('uses postTransformProps when specified', done => {
       const wrapper = shallow(
         <SuperChartKernel
-          chartType="my-chart"
-          postTransformProps={() => ({ character: 'hulk' })}
+          chartType={ChartKeys.DILIGENT}
+          postTransformProps={() => ({ message: 'hulk' })}
         />,
       );
       setTimeout(() => {
         expect(
           wrapper
             .render()
-            .find('div.test-component')
+            .find('span.message')
             .text(),
         ).toEqual('hulk');
         done();
       }, 0);
     });
     it('renders if chartProps is not specified', done => {
-      const wrapper = shallow(<SuperChartKernel chartType="my-chart" />);
+      const wrapper = shallow(<SuperChartKernel chartType={ChartKeys.DILIGENT} />);
       setTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(1);
         done();
       }, 0);
     });
     it('does not render anything while waiting for Chart code to load', done => {
-      const wrapper = shallow(<SuperChartKernel chartType="slow-chart" />);
+      const wrapper = shallow(<SuperChartKernel chartType={ChartKeys.SLOW} />);
       setTimeout(() => {
         expect(wrapper.render().children()).toHaveLength(0);
         done();
       }, 0);
     });
     it('does not render if chartProps is null', done => {
-      const wrapper = shallow(<SuperChartKernel chartType="my-chart" chartProps={null} />);
+      const wrapper = shallow(
+        <SuperChartKernel chartType={ChartKeys.DILIGENT} chartProps={null} />,
+      );
       setTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(0);
         done();
@@ -187,7 +150,7 @@ describe('SuperChartKernel', () => {
   describe('.processChartProps()', () => {
     it('use identity functions for unspecified transforms', () => {
       const chart = new SuperChartKernel({
-        chartType: 'my-chart',
+        chartType: ChartKeys.DILIGENT,
       });
       const chartProps2 = new ChartProps();
       expect(chart.processChartProps({ chartProps: chartProps2 })).toBe(chartProps2);
