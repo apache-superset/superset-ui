@@ -11,11 +11,13 @@ export default function FallbackComponent({ componentStack, error }: Props) {
       </p>
       <p>Here’s what we know…</p>
       <p>
-        <strong>Error:</strong> {error ? error.toString() : 'undefined'}
+        <strong>Error:</strong> <span>{error ? error.toString() : 'Unknown Error'}</span>
       </p>
-      <p>
-        <strong>Stacktrace:</strong> {componentStack}
-      </p>
+      {componentStack && (
+        <p>
+          <strong>Stacktrace:</strong> <span>{componentStack}</span>
+        </p>
+      )}
     </div>
   );
 }
