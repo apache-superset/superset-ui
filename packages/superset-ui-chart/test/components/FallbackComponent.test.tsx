@@ -25,7 +25,7 @@ describe('FallbackComponent', () => {
     const wrapper = shallow(<FallbackComponent componentStack={STACK_TRACE} />);
     const span = wrapper.find('span');
     expect(span).toHaveLength(2);
-    expect(span.at(0).text()).toEqual('Error: Unknown Error');
+    expect(span.at(0).text()).toEqual('Unknown Error');
     expect(span.at(1).text()).toEqual('Error at line 1: x.drink(coffee)');
   });
 
@@ -33,6 +33,6 @@ describe('FallbackComponent', () => {
     const wrapper = shallow(<FallbackComponent />);
     const span = wrapper.find('span');
     expect(span).toHaveLength(1);
-    expect(span.at(0).text()).toEqual('Error: Unknown Error');
+    expect(span.at(0).text()).toEqual('Unknown Error');
   });
 });
