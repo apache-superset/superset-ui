@@ -136,11 +136,16 @@ describe('ChartPlugin', () => {
   });
 
   describe('.register()', () => {
-    const plugin = new ChartPlugin({
-      metadata,
-      Chart: FakeChart,
-      buildQuery,
+    let plugin: ChartPlugin;
+
+    beforeEach(() => {
+      plugin = new ChartPlugin({
+        metadata,
+        Chart: FakeChart,
+        buildQuery,
+      });
     });
+
     it('throws an error if key is not provided', () => {
       expect(() => plugin.register()).toThrowError(Error);
       expect(() => plugin.configure({ key: 'ab' }).register()).not.toThrowError(Error);
@@ -152,17 +157,31 @@ describe('ChartPlugin', () => {
       expect(getChartTransformPropsRegistry().has('cd')).toEqual(true);
       expect(getChartBuildQueryRegistry().get('cd')).toBe(buildQuery);
     });
+    it('does not register buildQuery when it is not specified in the ChartPlugin', () => {
+      new ChartPlugin({
+        metadata,
+        Chart: FakeChart,
+      })
+        .configure({ key: 'ef' })
+        .register();
+      expect(getChartBuildQueryRegistry().has('ef')).toEqual(false);
+    });
     it('returns itself', () => {
-      expect(plugin.configure({ key: 'ef' }).register()).toBe(plugin);
+      expect(plugin.configure({ key: 'gh' }).register()).toBe(plugin);
     });
   });
 
   describe('.unregister()', () => {
-    const plugin = new ChartPlugin({
-      metadata,
-      Chart: FakeChart,
-      buildQuery,
+    let plugin: ChartPlugin;
+
+    beforeEach(() => {
+      plugin = new ChartPlugin({
+        metadata,
+        Chart: FakeChart,
+        buildQuery,
+      });
     });
+
     it('throws an error if key is not provided', () => {
       expect(() => plugin.unregister()).toThrowError(Error);
       expect(() => plugin.configure({ key: 'abc' }).unregister()).not.toThrowError(Error);

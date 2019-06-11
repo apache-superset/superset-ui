@@ -97,9 +97,7 @@ export default class ChartPlugin<T extends ChartFormData = ChartFormData> extend
     getChartMetadataRegistry().remove(key);
     getChartComponentRegistry().remove(key);
     getChartTransformPropsRegistry().remove(key);
-    if (this.loadBuildQuery) {
-      getChartBuildQueryRegistry().remove(key);
-    }
+    getChartBuildQueryRegistry().remove(key);
 
     return this;
   }
