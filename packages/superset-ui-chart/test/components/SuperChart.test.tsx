@@ -1,13 +1,13 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { ChartProps } from '../../src';
-import SuperChart from '../../src/components/SuperChart';
 import {
+  ChartKeys,
   DiligentChartPlugin,
   LazyChartPlugin,
   SlowChartPlugin,
-  ChartKeys,
 } from './MockChartPlugins';
+import SuperChart from '../../src/components/SuperChart';
 
 describe('SuperChart', () => {
   const chartProps = new ChartProps();
@@ -123,6 +123,13 @@ describe('SuperChart', () => {
         expect(wrapper.render().children()).toHaveLength(0);
         done();
       }, 0);
+    });
+    it('eventually renders after Chart is loaded', done => {
+      const wrapper = shallow(<SuperChart chartType={ChartKeys.SLOW} />);
+      setTimeout(() => {
+        expect(wrapper.render().find('div.test-component')).toHaveLength(1);
+        done();
+      }, 1500);
     });
     it('does not render if chartProps is null', done => {
       const wrapper = shallow(<SuperChart chartType={ChartKeys.DILIGENT} chartProps={null} />);
