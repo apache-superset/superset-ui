@@ -1,4 +1,4 @@
-import { getTextDimension } from '../src/index';
+import { createSVGNode, getTextDimension } from '../src/index';
 import addDummyFill, { SAMPLE_TEXT } from './addDummyFill';
 
 describe('getTextDimension(input)', () => {
@@ -142,6 +142,23 @@ describe('getTextDimension(input)', () => {
         height: 20,
         width: 221, // Ceiling(200 [baseWidth] * 1.1 [letterSpacing=1.1])
       });
+    });
+    it('reuses an existing svg element if provided', () => {
+      const container = document.createElement('div');
+      const svg = createSVGNode(container);
+      const textNode = svg.lastElementChild as SVGSVGElement;
+      expect(textNode.textContent).toEqual('');
+      getTextDimension(
+        {
+          text: SAMPLE_TEXT,
+        },
+        {
+          height: 30,
+          width: 400,
+        },
+        svg,
+      );
+      expect(textNode.textContent).toEqual(SAMPLE_TEXT);
     });
   });
 });
