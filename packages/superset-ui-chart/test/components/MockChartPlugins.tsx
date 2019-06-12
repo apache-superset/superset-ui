@@ -26,7 +26,7 @@ export class DiligentChartPlugin extends ChartPlugin<ChartFormData> {
   constructor() {
     super({
       metadata: new ChartMetadata({
-        name: 'diligent-chart',
+        name: ChartKeys.DILIGENT,
         thumbnail: '',
       }),
       Chart: TestComponent,
@@ -39,7 +39,7 @@ export class LazyChartPlugin extends ChartPlugin<ChartFormData> {
   constructor() {
     super({
       metadata: new ChartMetadata({
-        name: 'lazy-chart',
+        name: ChartKeys.LAZY,
         thumbnail: '',
       }),
       // this mirrors `() => import(module)` syntax
@@ -54,7 +54,7 @@ export class SlowChartPlugin extends ChartPlugin<ChartFormData> {
   constructor() {
     super({
       metadata: new ChartMetadata({
-        name: 'slow-chart',
+        name: ChartKeys.SLOW,
         thumbnail: '',
       }),
       loadChart: () =>
