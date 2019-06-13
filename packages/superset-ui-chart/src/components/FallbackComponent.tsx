@@ -6,6 +6,7 @@ export type Props = FallbackProps;
 const CONTAINER_STYLE = {
   backgroundColor: '#000',
   color: '#fff',
+  overflow: 'auto',
   padding: 32,
 };
 
@@ -16,9 +17,7 @@ export default function FallbackComponent({ componentStack, error }: Props) {
         <div>
           <b>Oops! An error occured!</b>
         </div>
-        <span>
-          <code>{error ? error.toString() : 'Unknown Error'}</code>
-        </span>
+        <code>{error ? error.toString() : 'Unknown Error'}</code>
       </p>
       {componentStack && (
         <div>

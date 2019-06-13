@@ -8,31 +8,31 @@ describe('FallbackComponent', () => {
 
   it('renders error and stack trace', () => {
     const wrapper = shallow(<FallbackComponent componentStack={STACK_TRACE} error={ERROR} />);
-    const span = wrapper.find('span');
-    expect(span).toHaveLength(2);
-    expect(span.at(0).text()).toEqual('Error: CaffeineOverLoadException');
-    expect(span.at(1).text()).toEqual('Error at line 1: x.drink(coffee)');
+    const messages = wrapper.find('code');
+    expect(messages).toHaveLength(2);
+    expect(messages.at(0).text()).toEqual('Error: CaffeineOverLoadException');
+    expect(messages.at(1).text()).toEqual('Error at line 1: x.drink(coffee)');
   });
 
   it('renders error only', () => {
     const wrapper = shallow(<FallbackComponent error={ERROR} />);
-    const span = wrapper.find('span');
-    expect(span).toHaveLength(1);
-    expect(span.at(0).text()).toEqual('Error: CaffeineOverLoadException');
+    const messages = wrapper.find('code');
+    expect(messages).toHaveLength(1);
+    expect(messages.at(0).text()).toEqual('Error: CaffeineOverLoadException');
   });
 
   it('renders stacktrace only', () => {
     const wrapper = shallow(<FallbackComponent componentStack={STACK_TRACE} />);
-    const span = wrapper.find('span');
-    expect(span).toHaveLength(2);
-    expect(span.at(0).text()).toEqual('Unknown Error');
-    expect(span.at(1).text()).toEqual('Error at line 1: x.drink(coffee)');
+    const messages = wrapper.find('code');
+    expect(messages).toHaveLength(2);
+    expect(messages.at(0).text()).toEqual('Unknown Error');
+    expect(messages.at(1).text()).toEqual('Error at line 1: x.drink(coffee)');
   });
 
   it('renders when nothing is given', () => {
     const wrapper = shallow(<FallbackComponent />);
-    const span = wrapper.find('span');
-    expect(span).toHaveLength(1);
-    expect(span.at(0).text()).toEqual('Unknown Error');
+    const messages = wrapper.find('code');
+    expect(messages).toHaveLength(1);
+    expect(messages.at(0).text()).toEqual('Unknown Error');
   });
 });
