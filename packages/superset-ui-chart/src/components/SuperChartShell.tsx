@@ -123,8 +123,8 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
     let inputHeight: string | number = DEFAULT_HEIGHT;
 
     // Check if the chartProps contain any width or height
-    if ('chartProps' in this.props) {
-      const { width: w = undefined, height: h = undefined } = this.props.chartProps || {};
+    if ('chartProps' in this.props && typeof this.props.chartProps !== 'undefined') {
+      const { width: w, height: h } = this.props.chartProps;
       if (typeof w !== 'undefined') {
         inputWidth = w;
       }
@@ -134,13 +134,12 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
     }
 
     // Now check if there are props width or height,
-    // which takes higher precedent
-    const { width: w2, height: h2 } = this.props;
-    if (typeof w2 !== 'undefined') {
-      inputWidth = w2;
+    // which takes higher precedent than the ones inside chartProps
+    if (typeof this.props.width !== 'undefined') {
+      inputWidth = this.props.width;
     }
-    if (typeof h2 !== 'undefined') {
-      inputHeight = h2;
+    if (typeof this.props.height !== 'undefined') {
+      inputHeight = this.props.height;
     }
 
     // Parse them in case they are % or 'auto'
