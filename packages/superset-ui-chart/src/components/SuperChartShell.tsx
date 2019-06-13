@@ -154,14 +154,12 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
   render() {
     const { disableErrorBoundary, FallbackComponent, onErrorBoundary } = this.props;
 
-    const component = this.renderResponsiveChart();
-
     // Include the error boundary by default unless it is specifically disabled.
     return disableErrorBoundary === true ? (
-      component
+      this.renderResponsiveChart()
     ) : (
       <ErrorBoundary FallbackComponent={FallbackComponent} onError={onErrorBoundary}>
-        {component}
+        {this.renderResponsiveChart()}
       </ErrorBoundary>
     );
   }

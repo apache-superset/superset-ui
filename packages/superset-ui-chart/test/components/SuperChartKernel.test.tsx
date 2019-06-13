@@ -8,6 +8,7 @@ import {
   SlowChartPlugin,
 } from './MockChartPlugins';
 import SuperChartKernel from '../../src/components/SuperChartKernel';
+import promiseTimeout from './promiseTimeout';
 
 describe('SuperChartKernel', () => {
   const chartProps = new ChartProps();
@@ -31,64 +32,64 @@ describe('SuperChartKernel', () => {
   });
 
   describe('registered charts', () => {
-    it('renders registered chart', done => {
+    it('renders registered chart', () => {
       const wrapper = shallow(
         <SuperChartKernel chartType={ChartKeys.DILIGENT} chartProps={chartProps} />,
       );
-      setTimeout(() => {
+
+      return promiseTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(1);
-        done();
-      }, 0);
+      });
     });
-    it('renders registered chart with lazy loading', done => {
+    it('renders registered chart with lazy loading', () => {
       const wrapper = shallow(<SuperChartKernel chartType={ChartKeys.LAZY} />);
-      setTimeout(() => {
+
+      return promiseTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(1);
-        done();
-      }, 0);
+      });
     });
-    it('does not render if chartType is not set', done => {
+    it('does not render if chartType is not set', () => {
       // @ts-ignore chartType is required
       const wrapper = shallow(<SuperChartKernel />);
-      setTimeout(() => {
+
+      return promiseTimeout(() => {
         expect(wrapper.render().children()).toHaveLength(0);
-        done();
       }, 5);
     });
-    it('adds id to container if specified', done => {
+    it('adds id to container if specified', () => {
       const wrapper = shallow(<SuperChartKernel chartType={ChartKeys.DILIGENT} id="the-chart" />);
-      setTimeout(() => {
+
+      return promiseTimeout(() => {
         expect(wrapper.render().attr('id')).toEqual('the-chart');
-        done();
-      }, 0);
+      });
     });
-    it('adds class to container if specified', done => {
+    it('adds class to container if specified', () => {
       const wrapper = shallow(
         <SuperChartKernel chartType={ChartKeys.DILIGENT} className="the-chart" />,
       );
-      setTimeout(() => {
+
+      return promiseTimeout(() => {
         expect(wrapper.hasClass('the-chart')).toBeTruthy();
-        done();
       }, 0);
     });
-    it('uses overrideTransformProps when specified', done => {
+    it('uses overrideTransformProps when specified', () => {
       const wrapper = shallow(
         <SuperChartKernel
           chartType={ChartKeys.DILIGENT}
           overrideTransformProps={() => ({ message: 'hulk' })}
         />,
       );
-      setTimeout(() => {
+
+      return promiseTimeout(() => {
         expect(
           wrapper
             .render()
             .find('span.message')
             .text(),
         ).toEqual('hulk');
-        done();
-      }, 0);
+      });
     });
-    it('uses preTransformProps when specified', done => {
+    it('uses preTransformProps when specified', () => {
       const chartPropsWithPayload = new ChartProps({
         payload: { message: 'hulk' },
       });
@@ -99,72 +100,72 @@ describe('SuperChartKernel', () => {
           overrideTransformProps={props => props.payload}
         />,
       );
-      setTimeout(() => {
+
+      return promiseTimeout(() => {
         expect(
           wrapper
             .render()
             .find('span.message')
             .text(),
         ).toEqual('hulk');
-        done();
-      }, 0);
+      });
     });
-    it('uses postTransformProps when specified', done => {
+    it('uses postTransformProps when specified', () => {
       const wrapper = shallow(
         <SuperChartKernel
           chartType={ChartKeys.DILIGENT}
           postTransformProps={() => ({ message: 'hulk' })}
         />,
       );
-      setTimeout(() => {
+
+      return promiseTimeout(() => {
         expect(
           wrapper
             .render()
             .find('span.message')
             .text(),
         ).toEqual('hulk');
-        done();
-      }, 0);
+      });
     });
-    it('renders if chartProps is not specified', done => {
+    it('renders if chartProps is not specified', () => {
       const wrapper = shallow(<SuperChartKernel chartType={ChartKeys.DILIGENT} />);
-      setTimeout(() => {
+
+      return promiseTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(1);
-        done();
-      }, 0);
+      });
     });
-    it('does not render anything while waiting for Chart code to load', done => {
+    it('does not render anything while waiting for Chart code to load', () => {
       const wrapper = shallow(<SuperChartKernel chartType={ChartKeys.SLOW} />);
-      setTimeout(() => {
+
+      return promiseTimeout(() => {
         expect(wrapper.render().children()).toHaveLength(0);
-        done();
-      }, 0);
+      });
     });
-    it('eventually renders after Chart is loaded', done => {
+    it('eventually renders after Chart is loaded', () => {
       const wrapper = shallow(<SuperChartKernel chartType={ChartKeys.SLOW} />);
-      setTimeout(() => {
+
+      return promiseTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(1);
-        done();
       }, 1500);
     });
-    it('does not render if chartProps is null', done => {
+    it('does not render if chartProps is null', () => {
       const wrapper = shallow(
         <SuperChartKernel chartType={ChartKeys.DILIGENT} chartProps={null} />,
       );
-      setTimeout(() => {
+
+      return promiseTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(0);
-        done();
-      }, 0);
+      });
     });
   });
 
   describe('unregistered charts', () => {
-    it('renders error message', done => {
+    it('renders error message', () => {
       const wrapper = mount(<SuperChartKernel chartType="4d-pie-chart" chartProps={chartProps} />);
-      setTimeout(() => {
+
+      return promiseTimeout(() => {
         expect(wrapper.render().find('.alert')).toHaveLength(1);
-        done();
-      }, 0);
+      });
     });
   });
 
