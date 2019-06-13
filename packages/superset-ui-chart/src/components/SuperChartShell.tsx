@@ -46,7 +46,13 @@ function isClassicProps(props: Props): props is ClassicProps {
 }
 
 function isModernProps(props: Props): props is ModernProps {
-  return 'formData' in props || 'payload' in props;
+  return (
+    'formData' in props ||
+    'payload' in props ||
+    'annotationData' in props ||
+    'datasource' in props ||
+    'filters' in props
+  );
 }
 
 export default class SuperChart extends React.PureComponent<Props, {}> {
