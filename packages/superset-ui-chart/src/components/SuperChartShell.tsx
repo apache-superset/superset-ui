@@ -18,6 +18,7 @@ const defaultProps = {
 
 type WrapperProps = {
   disableErrorBoundary?: boolean;
+  debounceTime?: number;
   FallbackComponent?: ErrorBoundaryProps['FallbackComponent'];
   onErrorBoundary?: ErrorBoundaryProps['onError'];
   height?: number | string;
@@ -131,8 +132,10 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
 
     // If any of the dimension is dynamic, get parent's dimension
     if (widthInfo.isDynamic || heightInfo.isDynamic) {
+      const { debounceTime } = this.props;
+
       return (
-        <ParentSize>
+        <ParentSize debounceTime={debounceTime}>
           {({ width, height }) =>
             width > 0 &&
             height > 0 &&

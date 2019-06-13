@@ -2,17 +2,20 @@ import React from 'react';
 import { ChartMetadata, ChartPlugin, ChartFormData } from '../../src';
 
 export const TestComponent = ({
+  formData,
   message,
   width,
   height,
 }: {
-  message: string;
-  width: number;
-  height: number;
+  formData?: any;
+  message?: string;
+  width?: number;
+  height?: number;
 }) => (
   <div className="test-component">
     <span className="message">{message || 'test-message'}</span>
     <span className="dimension">{[width, height].join('x')}</span>
+    <span className="formData">{JSON.stringify(formData)}</span>
   </div>
 );
 
@@ -20,6 +23,7 @@ export const ChartKeys = {
   DILIGENT: 'diligent-chart',
   LAZY: 'lazy-chart',
   SLOW: 'slow-chart',
+  BUGGY: 'buggy-chart',
 };
 
 export class DiligentChartPlugin extends ChartPlugin<ChartFormData> {
@@ -63,6 +67,21 @@ export class SlowChartPlugin extends ChartPlugin<ChartFormData> {
             resolve(TestComponent);
           }, 1000);
         }),
+      transformProps: x => x,
+    });
+  }
+}
+
+export class BuggyChartPlugin extends ChartPlugin<ChartFormData> {
+  constructor() {
+    super({
+      metadata: new ChartMetadata({
+        name: ChartKeys.BUGGY,
+        thumbnail: '',
+      }),
+      Chart: () => {
+        throw new Error('The component is too buggy to render.');
+      },
       transformProps: x => x,
     });
   }

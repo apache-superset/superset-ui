@@ -9,12 +9,26 @@ import {
 } from './MockChartPlugins';
 import SuperChartKernel from '../../src/components/SuperChartKernel';
 
-describe('SuperChart', () => {
+describe('SuperChartKernel', () => {
   const chartProps = new ChartProps();
 
-  new DiligentChartPlugin().configure({ key: ChartKeys.DILIGENT }).register();
-  new LazyChartPlugin().configure({ key: ChartKeys.LAZY }).register();
-  new SlowChartPlugin().configure({ key: ChartKeys.SLOW }).register();
+  const plugins = [
+    new DiligentChartPlugin().configure({ key: ChartKeys.DILIGENT }),
+    new LazyChartPlugin().configure({ key: ChartKeys.LAZY }),
+    new SlowChartPlugin().configure({ key: ChartKeys.SLOW }),
+  ];
+
+  beforeAll(() => {
+    plugins.forEach(p => {
+      p.unregister().register();
+    });
+  });
+
+  afterAll(() => {
+    plugins.forEach(p => {
+      p.unregister();
+    });
+  });
 
   describe('registered charts', () => {
     it('renders registered chart', done => {
@@ -26,7 +40,7 @@ describe('SuperChart', () => {
         done();
       }, 0);
     });
-    it('renders registered chart with default export', done => {
+    it('renders registered chart with lazy loading', done => {
       const wrapper = shallow(<SuperChartKernel chartType={ChartKeys.LAZY} />);
       setTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(1);
