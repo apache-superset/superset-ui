@@ -1,7 +1,7 @@
 import React from 'react';
-import { FallbackProps } from 'react-error-boundary';
+import { FallbackPropsWithDimension } from './SuperChartShell';
 
-export type Props = FallbackProps;
+export type Props = FallbackPropsWithDimension;
 
 const CONTAINER_STYLE = {
   backgroundColor: '#000',
@@ -10,9 +10,9 @@ const CONTAINER_STYLE = {
   padding: 32,
 };
 
-export default function FallbackComponent({ componentStack, error }: Props) {
+export default function FallbackComponent({ componentStack, error, height, width }: Props) {
   return (
-    <div style={CONTAINER_STYLE}>
+    <div style={{ ...CONTAINER_STYLE, height, width }}>
       <p>
         <div>
           <b>Oops! An error occured!</b>

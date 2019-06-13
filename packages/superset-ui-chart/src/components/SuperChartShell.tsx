@@ -1,5 +1,5 @@
 import React from 'react';
-import ErrorBoundary, { ErrorBoundaryProps } from 'react-error-boundary';
+import ErrorBoundary, { ErrorBoundaryProps, FallbackProps } from 'react-error-boundary';
 import { parseLength } from '@superset-ui/dimension';
 import { ParentSize } from '@vx/responsive';
 import SuperChartKernel, { Props as SuperChartKernelProps } from './SuperChartKernel';
@@ -16,10 +16,12 @@ const defaultProps = {
   FallbackComponent: DefaultFallbackComponent,
 };
 
+export type FallbackPropsWithDimension = FallbackProps & { width?: number; height?: number };
+
 type WrapperProps = {
   disableErrorBoundary?: boolean;
   debounceTime?: number;
-  FallbackComponent?: ErrorBoundaryProps['FallbackComponent'];
+  FallbackComponent?: React.ComponentType<FallbackPropsWithDimension>;
   onErrorBoundary?: ErrorBoundaryProps['onError'];
   height?: number | string;
   width?: number | string;
@@ -85,8 +87,7 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
     } = this.props;
 
     const chartPropsConfig = this.getChartPropsConfig();
-
-    return (
+    const chart = (
       <SuperChartKernel
         id={id}
         className={className}
@@ -99,9 +100,25 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
         onRenderFailure={onRenderFailure}
       />
     );
+
+    const { disableErrorBoundary, FallbackComponent, onErrorBoundary } = this.props;
+
+    // Include the error boundary by default unless it is specifically disabled.
+    return disableErrorBoundary === true ? (
+      chart
+    ) : (
+      <ErrorBoundary
+        FallbackComponent={(props: FallbackProps) => (
+          <FallbackComponent width={width} height={height} {...props} />
+        )}
+        onError={onErrorBoundary}
+      >
+        {chart}
+      </ErrorBoundary>
+    );
   }
 
-  renderResponsiveChart() {
+  render() {
     let inputWidth: string | number = DEFAULT_WIDTH;
     let inputHeight: string | number = DEFAULT_HEIGHT;
 
@@ -149,18 +166,5 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
     }
 
     return this.renderChart(widthInfo.value, heightInfo.value);
-  }
-
-  render() {
-    const { disableErrorBoundary, FallbackComponent, onErrorBoundary } = this.props;
-
-    // Include the error boundary by default unless it is specifically disabled.
-    return disableErrorBoundary === true ? (
-      this.renderResponsiveChart()
-    ) : (
-      <ErrorBoundary FallbackComponent={FallbackComponent} onError={onErrorBoundary}>
-        {this.renderResponsiveChart()}
-      </ErrorBoundary>
-    );
   }
 }
