@@ -84,7 +84,7 @@ describe('SuperChartKernel', () => {
         expect(
           wrapper
             .render()
-            .find('span.message')
+            .find('.message')
             .text(),
         ).toEqual('hulk');
       });
@@ -105,7 +105,7 @@ describe('SuperChartKernel', () => {
         expect(
           wrapper
             .render()
-            .find('span.message')
+            .find('.message')
             .text(),
         ).toEqual('hulk');
       });
@@ -122,7 +122,7 @@ describe('SuperChartKernel', () => {
         expect(
           wrapper
             .render()
-            .find('span.message')
+            .find('.message')
             .text(),
         ).toEqual('hulk');
       });

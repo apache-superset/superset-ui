@@ -1,3 +1,4 @@
+/** setTimeout that returns a promise */
 export default function promiseTimeout(
   /** A function to be executed after the timer expires. */
   func: Function,

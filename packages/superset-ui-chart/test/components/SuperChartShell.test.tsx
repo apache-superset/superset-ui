@@ -14,7 +14,7 @@ function expectDimension(wrapper: ReactWrapper, width: number, height: number) {
   expect(
     wrapper
       .render()
-      .find('span.dimension')
+      .find('.dimension')
       .text(),
   ).toEqual([width, height].join('x'));
 }
