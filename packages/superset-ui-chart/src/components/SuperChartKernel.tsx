@@ -41,7 +41,7 @@ interface RenderProps {
 
 const BLANK_CHART_PROPS = new ChartProps();
 
-export interface SuperChartProps {
+export type Props = {
   id?: string;
   className?: string;
   chartProps?: ChartProps | null;
@@ -51,9 +51,9 @@ export interface SuperChartProps {
   postTransformProps?: PostTransformProps;
   onRenderSuccess?: HandlerFunction;
   onRenderFailure?: HandlerFunction;
-}
+};
 
-export default class SuperChart extends React.PureComponent<SuperChartProps, {}> {
+export default class SuperChart extends React.PureComponent<Props, {}> {
   static defaultProps = defaultProps;
 
   processChartProps: (input: {
@@ -68,7 +68,7 @@ export default class SuperChart extends React.PureComponent<SuperChartProps, {}>
     overrideTransformProps?: TransformProps;
   }) => LoadableRenderer<RenderProps, LoadedModules> | (() => null);
 
-  constructor(props: SuperChartProps) {
+  constructor(props: Props) {
     super(props);
 
     this.renderChart = this.renderChart.bind(this);

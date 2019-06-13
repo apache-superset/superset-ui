@@ -42,6 +42,7 @@
   "peerDependencies": {
     "@superset-ui/connection": "^0.11.0",
     "@superset-ui/core": "^0.11.0",
+    "@superset-ui/dimension": "^0.11.7",
     "react": "^15 || ^16"
   }
 }
