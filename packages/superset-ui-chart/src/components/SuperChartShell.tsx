@@ -2,7 +2,7 @@ import React from 'react';
 import ErrorBoundary, { ErrorBoundaryProps, FallbackProps } from 'react-error-boundary';
 import { parseLength } from '@superset-ui/dimension';
 import { ParentSize } from '@vx/responsive';
-import SuperChartKernel, { Props as SuperChartKernelProps } from './SuperChartKernel';
+import SuperChartCore, { Props as SuperChartCoreProps } from './SuperChartCore';
 import DefaultFallbackComponent from './FallbackComponent';
 import ChartProps, { ChartPropsConfig } from '../models/ChartProps';
 
@@ -28,13 +28,13 @@ type WrapperProps = {
 };
 
 /** SuperChart Props for version 0.11 and below has chartProps */
-type ClassicProps = Omit<SuperChartKernelProps, 'chartProps'> & {
+type ClassicProps = Omit<SuperChartCoreProps, 'chartProps'> & {
   chartProps?: ChartProps | ChartPropsConfig;
 } & WrapperProps &
   Readonly<typeof defaultProps>;
 
 /** A newer alternative now lists the fields that were inside chartProps as top-level fields */
-type ModernProps = Omit<SuperChartKernelProps, 'chartProps'> &
+type ModernProps = Omit<SuperChartCoreProps, 'chartProps'> &
   Omit<ChartPropsConfig, 'width' | 'height'> &
   WrapperProps &
   Readonly<typeof defaultProps>;
@@ -94,7 +94,7 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
 
     const chartPropsConfig = this.getChartPropsConfig();
     const chart = (
-      <SuperChartKernel
+      <SuperChartCore
         id={id}
         className={className}
         chartType={chartType}

@@ -53,7 +53,7 @@ export type Props = {
   onRenderFailure?: HandlerFunction;
 };
 
-export default class SuperChart extends React.PureComponent<Props, {}> {
+export default class SuperChartCore extends React.PureComponent<Props, {}> {
   static defaultProps = defaultProps;
 
   processChartProps: (input: {
