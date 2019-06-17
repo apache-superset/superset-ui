@@ -7,6 +7,7 @@ jest.mock('resize-observer-polyfill');
 import { triggerResizeObserver } from 'resize-observer-polyfill';
 import ErrorBoundary from 'react-error-boundary';
 import { ChartProps, SuperChart } from '../../src';
+import RealSuperChart from '../../src/components/SuperChart';
 import { ChartKeys, DiligentChartPlugin, BuggyChartPlugin } from './MockChartPlugins';
 import promiseTimeout from './promiseTimeout';
 
@@ -34,13 +35,13 @@ describe('SuperChart', () => {
 
   describe('includes ErrorBoundary', () => {
     it('renders default FallbackComponent', () => {
-      jest.spyOn(SuperChart.defaultProps, 'FallbackComponent');
+      jest.spyOn(RealSuperChart.defaultProps, 'FallbackComponent');
       const wrapper = mount(<SuperChart chartType={ChartKeys.BUGGY} width="200" height="200" />);
       const renderedWrapper = wrapper.render();
 
       return promiseTimeout(() => {
         expect(renderedWrapper.find('div.test-component')).toHaveLength(0);
-        expect(SuperChart.defaultProps.FallbackComponent).toHaveBeenCalledTimes(1);
+        expect(RealSuperChart.defaultProps.FallbackComponent).toHaveBeenCalledTimes(1);
       }, 100);
     });
     it('renders custom FallbackComponent', () => {

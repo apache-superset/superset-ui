@@ -1,5 +1,5 @@
 import React from 'react';
-import { FallbackPropsWithDimension } from './SuperChartShell';
+import { FallbackPropsWithDimension } from './SuperChart';
 
 export type Props = FallbackPropsWithDimension;
 
@@ -13,17 +13,17 @@ const CONTAINER_STYLE = {
 export default function FallbackComponent({ componentStack, error, height, width }: Props) {
   return (
     <div style={{ ...CONTAINER_STYLE, height, width }}>
-      <p>
+      <div>
         <div>
           <b>Oops! An error occured!</b>
         </div>
         <code>{error ? error.toString() : 'Unknown Error'}</code>
-      </p>
+      </div>
       {componentStack && (
         <div>
           <b>Stack Trace:</b>
           <code>
-            {componentStack.split('\n').map(row => (
+            {componentStack.split('\n').map((row: string) => (
               <div key={row}>{row}</div>
             ))}
           </code>
