@@ -1,6 +1,6 @@
-import { ChartFormData } from '../types/ChartFormData';
-import { QueryObjectMetric } from '../types/Query';
-import { MetricKey } from '../types/Metric';
+import { ChartFormData } from './types/ChartFormData';
+import { QueryObjectMetric } from './types/Query';
+import { MetricKey } from './types/Metric';
 import convertMetric from './convertMetric';
 
 export default function processMetrics(formData: ChartFormData) {

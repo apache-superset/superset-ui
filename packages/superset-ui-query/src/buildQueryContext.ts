@@ -1,7 +1,7 @@
 import buildQueryObject from './buildQueryObject';
 import DatasourceKey from './DatasourceKey';
-import { ChartFormData } from '../types/ChartFormData';
-import { QueryContext, QueryObject } from '../types/Query';
+import { ChartFormData } from './types/ChartFormData';
+import { QueryContext, QueryObject } from './types/Query';
 
 const WRAP_IN_ARRAY = (baseQueryObject: QueryObject) => [baseQueryObject];
 

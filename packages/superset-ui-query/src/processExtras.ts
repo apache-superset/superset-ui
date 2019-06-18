@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
-import { ChartFormData, isDruidFormData } from '../types/ChartFormData';
-import { QueryObjectExtras } from '../types/Query';
+import { ChartFormData, isDruidFormData } from './types/ChartFormData';
+import { QueryObjectExtras } from './types/Query';
 
 export default function processExtras(formData: ChartFormData): QueryObjectExtras {
   const { where = '' } = formData;

@@ -1,6 +1,6 @@
-import { ChartFormDataMetric } from '../types/ChartFormData';
-import { QueryObjectMetric } from '../types/Query';
-import { AdhocMetric } from '../types/Metric';
+import { ChartFormDataMetric } from './types/ChartFormData';
+import { QueryObjectMetric } from './types/Query';
+import { AdhocMetric } from './types/Metric';
 
 export const LABEL_MAX_LENGTH = 43;
 
