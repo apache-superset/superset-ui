@@ -1,10 +1,8 @@
 import React from 'react';
-
+import { ChartFormData, DatasourceType } from '@superset-ui/query';
 import {
   ChartPlugin,
   ChartMetadata,
-  ChartFormData,
-  DatasourceType,
   ChartProps,
   BuildQueryFunction,
   TransformProps,

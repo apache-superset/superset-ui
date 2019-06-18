@@ -1,15 +1,12 @@
 import fetchMock from 'fetch-mock';
 import { SupersetClientClass, SupersetClient } from '@superset-ui/connection';
-
+import { buildQueryContext, ChartFormData } from '@superset-ui/query';
 import {
   ChartClient,
   getChartBuildQueryRegistry,
-  buildQueryContext,
-  ChartFormData,
   getChartMetadataRegistry,
   ChartMetadata,
 } from '../../src';
-
 import { SliceIdAndOrFormData } from '../../src/clients/ChartClient';
 import { LOGIN_GLOB } from '../../../superset-ui-connection/test/fixtures/constants';
 
