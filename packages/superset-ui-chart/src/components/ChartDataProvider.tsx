@@ -1,12 +1,12 @@
 /* eslint react/sort-comp: 'off' */
 import React, { ReactNode } from 'react';
 import { SupersetClientInterface, RequestConfig } from '@superset-ui/connection';
-import { ChartFormData, Datasource } from '@superset-ui/query';
+import { QueryFormData, Datasource } from '@superset-ui/query';
 import ChartClient, { SliceIdAndOrFormData } from '../clients/ChartClient';
 import { QueryData } from '../models/ChartProps';
 
 interface Payload {
-  formData: Partial<ChartFormData>;
+  formData: Partial<QueryFormData>;
   queryData: QueryData;
   datasource?: Datasource;
 }

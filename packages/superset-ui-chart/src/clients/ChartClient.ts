@@ -6,7 +6,7 @@ import {
   Json,
   SupersetClientClass,
 } from '@superset-ui/connection';
-import { AnnotationLayerMetadata, ChartFormData, Datasource } from '@superset-ui/query';
+import { AnnotationLayerMetadata, QueryFormData, Datasource } from '@superset-ui/query';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
 import getChartMetadataRegistry from '../registries/ChartMetadataRegistrySingleton';
 import { QueryData } from '../models/ChartProps';
@@ -16,7 +16,7 @@ type AtLeastOne<All, Each = { [K in keyof All]: Pick<All, K> }> = Partial<All> &
 
 export type SliceIdAndOrFormData = AtLeastOne<{
   sliceId: number;
-  formData: Partial<ChartFormData>;
+  formData: Partial<QueryFormData>;
 }>;
 
 interface AnnotationData {
@@ -26,7 +26,7 @@ interface AnnotationData {
 export interface ChartData {
   annotationData: AnnotationData;
   datasource: object;
-  formData: ChartFormData;
+  formData: QueryFormData;
   queryData: QueryData;
 }
 
@@ -45,7 +45,7 @@ export default class ChartClient {
   loadFormData(
     input: SliceIdAndOrFormData,
     options?: Partial<RequestConfig>,
-  ): Promise<ChartFormData> {
+  ): Promise<QueryFormData> {
     /* If sliceId is provided, use it to fetch stored formData from API */
     if ('sliceId' in input) {
       const promise = this.client
@@ -60,7 +60,7 @@ export default class ChartClient {
        * If formData is also specified, override API result
        * with user-specified formData
        */
-      return promise.then((dbFormData: ChartFormData) => ({
+      return promise.then((dbFormData: QueryFormData) => ({
         ...dbFormData,
         ...input.formData,
       }));
@@ -68,11 +68,11 @@ export default class ChartClient {
 
     /* If sliceId is not provided, returned formData wrapped in a Promise */
     return input.formData
-      ? Promise.resolve(input.formData as ChartFormData)
+      ? Promise.resolve(input.formData as QueryFormData)
       : Promise.reject(new Error('At least one of sliceId or formData must be specified'));
   }
 
-  async loadQueryData(formData: ChartFormData, options?: Partial<RequestConfig>): Promise<object> {
+  async loadQueryData(formData: QueryFormData, options?: Partial<RequestConfig>): Promise<object> {
     const { viz_type: visType } = formData;
     const metaDataRegistry = getChartMetadataRegistry();
     const buildQueryRegistry = getChartBuildQueryRegistry();

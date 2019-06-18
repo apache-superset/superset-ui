@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
 import { SupersetClientClass, SupersetClient } from '@superset-ui/connection';
-import { buildQueryContext, ChartFormData } from '@superset-ui/query';
+import { buildQueryContext, QueryFormData } from '@superset-ui/query';
 import {
   ChartClient,
   getChartBuildQueryRegistry,
@@ -100,7 +100,7 @@ describe('ChartClient', () => {
         new ChartMetadata({ name: 'Word Cloud', thumbnail: '' }),
       );
 
-      getChartBuildQueryRegistry().registerValue('word_cloud', (formData: ChartFormData) =>
+      getChartBuildQueryRegistry().registerValue('word_cloud', (formData: QueryFormData) =>
         buildQueryContext(formData),
       );
       fetchMock.post('glob:*/api/v1/query/', {
@@ -244,7 +244,7 @@ describe('ChartClient', () => {
         new ChartMetadata({ name: 'Line', thumbnail: '.gif' }),
       );
 
-      getChartBuildQueryRegistry().registerValue('line', (formData: ChartFormData) =>
+      getChartBuildQueryRegistry().registerValue('line', (formData: QueryFormData) =>
         buildQueryContext(formData),
       );
 

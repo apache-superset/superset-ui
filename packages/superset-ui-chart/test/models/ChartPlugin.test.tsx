@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChartFormData, DatasourceType } from '@superset-ui/query';
+import { QueryFormData, DatasourceType } from '@superset-ui/query';
 import {
   ChartPlugin,
   ChartMetadata,
@@ -59,7 +59,7 @@ describe('ChartPlugin', () => {
           loadBuildQuery: () => buildQuery,
         });
         if (typeof plugin.loadBuildQuery === 'function') {
-          const fn = plugin.loadBuildQuery() as BuildQueryFunction<ChartFormData>;
+          const fn = plugin.loadBuildQuery() as BuildQueryFunction<QueryFormData>;
           expect(fn(FORM_DATA).queries[0]).toEqual({ granularity: 'day' });
         }
       });
@@ -71,7 +71,7 @@ describe('ChartPlugin', () => {
           buildQuery,
         });
         if (typeof plugin.loadBuildQuery === 'function') {
-          const fn = plugin.loadBuildQuery() as BuildQueryFunction<ChartFormData>;
+          const fn = plugin.loadBuildQuery() as BuildQueryFunction<QueryFormData>;
           expect(fn(FORM_DATA).queries[0]).toEqual({ granularity: 'day' });
         }
       });
