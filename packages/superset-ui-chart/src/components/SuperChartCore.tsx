@@ -53,12 +53,12 @@ export type Props = {
   onRenderFailure?: HandlerFunction;
 };
 
-const componentRegistry = getChartComponentRegistry();
-const transformPropsRegistry = getChartTransformPropsRegistry();
-
 export default class SuperChartCore extends React.PureComponent<Props, {}> {
   static defaultProps = defaultProps;
 
+  /**
+   * The HTML element that wraps all chart content
+   */
   container?: HTMLElement | null;
 
   /**
@@ -100,10 +100,10 @@ export default class SuperChartCore extends React.PureComponent<Props, {}> {
       if (chartType) {
         const Renderer = createLoadableRenderer({
           loader: {
-            Chart: () => componentRegistry.getAsPromise(chartType),
+            Chart: () => getChartComponentRegistry().getAsPromise(chartType),
             transformProps: overrideTransformProps
               ? () => Promise.resolve(overrideTransformProps)
-              : () => transformPropsRegistry.getAsPromise(chartType),
+              : () => getChartTransformPropsRegistry().getAsPromise(chartType),
           },
           loading: (loadingProps: LoadingProps) => this.renderLoading(loadingProps, chartType),
           render: this.renderChart,
