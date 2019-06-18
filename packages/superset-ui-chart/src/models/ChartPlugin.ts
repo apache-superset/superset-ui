@@ -1,11 +1,11 @@
 import { FunctionComponent, ComponentType } from 'react';
 import { isRequired, Plugin } from '@superset-ui/core';
+import { ChartFormData } from '@superset-ui/query';
 import ChartMetadata from './ChartMetadata';
 import getChartMetadataRegistry from '../registries/ChartMetadataRegistrySingleton';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
 import getChartComponentRegistry from '../registries/ChartComponentRegistrySingleton';
 import getChartTransformPropsRegistry from '../registries/ChartTransformPropsRegistrySingleton';
-import { ChartFormData } from '../types/ChartFormData';
 import { BuildQueryFunction, TransformProps } from '../types/TransformFunction';
 
 const IDENTITY = (x: any) => x;

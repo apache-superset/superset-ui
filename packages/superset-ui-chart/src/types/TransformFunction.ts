@@ -1,6 +1,5 @@
-import { ChartFormData } from './ChartFormData';
+import { ChartFormData, QueryContext } from '@superset-ui/query';
 import ChartProps from '../models/ChartProps';
-import { QueryContext } from './Query';
 
 export interface PlainProps {
   [key: string]: any;

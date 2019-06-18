@@ -6,12 +6,10 @@ import {
   Json,
   SupersetClientClass,
 } from '@superset-ui/connection';
+import { AnnotationLayerMetadata, ChartFormData, Datasource } from '@superset-ui/query';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
 import getChartMetadataRegistry from '../registries/ChartMetadataRegistrySingleton';
-import { AnnotationLayerMetadata } from '../types/Annotation';
-import { ChartFormData } from '../types/ChartFormData';
 import { QueryData } from '../models/ChartProps';
-import { Datasource } from '../types/Datasource';
 
 // This expands to Partial<All> & (union of all possible single-property types)
 type AtLeastOne<All, Each = { [K in keyof All]: Pick<All, K> }> = Partial<All> & Each[keyof Each];
