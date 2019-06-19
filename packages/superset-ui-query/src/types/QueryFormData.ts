@@ -2,7 +2,6 @@
 /* eslint-disable import/prefer-default-export */
 // FormData uses snake_cased keys.
 import { MetricKey, AdhocMetric } from './Metric';
-import { AnnotationLayerMetadata } from './Annotation';
 import { TimeRange } from './Time';
 import { AdhocFilter } from './Filter';
 
@@ -47,8 +46,6 @@ export type BaseFormData = {
   row_limit?: number;
   /** The metric used to order timeseries for limiting */
   timeseries_limit_metric?: QueryFormDataMetric;
-
-  annotation_layers?: AnnotationLayerMetadata[];
 } & TimeRange &
   QueryFormDataMetrics;
 

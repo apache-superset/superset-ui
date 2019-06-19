@@ -6,10 +6,11 @@ import {
   Json,
   SupersetClientClass,
 } from '@superset-ui/connection';
-import { AnnotationLayerMetadata, QueryFormData, Datasource } from '@superset-ui/query';
+import { QueryFormData, Datasource } from '@superset-ui/query';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
 import getChartMetadataRegistry from '../registries/ChartMetadataRegistrySingleton';
 import { QueryData } from '../models/ChartProps';
+import { AnnotationLayerMetadata } from '../types/Annotation';
 
 // This expands to Partial<All> & (union of all possible single-property types)
 type AtLeastOne<All, Each = { [K in keyof All]: Pick<All, K> }> = Partial<All> & Each[keyof Each];
@@ -130,17 +131,23 @@ export default class ChartClient {
   }
 
   loadChartData(input: SliceIdAndOrFormData): Promise<ChartData> {
-    return this.loadFormData(input).then(formData =>
-      Promise.all([
-        this.loadAnnotations(formData.annotation_layers),
-        this.loadDatasource(formData.datasource),
-        this.loadQueryData(formData),
-      ]).then(([annotationData, datasource, queryData]) => ({
-        annotationData,
-        datasource,
-        formData,
-        queryData,
-      })),
+    return this.loadFormData(input).then(
+      (
+        formData: QueryFormData & {
+          // eslint-disable-next-line camelcase
+          annotation_layers?: AnnotationLayerMetadata[];
+        },
+      ) =>
+        Promise.all([
+          this.loadAnnotations(formData.annotation_layers),
+          this.loadDatasource(formData.datasource),
+          this.loadQueryData(formData),
+        ]).then(([annotationData, datasource, queryData]) => ({
+          annotationData,
+          datasource,
+          formData,
+          queryData,
+        })),
     );
   }
 }
