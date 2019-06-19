@@ -41,6 +41,12 @@ const thLocale: TimeLocaleDefinition = {
 };
 
 describe('createD3TimeFormatter(config)', () => {
+  it('requires config.formatString', () => {
+    // @ts-ignore
+    expect(() => createD3TimeFormatter()).toThrow();
+    // @ts-ignore
+    expect(() => createD3TimeFormatter({})).toThrow();
+  });
   describe('config.useLocalTime', () => {
     it('if falsy, formats in UTC time', () => {
       const formatter = createD3TimeFormatter({
