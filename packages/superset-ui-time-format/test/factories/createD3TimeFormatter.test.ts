@@ -25,4 +25,57 @@ describe('createD3TimeFormatter(config)', () => {
       expect(formatter.format(PREVIEW_TIME)).toEqual('2017-02-14 11:22:33');
     });
   });
+  describe('config.locale', () => {
+    it('supports locale customization', () => {
+      const formatter = createD3TimeFormatter({
+        description: 'lorem ipsum',
+        formatString: '%A %d %B %Y',
+        locale: {
+          dateTime: '%a %b %e %X %Y',
+          date: '%d/%m/%Y',
+          time: '%H:%M:%S',
+          periods: ['AM', 'PM'],
+          days: [
+            'วันอาทิตย์',
+            'วันจันทร์',
+            'วันอังคาร',
+            'วันพุธ',
+            'วันพฤหัส',
+            'วันศุกร์',
+            'วันเสาร์',
+          ],
+          shortDays: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ', 'ศ.', 'ส.'],
+          months: [
+            'มกราคม',
+            'กุมภาพันธ์',
+            'มีนาคม',
+            'เมษายน',
+            'พฤษภาคม',
+            'มิถุนายน',
+            'กรกฎาคม',
+            'สิงหาคม',
+            'กันยายน',
+            'ตุลาคม',
+            'พฤศจิกายน',
+            'ธันวาคม',
+          ],
+          shortMonths: [
+            'ม.ค.',
+            'ก.พ.',
+            'มี.ค.',
+            'เม.ย.',
+            'พ.ค.',
+            'มิ.ย.',
+            'ก.ค.',
+            'ส.ค.',
+            'ก.ย.',
+            'ต.ค.',
+            'พ.ย.',
+            'ธ.ค.',
+          ],
+        },
+      });
+      expect(formatter(new Date(Date.UTC(2015, 11, 20)))).toEqual('วันอาทิตย์ 20 ธันวาคม 2015');
+    });
+  });
 });
