@@ -1,16 +1,6 @@
 import { TextStyle, Dimension } from './types';
 import createSVGNode from './createSVGNode';
 
-const SVG_NS = 'http://www.w3.org/2000/svg';
-const STYLE_FIELDS: (keyof TextStyle)[] = [
-  'font',
-  'fontWeight',
-  'fontStyle',
-  'fontSize',
-  'fontFamily',
-  'letterSpacing',
-];
-
 export interface GetTextDimensionInput {
   className?: string;
   container?: HTMLElement;
@@ -27,20 +17,9 @@ export default function getTextDimension(
 ): Dimension {
   const { text, className, style = {}, container = document.body } = input;
 
-  const svg = existingSVGNode || createSVGNode(container);
+  const svg = existingSVGNode || createSVGNode({ className, style, container });
   const textNode = svg.lastElementChild as SVGSVGElement;
   textNode.textContent = text;
-
-  if (className !== undefined && className !== null) {
-    textNode.setAttribute('class', className);
-  }
-
-  STYLE_FIELDS.filter(
-    (field: keyof TextStyle) => style[field] !== undefined && style[field] !== null,
-  ).forEach((field: keyof TextStyle) => {
-    textNode.style[field] = `${style[field]}`;
-  });
-
   const bbox = textNode.getBBox ? textNode.getBBox() : defaultDimension;
 
   if (!existingSVGNode) {
