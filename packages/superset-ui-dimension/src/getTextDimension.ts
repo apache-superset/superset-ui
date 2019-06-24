@@ -6,6 +6,7 @@ export interface GetTextDimensionInput {
   container?: HTMLElement;
   style?: TextStyle;
   text: string;
+  existingSVGNode?: SVGSVGElement;
 }
 
 const DEFAULT_DIMENSION = { height: 20, width: 100 };
@@ -13,9 +14,8 @@ const DEFAULT_DIMENSION = { height: 20, width: 100 };
 export default function getTextDimension(
   input: GetTextDimensionInput,
   defaultDimension: Dimension = DEFAULT_DIMENSION,
-  existingSVGNode?: SVGSVGElement,
 ): Dimension {
-  const { text, className, style = {}, container = document.body } = input;
+  const { text, className, style = {}, container = document.body, existingSVGNode } = input;
 
   const svg = existingSVGNode || createSVGNode({ className, style, container });
   const textNode = svg.lastElementChild as SVGSVGElement;
