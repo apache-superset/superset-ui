@@ -145,19 +145,13 @@ describe('getTextDimension(input)', () => {
     });
     it('reuses an existing svg element if provided', () => {
       const container = document.createElement('div');
-      const svg = createSVGNode(container);
+      const svg = createSVGNode({ input: container });
       const textNode = svg.lastElementChild as SVGSVGElement;
       expect(textNode.textContent).toEqual('');
-      getTextDimension(
-        {
-          text: SAMPLE_TEXT,
-        },
-        {
-          height: 30,
-          width: 400,
-        },
-        svg,
-      );
+      getTextDimension({
+        text: SAMPLE_TEXT,
+        existingSVGNode: svg,
+      });
       expect(textNode.textContent).toEqual(SAMPLE_TEXT);
     });
   });
