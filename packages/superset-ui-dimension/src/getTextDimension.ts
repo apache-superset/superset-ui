@@ -17,7 +17,7 @@ export default function getTextDimension(
 ): Dimension {
   const { text, className, style = {}, container = document.body, existingSVGNode } = input;
 
-  const svg = existingSVGNode || createSVGNode({ className, style, container });
+  const svg = existingSVGNode || createSVGNode({ className, container, style });
   const textNode = svg.lastElementChild as SVGSVGElement;
   textNode.textContent = text;
   const bbox = textNode.getBBox ? textNode.getBBox() : defaultDimension;
