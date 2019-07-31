@@ -1,14 +1,7 @@
 import { TextStyle, Dimension } from './types';
-
-const SVG_NS = 'http://www.w3.org/2000/svg';
-const STYLE_FIELDS: (keyof TextStyle)[] = [
-  'font',
-  'fontWeight',
-  'fontStyle',
-  'fontSize',
-  'fontFamily',
-  'letterSpacing',
-];
+import createTextNode from './svg/createTextNode';
+import createHiddenSvgNode from './svg/createHiddenSvgNode';
+import getBBoxCeil from './svg/getBBoxCeil';
 
 export interface GetTextDimensionInput {
   className?: string;
@@ -17,39 +10,23 @@ export interface GetTextDimensionInput {
   text: string;
 }
 
-const DEFAULT_DIMENSION = { height: 20, width: 100 };
-
 export default function getTextDimension(
   input: GetTextDimensionInput,
-  defaultDimension: Dimension = DEFAULT_DIMENSION,
+  defaultDimension?: Dimension,
 ): Dimension {
-  const { text, className, style = {}, container = document.body } = input;
+  const { text, className, style, container = document.body } = input;
 
-  const textNode = document.createElementNS(SVG_NS, 'text');
-  textNode.textContent = text;
-
-  if (className !== undefined && className !== null) {
-    textNode.setAttribute('class', className);
+  // Empty string
+  if (text.length === 0) {
+    return { height: 0, width: 0 };
   }
 
-  STYLE_FIELDS.filter(
-    (field: keyof TextStyle) => style[field] !== undefined && style[field] !== null,
-  ).forEach((field: keyof TextStyle) => {
-    textNode.style[field] = `${style[field]}`;
-  });
+  const textNode = createTextNode({ className, style, text });
+  const svgNode = createHiddenSvgNode();
+  svgNode.appendChild(textNode);
+  container.appendChild(svgNode);
+  const dimension = getBBoxCeil(textNode, defaultDimension);
+  container.removeChild(svgNode);
 
-  const svg = document.createElementNS(SVG_NS, 'svg');
-  svg.style.position = 'absolute'; // so it won't disrupt page layout
-  svg.style.opacity = '0'; // and not visible
-  svg.style.pointerEvents = 'none'; // and not capturing mouse events
-  svg.appendChild(textNode);
-  container.appendChild(svg);
-
-  const bbox = textNode.getBBox ? textNode.getBBox() : defaultDimension;
-  container.removeChild(svg);
-
-  return {
-    height: Math.ceil(bbox.height),
-    width: Math.ceil(bbox.width),
-  };
+  return dimension;
 }

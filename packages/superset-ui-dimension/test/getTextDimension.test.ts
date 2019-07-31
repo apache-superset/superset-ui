@@ -1,12 +1,12 @@
 import { getTextDimension } from '../src/index';
-import addDummyFill, { SAMPLE_TEXT } from './addDummyFill';
+import { addDummyFill, removeDummyFill, SAMPLE_TEXT } from './getBBoxDummyFill';
 
 describe('getTextDimension(input)', () => {
   describe('returns default dimension if getBBox() is not available', () => {
     it('returns default value for default dimension', () => {
       expect(
         getTextDimension({
-          text: SAMPLE_TEXT,
+          text: SAMPLE_TEXT[0],
         }),
       ).toEqual({
         height: 20,
@@ -17,7 +17,7 @@ describe('getTextDimension(input)', () => {
       expect(
         getTextDimension(
           {
-            text: SAMPLE_TEXT,
+            text: SAMPLE_TEXT[0],
           },
           {
             height: 30,
@@ -31,23 +31,13 @@ describe('getTextDimension(input)', () => {
     });
   });
   describe('returns dimension of the given text', () => {
-    let originalFn: () => DOMRect;
-
-    beforeEach(() => {
-      // @ts-ignore - fix jsdom
-      originalFn = SVGElement.prototype.getBBox;
-      addDummyFill();
-    });
-
-    afterEach(() => {
-      // @ts-ignore - fix jsdom
-      SVGElement.prototype.getBBox = originalFn;
-    });
+    beforeEach(addDummyFill);
+    afterEach(removeDummyFill);
 
     it('takes text as argument', () => {
       expect(
         getTextDimension({
-          text: SAMPLE_TEXT,
+          text: SAMPLE_TEXT[0],
         }),
       ).toEqual({
         height: 20,
@@ -57,7 +47,7 @@ describe('getTextDimension(input)', () => {
     it('accepts provided class via className', () => {
       expect(
         getTextDimension({
-          text: SAMPLE_TEXT,
+          text: SAMPLE_TEXT[0],
           className: 'test-class',
         }),
       ).toEqual({
@@ -68,7 +58,7 @@ describe('getTextDimension(input)', () => {
     it('accepts provided style.font', () => {
       expect(
         getTextDimension({
-          text: SAMPLE_TEXT,
+          text: SAMPLE_TEXT[0],
           style: {
             font: 'italic 700 30px Lobster',
           },
@@ -81,7 +71,7 @@ describe('getTextDimension(input)', () => {
     it('accepts provided style.fontFamily', () => {
       expect(
         getTextDimension({
-          text: SAMPLE_TEXT,
+          text: SAMPLE_TEXT[0],
           style: {
             fontFamily: 'Lobster',
           },
@@ -94,7 +84,7 @@ describe('getTextDimension(input)', () => {
     it('accepts provided style.fontSize', () => {
       expect(
         getTextDimension({
-          text: SAMPLE_TEXT,
+          text: SAMPLE_TEXT[0],
           style: {
             fontSize: '40px',
           },
@@ -107,7 +97,7 @@ describe('getTextDimension(input)', () => {
     it('accepts provided style.fontStyle', () => {
       expect(
         getTextDimension({
-          text: SAMPLE_TEXT,
+          text: SAMPLE_TEXT[0],
           style: {
             fontStyle: 'italic',
           },
@@ -120,7 +110,7 @@ describe('getTextDimension(input)', () => {
     it('accepts provided style.fontWeight', () => {
       expect(
         getTextDimension({
-          text: SAMPLE_TEXT,
+          text: SAMPLE_TEXT[0],
           style: {
             fontWeight: 700,
           },
@@ -133,7 +123,7 @@ describe('getTextDimension(input)', () => {
     it('accepts provided style.letterSpacing', () => {
       expect(
         getTextDimension({
-          text: SAMPLE_TEXT,
+          text: SAMPLE_TEXT[0],
           style: {
             letterSpacing: '1.1',
           },
@@ -141,6 +131,16 @@ describe('getTextDimension(input)', () => {
       ).toEqual({
         height: 20,
         width: 221, // Ceiling(200 [baseWidth] * 1.1 [letterSpacing=1.1])
+      });
+    });
+    it('handle empty text', () => {
+      expect(
+        getTextDimension({
+          text: '',
+        }),
+      ).toEqual({
+        height: 0,
+        width: 0,
       });
     });
   });
