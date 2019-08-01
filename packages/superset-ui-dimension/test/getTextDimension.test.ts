@@ -1,5 +1,6 @@
 import { getTextDimension } from '../src/index';
 import { addDummyFill, removeDummyFill, SAMPLE_TEXT } from './getBBoxDummyFill';
+import promiseTimeout from '../../superset-ui-chart/test/components/promiseTimeout';
 
 describe('getTextDimension(input)', () => {
   describe('returns default dimension if getBBox() is not available', () => {
@@ -143,5 +144,16 @@ describe('getTextDimension(input)', () => {
         width: 0,
       });
     });
+  });
+  it('cleans up DOM', () => {
+    getTextDimension({
+      text: SAMPLE_TEXT[0],
+    });
+
+    expect(document.querySelectorAll('svg')).toHaveLength(1);
+
+    return promiseTimeout(() => {
+      expect(document.querySelector('svg')).toBeNull();
+    }, 600);
   });
 });

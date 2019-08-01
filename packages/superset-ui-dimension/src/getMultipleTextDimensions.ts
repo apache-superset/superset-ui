@@ -1,6 +1,6 @@
 import { TextStyle, Dimension } from './types';
 import createTextNode from './svg/createTextNode';
-import createHiddenSvgNode from './svg/createHiddenSvgNode';
+import { createHiddenSvgNode, removeHiddenSvgNode } from './svg/createHiddenSvgNode';
 import getBBoxCeil from './svg/getBBoxCeil';
 
 /**
@@ -17,7 +17,7 @@ export default function getMultipleTextDimensions(
   },
   defaultDimension?: Dimension,
 ): Dimension[] {
-  const { texts, className, style, container = document.body } = input;
+  const { texts, className, style, container } = input;
 
   const cache = new Map<string, Dimension>();
   let textNode: SVGTextElement | undefined;
@@ -36,9 +36,8 @@ export default function getMultipleTextDimensions(
     // Lazy creation of text and svg nodes
     if (!textNode) {
       textNode = createTextNode({ className, style });
-      svgNode = createHiddenSvgNode();
+      svgNode = createHiddenSvgNode(container);
       svgNode.appendChild(textNode);
-      container.appendChild(svgNode);
     }
 
     // Update text and get dimension
@@ -51,8 +50,12 @@ export default function getMultipleTextDimensions(
   });
 
   // Remove svg node, if any
-  if (svgNode) {
-    container.removeChild(svgNode);
+  if (svgNode && textNode) {
+    setTimeout(() => {
+      svgNode!.removeChild(textNode!);
+      removeHiddenSvgNode(container);
+      // eslint-disable-next-line no-magic-numbers
+    }, 500);
   }
 
   return dimensions;
