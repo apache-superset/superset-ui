@@ -1,7 +1,7 @@
 import { TextStyle, Dimension } from './types';
-import createTextNode from './svg/createTextNode';
-import { createHiddenSvgNode, removeHiddenSvgNode } from './svg/createHiddenSvgNode';
 import getBBoxCeil from './svg/getBBoxCeil';
+import { hiddenSvgFactory, textFactory } from './svg/factories';
+import updateTextNode from './svg/updateTextNode';
 
 /**
  * get dimensions of multiple texts with same style
@@ -35,13 +35,12 @@ export default function getMultipleTextDimensions(
 
     // Lazy creation of text and svg nodes
     if (!textNode) {
-      textNode = createTextNode({ className, style });
-      svgNode = createHiddenSvgNode(container);
-      svgNode.appendChild(textNode);
+      svgNode = hiddenSvgFactory.createInContainer(container);
+      textNode = textFactory.createInContainer(svgNode);
     }
 
     // Update text and get dimension
-    textNode.textContent = text;
+    updateTextNode(textNode, { className, style, text });
     const dimension = getBBoxCeil(textNode, defaultDimension);
     // Store result to cache
     cache.set(text, dimension);
@@ -52,8 +51,8 @@ export default function getMultipleTextDimensions(
   // Remove svg node, if any
   if (svgNode && textNode) {
     setTimeout(() => {
-      svgNode!.removeChild(textNode!);
-      removeHiddenSvgNode(container);
+      textFactory.removeFromContainer(svgNode);
+      hiddenSvgFactory.removeFromContainer(container);
       // eslint-disable-next-line no-magic-numbers
     }, 500);
   }

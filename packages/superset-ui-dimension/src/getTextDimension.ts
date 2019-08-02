@@ -1,7 +1,7 @@
 import { TextStyle, Dimension } from './types';
-import createTextNode from './svg/createTextNode';
-import { createHiddenSvgNode, removeHiddenSvgNode } from './svg/createHiddenSvgNode';
+import updateTextNode from './svg/updateTextNode';
 import getBBoxCeil from './svg/getBBoxCeil';
+import { hiddenSvgFactory, textFactory } from './svg/factories';
 
 export interface GetTextDimensionInput {
   className?: string;
@@ -21,14 +21,14 @@ export default function getTextDimension(
     return { height: 0, width: 0 };
   }
 
-  const textNode = createTextNode({ className, style, text });
-  const svgNode = createHiddenSvgNode(container);
-  svgNode.appendChild(textNode);
+  const svgNode = hiddenSvgFactory.createInContainer(container);
+  const textNode = textFactory.createInContainer(svgNode);
+  updateTextNode(textNode, { className, style, text });
   const dimension = getBBoxCeil(textNode, defaultDimension);
 
   setTimeout(() => {
-    svgNode.removeChild(textNode);
-    removeHiddenSvgNode(container);
+    textFactory.removeFromContainer(svgNode);
+    hiddenSvgFactory.removeFromContainer(container);
     // eslint-disable-next-line no-magic-numbers
   }, 500);
 
