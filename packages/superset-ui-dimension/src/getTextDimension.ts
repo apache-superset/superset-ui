@@ -26,6 +26,13 @@ export default function getTextDimension(
   updateTextNode(textNode, { className, style, text });
   const dimension = getBBoxCeil(textNode, defaultDimension);
 
+  // The nodes are added to the DOM briefly only to make getBBox works.
+  // (If not added to DOM getBBox will always return 0x0.)
+  // After that the svg nodes are not needed.
+  // We delay its removal in case there are subsequent calls to this function
+  // that can reuse the svg nodes.
+  // Experiments have shown that reusing existing nodes
+  // instead of deleting and adding new ones can save lot of time.
   setTimeout(() => {
     textFactory.removeFromContainer(svgNode);
     hiddenSvgFactory.removeFromContainer(container);

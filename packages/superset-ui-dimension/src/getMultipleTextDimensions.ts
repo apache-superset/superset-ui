@@ -20,14 +20,12 @@ export default function getMultipleTextDimensions(
   const { texts, className, style, container } = input;
 
   const cache = new Map<string, Dimension>();
+  // for empty string
+  cache.set('', { height: 0, width: 0 });
   let textNode: SVGTextElement | undefined;
   let svgNode: SVGSVGElement | undefined;
 
   const dimensions = texts.map(text => {
-    // Empty string
-    if (text.length === 0) {
-      return { height: 0, width: 0 };
-    }
     // Check if this string has been computed already
     if (cache.has(text)) {
       return cache.get(text) as Dimension;
@@ -50,6 +48,13 @@ export default function getMultipleTextDimensions(
 
   // Remove svg node, if any
   if (svgNode && textNode) {
+    // The nodes are added to the DOM briefly only to make getBBox works.
+    // (If not added to DOM getBBox will always return 0,0.)
+    // After that the svg nodes are not needed.
+    // We delay its removal in case there are subsequent calls to this function
+    // that can reuse the svg nodes.
+    // Experiments have shown that reusing existing nodes
+    // instead of deleting and adding new ones can save lot of time.
     setTimeout(() => {
       textFactory.removeFromContainer(svgNode);
       hiddenSvgFactory.removeFromContainer(container);
