@@ -49,7 +49,7 @@ export default function getMultipleTextDimensions(
   // Remove svg node, if any
   if (svgNode && textNode) {
     // The nodes are added to the DOM briefly only to make getBBox works.
-    // (If not added to DOM getBBox will always return 0,0.)
+    // (If not added to DOM getBBox will always return 0x0.)
     // After that the svg nodes are not needed.
     // We delay its removal in case there are subsequent calls to this function
     // that can reuse the svg nodes.

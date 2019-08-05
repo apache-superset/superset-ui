@@ -1,5 +1,5 @@
 export default class LazyFactory<T extends HTMLElement | SVGElement> {
-  private cache = new Map<
+  private activeNodes = new Map<
     HTMLElement | SVGElement,
     {
       counter: number;
@@ -14,8 +14,8 @@ export default class LazyFactory<T extends HTMLElement | SVGElement> {
   }
 
   createInContainer(container: HTMLElement | SVGElement = document.body) {
-    if (this.cache.has(container)) {
-      const entry = this.cache.get(container)!;
+    if (this.activeNodes.has(container)) {
+      const entry = this.activeNodes.get(container)!;
       entry.counter += 1;
 
       return entry.node;
@@ -23,18 +23,18 @@ export default class LazyFactory<T extends HTMLElement | SVGElement> {
 
     const node = this.factoryFn();
     container.appendChild(node);
-    this.cache.set(container, { counter: 1, node });
+    this.activeNodes.set(container, { counter: 1, node });
 
     return node;
   }
 
   removeFromContainer(container: HTMLElement | SVGElement = document.body) {
-    if (this.cache.has(container)) {
-      const entry = this.cache.get(container)!;
+    if (this.activeNodes.has(container)) {
+      const entry = this.activeNodes.get(container)!;
       entry.counter -= 1;
       if (entry.counter === 0) {
         container.removeChild(entry.node);
-        this.cache.delete(container);
+        this.activeNodes.delete(container);
       }
     }
   }
