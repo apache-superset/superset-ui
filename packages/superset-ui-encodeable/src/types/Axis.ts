@@ -2,12 +2,16 @@
 
 import { DateTime } from './Inherit';
 
+/** Axis orientation */
 export type AxisOrient = 'top' | 'bottom' | 'left' | 'right';
 
+/** Strategy for handling label overlap */
 export type LabelOverlapStrategy = 'auto' | 'flat' | 'rotate';
 
 export interface CoreAxis {
+  /** Tick label format */
   format?: string;
+  /** Angle to rotate the tick labels */
   labelAngle: number;
   /**
    * Indicates if the first and last axis labels should be aligned flush with the scale range.
@@ -18,12 +22,17 @@ export interface CoreAxis {
    * and also push them 2 pixels outward from the center of the axis.
    * The additional adjustment can sometimes help the labels better visually group with corresponding axis ticks. */
   labelFlush?: boolean | number;
+  /** Strategy for handling label overlap */
   labelOverlap: LabelOverlapStrategy;
   /** The padding, in pixels, between axis and text labels. */
   labelPadding: number;
+  /** Axis orientation */
   orient: AxisOrient;
+  /** Estimated number of desired ticks */
   tickCount: number;
+  /** Tick length */
   tickSize?: number;
+  /** Axis title */
   title?: string | boolean;
   /** Explicitly set the visible axis tick values. */
   values?: string[] | number[] | boolean[] | DateTime[];

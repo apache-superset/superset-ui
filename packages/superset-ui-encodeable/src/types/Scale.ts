@@ -8,6 +8,7 @@ export interface Scale<Output extends Value = Value> {
   range?: Output[];
   clamp?: boolean;
   nice?: boolean;
+  /** color scheme name */
   scheme?: string | SchemeParams;
   /** vega-lite does not have this */
   namespace?: string;

@@ -39,12 +39,18 @@ export type MarkPropChannelDef<Output extends Value = Value> =
 
 export type TextChannelDef<Output extends Value = Value> = TextFieldDef | ValueDef<Output>;
 
-export type NonValueDef<Output extends Value = Value> =
+export type ChannelDef<Output extends Value = Value> =
+  | ValueDef<Output>
   | XFieldDef<Output>
   | YFieldDef<Output>
   | MarkPropFieldDef<Output>
   | TextFieldDef;
 
-export type ChannelDef<Output extends Value = Value> = NonValueDef<Output> | ValueDef<Output>;
+/** Channel definitions that are not constant value */
+export type NonValueDef<Output extends Value = Value> = Exclude<
+  ChannelDef<Output>,
+  ValueDef<Output>
+>;
 
+/** Pattern for extracting output type from channel definition */
 export type ExtractChannelOutput<Def> = Def extends ChannelDef<infer Output> ? Output : never;
