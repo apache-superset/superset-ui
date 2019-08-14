@@ -1,6 +1,6 @@
 import { TimeFormatter } from '@superset-ui/time-format';
 import { NumberFormatter } from '@superset-ui/number-format';
-import { ValueDef, Value, Type } from './Inherit';
+import { ValueDef, Value, Type } from './VegaLite';
 import { WithScale } from './Scale';
 import { WithXAxis, WithYAxis, WithAxis } from './Axis';
 import { WithLegend } from './Legend';

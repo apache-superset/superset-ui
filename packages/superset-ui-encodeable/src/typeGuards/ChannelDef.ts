@@ -1,4 +1,4 @@
-import { Value, ValueDef } from '../types/Inherit';
+import { Value, ValueDef } from '../types/VegaLite';
 import {
   ChannelDef,
   NonValueDef,

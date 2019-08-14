@@ -1,5 +1,5 @@
 import { XFieldDef, YFieldDef, MarkPropChannelDef, TextChannelDef } from './ChannelDef';
-import { Value } from './Inherit';
+import { Value } from './VegaLite';
 
 /** Possible input for a channel */
 export type ChannelInput = number | string | boolean | null | Date | undefined;

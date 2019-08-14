@@ -1,4 +1,4 @@
-import { Value, DateTime, ScaleType, SchemeParams } from './Inherit';
+import { Value, DateTime, ScaleType, SchemeParams } from './VegaLite';
 
 export interface Scale<Output extends Value = Value> {
   type?: ScaleType;

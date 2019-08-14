@@ -1,6 +1,6 @@
 /** See https://vega.github.io/vega-lite/docs/axis.html */
 
-import { DateTime } from './Inherit';
+import { DateTime } from './VegaLite';
 
 /** Axis orientation */
 export type AxisOrient = 'top' | 'bottom' | 'left' | 'right';
