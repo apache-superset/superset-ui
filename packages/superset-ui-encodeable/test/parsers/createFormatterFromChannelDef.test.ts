@@ -20,4 +20,8 @@ describe('createFormatterFromChannelDef(type, format)', () => {
     const formatter = createFormatterFromChannelDef({ type: 'nominal', field: 'restaurantName' });
     expect(formatter('Lazy Burger')).toEqual('Lazy Burger');
   });
+  it('uses fallback for channel definitions without type', () => {
+    const formatter = createFormatterFromChannelDef({ value: 'Lettuce' });
+    expect(formatter('Lazy Burger')).toEqual('Lazy Burger');
+  });
 });
