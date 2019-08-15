@@ -2,9 +2,8 @@ import { ChannelDef } from '../types/ChannelDef';
 import { isTypedFieldDef } from '../typeGuards/ChannelDef';
 import fallbackFormatter from './fallbackFormatter';
 import createFormatterFromFieldTypeAndFormat from './createFormatterFromFieldTypeAndFormat';
-import { Value } from '../types/VegaLite';
 
-export default function createFormatterFromChannelDef<V extends Value>(definition: ChannelDef<V>) {
+export default function createFormatterFromChannelDef(definition: ChannelDef) {
   if (isTypedFieldDef(definition)) {
     const { type, format = '' } = definition;
 
