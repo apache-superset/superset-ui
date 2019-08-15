@@ -65,7 +65,7 @@ export default class ChartProps<
   formData: CamelCaseFormData;
   rawFormData: SnakeCaseFormData | CamelCaseFormData;
   height: number;
-  hooks: PlainObject;
+  hooks: Hooks;
   queryData: QueryData;
   width: number;
 
