@@ -28,6 +28,8 @@
   "private": true,
   "dependencies": {
     "lodash": "^4.17.15",
+    "@types/d3-scale": "^2.1.1",
+    "d3-scale": "^3.0.1",
     "vega": "^5.4.0",
     "vega-lite": "^3.4.0"
   },
