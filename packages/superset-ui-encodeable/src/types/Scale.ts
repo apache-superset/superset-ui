@@ -30,7 +30,7 @@ export interface WithScale<Output extends Value = Value> {
   scale?: Scale<Output>;
 }
 
-export interface ScaleTypeToD3ScaleType<Output> {
+export interface ScaleTypeToD3ScaleType<Output extends Value = Value> {
   [ScaleType.LINEAR]: ScaleLinear<Output, Output>;
   [ScaleType.LOG]: ScaleLogarithmic<Output, Output>;
   [ScaleType.POW]: ScalePower<Output, Output>;

@@ -1,15 +1,21 @@
 import { Type, ScaleType } from '../types/VegaLite';
 import { ChannelType } from '../types/Channel';
 
+/**
+ * Sometimes scale type is not specified but can be inferred
+ * from other information.
+ * See https://vega.github.io/vega-lite/docs/scale.html
+ * @param channelType type of the channel
+ * @param fieldType type of the field
+ * @param isBinned is value binned
+ */
 // eslint-disable-next-line complexity
 export default function inferScaleType(
-  fieldType: Type | undefined,
   channelType: ChannelType,
+  fieldType?: Type,
   isBinned: boolean = false,
 ): ScaleType | undefined {
-  if (typeof fieldType === 'undefined') {
-    return undefined;
-  } else if (fieldType === 'nominal' || fieldType === 'ordinal') {
+  if (fieldType === 'nominal' || fieldType === 'ordinal') {
     switch (channelType) {
       // For positional (x and y) ordinal and ordinal fields,
       // "point" is the default scale type for all marks
@@ -36,7 +42,7 @@ export default function inferScaleType(
       case 'Numeric':
         return ScaleType.LINEAR;
       case 'Color':
-        return isBinned ? ScaleType.LINEAR : ScaleType.BIN_ORDINAL;
+        return isBinned ? ScaleType.BIN_ORDINAL : ScaleType.LINEAR;
       default:
     }
   } else if (fieldType === 'temporal') {
@@ -46,7 +52,7 @@ export default function inferScaleType(
       case 'X':
       case 'Y':
       case 'Numeric':
-        return ScaleType.TIME;
+        return ScaleType.UTC;
       case 'Color':
         return ScaleType.LINEAR;
       default:
