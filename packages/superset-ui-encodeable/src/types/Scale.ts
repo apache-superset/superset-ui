@@ -11,6 +11,7 @@ import {
   ScaleBand,
 } from 'd3-scale';
 import { Value, DateTime, ScaleType, SchemeParams } from './VegaLite';
+import { HasToString } from './Base';
 
 export interface Scale<Output extends Value = Value> {
   type?: ScaleType;
@@ -41,10 +42,10 @@ export interface ScaleTypeToD3ScaleType<Output extends Value = Value> {
   [ScaleType.QUANTILE]: ScaleQuantile<Output>;
   [ScaleType.QUANTIZE]: ScaleQuantize<Output>;
   [ScaleType.THRESHOLD]: ScaleThreshold<number | string | Date, Output>;
-  [ScaleType.BIN_ORDINAL]: ScaleOrdinal<{ toString(): string }, Output>;
-  [ScaleType.ORDINAL]: ScaleOrdinal<{ toString(): string }, Output>;
-  [ScaleType.POINT]: ScalePoint<{ toString(): string }>;
-  [ScaleType.BAND]: ScaleBand<{ toString(): string }>;
+  [ScaleType.BIN_ORDINAL]: ScaleOrdinal<HasToString, Output>;
+  [ScaleType.ORDINAL]: ScaleOrdinal<HasToString, Output>;
+  [ScaleType.POINT]: ScalePoint<HasToString>;
+  [ScaleType.BAND]: ScaleBand<HasToString>;
 }
 
 /** Each ScaleCategory contains one or more ScaleType */

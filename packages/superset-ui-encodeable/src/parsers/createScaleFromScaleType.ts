@@ -13,6 +13,7 @@ import {
   scaleBand,
 } from 'd3-scale';
 import { ScaleType } from '../types/VegaLite';
+import { HasToString } from '../types/Base';
 
 // eslint-disable-next-line complexity
 export default function createScaleFromScaleType<Output>(type: ScaleType) {
@@ -37,11 +38,11 @@ export default function createScaleFromScaleType<Output>(type: ScaleType) {
       return scaleThreshold<number | string | Date, Output>();
     case ScaleType.BIN_ORDINAL:
     case ScaleType.ORDINAL:
-      return scaleOrdinal<{ toString(): string }, Output>();
+      return scaleOrdinal<HasToString, Output>();
     case ScaleType.POINT:
-      return scalePoint<{ toString(): string }>();
+      return scalePoint<HasToString>();
     case ScaleType.BAND:
-      return scaleBand<{ toString(): string }>();
+      return scaleBand<HasToString>();
     default:
       return undefined;
   }
