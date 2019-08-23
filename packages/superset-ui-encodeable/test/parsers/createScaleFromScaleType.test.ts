@@ -14,4 +14,11 @@ describe('createScaleFromScaleType(type)', () => {
     expect(scale(10)).toEqual(5.5);
     expect(scale(100)).toEqual(10);
   });
+  it('creates power scale', () => {
+    const scale = createScaleFromScaleType<number>('pow');
+    scale.domain([0, 100]);
+    scale.range([1, 10]);
+    expect(scale(10)).toEqual(5.5);
+    expect(scale(100)).toEqual(10);
+  });
 });
