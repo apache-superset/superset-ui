@@ -42,6 +42,9 @@ describe('NumberFormatterRegistry', () => {
     it('return the value with the specified format', () => {
       expect(registry.format('.2f', 100)).toEqual('100.00');
       expect(registry.format(',d', 100)).toEqual('100');
+      expect(registry.format('DURATION', 1000)).toEqual('1s');
+      expect(registry.format('DURATION_MS', 1000)).toEqual('1s');
+      expect(registry.format('DURATION_S', 1)).toEqual('1s');
     });
   });
 });
