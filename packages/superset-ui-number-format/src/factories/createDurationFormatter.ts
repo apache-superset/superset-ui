@@ -1,6 +1,5 @@
 import prettyMsFormatter from 'pretty-ms';
 import NumberFormatter from '../NumberFormatter';
-import NumberFormats from '../NumberFormats';
 
 export default function createDurationFormatter(
   config: {
@@ -8,14 +7,14 @@ export default function createDurationFormatter(
     id?: string;
     label?: string;
     multiplier?: number;
-  } = {},
+  } & prettyMsFormatter.Options = {},
 ) {
-  const { description, id, label, multiplier = 1 } = config;
+  const { description, id, label, multiplier = 1, ...prettyMsOptions } = config;
 
   return new NumberFormatter({
     description,
-    formatFunc: value => prettyMsFormatter(value * multiplier),
-    id: id || NumberFormats.DURATION,
+    formatFunc: value => prettyMsFormatter(value * multiplier, prettyMsOptions),
+    id: id || 'duration_format',
     label: label || `Duration formatter`,
   });
 }

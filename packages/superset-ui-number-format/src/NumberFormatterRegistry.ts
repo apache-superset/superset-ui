@@ -1,6 +1,5 @@
 import { RegistryWithDefaultKey, OverwritePolicy } from '@superset-ui/core';
 import createD3NumberFormatter from './factories/createD3NumberFormatter';
-import createDurationFormatter from './factories/createDurationFormatter';
 import createSmartNumberFormatter from './factories/createSmartNumberFormatter';
 import NumberFormats from './NumberFormats';
 import NumberFormatter from './NumberFormatter';
@@ -15,9 +14,6 @@ export default class NumberFormatterRegistry extends RegistryWithDefaultKey<
       overwritePolicy: OverwritePolicy.WARN,
     });
 
-    this.registerValue(NumberFormats.DURATION, createDurationFormatter());
-    this.registerValue(NumberFormats.DURATION_MS, createDurationFormatter({ multiplier: 1 }));
-    this.registerValue(NumberFormats.DURATION_S, createDurationFormatter({ multiplier: 1000 }));
     this.registerValue(NumberFormats.SMART_NUMBER, createSmartNumberFormatter());
     this.registerValue(
       NumberFormats.SMART_NUMBER_SIGNED,

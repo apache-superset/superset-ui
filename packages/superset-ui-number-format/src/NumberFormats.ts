@@ -3,10 +3,6 @@ const DOLLAR_SIGNED = '+$,.2f';
 const DOLLAR_ROUND = '$,d';
 const DOLLAR_ROUND_SIGNED = '+$,d';
 
-const DURATION = 'DURATION';
-const DURATION_MS = 'DURATION_MS';
-const DURATION_S = 'DURATION_S';
-
 const FLOAT_1_POINT = ',.1f';
 const FLOAT_2_POINT = ',.2f';
 const FLOAT_3_POINT = ',.3f';
@@ -43,9 +39,6 @@ const NumberFormats = {
   DOLLAR_ROUND,
   DOLLAR_ROUND_SIGNED,
   DOLLAR_SIGNED,
-  DURATION,
-  DURATION_MS,
-  DURATION_S,
   FLOAT,
   FLOAT_1_POINT,
   FLOAT_2_POINT,
