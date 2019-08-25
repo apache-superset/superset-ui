@@ -8,7 +8,7 @@ import {
   continuousScaleTypesSet,
 } from './scaleCategories';
 
-const pointOrBand: ScaleType[] = ['point', 'band'];
+const pointOrBand: ScaleType[] = [ScaleType.POINT, ScaleType.BAND];
 const pointOrBandSet = new Set(pointOrBand);
 const exceptPointOrBand = allScaleTypes.filter(type => !pointOrBandSet.has(type));
 const exceptPointOrBandSet = new Set(exceptPointOrBand);
@@ -16,28 +16,28 @@ const continuousOrPointOrBandSet = new Set(continuousScaleTypes.concat(pointOrBa
 
 const zeroSet = new Set(continuousDomainScaleTypes);
 // log scale cannot have zero value
-zeroSet.delete('log');
+zeroSet.delete(ScaleType.LOG);
 // zero is not meaningful for time
-zeroSet.delete('time');
-zeroSet.delete('utc');
+zeroSet.delete(ScaleType.TIME);
+zeroSet.delete(ScaleType.UTC);
 // threshold requires custom domain so zero does not matter
-zeroSet.delete('threshold');
+zeroSet.delete(ScaleType.THRESHOLD);
 // quantile depends on distribution so zero does not matter
-zeroSet.delete('quantile');
+zeroSet.delete(ScaleType.QUANTILE);
 
 const supportedScaleTypes: Record<keyof CombinedScaleConfig, Set<ScaleType>> = {
   align: pointOrBandSet,
-  base: new Set(['log']),
-  bins: new Set(exceptPointOrBand.filter(type => type !== 'ordinal')),
+  base: new Set([ScaleType.LOG]),
+  bins: new Set(exceptPointOrBand.filter(type => type !== ScaleType.ORDINAL)),
   clamp: continuousScaleTypesSet,
-  constant: new Set(['symlog']),
+  constant: new Set([ScaleType.SYMLOG]),
   domain: allScaleTypesSet,
-  exponent: new Set(['pow']),
+  exponent: new Set([ScaleType.POW]),
   interpolate: exceptPointOrBandSet,
-  namespace: new Set(['ordinal']),
-  nice: new Set(continuousScaleTypes.concat(['quantize', 'threshold'])),
+  namespace: new Set([ScaleType.ORDINAL]),
+  nice: new Set(continuousScaleTypes.concat([ScaleType.QUANTIZE, ScaleType.THRESHOLD])),
   padding: continuousOrPointOrBandSet,
-  paddingInner: new Set(['band']),
+  paddingInner: new Set([ScaleType.BAND]),
   paddingOuter: pointOrBandSet,
   range: allScaleTypesSet,
   reverse: allScaleTypesSet,
