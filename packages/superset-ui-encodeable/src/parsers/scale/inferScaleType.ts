@@ -1,9 +1,9 @@
-import { Type, ScaleType } from '../types/VegaLite';
-import { ChannelType } from '../types/Channel';
+import { Type, ScaleType } from '../../types/VegaLite';
+import { ChannelType } from '../../types/Channel';
 
 /**
  * Sometimes scale type is not specified but can be inferred
- * from other information.
+ * from other fields.
  * See https://vega.github.io/vega-lite/docs/scale.html
  * @param channelType type of the channel
  * @param fieldType type of the field

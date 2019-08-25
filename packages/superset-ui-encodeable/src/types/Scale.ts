@@ -13,14 +13,14 @@ import {
 import { Value, DateTime, ScaleType, Scale as VegaLiteScale } from './VegaLite';
 import { HasToString } from './Base';
 
-// Pick fields inherited from vega-lite
-// and overrides a few fields.
+// Pick properties inherited from vega-lite
+// and overrides a few properties.
 // Then make the specific scales pick
-// from this base interface to share field documentation
-// (which is useful for auto-complete)
-// and add `type` field as discriminant.
+// from this interface to share property documentation
+// (which is useful for auto-complete/intellisense)
+// and add `type` property as discriminant of union type.
 
-interface BaseScale<Output extends Value = Value>
+export interface CombinedScaleConfig<Output extends Value = Value>
   extends Pick<
     VegaLiteScale,
     | 'align'
@@ -49,14 +49,14 @@ interface BaseScale<Output extends Value = Value>
 
 export interface LinearScaleConfig<Output extends Value = Value>
   extends Pick<
-    BaseScale<Output>,
+    CombinedScaleConfig<Output>,
     | 'domain'
     | 'range'
-    | 'reverse'
     | 'clamp'
     | 'interpolate'
     | 'nice'
     | 'padding'
+    | 'reverse'
     | 'round'
     | 'scheme'
     | 'zero'
@@ -66,10 +66,12 @@ export interface LinearScaleConfig<Output extends Value = Value>
 
 export interface LogScaleConfig<Output extends Value = Value>
   extends Pick<
-    BaseScale<Output>,
+    CombinedScaleConfig<Output>,
+    | 'domain'
+    | 'range'
+    | 'base'
     | 'bins'
     | 'clamp'
-    | 'exponent'
     | 'interpolate'
     | 'nice'
     | 'padding'
@@ -83,23 +85,45 @@ export interface LogScaleConfig<Output extends Value = Value>
 
 export interface PowScaleConfig<Output extends Value = Value>
   extends Pick<
-    BaseScale<Output>,
-    'base' | 'bins' | 'clamp' | 'interpolate' | 'nice' | 'padding' | 'reverse' | 'round' | 'scheme'
+    CombinedScaleConfig<Output>,
+    | 'domain'
+    | 'range'
+    | 'bins'
+    | 'clamp'
+    | 'exponent'
+    | 'interpolate'
+    | 'nice'
+    | 'padding'
+    | 'reverse'
+    | 'round'
+    | 'scheme'
   > {
   type: 'pow';
 }
 
 export interface SqrtScaleConfig<Output extends Value = Value>
   extends Pick<
-    BaseScale<Output>,
-    'bins' | 'clamp' | 'interpolate' | 'nice' | 'padding' | 'reverse' | 'round' | 'scheme' | 'zero'
+    CombinedScaleConfig<Output>,
+    | 'domain'
+    | 'range'
+    | 'bins'
+    | 'clamp'
+    | 'interpolate'
+    | 'nice'
+    | 'padding'
+    | 'reverse'
+    | 'round'
+    | 'scheme'
+    | 'zero'
   > {
   type: 'sqrt';
 }
 
 export interface SymlogScaleConfig<Output extends Value = Value>
   extends Pick<
-    BaseScale<Output>,
+    CombinedScaleConfig<Output>,
+    | 'domain'
+    | 'range'
     | 'bins'
     | 'clamp'
     | 'constant'
@@ -116,59 +140,95 @@ export interface SymlogScaleConfig<Output extends Value = Value>
 
 export interface TimeScaleConfig<Output extends Value = Value>
   extends Pick<
-    BaseScale<Output>,
-    'bins' | 'clamp' | 'interpolate' | 'nice' | 'padding' | 'reverse' | 'round' | 'scheme'
+    CombinedScaleConfig<Output>,
+    | 'domain'
+    | 'range'
+    | 'bins'
+    | 'clamp'
+    | 'interpolate'
+    | 'nice'
+    | 'padding'
+    | 'reverse'
+    | 'round'
+    | 'scheme'
   > {
   type: 'time';
 }
 
 export interface UtcScaleConfig<Output extends Value = Value>
   extends Pick<
-    BaseScale<Output>,
-    'bins' | 'clamp' | 'interpolate' | 'nice' | 'padding' | 'reverse' | 'round' | 'scheme'
+    CombinedScaleConfig<Output>,
+    | 'domain'
+    | 'range'
+    | 'bins'
+    | 'clamp'
+    | 'interpolate'
+    | 'nice'
+    | 'padding'
+    | 'reverse'
+    | 'round'
+    | 'scheme'
   > {
   type: 'utc';
 }
 
 export interface QuantileScaleConfig<Output extends Value = Value>
-  extends Pick<BaseScale<Output>, 'bins' | 'interpolate' | 'reverse' | 'scheme'> {
+  extends Pick<
+    CombinedScaleConfig<Output>,
+    'domain' | 'range' | 'bins' | 'interpolate' | 'reverse' | 'scheme'
+  > {
   type: 'quantile';
 }
 
 export interface QuantizeScaleConfig<Output extends Value = Value>
-  extends Pick<BaseScale<Output>, 'bins' | 'interpolate' | 'nice' | 'reverse' | 'scheme' | 'zero'> {
+  extends Pick<
+    CombinedScaleConfig<Output>,
+    'domain' | 'range' | 'bins' | 'interpolate' | 'nice' | 'reverse' | 'scheme' | 'zero'
+  > {
   type: 'quantize';
 }
 
 export interface ThresholdScaleConfig<Output extends Value = Value>
-  extends Pick<BaseScale<Output>, 'bins' | 'interpolate' | 'nice' | 'reverse' | 'scheme'> {
+  extends Pick<
+    CombinedScaleConfig<Output>,
+    'domain' | 'range' | 'bins' | 'interpolate' | 'nice' | 'reverse' | 'scheme'
+  > {
   type: 'threshold';
 }
 
 export interface BinOrdinalScaleConfig<Output extends Value = Value>
-  extends Pick<BaseScale<Output>, 'bins' | 'interpolate' | 'reverse' | 'scheme'> {
-  type: 'bin_ordinal';
+  extends Pick<
+    CombinedScaleConfig<Output>,
+    'domain' | 'range' | 'bins' | 'interpolate' | 'reverse' | 'scheme'
+  > {
+  type: 'bin-ordinal';
 }
 
 export interface OrdinalScaleConfig<Output extends Value = Value>
-  extends Pick<BaseScale<Output>, 'interpolate' | 'reverse' | 'scheme'> {
+  extends Pick<
+    CombinedScaleConfig<Output>,
+    'domain' | 'range' | 'interpolate' | 'reverse' | 'scheme'
+  > {
   type: 'ordinal';
 }
 
 export interface PointScaleConfig<Output extends Value = Value>
-  extends Pick<BaseScale<Output>, 'align' | 'padding' | 'paddingOuter' | 'reverse' | 'round'> {
+  extends Pick<
+    CombinedScaleConfig<Output>,
+    'domain' | 'range' | 'align' | 'padding' | 'paddingOuter' | 'reverse' | 'round'
+  > {
   type: 'point';
 }
 
 export interface BandScaleConfig<Output extends Value = Value>
   extends Pick<
-    BaseScale<Output>,
-    'align' | 'padding' | 'paddingInner' | 'paddingOuter' | 'reverse' | 'round'
+    CombinedScaleConfig<Output>,
+    'domain' | 'range' | 'align' | 'padding' | 'paddingInner' | 'paddingOuter' | 'reverse' | 'round'
   > {
   type: 'band';
 }
 
-export type Scale<Output extends Value = Value> =
+export type ScaleConfig<Output extends Value = Value> =
   | LinearScaleConfig<Output>
   | LogScaleConfig<Output>
   | PowScaleConfig<Output>
@@ -176,11 +236,20 @@ export type Scale<Output extends Value = Value> =
   | SymlogScaleConfig<Output>
   | TimeScaleConfig<Output>
   | UtcScaleConfig<Output>
-  | QuantileScaleConfig<Output>;
+  | QuantileScaleConfig<Output>
+  | QuantizeScaleConfig<Output>
+  | ThresholdScaleConfig<Output>
+  | BinOrdinalScaleConfig<Output>
+  | OrdinalScaleConfig<Output>
+  | PointScaleConfig<Output>
+  | BandScaleConfig<Output>;
 
 export interface WithScale<Output extends Value = Value> {
-  scale?: Partial<Scale<Output>>;
+  scale?: Partial<ScaleConfig<Output>>;
 }
+
+/** Each ScaleCategory contains one or more ScaleType */
+export type ScaleCategory = 'continuous' | 'discrete' | 'discretizing';
 
 export interface ScaleTypeToD3ScaleType<Output extends Value = Value> {
   [ScaleType.LINEAR]: ScaleLinear<Output, Output>;
@@ -199,5 +268,14 @@ export interface ScaleTypeToD3ScaleType<Output extends Value = Value> {
   [ScaleType.BAND]: ScaleBand<HasToString>;
 }
 
-/** Each ScaleCategory contains one or more ScaleType */
-export type ScaleCategory = 'continuous' | 'discrete' | 'discretizing';
+export type D3Scale<Output extends Value = Value> =
+  | ScaleLinear<Output, Output>
+  | ScaleLogarithmic<Output, Output>
+  | ScalePower<Output, Output>
+  | ScaleTime<Output, Output>
+  | ScaleQuantile<Output>
+  | ScaleQuantize<Output>
+  | ScaleThreshold<number | string | Date, Output>
+  | ScaleOrdinal<HasToString, Output>
+  | ScalePoint<HasToString>
+  | ScaleBand<HasToString>;

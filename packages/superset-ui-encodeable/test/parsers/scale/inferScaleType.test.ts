@@ -1,4 +1,4 @@
-import inferScaleType from '../../src/parsers/inferScaleType';
+import inferScaleType from '../../../src/parsers/scale/inferScaleType';
 
 describe('inferScaleType(channelType, fieldType, isBinned)', () => {
   describe('for nominal and ordinal fields', () => {

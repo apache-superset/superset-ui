@@ -1,4 +1,4 @@
-import getScaleCategoryFromScaleType from '../../src/parsers/getScaleCategoryFromScaleType';
+import getScaleCategoryFromScaleType from '../../../src/parsers/scale/getScaleCategoryFromScaleType';
 
 describe('getScaleCategoryFromScaleType(scaleType)', () => {
   it('handles continuous types', () => {
