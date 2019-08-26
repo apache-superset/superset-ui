@@ -56,5 +56,20 @@ export const discretizingScaleTypesSet = new Set(discretizingScaleTypes);
 export const timeScaleTypes: ScaleType[] = [ScaleType.TIME, ScaleType.UTC];
 export const timeScaleTypesSet = new Set(timeScaleTypes);
 
-export const allScaleTypes = [];
+export const allScaleTypes = [
+  ScaleType.LINEAR,
+  ScaleType.LOG,
+  ScaleType.POW,
+  ScaleType.SQRT,
+  ScaleType.SYMLOG,
+  ScaleType.TIME,
+  ScaleType.UTC,
+  ScaleType.QUANTILE,
+  ScaleType.QUANTIZE,
+  ScaleType.THRESHOLD,
+  ScaleType.BIN_ORDINAL,
+  ScaleType.ORDINAL,
+  ScaleType.POINT,
+  ScaleType.BAND,
+];
 export const allScaleTypesSet = new Set(allScaleTypes);

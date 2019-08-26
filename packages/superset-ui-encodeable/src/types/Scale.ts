@@ -36,14 +36,27 @@ export interface CombinedScaleConfig<Output extends Value = Value>
     | 'paddingOuter'
     | 'reverse'
     | 'round'
-    | 'scheme'
     | 'zero'
   > {
   // These fields have different types from original vega-lite
+  /**
+   * domain of the scale
+   */
   domain?: number[] | string[] | boolean[] | DateTime[];
+  /**
+   * range of the scale
+   */
   range?: Output[];
-  // vega-lite does not have this field
-  /** color namespace */
+  /**
+   * name of the color scheme.
+   * vega-lite also support SchemeParams object
+   * but encodeable only accepts string at the moment
+   */
+  scheme?: string;
+  /**
+   * color namespace.
+   * vega-lite does not have this field
+   */
   namespace?: string;
 }
 
@@ -207,7 +220,7 @@ export interface BinOrdinalScaleConfig<Output extends Value = Value>
 export interface OrdinalScaleConfig<Output extends Value = Value>
   extends Pick<
     CombinedScaleConfig<Output>,
-    'domain' | 'range' | 'interpolate' | 'reverse' | 'scheme'
+    'domain' | 'range' | 'interpolate' | 'reverse' | 'scheme' | 'namespace'
   > {
   type: 'ordinal';
 }

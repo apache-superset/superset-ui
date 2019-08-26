@@ -12,6 +12,7 @@ import {
   scalePoint,
   scaleBand,
 } from 'd3-scale';
+import { getSequentialSchemeRegistry, CategoricalColorNamespace } from '@superset-ui/color';
 import { ScaleType, Value } from '../../types/VegaLite';
 import { HasToString } from '../../types/Base';
 import { ScaleConfig, D3Scale } from '../../types/Scale';
@@ -58,6 +59,28 @@ export default function createScaleFromScaleConfig<Output extends Value = Value>
   } else if (config.type === ScaleType.BIN_ORDINAL) {
     scale = scaleOrdinal<HasToString, Output>();
   } else if (config.type === ScaleType.ORDINAL) {
+    const { domain, range, reverse } = config;
+
+    // Handle categorical color scales
+    // An ordinal scale without specified range
+    // is assumed to be a color scale.
+    if (typeof range === 'undefined') {
+      const scheme = 'scheme' in config ? config.scheme : undefined;
+      const namespace = 'namespace' in config ? config.namespace : undefined;
+      const colorScale = CategoricalColorNamespace.getScale(scheme, namespace);
+
+      // If domain is also provided,
+      // ensure the nth item is assigned the nth color
+      if (typeof domain !== 'undefined') {
+        const { colors } = colorScale;
+        (reverse ? domain.slice().reverse() : domain).forEach((value: any, index: number) => {
+          colorScale.setColor(`${value}`, colors[index % colors.length]);
+        });
+      }
+
+      return colorScale;
+    }
+
     scale = scaleOrdinal<HasToString, Output>();
   } else if (config.type === ScaleType.POINT) {
     scale = scalePoint<HasToString>();
@@ -67,11 +90,19 @@ export default function createScaleFromScaleConfig<Output extends Value = Value>
 
   if (typeof scale !== 'undefined') {
     const { domain, range, reverse } = config;
+
     if (typeof domain !== 'undefined') {
       scale.domain(reverse ? domain.slice().reverse() : domain);
     }
+
     if (typeof range !== 'undefined') {
       scale.range(range);
+    } else if ('scheme' in config && typeof config.scheme !== 'undefined') {
+      const { scheme } = config;
+      const colorScheme = getSequentialSchemeRegistry().get(scheme);
+      if (typeof colorScheme !== 'undefined') {
+        scale.range(colorScheme.colors);
+      }
     }
 
     if ('align' in config && typeof config.align !== 'undefined' && 'align' in scale) {
@@ -90,7 +121,7 @@ export default function createScaleFromScaleConfig<Output extends Value = Value>
       scale.clamp(config.clamp);
     }
 
-    // TODO: Add support for scale.constant
+    // TODO: Add support for config.constant
     // once symlog is implemented
 
     if (
@@ -139,14 +170,6 @@ export default function createScaleFromScaleConfig<Output extends Value = Value>
 
     if ('round' in config && typeof config.round !== 'undefined' && 'round' in scale) {
       scale.round(config.round);
-    }
-
-    if ('scheme' in config && typeof config.scheme !== 'undefined') {
-      const { type, scheme } = config;
-      if (type === ScaleType.ORDINAL) {
-      } else {
-        // scale.range()
-      }
     }
 
     if ('zero' in config && typeof config.zero !== 'undefined') {
