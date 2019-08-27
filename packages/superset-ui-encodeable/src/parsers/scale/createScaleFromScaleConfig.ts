@@ -1,29 +1,40 @@
-import {
-  scaleLinear,
-  scaleLog,
-  scalePow,
-  scaleSqrt,
-  scaleTime,
-  scaleUtc,
-  scaleQuantile,
-  scaleQuantize,
-  scaleThreshold,
-  scaleOrdinal,
-  scalePoint,
-  scaleBand,
-} from 'd3-scale';
+import { interpolateRound } from 'd3-interpolate';
 import { getSequentialSchemeRegistry, CategoricalColorNamespace } from '@superset-ui/color';
 import { ScaleType, Value } from '../../types/VegaLite';
-import { HasToString } from '../../types/Base';
 import { ScaleConfig, D3Scale } from '../../types/Scale';
+import createScaleFromScaleType from './createScaleFromScaleType';
+import parseDateTime from '../parseDateTime';
+import inferElementTypeFromUnionOfArrayTypes from '../../utils/inferElementTypeFromUnionOfArrayTypes';
+import { isTimeScale } from '../../typeGuards/Scale';
 
-function applySequentialScheme<Output extends Value>(config: ScaleConfig<Output>, scale: D3Scale) {
-  if ('scheme' in config && typeof config.scheme !== 'undefined') {
-    const { scheme } = config;
-    const colorScheme = getSequentialSchemeRegistry().get(scheme);
-    if (typeof colorScheme !== 'undefined') {
-      scale.range(colorScheme.colors);
+function applyDomain<Output extends Value>(config: ScaleConfig<Output>, scale: D3Scale<Output>) {
+  const { domain, reverse, type } = config;
+  if (typeof domain !== 'undefined') {
+    const processedDomain = reverse ? domain.slice().reverse() : domain;
+    if (isTimeScale(scale, type)) {
+      scale.domain(
+        inferElementTypeFromUnionOfArrayTypes(processedDomain).map(d =>
+          typeof d === 'boolean' ? new Date() : parseDateTime(d),
+        ),
+      );
+    } else {
+      scale.domain(processedDomain);
     }
+  }
+}
+
+function applyRange<Output extends Value>(config: ScaleConfig<Output>, scale: D3Scale<Output>) {
+  const { range } = config;
+  if (typeof range === 'undefined') {
+    if ('scheme' in config && typeof config.scheme !== 'undefined') {
+      const { scheme } = config;
+      const colorScheme = getSequentialSchemeRegistry().get(scheme);
+      if (typeof colorScheme !== 'undefined') {
+        scale.range(colorScheme.colors as Output[]);
+      }
+    }
+  } else {
+    scale.range(range);
   }
 }
 
@@ -33,7 +44,7 @@ function applyAlign<Output extends Value>(config: ScaleConfig<Output>, scale: D3
   }
 }
 
-function applyBins<Output extends Value>(config: ScaleConfig<Output>, scale: D3Scale<Output>) {
+function applyBins<Output extends Value>(config: ScaleConfig<Output>) {
   if ('bins' in config && typeof config.bins !== 'undefined') {
     throw new Error('"scale.bins" is not implemented yet.');
   }
@@ -99,8 +110,13 @@ function applyPadding<Output extends Value>(config: ScaleConfig<Output>, scale: 
 }
 
 function applyRound<Output extends Value>(config: ScaleConfig<Output>, scale: D3Scale<Output>) {
-  if ('round' in config && typeof config.round !== 'undefined' && 'round' in scale) {
-    scale.round(config.round);
+  if ('round' in config && typeof config.round !== 'undefined') {
+    const roundableScale = scale as D3Scale<number>;
+    if ('round' in roundableScale) {
+      roundableScale.round(config.round);
+    } else if ('interpolate' in roundableScale) {
+      roundableScale.interpolate(interpolateRound);
+    }
   }
 }
 
@@ -110,46 +126,6 @@ function applyZero<Output extends Value>(config: ScaleConfig<Output>, scale: D3S
     if (typeof min === 'number' && typeof max === 'number') {
       scale.domain([Math.min(0, min), Math.max(0, max)]);
     }
-  }
-}
-
-// eslint-disable-next-line complexity
-function createScaleFromScaleType<Output extends Value>(config: ScaleConfig<Output>) {
-  switch (config.type) {
-    default:
-    case ScaleType.LINEAR:
-      return scaleLinear<Output>();
-    case ScaleType.LOG:
-      return typeof config.base === 'undefined'
-        ? scaleLog<Output>()
-        : scaleLog<Output>().base(config.base);
-    case ScaleType.POW:
-      return typeof config.exponent === 'undefined'
-        ? scalePow<Output>()
-        : scalePow<Output>().exponent(config.exponent);
-    case ScaleType.SQRT:
-      return scaleSqrt<Output>();
-    case ScaleType.SYMLOG:
-      // TODO: d3-scale typings does not include scaleSymlog yet
-      // needs to patch the declaration file before continue.
-      throw new Error('"scale.type = symlog" is not implemented yet.');
-    case ScaleType.TIME:
-      return scaleTime<Output>();
-    case ScaleType.UTC:
-      return scaleUtc<Output>();
-    case ScaleType.QUANTILE:
-      return scaleQuantile<Output>();
-    case ScaleType.QUANTIZE:
-      return scaleQuantize<Output>();
-    case ScaleType.THRESHOLD:
-      return scaleThreshold<number | string | Date, Output>();
-    case ScaleType.BIN_ORDINAL:
-    case ScaleType.ORDINAL:
-      return scaleOrdinal<HasToString, Output>();
-    case ScaleType.POINT:
-      return scalePoint<HasToString>();
-    case ScaleType.BAND:
-      return scaleBand<HasToString>();
   }
 }
 
@@ -175,28 +151,26 @@ export default function createScaleFromScaleConfig<Output extends Value>(
       });
     }
 
-    return colorScale;
+    // Need to manually cast here to make the unioned output types
+    // considered function.
+    // Otherwise have to add type guards before using the scale function.
+    //
+    //   const scaleFn = createScaleFromScaleConfig(...)
+    //   if (isAFunction(scaleFn)) const encodedValue = scaleFn(10)
+    //
+    // CategoricalColorScale is actually a function,
+    // but TypeScript is not smart enough to realize that by itself.
+    return (colorScale as unknown) as (val?: any) => string;
   }
 
   const scale = createScaleFromScaleType(config);
-
-  if (typeof domain !== 'undefined') {
-    scale.domain(reverse ? domain.slice().reverse() : domain);
-  }
-
-  if (typeof range === 'undefined') {
-    applySequentialScheme(config, scale);
-  } else {
-    scale.range(range);
-  }
-
+  // domain and range apply to all scales
+  applyDomain(config, scale);
+  applyRange(config, scale);
+  // Sort other properties alphabetically.
   applyAlign(config, scale);
-  applyBins(config, scale);
+  applyBins(config);
   applyClamp(config, scale);
-
-  // TODO: Add support for config.constant
-  // once symlog is implemented
-
   applyInterpolate(config, scale);
   applyNice(config, scale);
   applyPadding(config, scale);
