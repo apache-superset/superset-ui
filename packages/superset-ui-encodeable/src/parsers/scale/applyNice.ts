@@ -61,7 +61,7 @@ export default function applyNice<Output extends Value>(
       const { type } = config;
       if (typeof nice === 'string') {
         timeScale.nice(type === ScaleType.UTC ? utcIntervals[nice] : localTimeIntervals[nice]);
-      } else if ('interval' in nice) {
+      } else {
         const { interval, step } = nice;
         const parsedInterval = (type === ScaleType.UTC
           ? utcIntervals[interval]

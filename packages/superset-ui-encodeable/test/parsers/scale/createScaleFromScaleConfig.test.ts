@@ -139,14 +139,6 @@ describe('createScaleFromScaleConfig(config)', () => {
       });
       expect(scale(0)).toEqual(5);
     });
-    it('with zero (non-numeric)', () => {
-      const scale = createScaleFromScaleConfig({
-        type: 'linear',
-        domain: ['abc', 'def'],
-        zero: true,
-      });
-      expect(Number.isNaN(Number(scale(0)))).toBeTruthy();
-    });
     it('with interpolate', () => {
       expect(() =>
         createScaleFromScaleConfig({
