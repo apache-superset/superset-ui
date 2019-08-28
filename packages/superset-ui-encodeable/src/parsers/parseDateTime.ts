@@ -18,13 +18,13 @@ export default function parseDateTime(dateTime: string | number | DateTime) {
     .replace(/\)$/, '')
     .split(',')
     .map((chunk: string) => Number(chunk.trim())) as [
-    number,
-    number,
-    number,
-    number,
-    number,
-    number,
-    number,
+    number, // year
+    number, // month
+    number, // date
+    number, // hours
+    number, // minutes
+    number, // seconds
+    number, // milliseconds
   ];
 
   return isUtc ? new Date(Date.UTC(...dateParts)) : new Date(...dateParts);
