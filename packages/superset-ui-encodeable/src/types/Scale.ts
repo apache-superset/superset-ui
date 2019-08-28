@@ -10,7 +10,7 @@ import {
   ScalePoint,
   ScaleBand,
 } from 'd3-scale';
-import { Value, DateTime, ScaleType, Scale as VegaLiteScale } from './VegaLite';
+import { Value, DateTime, NiceTime, ScaleType, Scale as VegaLiteScale } from './VegaLite';
 import { HasToString } from './Base';
 
 // Pick properties inherited from vega-lite
@@ -29,7 +29,6 @@ export interface CombinedScaleConfig<Output extends Value = Value>
     | 'constant'
     | 'exponent'
     | 'interpolate'
-    | 'nice'
     | 'padding'
     | 'paddingInner'
     | 'paddingOuter'
@@ -57,6 +56,17 @@ export interface CombinedScaleConfig<Output extends Value = Value>
    * vega-lite does not have this field
    */
   namespace?: string;
+  /**
+   * Extending the domain so that it starts and ends on nice round values. This method typically modifies the scale’s domain, and may only extend the bounds to the nearest round value. Nicing is useful if the domain is computed from data and may be irregular. For example, for a domain of _[0.201479…, 0.996679…]_, a nice domain might be _[0.2, 1.0]_.
+   *
+   * For quantitative scales such as linear, `nice` can be either a boolean flag or a number. If `nice` is a number, it will represent a desired tick count. This allows greater control over the step size used to extend the bounds, guaranteeing that the returned ticks will exactly cover the domain.
+   *
+   * For temporal fields with time and utc scales, the `nice` value can be a string indicating the desired time interval. Legal values are `"millisecond"`, `"second"`, `"minute"`, `"hour"`, `"day"`, `"week"`, `"month"`, and `"year"`. Alternatively, `time` and `utc` scales can accept an object-valued interval specifier of the form `{"interval": "month", "step": 3}`, which includes a desired number of interval steps. Here, the domain would snap to quarter (Jan, Apr, Jul, Oct) boundaries.
+   *
+   * __Default value:__ `true` for unbinned _quantitative_ fields; `false` otherwise.
+   *
+   */
+  nice?: boolean | number | NiceTime | { interval: NiceTime; step: number };
 }
 
 export interface LinearScaleConfig<Output extends Value = Value>
@@ -146,7 +156,7 @@ export interface SymlogScaleConfig<Output extends Value = Value>
   type: 'symlog';
 }
 
-export interface TimeScaleConfig<Output extends Value = Value>
+interface BaseTimeScaleConfig<Output extends Value = Value>
   extends Pick<
     CombinedScaleConfig<Output>,
     | 'domain'
@@ -159,25 +169,15 @@ export interface TimeScaleConfig<Output extends Value = Value>
     | 'round'
     | 'scheme'
   > {
-  type: 'time';
   domain?: number[] | string[] | DateTime[];
 }
 
-export interface UtcScaleConfig<Output extends Value = Value>
-  extends Pick<
-    CombinedScaleConfig<Output>,
-    | 'domain'
-    | 'range'
-    | 'clamp'
-    | 'interpolate'
-    | 'nice'
-    | 'padding'
-    | 'reverse'
-    | 'round'
-    | 'scheme'
-  > {
+export interface TimeScaleConfig<Output extends Value = Value> extends BaseTimeScaleConfig<Output> {
+  type: 'time';
+}
+
+export interface UtcScaleConfig<Output extends Value = Value> extends BaseTimeScaleConfig<Output> {
   type: 'utc';
-  domain?: number[] | string[] | DateTime[];
 }
 
 export interface QuantileScaleConfig<Output extends Value = Value>

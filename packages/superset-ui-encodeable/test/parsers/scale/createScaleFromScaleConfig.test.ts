@@ -129,7 +129,6 @@ describe('createScaleFromScaleConfig(config)', () => {
         type: 'log',
         domain: [1, 100],
         range: [1, 10],
-        base: 10,
       });
       expect(scale(10)).toEqual(5.5);
       expect(scale(100)).toEqual(10);
