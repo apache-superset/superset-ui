@@ -63,12 +63,12 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
   private createChartProps = ChartProps.createSelector();
 
   private parseDimension = createSelector(
-    ({ inputWidth }: { inputWidth: string | number; inputHeight: string | number }) => inputWidth,
-    ({ inputHeight }) => inputHeight,
-    (inputWidth, inputHeight) => {
+    ({ width }: { width: string | number; height: string | number }) => width,
+    ({ height }) => height,
+    (width, height) => {
       // Parse them in case they are % or 'auto'
-      const widthInfo = parseLength(inputWidth);
-      const heightInfo = parseLength(inputHeight);
+      const widthInfo = parseLength(width);
+      const heightInfo = parseLength(height);
 
       const style = {
         height: heightInfo.isDynamic ? '100%' : heightInfo.value,
@@ -141,12 +141,8 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
   }
 
   render() {
-    const { width: inputWidth, height: inputHeight } = this.props as PropsWithDefault;
-
-    const { heightInfo, widthInfo, BoundingBox } = this.parseDimension({
-      inputHeight,
-      inputWidth,
-    });
+    const { heightInfo, widthInfo, BoundingBox } = this.parseDimension(this
+      .props as PropsWithDefault);
 
     // If any of the dimension is dynamic, get parent's dimension
     if (widthInfo.isDynamic || heightInfo.isDynamic) {

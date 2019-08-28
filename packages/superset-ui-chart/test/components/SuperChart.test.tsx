@@ -1,6 +1,6 @@
 /* eslint-disable import/first */
-import React, { Children } from 'react';
-import { mount, render } from 'enzyme';
+import React from 'react';
+import { mount } from 'enzyme';
 
 jest.mock('resize-observer-polyfill');
 // @ts-ignore
@@ -170,12 +170,12 @@ describe('SuperChart', () => {
   describe('supports Wrapper', () => {
     function MyWrapper({ width, height, children }: WrapperProps) {
       return (
-        <>
+        <div>
           <div className="wrapper-insert">
             {width}x{height}
           </div>
           {children}
-        </>
+        </div>
       );
     }
 
@@ -186,10 +186,13 @@ describe('SuperChart', () => {
 
       return promiseTimeout(() => {
         const renderedWrapper = wrapper.render();
+        expect(renderedWrapper.find('div.wrapper-insert')).toHaveLength(1);
+        expect(renderedWrapper.find('div.wrapper-insert').text()).toEqual('100x100');
         expect(renderedWrapper.find('div.test-component')).toHaveLength(1);
         expectDimension(renderedWrapper, 100, 100);
-      });
+      }, 100);
     });
+
     it('works when width and height are percent', () => {
       const wrapper = mount(
         <SuperChart
@@ -204,6 +207,8 @@ describe('SuperChart', () => {
 
       return promiseTimeout(() => {
         const renderedWrapper = wrapper.render();
+        expect(renderedWrapper.find('div.wrapper-insert')).toHaveLength(1);
+        expect(renderedWrapper.find('div.wrapper-insert').text()).toEqual('300x300');
         expect(renderedWrapper.find('div.test-component')).toHaveLength(1);
         expectDimension(renderedWrapper, 300, 300);
       }, 100);
