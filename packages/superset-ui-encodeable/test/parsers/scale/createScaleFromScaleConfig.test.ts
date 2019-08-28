@@ -251,6 +251,29 @@ describe('createScaleFromScaleConfig(config)', () => {
         new Date(2019, 7, 1),
       ]);
     });
+    it('with nice is interval object', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'time',
+        domain: [
+          {
+            year: 2019,
+            month: 7,
+            date: 5,
+          },
+          {
+            year: 2019,
+            month: 7,
+            date: 30,
+          },
+        ],
+        range: [0, 100],
+        nice: { interval: 'month', step: 2 },
+      });
+      expect((scale as ScaleTime<number, number>).domain()).toEqual([
+        new Date(2019, 6, 1),
+        new Date(2019, 8, 1),
+      ]);
+    });
   });
 
   describe('UTC scale', () => {
@@ -276,6 +299,31 @@ describe('createScaleFromScaleConfig(config)', () => {
       expect(scale(new Date(Date.UTC(2019, 6, 1)))).toEqual(0);
       expect(scale(new Date(Date.UTC(2019, 6, 16)))).toEqual(50);
       expect(scale(new Date(Date.UTC(2019, 6, 31)))).toEqual(100);
+    });
+    it('with nice is string', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'utc',
+        domain: [
+          {
+            year: 2019,
+            month: 7,
+            date: 5,
+            utc: true,
+          },
+          {
+            year: 2019,
+            month: 7,
+            date: 30,
+            utc: true,
+          },
+        ],
+        range: [0, 100],
+        nice: 'month',
+      });
+      expect((scale as ScaleTime<number, number>).domain()).toEqual([
+        new Date(Date.UTC(2019, 6, 1)),
+        new Date(Date.UTC(2019, 7, 1)),
+      ]);
     });
     it('with nice is interval object', () => {
       const scale = createScaleFromScaleConfig({
