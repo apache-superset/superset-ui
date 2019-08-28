@@ -1,22 +1,21 @@
 import { interpolateRound } from 'd3-interpolate';
 import { getSequentialSchemeRegistry, CategoricalColorNamespace } from '@superset-ui/color';
+import { ScaleBand } from 'd3-scale';
 import { ScaleType, Value } from '../../types/VegaLite';
-import { ScaleConfig, D3Scale } from '../../types/Scale';
+import { ScaleConfig, D3Scale, TimeScaleConfig } from '../../types/Scale';
 import createScaleFromScaleType from './createScaleFromScaleType';
 import parseDateTime from '../parseDateTime';
 import inferElementTypeFromUnionOfArrayTypes from '../../utils/inferElementTypeFromUnionOfArrayTypes';
 import { isTimeScale } from '../../typeGuards/Scale';
+import { HasToString } from '../../types/Base';
 
 function applyDomain<Output extends Value>(config: ScaleConfig<Output>, scale: D3Scale<Output>) {
   const { domain, reverse, type } = config;
   if (typeof domain !== 'undefined') {
     const processedDomain = reverse ? domain.slice().reverse() : domain;
     if (isTimeScale(scale, type)) {
-      scale.domain(
-        inferElementTypeFromUnionOfArrayTypes(processedDomain).map(d =>
-          typeof d === 'boolean' ? new Date() : parseDateTime(d),
-        ),
-      );
+      const timeDomain = processedDomain as TimeScaleConfig['domain'];
+      scale.domain(inferElementTypeFromUnionOfArrayTypes(timeDomain).map(d => parseDateTime(d)));
     } else {
       scale.domain(processedDomain);
     }

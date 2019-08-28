@@ -166,6 +166,7 @@ export interface TimeScaleConfig<Output extends Value = Value>
     | 'scheme'
   > {
   type: 'time';
+  domain?: number[] | string[] | DateTime[];
 }
 
 export interface UtcScaleConfig<Output extends Value = Value>
@@ -183,6 +184,7 @@ export interface UtcScaleConfig<Output extends Value = Value>
     | 'scheme'
   > {
   type: 'utc';
+  domain?: number[] | string[] | DateTime[];
 }
 
 export interface QuantileScaleConfig<Output extends Value = Value>
@@ -228,7 +230,7 @@ export interface OrdinalScaleConfig<Output extends Value = Value>
 export interface PointScaleConfig<Output extends Value = Value>
   extends Pick<
     CombinedScaleConfig<Output>,
-    'domain' | 'range' | 'align' | 'padding' | 'paddingOuter' | 'reverse' | 'round'
+    'domain' | 'range' | 'align' | 'padding' | 'reverse' | 'round'
   > {
   type: 'point';
 }
