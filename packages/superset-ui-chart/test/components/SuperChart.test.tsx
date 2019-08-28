@@ -1,13 +1,13 @@
 /* eslint-disable import/first */
-import React from 'react';
-import { mount } from 'enzyme';
+import React, { Children } from 'react';
+import { mount, render } from 'enzyme';
 
 jest.mock('resize-observer-polyfill');
 // @ts-ignore
 import { triggerResizeObserver } from 'resize-observer-polyfill';
 import ErrorBoundary from 'react-error-boundary';
 import { SuperChart } from '../../src';
-import RealSuperChart from '../../src/components/SuperChart';
+import RealSuperChart, { WrapperProps } from '../../src/components/SuperChart';
 import { ChartKeys, DiligentChartPlugin, BuggyChartPlugin } from './MockChartPlugins';
 import promiseTimeout from './promiseTimeout';
 
@@ -163,6 +163,49 @@ describe('SuperChart', () => {
         const renderedWrapper = wrapper.render();
         expect(renderedWrapper.find('div.test-component')).toHaveLength(1);
         expectDimension(renderedWrapper, 300, 400);
+      }, 100);
+    });
+  });
+
+  describe('supports Wrapper', () => {
+    function MyWrapper({ width, height, children }: WrapperProps) {
+      return (
+        <>
+          <div className="wrapper-insert">
+            {width}x{height}
+          </div>
+          {children}
+        </>
+      );
+    }
+
+    it('works with width and height that are numbers', () => {
+      const wrapper = mount(
+        <SuperChart chartType={ChartKeys.DILIGENT} width={100} height={100} Wrapper={MyWrapper} />,
+      );
+
+      return promiseTimeout(() => {
+        const renderedWrapper = wrapper.render();
+        expect(renderedWrapper.find('div.test-component')).toHaveLength(1);
+        expectDimension(renderedWrapper, 100, 100);
+      });
+    });
+    it('works when width and height are percent', () => {
+      const wrapper = mount(
+        <SuperChart
+          chartType={ChartKeys.DILIGENT}
+          debounceTime={1}
+          width="100%"
+          height="100%"
+          Wrapper={MyWrapper}
+        />,
+      );
+      triggerResizeObserver();
+
+      return promiseTimeout(() => {
+        const renderedWrapper = wrapper.render();
+        expect(renderedWrapper.find('div.test-component')).toHaveLength(1);
+        expectDimension(renderedWrapper, 300, 300);
       }, 100);
     });
   });
