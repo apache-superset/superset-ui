@@ -34,10 +34,6 @@ export default function createScaleFromScaleType<Output extends Value>(
         : scalePow<Output>().exponent(config.exponent);
     case ScaleType.SQRT:
       return scaleSqrt<Output>();
-    case ScaleType.SYMLOG:
-      // TODO: d3-scale typings does not include scaleSymlog yet
-      // needs to patch the declaration file before continue.
-      throw new Error('"scale.type = symlog" is not implemented yet.');
     case ScaleType.TIME:
       return scaleTime<Output>();
     case ScaleType.UTC:
@@ -48,12 +44,18 @@ export default function createScaleFromScaleType<Output extends Value>(
       return scaleQuantize<Output>();
     case ScaleType.THRESHOLD:
       return scaleThreshold<number | string | Date, Output>();
-    case ScaleType.BIN_ORDINAL:
     case ScaleType.ORDINAL:
       return scaleOrdinal<HasToString, Output>();
     case ScaleType.POINT:
       return scalePoint<HasToString>();
     case ScaleType.BAND:
       return scaleBand<HasToString>();
+    case ScaleType.SYMLOG:
+      // TODO: d3-scale typings does not include scaleSymlog yet
+      // needs to patch the declaration file before continue.
+      throw new Error(`"scale.type = ${config.type}" is not supported yet.`);
+    case ScaleType.BIN_ORDINAL:
+      // TODO: Pending scale.bins implementation
+      throw new Error(`"scale.type = ${config.type}" is not supported yet.`);
   }
 }

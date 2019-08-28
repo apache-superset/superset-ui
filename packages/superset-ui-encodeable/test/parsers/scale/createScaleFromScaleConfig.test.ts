@@ -1,4 +1,9 @@
-import { getSequentialSchemeRegistry, SequentialScheme } from '@superset-ui/color';
+import {
+  getSequentialSchemeRegistry,
+  SequentialScheme,
+  getCategoricalSchemeRegistry,
+  CategoricalScheme,
+} from '@superset-ui/color';
 import createScaleFromScaleConfig from '../../../src/parsers/scale/createScaleFromScaleConfig';
 
 describe('createScaleFromScaleConfig(config)', () => {
@@ -40,6 +45,18 @@ describe('createScaleFromScaleConfig(config)', () => {
 
       getSequentialSchemeRegistry().remove('test-scheme');
     });
+    it('with color scheme as range, but no color scheme available', () => {
+      getSequentialSchemeRegistry().clearDefaultKey();
+
+      const scale = createScaleFromScaleConfig({
+        type: 'linear',
+        domain: [0, 10],
+        scheme: 'test-scheme',
+      });
+
+      expect(scale(0)).toEqual(0);
+      expect(scale(10)).toEqual(1);
+    });
     it('with nice', () => {
       const scale = createScaleFromScaleConfig({
         type: 'linear',
@@ -67,6 +84,33 @@ describe('createScaleFromScaleConfig(config)', () => {
         round: true,
       });
       expect(scale(9.9)).toEqual(10);
+    });
+    it('with zero', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'linear',
+        domain: [2, 10],
+        range: [0, 10],
+        zero: true,
+      });
+      expect(scale(5)).toEqual(5);
+    });
+    it('with zero (negative domain)', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'linear',
+        domain: [-10, -2],
+        range: [0, 10],
+        zero: true,
+      });
+      expect(scale(-5)).toEqual(5);
+    });
+    it('with zero (no effect)', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'linear',
+        domain: [-5, 5],
+        range: [0, 10],
+        zero: true,
+      });
+      expect(scale(0)).toEqual(5);
     });
   });
 
@@ -121,9 +165,9 @@ describe('createScaleFromScaleConfig(config)', () => {
   });
 
   describe('symlog scale', () => {
-    it('is not implemented yet', () => {
+    it('is not supported yet', () => {
       expect(() => createScaleFromScaleConfig({ type: 'symlog' })).toThrowError(
-        '"scale.type = symlog" is not implemented yet.',
+        '"scale.type = symlog" is not supported yet.',
       );
     });
   });
@@ -232,7 +276,41 @@ describe('createScaleFromScaleConfig(config)', () => {
   });
 
   describe('ordinal scale', () => {
+    beforeEach(() => {
+      getCategoricalSchemeRegistry()
+        .registerValue(
+          'test-scheme',
+          new CategoricalScheme({
+            id: 'test-scheme',
+            colors: ['red', 'white', 'green'],
+          }),
+        )
+        .registerValue(
+          'test-scheme2',
+          new CategoricalScheme({
+            id: 'test-scheme',
+            colors: ['pink', 'charcoal', 'orange'],
+          }),
+        )
+        .setDefaultKey('test-scheme');
+    });
+
+    afterEach(() => {
+      getCategoricalSchemeRegistry()
+        .remove('test-scheme')
+        .remove('test-scheme2')
+        .clearDefaultKey();
+    });
+
     it('basic', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'ordinal',
+      });
+      expect(scale('fish')).toEqual('red');
+      expect(scale('dinosaur')).toEqual('white');
+      expect(scale('whale')).toEqual('green');
+    });
+    it('with range', () => {
       const scale = createScaleFromScaleConfig({
         type: 'ordinal',
         domain: ['fish', 'dinosaur'],
@@ -241,6 +319,69 @@ describe('createScaleFromScaleConfig(config)', () => {
       expect(scale('fish')).toEqual('red');
       expect(scale('dinosaur')).toEqual('white');
       expect(scale('whale')).toEqual('green');
+    });
+    it('with color scheme', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'ordinal',
+        scheme: 'test-scheme',
+      });
+      expect(scale('fish')).toEqual('red');
+      expect(scale('dinosaur')).toEqual('white');
+      expect(scale('whale')).toEqual('green');
+    });
+    it('with color scheme and domain', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'ordinal',
+        domain: ['fish', 'dinosaur'],
+        scheme: 'test-scheme2',
+      });
+      expect(scale('fish')).toEqual('pink');
+      expect(scale('dinosaur')).toEqual('charcoal');
+      expect(scale('whale')).toEqual('pink');
+    });
+    it('with color scheme and reversed domain', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'ordinal',
+        domain: ['pig', 'panda'],
+        reverse: true,
+        scheme: 'test-scheme2',
+      });
+      expect(scale('pig')).toEqual('charcoal');
+      expect(scale('panda')).toEqual('pink');
+    });
+    it('with namespace', () => {
+      const scale1 = createScaleFromScaleConfig({
+        type: 'ordinal',
+        namespace: 'abc',
+      });
+      const scale2 = createScaleFromScaleConfig({
+        type: 'ordinal',
+        namespace: 'def',
+      });
+      const scale3 = createScaleFromScaleConfig({
+        type: 'ordinal',
+        namespace: 'def',
+      });
+
+      expect(scale1('fish')).toEqual('red');
+      expect(scale1('dinosaur')).toEqual('white');
+      expect(scale1('whale')).toEqual('green');
+
+      expect(scale2('whale')).toEqual('red');
+      expect(scale2('dinosaur')).toEqual('white');
+      expect(scale2('fish')).toEqual('green');
+
+      expect(scale3('fish')).toEqual('green');
+      expect(scale3('dinosaur')).toEqual('white');
+      expect(scale3('whale')).toEqual('red');
+    });
+  });
+
+  describe('bin-ordinal scale', () => {
+    it('is not supported yet', () => {
+      expect(() => createScaleFromScaleConfig({ type: 'bin-ordinal' })).toThrowError(
+        '"scale.type = bin-ordinal" is not supported yet.',
+      );
     });
   });
 
@@ -265,6 +406,18 @@ describe('createScaleFromScaleConfig(config)', () => {
       expect(scale('fish')).toEqual(25);
       expect(scale('dinosaur')).toEqual(50);
       expect(scale('whale')).toEqual(75);
+    });
+    it('with round', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'point',
+        domain: ['fish', 'dinosaur', 'whale'],
+        range: [0, 100],
+        padding: 0.5,
+        round: true,
+      });
+      expect(scale('fish')).toEqual(17);
+      expect(scale('dinosaur')).toEqual(50);
+      expect(scale('whale')).toEqual(83);
     });
   });
 
@@ -299,6 +452,18 @@ describe('createScaleFromScaleConfig(config)', () => {
       expect(scale('fish')).toEqual(12.5);
       expect(scale('dinosaur')).toEqual(37.5);
       expect(scale('whale')).toEqual(62.5);
+    });
+    it('with align', () => {
+      const scale = createScaleFromScaleConfig<number>({
+        type: 'band',
+        domain: ['fish', 'dinosaur', 'whale'],
+        range: [0, 100],
+        align: 0,
+        paddingOuter: 0.5,
+      });
+      expect(scale('fish')).toEqual(0);
+      expect(scale('dinosaur')).toEqual(25);
+      expect(scale('whale')).toEqual(50);
     });
   });
 });
