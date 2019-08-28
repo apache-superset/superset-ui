@@ -25,7 +25,6 @@ export interface CombinedScaleConfig<Output extends Value = Value>
     VegaLiteScale,
     | 'align'
     | 'base'
-    | 'bins'
     | 'clamp'
     | 'constant'
     | 'exponent'
@@ -83,7 +82,6 @@ export interface LogScaleConfig<Output extends Value = Value>
     | 'domain'
     | 'range'
     | 'base'
-    | 'bins'
     | 'clamp'
     | 'interpolate'
     | 'nice'
@@ -101,7 +99,6 @@ export interface PowScaleConfig<Output extends Value = Value>
     CombinedScaleConfig<Output>,
     | 'domain'
     | 'range'
-    | 'bins'
     | 'clamp'
     | 'exponent'
     | 'interpolate'
@@ -119,7 +116,6 @@ export interface SqrtScaleConfig<Output extends Value = Value>
     CombinedScaleConfig<Output>,
     | 'domain'
     | 'range'
-    | 'bins'
     | 'clamp'
     | 'interpolate'
     | 'nice'
@@ -137,7 +133,6 @@ export interface SymlogScaleConfig<Output extends Value = Value>
     CombinedScaleConfig<Output>,
     | 'domain'
     | 'range'
-    | 'bins'
     | 'clamp'
     | 'constant'
     | 'interpolate'
@@ -156,7 +151,6 @@ export interface TimeScaleConfig<Output extends Value = Value>
     CombinedScaleConfig<Output>,
     | 'domain'
     | 'range'
-    | 'bins'
     | 'clamp'
     | 'interpolate'
     | 'nice'
@@ -174,7 +168,6 @@ export interface UtcScaleConfig<Output extends Value = Value>
     CombinedScaleConfig<Output>,
     | 'domain'
     | 'range'
-    | 'bins'
     | 'clamp'
     | 'interpolate'
     | 'nice'
@@ -190,7 +183,7 @@ export interface UtcScaleConfig<Output extends Value = Value>
 export interface QuantileScaleConfig<Output extends Value = Value>
   extends Pick<
     CombinedScaleConfig<Output>,
-    'domain' | 'range' | 'bins' | 'interpolate' | 'reverse' | 'scheme'
+    'domain' | 'range' | 'interpolate' | 'reverse' | 'scheme'
   > {
   type: 'quantile';
 }
@@ -198,7 +191,7 @@ export interface QuantileScaleConfig<Output extends Value = Value>
 export interface QuantizeScaleConfig<Output extends Value = Value>
   extends Pick<
     CombinedScaleConfig<Output>,
-    'domain' | 'range' | 'bins' | 'interpolate' | 'nice' | 'reverse' | 'scheme' | 'zero'
+    'domain' | 'range' | 'interpolate' | 'nice' | 'reverse' | 'scheme' | 'zero'
   > {
   type: 'quantize';
 }
@@ -206,7 +199,7 @@ export interface QuantizeScaleConfig<Output extends Value = Value>
 export interface ThresholdScaleConfig<Output extends Value = Value>
   extends Pick<
     CombinedScaleConfig<Output>,
-    'domain' | 'range' | 'bins' | 'interpolate' | 'nice' | 'reverse' | 'scheme'
+    'domain' | 'range' | 'interpolate' | 'nice' | 'reverse' | 'scheme'
   > {
   type: 'threshold';
 }
@@ -214,7 +207,7 @@ export interface ThresholdScaleConfig<Output extends Value = Value>
 export interface BinOrdinalScaleConfig<Output extends Value = Value>
   extends Pick<
     CombinedScaleConfig<Output>,
-    'domain' | 'range' | 'bins' | 'interpolate' | 'reverse' | 'scheme'
+    'domain' | 'range' | 'interpolate' | 'reverse' | 'scheme'
   > {
   type: 'bin-ordinal';
 }

@@ -112,6 +112,15 @@ describe('createScaleFromScaleConfig(config)', () => {
       });
       expect(scale(0)).toEqual(5);
     });
+    it('with zero (non-numeric)', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'linear',
+        domain: [false, true],
+        range: [0, 10],
+        zero: true,
+      });
+      expect(scale(0)).toEqual(0);
+    });
   });
 
   describe('log scale', () => {

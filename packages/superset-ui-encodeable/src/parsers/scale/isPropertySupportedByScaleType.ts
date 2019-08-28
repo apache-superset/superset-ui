@@ -28,7 +28,6 @@ zeroSet.delete(ScaleType.QUANTILE);
 const supportedScaleTypes: Record<keyof CombinedScaleConfig, Set<ScaleType>> = {
   align: pointOrBandSet,
   base: new Set([ScaleType.LOG]),
-  bins: new Set(exceptPointOrBand.filter(type => type !== ScaleType.ORDINAL)),
   clamp: continuousScaleTypesSet,
   constant: new Set([ScaleType.SYMLOG]),
   domain: allScaleTypesSet,
