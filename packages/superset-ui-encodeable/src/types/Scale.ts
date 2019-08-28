@@ -276,11 +276,14 @@ export interface ScaleTypeToD3ScaleType<Output extends Value = Value> {
   [ScaleType.BAND]: ScaleBand<HasToString>;
 }
 
-export type D3Scale<Output extends Value = Value> =
+export type ContinuousD3Scale<Output extends Value = Value> =
   | ScaleLinear<Output, Output>
   | ScaleLogarithmic<Output, Output>
   | ScalePower<Output, Output>
-  | ScaleTime<Output, Output>
+  | ScaleTime<Output, Output>;
+
+export type D3Scale<Output extends Value = Value> =
+  | ContinuousD3Scale<Output>
   | ScaleQuantile<Output>
   | ScaleQuantize<Output>
   | ScaleThreshold<number | string | Date, Output>

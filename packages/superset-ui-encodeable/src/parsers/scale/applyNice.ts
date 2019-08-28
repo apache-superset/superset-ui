@@ -63,10 +63,14 @@ export default function applyNice<Output extends Value>(
         timeScale.nice(type === ScaleType.UTC ? utcIntervals[nice] : localTimeIntervals[nice]);
       } else if ('interval' in nice) {
         const { interval, step } = nice;
-        timeScale.nice(
-          type === ScaleType.UTC ? utcIntervals[interval] : localTimeIntervals[interval],
-          step,
-        );
+        const parsedInterval = (type === ScaleType.UTC
+          ? utcIntervals[interval]
+          : localTimeIntervals[interval]
+        ).every(step);
+
+        if (parsedInterval !== null) {
+          timeScale.nice(parsedInterval as CountableTimeInterval);
+        }
       }
     }
   }

@@ -4,9 +4,18 @@ import {
   getCategoricalSchemeRegistry,
   CategoricalScheme,
 } from '@superset-ui/color';
+import { ScaleLinear, ScaleTime } from 'd3-scale';
 import createScaleFromScaleConfig from '../../../src/parsers/scale/createScaleFromScaleConfig';
 
 describe('createScaleFromScaleConfig(config)', () => {
+  describe('default', () => {
+    it('returns linear scale', () => {
+      // @ts-ignore
+      const scale = createScaleFromScaleConfig({});
+      expect(scale(1)).toEqual(1);
+    });
+  });
+
   describe('linear scale', () => {
     it('basic', () => {
       const scale = createScaleFromScaleConfig({
@@ -66,6 +75,24 @@ describe('createScaleFromScaleConfig(config)', () => {
       });
       expect(scale(10)).toEqual(100);
     });
+    it('with nice=false', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'linear',
+        domain: [0, 9.9],
+        range: [0, 100],
+        nice: false,
+      });
+      expect(Number(scale(10)).toFixed(2)).toEqual('101.01');
+    });
+    it('with nice is number', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'linear',
+        domain: [0, 9.9],
+        range: [0, 100],
+        nice: 3,
+      });
+      expect((scale as ScaleLinear<number, number>).ticks(3)).toEqual([0, 5, 10]);
+    });
     it('with clamp', () => {
       const scale = createScaleFromScaleConfig({
         type: 'linear',
@@ -115,11 +142,18 @@ describe('createScaleFromScaleConfig(config)', () => {
     it('with zero (non-numeric)', () => {
       const scale = createScaleFromScaleConfig({
         type: 'linear',
-        domain: [false, true],
-        range: [0, 10],
+        domain: ['abc', 'def'],
         zero: true,
       });
-      expect(scale(0)).toEqual(0);
+      expect(Number.isNaN(Number(scale(0)))).toBeTruthy();
+    });
+    it('with interpolate', () => {
+      expect(() =>
+        createScaleFromScaleConfig({
+          type: 'linear',
+          interpolate: 'cubehelix',
+        }),
+      ).toThrowError('"scale.interpolate" is not supported yet.');
     });
   });
 
@@ -202,6 +236,29 @@ describe('createScaleFromScaleConfig(config)', () => {
       expect(scale(new Date(2019, 6, 16))).toEqual(50);
       expect(scale(new Date(2019, 6, 31))).toEqual(100);
     });
+    it('with nice is string', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'time',
+        domain: [
+          {
+            year: 2019,
+            month: 7,
+            date: 5,
+          },
+          {
+            year: 2019,
+            month: 7,
+            date: 30,
+          },
+        ],
+        range: [0, 100],
+        nice: 'month',
+      });
+      expect((scale as ScaleTime<number, number>).domain()).toEqual([
+        new Date(2019, 6, 1),
+        new Date(2019, 7, 1),
+      ]);
+    });
   });
 
   describe('UTC scale', () => {
@@ -227,6 +284,56 @@ describe('createScaleFromScaleConfig(config)', () => {
       expect(scale(new Date(Date.UTC(2019, 6, 1)))).toEqual(0);
       expect(scale(new Date(Date.UTC(2019, 6, 16)))).toEqual(50);
       expect(scale(new Date(Date.UTC(2019, 6, 31)))).toEqual(100);
+    });
+    it('with nice is interval object', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'utc',
+        domain: [
+          {
+            year: 2019,
+            month: 7,
+            date: 5,
+            utc: true,
+          },
+          {
+            year: 2019,
+            month: 7,
+            date: 30,
+            utc: true,
+          },
+        ],
+        range: [0, 100],
+        nice: { interval: 'month', step: 2 },
+      });
+      expect((scale as ScaleTime<number, number>).domain()).toEqual([
+        new Date(Date.UTC(2019, 6, 1)),
+        new Date(Date.UTC(2019, 8, 1)),
+      ]);
+    });
+    it('with nice is interval object that has invalid step', () => {
+      const scale = createScaleFromScaleConfig({
+        type: 'utc',
+        domain: [
+          {
+            year: 2019,
+            month: 7,
+            date: 5,
+            utc: true,
+          },
+          {
+            year: 2019,
+            month: 7,
+            date: 30,
+            utc: true,
+          },
+        ],
+        range: [0, 100],
+        nice: { interval: 'month', step: 0.5 },
+      });
+      expect((scale as ScaleTime<number, number>).domain()).toEqual([
+        new Date(Date.UTC(2019, 6, 5)),
+        new Date(Date.UTC(2019, 6, 30)),
+      ]);
     });
   });
 
