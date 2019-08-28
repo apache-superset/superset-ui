@@ -4,8 +4,11 @@ import {
   discreteScaleTypesSet,
   discretizingScaleTypesSet,
 } from './scaleCategories';
+import { ScaleCategory } from '../../types/Scale';
 
-export default function getScaleCategoryFromScaleType(scaleType: ScaleType) {
+export default function getScaleCategoryFromScaleType(
+  scaleType: ScaleType,
+): ScaleCategory | undefined {
   if (continuousScaleTypesSet.has(scaleType)) {
     return 'continuous';
   }

@@ -21,7 +21,6 @@ export default function createScaleFromScaleType<Output extends Value>(
   config: ScaleConfig<Output>,
 ) {
   switch (config.type) {
-    default:
     case ScaleType.LINEAR:
       return scaleLinear<Output>();
     case ScaleType.LOG:
@@ -57,5 +56,7 @@ export default function createScaleFromScaleType<Output extends Value>(
     case ScaleType.BIN_ORDINAL:
       // TODO: Pending scale.bins implementation
       throw new Error(`"scale.type = ${config.type}" is not supported yet.`);
+    default:
+      return scaleLinear<Output>();
   }
 }

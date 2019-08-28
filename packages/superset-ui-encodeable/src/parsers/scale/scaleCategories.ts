@@ -40,7 +40,7 @@ export const discreteDomainScaleTypesSet = new Set(discreteDomainScaleTypes);
 export const continuousScaleTypes: ScaleType[] = continuousToContinuousScaleTypes;
 export const continuousScaleTypesSet = continuousToContinuousScaleTypesSet;
 
-export const discreteScaleTypes: ScaleType[] = ['band', 'point', 'ordinal'];
+export const discreteScaleTypes: ScaleType[] = [ScaleType.BAND, ScaleType.POINT, ScaleType.ORDINAL];
 export const discreteScaleTypesSet = new Set(discreteScaleTypes);
 
 export const discretizingScaleTypes: ScaleType[] = [
