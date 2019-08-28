@@ -32,7 +32,7 @@ export default function updateTextNode(
 
   // clear style
   STYLE_FIELDS.forEach((field: keyof TextStyle) => {
-    textNode.style[field] = null;
+    textNode.style.removeProperty(field);
   });
 
   // apply new style
