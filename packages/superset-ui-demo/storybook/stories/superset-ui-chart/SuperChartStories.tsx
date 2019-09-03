@@ -13,8 +13,8 @@ new BuggyChartPlugin().configure({ key: ChartKeys.BUGGY }).register();
 export default [
   {
     renderStory: () => {
-      const width = text('Vis width', '50%');
-      const height = text('Vis height', '75%');
+      const width = text('Vis width', '100%');
+      const height = text('Vis height', '100%');
 
       return (
         <SuperChart
@@ -30,20 +30,19 @@ export default [
   },
   {
     renderStory: () => {
-      const width = text('Vis width', '500');
-      const height = text('Vis height', '300');
+      const width = text('Vis width', '50%');
+      const height = text('Vis height', '50%');
 
       return (
         <SuperChart
           chartType={ChartKeys.DILIGENT}
-          chartProps={{
-            height: Number(height),
-            width: Number(width),
-          }}
+          width={width}
+          height={height}
+          formData={{ hi: 1 }}
         />
       );
     },
-    storyName: 'passing ChartPropsConfig',
+    storyName: '50% of container',
     storyPath: '@superset-ui/chart|SuperChart',
   },
   {
@@ -51,19 +50,29 @@ export default [
       const width = text('Vis width', '500');
       const height = text('Vis height', '300');
 
-      return (
-        <SuperChart
-          chartType={ChartKeys.DILIGENT}
-          chartProps={
-            new ChartProps({
-              height: Number(height),
-              width: Number(width),
-            })
-          }
-        />
-      );
+      return <SuperChart chartType={ChartKeys.DILIGENT} height={height} width={width} />;
     },
-    storyName: 'passing ChartProps',
+    storyName: 'fixed dimension',
+    storyPath: '@superset-ui/chart|SuperChart',
+  },
+  {
+    renderStory: () => {
+      const width = text('Vis width', '500');
+      const height = text('Vis height', '100%');
+
+      return <SuperChart chartType={ChartKeys.DILIGENT} height={height} width={width} />;
+    },
+    storyName: 'fixed width, 100% height',
+    storyPath: '@superset-ui/chart|SuperChart',
+  },
+  {
+    renderStory: () => {
+      const width = text('Vis width', '100%');
+      const height = text('Vis height', '300');
+
+      return <SuperChart chartType={ChartKeys.DILIGENT} height={height} width={width} />;
+    },
+    storyName: 'fixed height, 100% width',
     storyPath: '@superset-ui/chart|SuperChart',
   },
   {
@@ -71,17 +80,7 @@ export default [
       const width = text('Vis width', '500');
       const height = text('Vis height', '300');
 
-      return (
-        <SuperChart
-          chartType={ChartKeys.BUGGY}
-          chartProps={
-            new ChartProps({
-              height: Number(height),
-              width: Number(width),
-            })
-          }
-        />
-      );
+      return <SuperChart chartType={ChartKeys.BUGGY} height={height} width={width} />;
     },
     storyName: 'With error boundary',
     storyPath: '@superset-ui/chart|SuperChart',

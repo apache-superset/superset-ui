@@ -70,12 +70,28 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
       const widthInfo = parseLength(width);
       const heightInfo = parseLength(height);
 
+      const boxHeight = heightInfo.isDynamic
+        ? // eslint-disable-next-line no-magic-numbers
+          `${heightInfo.multiplier * 100}%`
+        : heightInfo.value;
+      const boxWidth = widthInfo.isDynamic
+        ? // eslint-disable-next-line no-magic-numbers
+          `${widthInfo.multiplier * 100}%`
+        : widthInfo.value;
       const style = {
-        height: heightInfo.isDynamic ? '100%' : heightInfo.value,
-        width: widthInfo.isDynamic ? '100%' : widthInfo.value,
+        height: boxHeight,
+        width: boxWidth,
       };
+
+      // bounding box will ensure that when one dimension is not dynamic
+      // e.g. height = 300
+      // the auto size will be bound to that value instead of being 100% by default
+      // e.g. height: 300 instead of height: '100%'
       const BoundingBox =
-        widthInfo.isDynamic && heightInfo.isDynamic
+        widthInfo.isDynamic &&
+        heightInfo.isDynamic &&
+        widthInfo.multiplier === 1 &&
+        heightInfo.multiplier === 1
           ? React.Fragment
           : ({ children }: { children: ReactNode }) => <div style={style}>{children}</div>;
 
@@ -149,22 +165,14 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
       const { debounceTime } = this.props;
 
       return (
-        // bounding box will ensure that when
-        // one dimension is not dynamic
-        // e.g. height = 300
-        // the auto size will be bound to that value
-        // instead of being 100% by default
-        // e.g. height: 300 instead of height: '100%'
         <BoundingBox>
           <ParentSize debounceTime={debounceTime}>
             {({ width, height }) =>
               width > 0 &&
               height > 0 &&
               this.renderChart(
-                widthInfo.isDynamic ? Math.floor(width * widthInfo.multiplier) : widthInfo.value,
-                heightInfo.isDynamic
-                  ? Math.floor(height * heightInfo.multiplier)
-                  : heightInfo.value,
+                widthInfo.isDynamic ? Math.floor(width) : widthInfo.value,
+                heightInfo.isDynamic ? Math.floor(height) : heightInfo.value,
               )
             }
           </ParentSize>
