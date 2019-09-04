@@ -1,6 +1,6 @@
 import React from 'react';
 import { text } from '@storybook/addon-knobs';
-import { SuperChart, ChartProps } from '../../../../superset-ui-chart/src';
+import { SuperChart } from '../../../../superset-ui-chart/src';
 import {
   DiligentChartPlugin,
   BuggyChartPlugin,
@@ -83,6 +83,28 @@ export default [
       return <SuperChart chartType={ChartKeys.BUGGY} height={height} width={width} />;
     },
     storyName: 'With error boundary',
+    storyPath: '@superset-ui/chart|SuperChart',
+  },
+  {
+    renderStory: () => {
+      const width = text('Vis width', '100%');
+      const height = text('Vis height', '100%');
+
+      return (
+        <SuperChart
+          chartType={ChartKeys.DILIGENT}
+          width={width}
+          height={height}
+          Wrapper={({ children }) => (
+            <div>
+              <div style={{ margin: 10, position: 'fixed' }}>With wrapper!</div>
+              {children}
+            </div>
+          )}
+        />
+      );
+    },
+    storyName: 'With Wrapper',
     storyPath: '@superset-ui/chart|SuperChart',
   },
 ];
