@@ -423,7 +423,7 @@ describe('callApi()', () => {
       expect(calls).toHaveLength(1);
       expect(response.status).toEqual(200);
       const body = await response.json();
-      expect(body).toEqual({ get: 'payload' });
+      expect(body).toEqual(mockGetPayload);
     });
 
     it('returns original response if status not 304 or 200', async () => {
