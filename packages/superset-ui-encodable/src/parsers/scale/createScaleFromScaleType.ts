@@ -11,7 +11,6 @@ import {
   scaleOrdinal,
   scalePoint,
   scaleBand,
-  scaleIdentity,
 } from 'd3-scale';
 import { HasToString } from '../../types/Base';
 import { ScaleConfig } from '../../types/Scale';
