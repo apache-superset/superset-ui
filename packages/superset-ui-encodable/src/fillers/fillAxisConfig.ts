@@ -5,7 +5,8 @@ import { ChannelDef, PositionFieldDef } from '../types/ChannelDef';
 import { ChannelType } from '../types/Channel';
 import { isXY, isX } from '../typeGuards/Channel';
 import { RequiredSome } from '../types/Base';
-import { AxisConfig, LabelOverlapStrategy, LabelOverlapType } from '../types/Axis';
+import { AxisConfig, LabelOverlapStrategy } from '../types/Axis';
+import expandLabelOverlapStrategy from './expandLabelOverlapStrategy';
 
 function isChannelDefWithAxisSupport(
   channelDef: ChannelDef,
@@ -14,33 +15,7 @@ function isChannelDefWithAxisSupport(
   return isTypedFieldDef(channelDef) && isXY(channelType);
 }
 
-const STRATEGY_FLAT = { strategy: 'flat' } as const;
-const STRATEGY_ROTATE = { labelAngle: 40, strategy: 'rotate' } as const;
-
-function expandLabelOverlapStrategy(
-  labelOverlap: LabelOverlapType = 'auto',
-  channelType: ChannelType,
-): LabelOverlapStrategy {
-  let output: LabelOverlapStrategy;
-  switch (labelOverlap) {
-    case 'flat':
-      output = STRATEGY_FLAT;
-      break;
-    case 'rotate':
-      output = STRATEGY_ROTATE;
-      break;
-    case 'auto':
-      output = isX(channelType) ? STRATEGY_ROTATE : STRATEGY_FLAT;
-      break;
-    default:
-      output = labelOverlap;
-      break;
-  }
-
-  return { ...output };
-}
-
-export default function fillAxisConfig(channelDef: ChannelDef, channelType: ChannelType) {
+export default function fillAxisConfig(channelType: ChannelType, channelDef: ChannelDef) {
   if (isChannelDefWithAxisSupport(channelDef, channelType) && isEnabled(channelDef.axis)) {
     const axis =
       channelDef.axis === true || typeof channelDef.axis === 'undefined' ? {} : channelDef.axis;
@@ -65,7 +40,7 @@ export default function fillAxisConfig(channelDef: ChannelDef, channelType: Chan
       format,
       labelAngle,
       labelFlush,
-      labelOverlap: expandLabelOverlapStrategy(labelOverlap, channelType),
+      labelOverlap: expandLabelOverlapStrategy(channelType, labelOverlap),
       labelPadding,
       orient,
       tickCount,

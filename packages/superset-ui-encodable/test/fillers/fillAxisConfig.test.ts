@@ -17,7 +17,7 @@ const DEFAULT_OUTPUT = {
 
 describe('fillAxisConfig(channelDef)', () => {
   it('returns axis config with type', () => {
-    expect(fillAxisConfig({ type: 'quantitative', field: 'consumption' }, 'X')).toEqual(
+    expect(fillAxisConfig('X', { type: 'quantitative', field: 'consumption' })).toEqual(
       DEFAULT_OUTPUT,
     );
   });
@@ -25,15 +25,12 @@ describe('fillAxisConfig(channelDef)', () => {
     describe('format and title', () => {
       it('inherit from channel if not specified', () => {
         expect(
-          fillAxisConfig(
-            {
-              type: 'quantitative',
-              field: 'consumption',
-              format: '.2f',
-              title: 'King in the North',
-            },
-            'X',
-          ),
+          fillAxisConfig('X', {
+            type: 'quantitative',
+            field: 'consumption',
+            format: '.2f',
+            title: 'King in the North',
+          }),
         ).toEqual({
           ...DEFAULT_OUTPUT,
           format: '.2f',
@@ -42,16 +39,13 @@ describe('fillAxisConfig(channelDef)', () => {
       });
       it('does not change if already specified', () => {
         expect(
-          fillAxisConfig(
-            {
-              type: 'quantitative',
-              field: 'consumption',
-              format: '.2f',
-              title: 'King in the North',
-              axis: { format: '.3f', title: 'Mother of Dragons' },
-            },
-            'X',
-          ),
+          fillAxisConfig('X', {
+            type: 'quantitative',
+            field: 'consumption',
+            format: '.2f',
+            title: 'King in the North',
+            axis: { format: '.3f', title: 'Mother of Dragons' },
+          }),
         ).toEqual({
           ...DEFAULT_OUTPUT,
           format: '.3f',
@@ -63,14 +57,11 @@ describe('fillAxisConfig(channelDef)', () => {
       describe('expands strategy name to strategy object', () => {
         it('flat', () => {
           expect(
-            fillAxisConfig(
-              {
-                type: 'quantitative',
-                field: 'consumption',
-                axis: { labelOverlap: 'flat' },
-              },
-              'X',
-            ),
+            fillAxisConfig('X', {
+              type: 'quantitative',
+              field: 'consumption',
+              axis: { labelOverlap: 'flat' },
+            }),
           ).toEqual({
             ...DEFAULT_OUTPUT,
             labelOverlap: {
@@ -80,14 +71,11 @@ describe('fillAxisConfig(channelDef)', () => {
         });
         it('rotate', () => {
           expect(
-            fillAxisConfig(
-              {
-                type: 'quantitative',
-                field: 'consumption',
-                axis: { labelOverlap: 'rotate' },
-              },
-              'X',
-            ),
+            fillAxisConfig('X', {
+              type: 'quantitative',
+              field: 'consumption',
+              axis: { labelOverlap: 'rotate' },
+            }),
           ).toEqual({
             ...DEFAULT_OUTPUT,
             labelOverlap: {
@@ -98,14 +86,11 @@ describe('fillAxisConfig(channelDef)', () => {
         });
         it('auto for X', () => {
           expect(
-            fillAxisConfig(
-              {
-                type: 'quantitative',
-                field: 'consumption',
-                axis: { labelOverlap: 'auto' },
-              },
-              'X',
-            ),
+            fillAxisConfig('X', {
+              type: 'quantitative',
+              field: 'consumption',
+              axis: { labelOverlap: 'auto' },
+            }),
           ).toEqual({
             ...DEFAULT_OUTPUT,
             labelOverlap: {
@@ -116,14 +101,11 @@ describe('fillAxisConfig(channelDef)', () => {
         });
         it('auto for Y', () => {
           expect(
-            fillAxisConfig(
-              {
-                type: 'quantitative',
-                field: 'consumption',
-                axis: { labelOverlap: 'auto' },
-              },
-              'Y',
-            ),
+            fillAxisConfig('Y', {
+              type: 'quantitative',
+              field: 'consumption',
+              axis: { labelOverlap: 'auto' },
+            }),
           ).toEqual({
             ...DEFAULT_OUTPUT,
             labelOverlap: {
@@ -135,14 +117,11 @@ describe('fillAxisConfig(channelDef)', () => {
       });
       it('if given a strategy object, clone and return', () => {
         const strategy = { strategy: 'flat' as const };
-        const output = fillAxisConfig(
-          {
-            type: 'quantitative',
-            field: 'consumption',
-            axis: { labelOverlap: strategy },
-          },
-          'X',
-        );
+        const output = fillAxisConfig('X', {
+          type: 'quantitative',
+          field: 'consumption',
+          axis: { labelOverlap: strategy },
+        });
         expect(output).toEqual({
           ...DEFAULT_OUTPUT,
           labelOverlap: strategy,
@@ -154,12 +133,12 @@ describe('fillAxisConfig(channelDef)', () => {
     });
     describe('orient', () => {
       it('uses default for X', () => {
-        expect(fillAxisConfig({ type: 'quantitative', field: 'consumption' }, 'X')).toEqual(
+        expect(fillAxisConfig('X', { type: 'quantitative', field: 'consumption' })).toEqual(
           DEFAULT_OUTPUT,
         );
       });
       it('uses default for Y', () => {
-        expect(fillAxisConfig({ type: 'quantitative', field: 'consumption' }, 'YBand')).toEqual({
+        expect(fillAxisConfig('YBand', { type: 'quantitative', field: 'consumption' })).toEqual({
           ...DEFAULT_OUTPUT,
           labelOverlap: {
             strategy: 'flat',
@@ -169,14 +148,11 @@ describe('fillAxisConfig(channelDef)', () => {
       });
       it('does not change if already specified', () => {
         expect(
-          fillAxisConfig(
-            {
-              type: 'quantitative',
-              field: 'consumption',
-              axis: { orient: 'top' },
-            },
-            'X',
-          ),
+          fillAxisConfig('X', {
+            type: 'quantitative',
+            field: 'consumption',
+            axis: { orient: 'top' },
+          }),
         ).toEqual({
           ...DEFAULT_OUTPUT,
           orient: 'top',
@@ -186,21 +162,18 @@ describe('fillAxisConfig(channelDef)', () => {
     describe('others', () => {
       it('does not change if already specified', () => {
         expect(
-          fillAxisConfig(
-            {
-              type: 'quantitative',
-              field: 'consumption',
-              axis: {
-                labelAngle: 30,
-                labelFlush: false,
-                labelPadding: 10,
-                tickCount: 20,
-                ticks: false,
-                titlePadding: 10,
-              },
+          fillAxisConfig('X', {
+            type: 'quantitative',
+            field: 'consumption',
+            axis: {
+              labelAngle: 30,
+              labelFlush: false,
+              labelPadding: 10,
+              tickCount: 20,
+              ticks: false,
+              titlePadding: 10,
             },
-            'X',
-          ),
+          }),
         ).toEqual({
           ...DEFAULT_OUTPUT,
           labelAngle: 30,
@@ -215,23 +188,20 @@ describe('fillAxisConfig(channelDef)', () => {
   });
 
   it('returns false if not XY channel', () => {
-    expect(fillAxisConfig({ type: 'quantitative', field: 'consumption' }, 'Color')).toEqual(false);
+    expect(fillAxisConfig('Color', { type: 'quantitative', field: 'consumption' })).toEqual(false);
   });
   it('returns false if axis is null', () => {
-    expect(fillAxisConfig({ type: 'quantitative', field: 'consumption', axis: null }, 'X')).toEqual(
+    expect(fillAxisConfig('X', { type: 'quantitative', field: 'consumption', axis: null })).toEqual(
       false,
     );
   });
   it('returns false if axis is false', () => {
     expect(
-      fillAxisConfig(
-        {
-          type: 'quantitative',
-          field: 'consumption',
-          axis: false,
-        },
-        'X',
-      ),
+      fillAxisConfig('X', {
+        type: 'quantitative',
+        field: 'consumption',
+        axis: false,
+      }),
     ).toEqual(false);
   });
 });

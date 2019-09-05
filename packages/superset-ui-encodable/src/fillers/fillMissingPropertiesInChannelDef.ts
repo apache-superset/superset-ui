@@ -5,8 +5,8 @@ import fillScaleConfig from './fillScaleConfig';
 import { isFieldDef } from '../typeGuards/ChannelDef';
 
 export default function fillMissingPropertiesInChannelDef(
-  channelDef: ChannelDef,
   channelType: ChannelType,
+  channelDef: ChannelDef,
 ) {
   // Fill top-level properties
   const copy = {
@@ -16,7 +16,7 @@ export default function fillMissingPropertiesInChannelDef(
 
   return {
     ...copy,
-    axis: fillAxisConfig(copy, channelType),
-    scale: fillScaleConfig(copy, channelType),
+    axis: fillAxisConfig(channelType, copy),
+    scale: fillScaleConfig(channelType, copy),
   };
 }

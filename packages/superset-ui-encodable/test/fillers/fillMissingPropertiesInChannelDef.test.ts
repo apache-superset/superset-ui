@@ -22,28 +22,22 @@ const DEFAULT_OUTPUT = {
   scale: { type: 'linear', nice: true, clamp: true, zero: true },
 };
 
-describe('fillMissingPropertiesInChannelDef', () => {
+describe('fillMissingPropertiesInChannelDef(channelType, channelDef)', () => {
   it('fills the missing fields', () => {
     expect(
-      fillMissingPropertiesInChannelDef(
-        {
-          type: 'quantitative',
-          field: 'speed',
-        },
-        'X',
-      ),
+      fillMissingPropertiesInChannelDef('X', {
+        type: 'quantitative',
+        field: 'speed',
+      }),
     ).toEqual(DEFAULT_OUTPUT);
   });
   it('uses title if specified', () => {
     expect(
-      fillMissingPropertiesInChannelDef(
-        {
-          type: 'quantitative',
-          field: 'speed',
-          title: 'How fast is it?',
-        },
-        'X',
-      ),
+      fillMissingPropertiesInChannelDef('X', {
+        type: 'quantitative',
+        field: 'speed',
+        title: 'How fast is it?',
+      }),
     ).toEqual({
       ...DEFAULT_OUTPUT,
       title: 'How fast is it?',
@@ -52,12 +46,9 @@ describe('fillMissingPropertiesInChannelDef', () => {
   });
   it('leaves the title blank for ValueDef', () => {
     expect(
-      fillMissingPropertiesInChannelDef(
-        {
-          value: 1,
-        },
-        'X',
-      ),
+      fillMissingPropertiesInChannelDef('X', {
+        value: 1,
+      }),
     ).toEqual({ axis: false, scale: false, title: '', value: 1 });
   });
 });

@@ -6,7 +6,7 @@ import { ChannelDef } from '../types/ChannelDef';
 import isEnabled from '../utils/isEnabled';
 import { ChannelType } from '../types/Channel';
 
-export default function fillScaleConfig(channelDef: ChannelDef, channelType: ChannelType) {
+export default function fillScaleConfig(channelType: ChannelType, channelDef: ChannelDef) {
   if (isTypedFieldDef(channelDef) && isEnabled(channelDef.scale)) {
     const { scale = {}, type, bin } = channelDef;
     const { type: scaleType = inferScaleType(channelType, type, bin) } = scale;
