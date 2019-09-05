@@ -19,6 +19,16 @@ describe('fillScaleConfig(channelDef)', () => {
           zero: true,
         });
       });
+      it('does not apply if incompatible', () => {
+        expect(
+          fillScaleConfig(
+            { type: 'nominal', field: 'brand', scale: { type: 'point' } },
+            'Category',
+          ),
+        ).toEqual({
+          type: 'point',
+        });
+      });
       it('does not change if already specified', () => {
         expect(
           fillScaleConfig(
@@ -99,6 +109,6 @@ describe('fillScaleConfig(channelDef)', () => {
     ).toEqual(false);
   });
   it('returns false if cannot infer scale type', () => {
-    expect(fillScaleConfig({ field: 'consumption', scale: null }, 'X')).toEqual(false);
+    expect(fillScaleConfig({ type: 'geojson', field: 'lat', scale: null }, 'X')).toEqual(false);
   });
 });
