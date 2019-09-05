@@ -9,8 +9,8 @@ import { AxisConfig, LabelOverlapStrategy } from '../types/Axis';
 import expandLabelOverlapStrategy from './expandLabelOverlapStrategy';
 
 function isChannelDefWithAxisSupport(
-  channelDef: ChannelDef,
   channelType: ChannelType,
+  channelDef: ChannelDef,
 ): channelDef is PositionFieldDef {
   return isTypedFieldDef(channelDef) && isXY(channelType);
 }
@@ -35,7 +35,7 @@ export default function fillAxisConfig(
   channelType: ChannelType,
   channelDef: ChannelDef,
 ): FilledAxisConfig {
-  if (isChannelDefWithAxisSupport(channelDef, channelType) && isEnabled(channelDef.axis)) {
+  if (isChannelDefWithAxisSupport(channelType, channelDef) && isEnabled(channelDef.axis)) {
     const axis =
       channelDef.axis === true || typeof channelDef.axis === 'undefined' ? {} : channelDef.axis;
 
