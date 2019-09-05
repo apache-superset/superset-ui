@@ -109,6 +109,6 @@ describe('fillScaleConfig(channelDef)', () => {
     ).toEqual(false);
   });
   it('returns false if cannot infer scale type', () => {
-    expect(fillScaleConfig({ type: 'geojson', field: 'lat', scale: null }, 'X')).toEqual(false);
+    expect(fillScaleConfig({ type: 'geojson', field: 'lat' }, 'X')).toEqual(false);
   });
 });
