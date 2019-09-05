@@ -1,25 +1,35 @@
 /* eslint-disable no-magic-numbers */
 import isEnabled from '../utils/isEnabled';
-import { isPositionFieldDef } from '../typeGuards/ChannelDef';
-import { ChannelDef } from '../types/ChannelDef';
+import { isTypedFieldDef } from '../typeGuards/ChannelDef';
+import { ChannelDef, PositionFieldDef } from '../types/ChannelDef';
 import { ChannelType } from '../types/Channel';
+import { isXY, isX } from '../typeGuards/Channel';
 
-export default function fillAxis(channelDef: ChannelDef, channelType: ChannelType) {
-  if (isPositionFieldDef(channelDef) && isEnabled(channelDef.axis)) {
+function isChannelDefWithAxisSupport(
+  channelDef: ChannelDef,
+  channelType: ChannelType,
+): channelDef is PositionFieldDef {
+  return isTypedFieldDef(channelDef) && isXY(channelType);
+}
+
+export default function fillAxisConfig(channelDef: ChannelDef, channelType: ChannelType) {
+  if (isChannelDefWithAxisSupport(channelDef, channelType) && isEnabled(channelDef.axis)) {
     const axis =
       channelDef.axis === true || typeof channelDef.axis === 'undefined' ? {} : channelDef.axis;
 
-    const isX = channelType === 'X' || channelType === 'XBand';
+    const isXChannel = isX(channelType);
 
     const {
       format = channelDef.format,
-      labelAngle = isX ? 40 : 0,
+      labelAngle = isXChannel ? 40 : 0,
       labelFlush = true,
       labelOverlap = 'auto',
       labelPadding = 4,
-      orient = isX ? 'bottom' : 'left',
+      orient = isXChannel ? 'bottom' : 'left',
       tickCount = 5,
+      ticks = true,
       title = channelDef.title,
+      titlePadding = 4,
     } = axis;
 
     return {
@@ -31,7 +41,9 @@ export default function fillAxis(channelDef: ChannelDef, channelType: ChannelTyp
       labelPadding,
       orient,
       tickCount,
+      ticks,
       title,
+      titlePadding,
     };
   }
 

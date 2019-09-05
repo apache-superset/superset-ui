@@ -18,7 +18,9 @@ export interface BaseAxisConfig
     | 'orient'
     | 'tickCount'
     | 'tickSize'
+    | 'ticks'
     | 'title'
+    | 'titlePadding'
     | 'values'
   > {
   /** Strategy for handling label overlap */

@@ -1,4 +1,4 @@
-import { isScaleFieldDef } from '../typeGuards/ChannelDef';
+import { isTypedFieldDef } from '../typeGuards/ChannelDef';
 import inferScaleType from './inferScaleType';
 import { isContinuousScaleConfig, isScaleConfigWithZero } from '../typeGuards/Scale';
 import { ScaleConfig } from '../types/Scale';
@@ -6,8 +6,8 @@ import { ChannelDef } from '../types/ChannelDef';
 import isEnabled from '../utils/isEnabled';
 import { ChannelType } from '../types/Channel';
 
-export default function fillScale(channelDef: ChannelDef, channelType: ChannelType) {
-  if (isScaleFieldDef(channelDef) && isEnabled(channelDef.scale)) {
+export default function fillScaleConfig(channelDef: ChannelDef, channelType: ChannelType) {
+  if (isTypedFieldDef(channelDef) && isEnabled(channelDef.scale)) {
     const { scale = {}, type, bin } = channelDef;
     const { type: scaleType = inferScaleType(channelType, type, bin) } = scale;
 
