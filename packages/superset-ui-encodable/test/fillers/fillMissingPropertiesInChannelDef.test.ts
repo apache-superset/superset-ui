@@ -6,9 +6,12 @@ const DEFAULT_OUTPUT = {
   title: 'speed',
   axis: {
     format: undefined,
-    labelAngle: 40,
+    labelAngle: 0,
     labelFlush: true,
-    labelOverlap: 'auto',
+    labelOverlap: {
+      strategy: 'rotate',
+      labelAngle: 40,
+    },
     labelPadding: 4,
     orient: 'bottom',
     tickCount: 5,

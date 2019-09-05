@@ -4,12 +4,40 @@ import { isTypedFieldDef } from '../typeGuards/ChannelDef';
 import { ChannelDef, PositionFieldDef } from '../types/ChannelDef';
 import { ChannelType } from '../types/Channel';
 import { isXY, isX } from '../typeGuards/Channel';
+import { RequiredSome } from '../types/Base';
+import { AxisConfig, LabelOverlapStrategy, LabelOverlapType } from '../types/Axis';
 
 function isChannelDefWithAxisSupport(
   channelDef: ChannelDef,
   channelType: ChannelType,
 ): channelDef is PositionFieldDef {
   return isTypedFieldDef(channelDef) && isXY(channelType);
+}
+
+const STRATEGY_FLAT = { strategy: 'flat' } as const;
+const STRATEGY_ROTATE = { labelAngle: 40, strategy: 'rotate' } as const;
+
+function expandLabelOverlapStrategy(
+  labelOverlap: LabelOverlapType = 'auto',
+  channelType: ChannelType,
+): LabelOverlapStrategy {
+  let output: LabelOverlapStrategy;
+  switch (labelOverlap) {
+    case 'flat':
+      output = STRATEGY_FLAT;
+      break;
+    case 'rotate':
+      output = STRATEGY_ROTATE;
+      break;
+    case 'auto':
+      output = isX(channelType) ? STRATEGY_ROTATE : STRATEGY_FLAT;
+      break;
+    default:
+      output = labelOverlap;
+      break;
+  }
+
+  return { ...output };
 }
 
 export default function fillAxisConfig(channelDef: ChannelDef, channelType: ChannelType) {
@@ -21,9 +49,9 @@ export default function fillAxisConfig(channelDef: ChannelDef, channelType: Chan
 
     const {
       format = channelDef.format,
-      labelAngle = isXChannel ? 40 : 0,
+      labelAngle = 0,
       labelFlush = true,
-      labelOverlap = 'auto',
+      labelOverlap,
       labelPadding = 4,
       orient = isXChannel ? 'bottom' : 'left',
       tickCount = 5,
@@ -37,13 +65,26 @@ export default function fillAxisConfig(channelDef: ChannelDef, channelType: Chan
       format,
       labelAngle,
       labelFlush,
-      labelOverlap,
+      labelOverlap: expandLabelOverlapStrategy(labelOverlap, channelType),
       labelPadding,
       orient,
       tickCount,
       ticks,
       title,
       titlePadding,
+    } as RequiredSome<
+      Omit<AxisConfig, 'labelOverlap'>,
+      | 'format'
+      | 'labelAngle'
+      | 'labelFlush'
+      | 'labelPadding'
+      | 'orient'
+      | 'tickCount'
+      | 'ticks'
+      | 'title'
+      | 'titlePadding'
+    > & {
+      labelOverlap: LabelOverlapStrategy;
     };
   }
 

@@ -5,8 +5,19 @@ import { Axis as VegaLiteAxis } from './VegaLite';
 /** Axis orientation */
 export type AxisOrient = 'top' | 'bottom' | 'left' | 'right';
 
+export type LabelOverlapStrategyFlat = {
+  strategy: 'flat';
+};
+
+export type LabelOverlapStrategyRotate = {
+  strategy: 'rotate';
+  labelAngle: number;
+};
+
+export type LabelOverlapStrategy = LabelOverlapStrategyFlat | LabelOverlapStrategyRotate;
+
 /** Strategy for handling label overlap */
-export type LabelOverlapStrategy = 'auto' | 'flat' | 'rotate';
+export type LabelOverlapType = 'auto' | LabelOverlapStrategy['strategy'] | LabelOverlapStrategy;
 
 export interface BaseAxisConfig
   extends Pick<
@@ -23,24 +34,23 @@ export interface BaseAxisConfig
     | 'values'
   > {
   /** Strategy for handling label overlap */
-  labelOverlap?: LabelOverlapStrategy;
+  labelOverlap?: LabelOverlapType;
   orient?: AxisOrient;
 }
 
 export interface XAxisConfig extends BaseAxisConfig {
   orient?: 'top' | 'bottom';
-  labelAngle?: number;
-  labelOverlap?: LabelOverlapStrategy;
-}
-
-export interface WithXAxis {
-  axis?: Partial<XAxisConfig> | boolean;
 }
 
 export interface YAxisConfig extends BaseAxisConfig {
   orient?: 'left' | 'right';
-  labelAngle?: 0;
-  labelOverlap?: 'auto' | 'flat';
+  labelOverlap?: Exclude<LabelOverlapType, 'rotate' | LabelOverlapStrategyRotate>;
+}
+
+export type AxisConfig = XAxisConfig | YAxisConfig;
+
+export interface WithXAxis {
+  axis?: Partial<XAxisConfig> | boolean;
 }
 
 export interface WithYAxis {
