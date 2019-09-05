@@ -3,7 +3,7 @@
 import { Axis as VegaLiteAxis } from './VegaLite';
 
 /** Axis orientation */
-export type AxisOrient = VegaLiteAxis['orient'];
+export type AxisOrient = 'top' | 'bottom' | 'left' | 'right';
 
 /** Strategy for handling label overlap */
 export type LabelOverlapStrategy = 'auto' | 'flat' | 'rotate';
@@ -15,7 +15,6 @@ export interface BaseAxisConfig
     | 'labelAngle'
     | 'labelFlush'
     | 'labelPadding'
-    | 'orient'
     | 'tickCount'
     | 'tickSize'
     | 'ticks'
@@ -25,6 +24,7 @@ export interface BaseAxisConfig
   > {
   /** Strategy for handling label overlap */
   labelOverlap?: LabelOverlapStrategy;
+  orient?: AxisOrient;
 }
 
 export interface XAxisConfig extends BaseAxisConfig {
