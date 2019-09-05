@@ -15,7 +15,26 @@ function isChannelDefWithAxisSupport(
   return isTypedFieldDef(channelDef) && isXY(channelType);
 }
 
-export default function fillAxisConfig(channelType: ChannelType, channelDef: ChannelDef) {
+export type FilledAxisConfig =
+  | false
+  | RequiredSome<
+      Omit<AxisConfig, 'labelOverlap'>,
+      | 'labelAngle'
+      | 'labelFlush'
+      | 'labelPadding'
+      | 'orient'
+      | 'tickCount'
+      | 'ticks'
+      | 'title'
+      | 'titlePadding'
+    > & {
+      labelOverlap: LabelOverlapStrategy;
+    };
+
+export default function fillAxisConfig(
+  channelType: ChannelType,
+  channelDef: ChannelDef,
+): FilledAxisConfig {
   if (isChannelDefWithAxisSupport(channelDef, channelType) && isEnabled(channelDef.axis)) {
     const axis =
       channelDef.axis === true || typeof channelDef.axis === 'undefined' ? {} : channelDef.axis;
@@ -31,7 +50,7 @@ export default function fillAxisConfig(channelType: ChannelType, channelDef: Cha
       orient = isXChannel ? 'bottom' : 'left',
       tickCount = 5,
       ticks = true,
-      title = channelDef.title,
+      title = channelDef.title!,
       titlePadding = 4,
     } = axis;
 
@@ -47,19 +66,6 @@ export default function fillAxisConfig(channelType: ChannelType, channelDef: Cha
       ticks,
       title,
       titlePadding,
-    } as RequiredSome<
-      Omit<AxisConfig, 'labelOverlap'>,
-      | 'format'
-      | 'labelAngle'
-      | 'labelFlush'
-      | 'labelPadding'
-      | 'orient'
-      | 'tickCount'
-      | 'ticks'
-      | 'title'
-      | 'titlePadding'
-    > & {
-      labelOverlap: LabelOverlapStrategy;
     };
   }
 
