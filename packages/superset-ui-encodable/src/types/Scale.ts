@@ -9,7 +9,6 @@ import {
   ScaleThreshold,
   ScalePoint,
   ScaleBand,
-  ScaleIdentity,
 } from 'd3-scale';
 import { Value, DateTime, NiceTime, ScaleType, Scale as VegaLiteScale } from './VegaLite';
 import { HasToString } from './Base';
