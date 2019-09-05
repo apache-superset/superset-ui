@@ -1,8 +1,8 @@
 import { ChannelDef } from '../types/ChannelDef';
 import { ChannelType } from '../types/Channel';
+import { isFieldDef } from '../typeGuards/ChannelDef';
 import fillAxisConfig, { FilledAxisConfig } from './fillAxisConfig';
 import fillScaleConfig from './fillScaleConfig';
-import { isFieldDef } from '../typeGuards/ChannelDef';
 
 type FilledChannelDef = Omit<ChannelDef, 'title' | 'axis' | 'scale'> & {
   axis: FilledAxisConfig;
