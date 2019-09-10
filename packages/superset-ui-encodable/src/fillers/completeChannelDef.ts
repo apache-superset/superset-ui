@@ -1,23 +1,23 @@
 import { ChannelDef } from '../types/ChannelDef';
 import { ChannelType } from '../types/Channel';
 import { isFieldDef } from '../typeGuards/ChannelDef';
-import fillAxisConfig, { FilledAxisConfig } from './fillAxisConfig';
-import fillScaleConfig, { FilledScaleConfig } from './fillScaleConfig';
+import completeAxisConfig, { CompleteAxisConfig } from './completeAxisConfig';
+import completeScaleConfig, { CompleteScaleConfig } from './completeScaleConfig';
 import { Value } from '../types/VegaLite';
 
-type FilledChannelDef<Output extends Value = Value> = Omit<
+type CompleteChannelDef<Output extends Value = Value> = Omit<
   ChannelDef,
   'title' | 'axis' | 'scale'
 > & {
-  axis: FilledAxisConfig;
-  scale: FilledScaleConfig<Output>;
+  axis: CompleteAxisConfig;
+  scale: CompleteScaleConfig<Output>;
   title: string;
 };
 
-export default function fillMissingPropertiesInChannelDef<Output extends Value = Value>(
+export default function completeChannelDef<Output extends Value = Value>(
   channelType: ChannelType,
   channelDef: ChannelDef<Output>,
-): FilledChannelDef<Output> {
+): CompleteChannelDef<Output> {
   // Fill top-level properties
   const copy = {
     ...channelDef,
@@ -26,7 +26,7 @@ export default function fillMissingPropertiesInChannelDef<Output extends Value =
 
   return {
     ...copy,
-    axis: fillAxisConfig(channelType, copy),
-    scale: fillScaleConfig(channelType, copy),
+    axis: completeAxisConfig(channelType, copy),
+    scale: completeScaleConfig(channelType, copy),
   };
 }

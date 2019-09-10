@@ -7,12 +7,12 @@ import isEnabled from '../utils/isEnabled';
 import { ChannelType } from '../types/Channel';
 import { Value } from '../types/VegaLite';
 
-export type FilledScaleConfig<Output extends Value = Value> = false | ScaleConfig<Output>;
+export type CompleteScaleConfig<Output extends Value = Value> = false | ScaleConfig<Output>;
 
-export default function fillScaleConfig<Output extends Value = Value>(
+export default function completeScaleConfig<Output extends Value = Value>(
   channelType: ChannelType,
   channelDef: ChannelDef<Output>,
-): FilledScaleConfig<Output> {
+): CompleteScaleConfig<Output> {
   if (isTypedFieldDef(channelDef) && isEnabled(channelDef.scale)) {
     const { scale = {}, type, bin } = channelDef;
     const { type: scaleType = inferScaleType(channelType, type, bin) } = scale;

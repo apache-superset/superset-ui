@@ -1,4 +1,4 @@
-import fillMissingPropertiesInChannelDef from '../../src/fillers/fillMissingPropertiesInChannelDef';
+import completeChannelDef from '../../src/fillers/completeChannelDef';
 
 const DEFAULT_OUTPUT = {
   type: 'quantitative',
@@ -22,10 +22,10 @@ const DEFAULT_OUTPUT = {
   scale: { type: 'linear', nice: true, clamp: true, zero: true },
 };
 
-describe('fillMissingPropertiesInChannelDef(channelType, channelDef)', () => {
+describe('completeChannelDef(channelType, channelDef)', () => {
   it('fills the missing fields', () => {
     expect(
-      fillMissingPropertiesInChannelDef('X', {
+      completeChannelDef('X', {
         type: 'quantitative',
         field: 'speed',
       }),
@@ -33,7 +33,7 @@ describe('fillMissingPropertiesInChannelDef(channelType, channelDef)', () => {
   });
   it('uses title if specified', () => {
     expect(
-      fillMissingPropertiesInChannelDef('X', {
+      completeChannelDef('X', {
         type: 'quantitative',
         field: 'speed',
         title: 'How fast is it?',
@@ -46,7 +46,7 @@ describe('fillMissingPropertiesInChannelDef(channelType, channelDef)', () => {
   });
   it('leaves the title blank for ValueDef', () => {
     expect(
-      fillMissingPropertiesInChannelDef('X', {
+      completeChannelDef('X', {
         value: 1,
       }),
     ).toEqual({ axis: false, scale: false, title: '', value: 1 });

@@ -1,4 +1,4 @@
-import fillAxisConfig from '../../src/fillers/fillAxisConfig';
+import completeAxisConfig from '../../src/fillers/completeAxisConfig';
 
 const DEFAULT_OUTPUT = {
   format: undefined,
@@ -15,9 +15,9 @@ const DEFAULT_OUTPUT = {
   titlePadding: 4,
 };
 
-describe('fillAxisConfig(channelDef)', () => {
+describe('completeAxisConfig(channelDef)', () => {
   it('returns axis config with type', () => {
-    expect(fillAxisConfig('X', { type: 'quantitative', field: 'consumption' })).toEqual(
+    expect(completeAxisConfig('X', { type: 'quantitative', field: 'consumption' })).toEqual(
       DEFAULT_OUTPUT,
     );
   });
@@ -25,7 +25,7 @@ describe('fillAxisConfig(channelDef)', () => {
     describe('format and title', () => {
       it('inherit from channel if not specified', () => {
         expect(
-          fillAxisConfig('X', {
+          completeAxisConfig('X', {
             type: 'quantitative',
             field: 'consumption',
             format: '.2f',
@@ -39,7 +39,7 @@ describe('fillAxisConfig(channelDef)', () => {
       });
       it('does not change if already specified', () => {
         expect(
-          fillAxisConfig('X', {
+          completeAxisConfig('X', {
             type: 'quantitative',
             field: 'consumption',
             format: '.2f',
@@ -57,7 +57,7 @@ describe('fillAxisConfig(channelDef)', () => {
       describe('expands strategy name to strategy object', () => {
         it('flat', () => {
           expect(
-            fillAxisConfig('X', {
+            completeAxisConfig('X', {
               type: 'quantitative',
               field: 'consumption',
               axis: { labelOverlap: 'flat' },
@@ -71,7 +71,7 @@ describe('fillAxisConfig(channelDef)', () => {
         });
         it('rotate', () => {
           expect(
-            fillAxisConfig('X', {
+            completeAxisConfig('X', {
               type: 'quantitative',
               field: 'consumption',
               axis: { labelOverlap: 'rotate' },
@@ -86,7 +86,7 @@ describe('fillAxisConfig(channelDef)', () => {
         });
         it('auto for X', () => {
           expect(
-            fillAxisConfig('X', {
+            completeAxisConfig('X', {
               type: 'quantitative',
               field: 'consumption',
               axis: { labelOverlap: 'auto' },
@@ -101,7 +101,7 @@ describe('fillAxisConfig(channelDef)', () => {
         });
         it('auto for Y', () => {
           expect(
-            fillAxisConfig('Y', {
+            completeAxisConfig('Y', {
               type: 'quantitative',
               field: 'consumption',
               axis: { labelOverlap: 'auto' },
@@ -117,7 +117,7 @@ describe('fillAxisConfig(channelDef)', () => {
       });
       it('if given a strategy object, clone and return', () => {
         const strategy = { strategy: 'flat' as const };
-        const output = fillAxisConfig('X', {
+        const output = completeAxisConfig('X', {
           type: 'quantitative',
           field: 'consumption',
           axis: { labelOverlap: strategy },
@@ -133,22 +133,24 @@ describe('fillAxisConfig(channelDef)', () => {
     });
     describe('orient', () => {
       it('uses default for X', () => {
-        expect(fillAxisConfig('X', { type: 'quantitative', field: 'consumption' })).toEqual(
+        expect(completeAxisConfig('X', { type: 'quantitative', field: 'consumption' })).toEqual(
           DEFAULT_OUTPUT,
         );
       });
       it('uses default for Y', () => {
-        expect(fillAxisConfig('YBand', { type: 'quantitative', field: 'consumption' })).toEqual({
-          ...DEFAULT_OUTPUT,
-          labelOverlap: {
-            strategy: 'flat',
+        expect(completeAxisConfig('YBand', { type: 'quantitative', field: 'consumption' })).toEqual(
+          {
+            ...DEFAULT_OUTPUT,
+            labelOverlap: {
+              strategy: 'flat',
+            },
+            orient: 'left',
           },
-          orient: 'left',
-        });
+        );
       });
       it('does not change if already specified', () => {
         expect(
-          fillAxisConfig('X', {
+          completeAxisConfig('X', {
             type: 'quantitative',
             field: 'consumption',
             axis: { orient: 'top' },
@@ -162,7 +164,7 @@ describe('fillAxisConfig(channelDef)', () => {
     describe('others', () => {
       it('does not change if already specified', () => {
         expect(
-          fillAxisConfig('X', {
+          completeAxisConfig('X', {
             type: 'quantitative',
             field: 'consumption',
             axis: {
@@ -188,16 +190,18 @@ describe('fillAxisConfig(channelDef)', () => {
   });
 
   it('returns false if not XY channel', () => {
-    expect(fillAxisConfig('Color', { type: 'quantitative', field: 'consumption' })).toEqual(false);
-  });
-  it('returns false if axis is null', () => {
-    expect(fillAxisConfig('X', { type: 'quantitative', field: 'consumption', axis: null })).toEqual(
+    expect(completeAxisConfig('Color', { type: 'quantitative', field: 'consumption' })).toEqual(
       false,
     );
   });
+  it('returns false if axis is null', () => {
+    expect(
+      completeAxisConfig('X', { type: 'quantitative', field: 'consumption', axis: null }),
+    ).toEqual(false);
+  });
   it('returns false if axis is false', () => {
     expect(
-      fillAxisConfig('X', {
+      completeAxisConfig('X', {
         type: 'quantitative',
         field: 'consumption',
         axis: false,

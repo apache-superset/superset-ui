@@ -8,9 +8,9 @@ export type MayBeArray<T> = T | T[];
 export type HasToString = { toString(): string };
 
 /** Make some fields that might have been optional become required fields */
-export type RequiredSome<T, K extends keyof T> = {
-  [X in Exclude<keyof T, K>]?: T[X];
+export type RequiredSome<T, RequiredFields extends keyof T> = {
+  [Field in Exclude<keyof T, RequiredFields>]?: T[Field];
 } &
   {
-    [P in K]-?: T[P];
+    [Field in RequiredFields]-?: T[Field];
   };

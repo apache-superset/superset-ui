@@ -1,4 +1,4 @@
-import { isX, isY, isXY } from '../../src/typeGuards/Channel';
+import { isX, isY, isXOrY } from '../../src/typeGuards/Channel';
 
 describe('type guards: Channel', () => {
   describe('isX(channelType)', () => {
@@ -19,15 +19,15 @@ describe('type guards: Channel', () => {
       expect(isY('Color')).toBeFalsy();
     });
   });
-  describe('isXY(channelType)', () => {
+  describe('isXOrY(channelType)', () => {
     it('returns true if it is one of X or Y channel types', () => {
-      expect(isXY('X')).toBeTruthy();
-      expect(isXY('XBand')).toBeTruthy();
-      expect(isXY('Y')).toBeTruthy();
-      expect(isXY('YBand')).toBeTruthy();
+      expect(isXOrY('X')).toBeTruthy();
+      expect(isXOrY('XBand')).toBeTruthy();
+      expect(isXOrY('Y')).toBeTruthy();
+      expect(isXOrY('YBand')).toBeTruthy();
     });
     it('returns false otherwise', () => {
-      expect(isXY('Color')).toBeFalsy();
+      expect(isXOrY('Color')).toBeFalsy();
     });
   });
 });

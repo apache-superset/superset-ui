@@ -1,8 +1,8 @@
-import fillScaleConfig from '../../src/fillers/fillScaleConfig';
+import completeScaleConfig from '../../src/fillers/completeScaleConfig';
 
-describe('fillScaleConfig(channelDef)', () => {
+describe('completeScaleConfig(channelDef)', () => {
   it('returns scale config with type', () => {
-    expect(fillScaleConfig('X', { type: 'quantitative', field: 'consumption' })).toEqual({
+    expect(completeScaleConfig('X', { type: 'quantitative', field: 'consumption' })).toEqual({
       type: 'linear',
       nice: true,
       clamp: true,
@@ -12,7 +12,7 @@ describe('fillScaleConfig(channelDef)', () => {
   describe('default settings', () => {
     describe('nice', () => {
       it('set if not specified', () => {
-        expect(fillScaleConfig('X', { type: 'quantitative', field: 'consumption' })).toEqual({
+        expect(completeScaleConfig('X', { type: 'quantitative', field: 'consumption' })).toEqual({
           type: 'linear',
           nice: true,
           clamp: true,
@@ -21,7 +21,7 @@ describe('fillScaleConfig(channelDef)', () => {
       });
       it('does not apply if incompatible', () => {
         expect(
-          fillScaleConfig('Category', {
+          completeScaleConfig('Category', {
             type: 'nominal',
             field: 'brand',
             scale: { type: 'point' },
@@ -32,7 +32,7 @@ describe('fillScaleConfig(channelDef)', () => {
       });
       it('does not change if already specified', () => {
         expect(
-          fillScaleConfig('X', {
+          completeScaleConfig('X', {
             type: 'quantitative',
             field: 'consumption',
             scale: { nice: false },
@@ -47,7 +47,7 @@ describe('fillScaleConfig(channelDef)', () => {
     });
     describe('clamp', () => {
       it('set if not specified', () => {
-        expect(fillScaleConfig('X', { type: 'quantitative', field: 'consumption' })).toEqual({
+        expect(completeScaleConfig('X', { type: 'quantitative', field: 'consumption' })).toEqual({
           type: 'linear',
           nice: true,
           clamp: true,
@@ -56,7 +56,7 @@ describe('fillScaleConfig(channelDef)', () => {
       });
       it('does not change if already specified', () => {
         expect(
-          fillScaleConfig('X', {
+          completeScaleConfig('X', {
             type: 'quantitative',
             field: 'consumption',
             scale: { clamp: false },
@@ -71,7 +71,7 @@ describe('fillScaleConfig(channelDef)', () => {
     });
     describe('zero', () => {
       it('set if not specified', () => {
-        expect(fillScaleConfig('X', { type: 'quantitative', field: 'consumption' })).toEqual({
+        expect(completeScaleConfig('X', { type: 'quantitative', field: 'consumption' })).toEqual({
           type: 'linear',
           nice: true,
           clamp: true,
@@ -80,7 +80,7 @@ describe('fillScaleConfig(channelDef)', () => {
       });
       it('does not apply if incompatible', () => {
         expect(
-          fillScaleConfig('X', {
+          completeScaleConfig('X', {
             type: 'quantitative',
             field: 'consumption',
             scale: { type: 'log' },
@@ -93,7 +93,7 @@ describe('fillScaleConfig(channelDef)', () => {
       });
       it('does not change if already specified', () => {
         expect(
-          fillScaleConfig('X', {
+          completeScaleConfig('X', {
             type: 'quantitative',
             field: 'consumption',
             scale: { zero: false },
@@ -110,10 +110,10 @@ describe('fillScaleConfig(channelDef)', () => {
 
   it('returns false if scale is null', () => {
     expect(
-      fillScaleConfig('X', { type: 'quantitative', field: 'consumption', scale: null }),
+      completeScaleConfig('X', { type: 'quantitative', field: 'consumption', scale: null }),
     ).toEqual(false);
   });
   it('returns false if cannot infer scale type', () => {
-    expect(fillScaleConfig('X', { type: 'geojson', field: 'lat' })).toEqual(false);
+    expect(completeScaleConfig('X', { type: 'geojson', field: 'lat' })).toEqual(false);
   });
 });

@@ -3,7 +3,7 @@ import isEnabled from '../utils/isEnabled';
 import { isTypedFieldDef } from '../typeGuards/ChannelDef';
 import { ChannelDef, PositionFieldDef } from '../types/ChannelDef';
 import { ChannelType } from '../types/Channel';
-import { isXY, isX } from '../typeGuards/Channel';
+import { isXOrY, isX } from '../typeGuards/Channel';
 import { RequiredSome } from '../types/Base';
 import { AxisConfig, LabelOverlapStrategy } from '../types/Axis';
 import expandLabelOverlapStrategy from './expandLabelOverlapStrategy';
@@ -12,10 +12,10 @@ function isChannelDefWithAxisSupport(
   channelType: ChannelType,
   channelDef: ChannelDef,
 ): channelDef is PositionFieldDef {
-  return isTypedFieldDef(channelDef) && isXY(channelType);
+  return isTypedFieldDef(channelDef) && isXOrY(channelType);
 }
 
-export type FilledAxisConfig =
+export type CompleteAxisConfig =
   | false
   | RequiredSome<
       Omit<AxisConfig, 'labelOverlap'>,
@@ -31,10 +31,10 @@ export type FilledAxisConfig =
       labelOverlap: LabelOverlapStrategy;
     };
 
-export default function fillAxisConfig(
+export default function completeAxisConfig(
   channelType: ChannelType,
   channelDef: ChannelDef,
-): FilledAxisConfig {
+): CompleteAxisConfig {
   if (isChannelDefWithAxisSupport(channelType, channelDef) && isEnabled(channelDef.axis)) {
     const axis =
       channelDef.axis === true || typeof channelDef.axis === 'undefined' ? {} : channelDef.axis;

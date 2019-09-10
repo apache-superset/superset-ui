@@ -8,6 +8,6 @@ export function isY(channelType: ChannelType): channelType is 'Y' | 'YBand' {
   return channelType === 'Y' || channelType === 'YBand';
 }
 
-export function isXY(channelType: ChannelType): channelType is 'X' | 'XBand' | 'Y' | 'YBand' {
+export function isXOrY(channelType: ChannelType): channelType is 'X' | 'XBand' | 'Y' | 'YBand' {
   return isX(channelType) || isY(channelType);
 }
