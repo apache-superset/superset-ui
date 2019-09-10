@@ -3,9 +3,10 @@ import identity from '../utils/identity';
 import { ChannelDef } from '../types/ChannelDef';
 import { isValueDef } from '../typeGuards/ChannelDef';
 import { PlainObject } from '../types/Data';
+import { Value } from '../types/VegaLite';
 
-export default function createGetterFromChannelDef(
-  definition: ChannelDef,
+export default function createGetterFromChannelDef<Output extends Value = Value>(
+  definition: ChannelDef<Output>,
 ): (x?: PlainObject) => any {
   if (isValueDef(definition)) {
     return () => definition.value;

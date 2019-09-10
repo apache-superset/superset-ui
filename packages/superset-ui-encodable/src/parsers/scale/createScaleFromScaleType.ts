@@ -44,11 +44,11 @@ export default function createScaleFromScaleType<Output extends Value>(
     case ScaleType.THRESHOLD:
       return scaleThreshold<number | string | Date, Output>();
     case ScaleType.ORDINAL:
-      return scaleOrdinal<HasToString, Output>();
+      return scaleOrdinal<HasToString | null | undefined, Output>();
     case ScaleType.POINT:
-      return scalePoint<HasToString>();
+      return scalePoint<HasToString | null | undefined>();
     case ScaleType.BAND:
-      return scaleBand<HasToString>();
+      return scaleBand<HasToString | null | undefined>();
     case ScaleType.SYMLOG:
       // TODO: d3-scale typings does not include scaleSymlog yet
       // needs to patch the declaration file before continue.

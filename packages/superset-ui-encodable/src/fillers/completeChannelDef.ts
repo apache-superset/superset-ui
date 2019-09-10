@@ -1,12 +1,18 @@
-import { ChannelDef } from '../types/ChannelDef';
+import { ChannelDef, NonValueDef } from '../types/ChannelDef';
 import { ChannelType } from '../types/Channel';
-import { isFieldDef } from '../typeGuards/ChannelDef';
+import { isFieldDef, isValueDef } from '../typeGuards/ChannelDef';
 import completeAxisConfig, { CompleteAxisConfig } from './completeAxisConfig';
 import completeScaleConfig, { CompleteScaleConfig } from './completeScaleConfig';
-import { Value } from '../types/VegaLite';
+import { Value, ValueDef } from '../types/VegaLite';
 
-type CompleteChannelDef<Output extends Value = Value> = Omit<
-  ChannelDef,
+export interface CompleteValueDef<Output extends Value = Value> extends ValueDef<Output> {
+  axis: false;
+  scale: false;
+  title: '';
+}
+
+export type CompleteFieldDef<Output extends Value = Value> = Omit<
+  NonValueDef<Output>,
   'title' | 'axis' | 'scale'
 > & {
   axis: CompleteAxisConfig;
@@ -14,10 +20,23 @@ type CompleteChannelDef<Output extends Value = Value> = Omit<
   title: string;
 };
 
+export type CompleteChannelDef<Output extends Value = Value> =
+  | CompleteValueDef<Output>
+  | CompleteFieldDef<Output>;
+
 export default function completeChannelDef<Output extends Value = Value>(
   channelType: ChannelType,
   channelDef: ChannelDef<Output>,
 ): CompleteChannelDef<Output> {
+  if (isValueDef(channelDef)) {
+    return {
+      ...channelDef,
+      axis: false,
+      scale: false,
+      title: '',
+    };
+  }
+
   // Fill top-level properties
   const copy = {
     ...channelDef,
