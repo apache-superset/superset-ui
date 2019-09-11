@@ -14,19 +14,19 @@ import { isX, isY, isXOrY } from '../typeGuards/Channel';
 type Identity<T> = (value: T) => T;
 
 type EncodeFunction<Def extends ChannelDef> = (
-  value: ChannelInput,
+  value: ChannelInput | ExtractChannelOutput<Def>,
 ) => ExtractChannelOutput<Def> | null | undefined;
 
 export default class ChannelEncoder<Def extends ChannelDef> {
   readonly name: string | Symbol | number;
-  readonly type: ChannelType;
+  readonly channelType: ChannelType;
   readonly originalDefinition: Def;
   readonly definition: CompleteChannelDef;
   readonly scale: false | ReturnType<typeof createScaleFromScaleConfig>;
 
   readonly getValue: (datum: PlainObject) => ChannelInput;
   readonly encodeValue:
-    | Identity<ExtractChannelOutput<Def> | null | undefined>
+    | Identity<ChannelInput | ExtractChannelOutput<Def> | null | undefined>
     | EncodeFunction<Def>;
 
   readonly formatValue: (value: ChannelInput | HasToString) => string;
@@ -41,22 +41,18 @@ export default class ChannelEncoder<Def extends ChannelDef> {
     definition: Def;
   }) {
     this.name = name;
-    this.type = channelType;
+    this.channelType = channelType;
     this.originalDefinition = originalDefinition;
-    const definition = completeChannelDef(this.type, originalDefinition);
+    const definition = completeChannelDef(this.channelType, originalDefinition);
     this.definition = definition;
 
     this.getValue = createGetterFromChannelDef(definition);
     this.formatValue = createFormatterFromChannelDef(definition);
-    this.scale = definition.scale && createScaleFromScaleConfig(definition.scale);
+    const scale = definition.scale && createScaleFromScaleConfig(definition.scale);
     // this.axis = definition.axis && ...
 
-    if (this.scale === false) {
-      this.encodeValue = identity;
-    } else {
-      this.encodeValue = (value: ChannelInput) =>
-        value === undefined || value === null ? value : this.scale(value);
-    }
+    this.encodeValue = scale === false ? identity : (value: ChannelInput) => scale(value);
+    this.scale = scale;
 
     this.encodeDatum = this.encodeDatum.bind(this);
     this.formatDatum = this.formatDatum.bind(this);
@@ -84,7 +80,10 @@ export default class ChannelEncoder<Def extends ChannelDef> {
     return this.formatValue(this.getValueFromDatum(datum));
   }
 
-  getValueFromDatum<T extends ChannelInput>(datum: PlainObject, otherwise?: T) {
+  getValueFromDatum<T extends ChannelInput | ExtractChannelOutput<Def>>(
+    datum: PlainObject,
+    otherwise?: T,
+  ) {
     const value = this.getValue(datum);
 
     return otherwise !== undefined && (value === null || value === undefined)
@@ -121,26 +120,15 @@ export default class ChannelEncoder<Def extends ChannelDef> {
     return this.definition.title;
   }
 
-  // hasLegend() {
-  //   if (isDisabled(this.options.legend) || this.isXY() || isValueDef(this.definition)) {
-  //     return false;
-  //   }
-  //   if (isMarkPropFieldDef(this.definition)) {
-  //     return isEnabled(this.definition.legend);
-  //   }
-
-  //   return isScaleFieldDef(this.definition);
-  // }
-
   isGroupBy() {
     if (isTypedFieldDef(this.definition)) {
-      const { type: dataType } = this.definition;
+      const { type } = this.definition;
 
       return (
-        this.type === 'Category' ||
-        this.type === 'Text' ||
-        (this.type === 'Color' && (dataType === 'nominal' || dataType === 'ordinal')) ||
-        (this.isXOrY() && (dataType === 'nominal' || dataType === 'ordinal'))
+        this.channelType === 'Category' ||
+        this.channelType === 'Text' ||
+        (this.channelType === 'Color' && (type === 'nominal' || type === 'ordinal')) ||
+        (this.isXOrY() && (type === 'nominal' || type === 'ordinal'))
       );
     }
 
@@ -148,14 +136,14 @@ export default class ChannelEncoder<Def extends ChannelDef> {
   }
 
   isX() {
-    return isX(this.type);
+    return isX(this.channelType);
   }
 
   isXOrY() {
-    return isXOrY(this.type);
+    return isXOrY(this.channelType);
   }
 
   isY() {
-    return isY(this.type);
+    return isY(this.channelType);
   }
 }
