@@ -1,34 +1,28 @@
 import { extent as d3Extent } from 'd3-array';
 import { ChannelType, ChannelInput } from '../types/Channel';
 import { PlainObject, Dataset } from '../types/Data';
-import { ChannelDef, ExtractChannelOutput } from '../types/ChannelDef';
-import createGetterFromChannelDef from '../parsers/createGetterFromChannelDef';
+import { ChannelDef } from '../types/ChannelDef';
+import createGetterFromChannelDef, { Getter } from '../parsers/createGetterFromChannelDef';
 import completeChannelDef, { CompleteChannelDef } from '../fillers/completeChannelDef';
 import createFormatterFromChannelDef from '../parsers/format/createFormatterFromChannelDef';
 import createScaleFromScaleConfig from '../parsers/scale/createScaleFromScaleConfig';
 import identity from '../utils/identity';
-import { HasToString } from '../types/Base';
-import { isTypedFieldDef } from '../typeGuards/ChannelDef';
+import { HasToString, IdentityFunction } from '../types/Base';
+import { isTypedFieldDef, isValueDef } from '../typeGuards/ChannelDef';
 import { isX, isY, isXOrY } from '../typeGuards/Channel';
+import { Value } from '../types/VegaLite';
 
-type Identity<T> = (value: T) => T;
+type EncodeFunction<Output> = (value: ChannelInput | Output) => Output | null | undefined;
 
-type EncodeFunction<Def extends ChannelDef> = (
-  value: ChannelInput | ExtractChannelOutput<Def>,
-) => ExtractChannelOutput<Def> | null | undefined;
-
-export default class ChannelEncoder<Def extends ChannelDef> {
+export default class ChannelEncoder<Def extends ChannelDef<Output>, Output extends Value = Value> {
   readonly name: string | Symbol | number;
   readonly channelType: ChannelType;
   readonly originalDefinition: Def;
-  readonly definition: CompleteChannelDef;
+  readonly definition: CompleteChannelDef<Output>;
   readonly scale: false | ReturnType<typeof createScaleFromScaleConfig>;
 
-  readonly getValue: (datum: PlainObject) => ChannelInput;
-  readonly encodeValue:
-    | Identity<ChannelInput | ExtractChannelOutput<Def> | null | undefined>
-    | EncodeFunction<Def>;
-
+  private readonly getValue: Getter<Output>;
+  readonly encodeValue: IdentityFunction<ChannelInput | Output> | EncodeFunction<Output>;
   readonly formatValue: (value: ChannelInput | HasToString) => string;
 
   constructor({
@@ -42,15 +36,15 @@ export default class ChannelEncoder<Def extends ChannelDef> {
   }) {
     this.name = name;
     this.channelType = channelType;
+
     this.originalDefinition = originalDefinition;
     const definition = completeChannelDef(this.channelType, originalDefinition);
     this.definition = definition;
 
     this.getValue = createGetterFromChannelDef(definition);
     this.formatValue = createFormatterFromChannelDef(definition);
-    const scale = definition.scale && createScaleFromScaleConfig(definition.scale);
-    // this.axis = definition.axis && ...
 
+    const scale = definition.scale && createScaleFromScaleConfig(definition.scale);
     this.encodeValue = scale === false ? identity : (value: ChannelInput) => scale(value);
     this.scale = scale;
 
@@ -59,31 +53,25 @@ export default class ChannelEncoder<Def extends ChannelDef> {
     this.getValueFromDatum = this.getValueFromDatum.bind(this);
   }
 
-  encodeDatum(datum: PlainObject): ExtractChannelOutput<Def> | null | undefined;
+  encodeDatum(datum: PlainObject): Output | null | undefined;
   // eslint-disable-next-line no-dupe-class-members
-  encodeDatum(datum: PlainObject, otherwise: ExtractChannelOutput<Def>): ExtractChannelOutput<Def>;
+  encodeDatum(datum: PlainObject, otherwise: Output): Output;
   // eslint-disable-next-line no-dupe-class-members
-  encodeDatum(datum: PlainObject, otherwise?: ExtractChannelOutput<Def>) {
+  encodeDatum(datum: PlainObject, otherwise?: Output) {
     const value = this.getValueFromDatum(datum);
-    if (value === null || value === undefined) {
+
+    if (otherwise !== undefined && (value === null || value === undefined)) {
       return otherwise;
     }
 
-    const output = this.encodeValue(value);
-
-    return otherwise !== undefined && (output === null || output === undefined)
-      ? otherwise
-      : output;
+    return this.encodeValue(value);
   }
 
   formatDatum(datum: PlainObject): string {
     return this.formatValue(this.getValueFromDatum(datum));
   }
 
-  getValueFromDatum<T extends ChannelInput | ExtractChannelOutput<Def>>(
-    datum: PlainObject,
-    otherwise?: T,
-  ) {
+  getValueFromDatum<T extends ChannelInput | Output>(datum: PlainObject, otherwise?: T) {
     const value = this.getValue(datum);
 
     return otherwise !== undefined && (value === null || value === undefined)
@@ -92,25 +80,25 @@ export default class ChannelEncoder<Def extends ChannelDef> {
   }
 
   getDomain(data: Dataset) {
-    if (isTypedFieldDef(this.definition)) {
-      const { type } = this.definition;
-      if (type === 'nominal' || type === 'ordinal') {
-        return Array.from(new Set(data.map(d => this.getValueFromDatum(d)))) as string[];
-      } else if (type === 'quantitative') {
-        const extent = d3Extent(data, d => this.getValueFromDatum<number>(d));
-        if (typeof extent[0] === 'undefined') {
-          return [0, 1];
-        }
+    if (isValueDef(this.definition)) {
+      const { value } = this.definition;
 
-        return extent as [number, number];
-      } else if (type === 'temporal') {
-        const extent = d3Extent(data, d => this.getValueFromDatum<number | Date>(d));
-        if (typeof extent[0] === 'undefined') {
-          return [0, 1];
-        }
+      return [value];
+    }
 
-        return extent as [number, number] | [Date, Date];
-      }
+    const { type } = this.definition;
+    if (type === 'nominal' || type === 'ordinal') {
+      return Array.from(new Set(data.map(d => this.getValueFromDatum(d)))) as string[];
+    } else if (type === 'quantitative') {
+      const extent = d3Extent(data, d => this.getValueFromDatum<number>(d));
+
+      return typeof extent[0] === 'undefined' ? [0, 1] : (extent as [number, number]);
+    } else if (type === 'temporal') {
+      const extent = d3Extent(data, d => this.getValueFromDatum<number | Date>(d));
+
+      return typeof extent[0] === 'undefined'
+        ? [0, 1]
+        : (extent as [number, number] | [Date, Date]);
     }
 
     return [];
@@ -128,7 +116,7 @@ export default class ChannelEncoder<Def extends ChannelDef> {
         this.channelType === 'Category' ||
         this.channelType === 'Text' ||
         (this.channelType === 'Color' && (type === 'nominal' || type === 'ordinal')) ||
-        (this.isXOrY() && (type === 'nominal' || type === 'ordinal'))
+        (isXOrY(this.channelType) && (type === 'nominal' || type === 'ordinal'))
       );
     }
 
