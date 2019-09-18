@@ -1,4 +1,4 @@
-import { ChannelDef, NonValueDef, TypedFieldDef } from '../types/ChannelDef';
+import { ChannelDef, NonValueDef } from '../types/ChannelDef';
 import { ChannelType } from '../types/Channel';
 import { isFieldDef, isValueDef, isTypedFieldDef } from '../typeGuards/ChannelDef';
 import completeAxisConfig, { CompleteAxisConfig } from './completeAxisConfig';
