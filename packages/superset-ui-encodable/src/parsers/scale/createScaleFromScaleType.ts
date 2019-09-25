@@ -12,7 +12,6 @@ import {
   scalePoint,
   scaleBand,
 } from 'd3-scale';
-import { HasToString } from '../../types/Base';
 import { ScaleConfig, CategoricalScaleInput } from '../../types/Scale';
 import { ScaleType, Value } from '../../types/VegaLite';
 
