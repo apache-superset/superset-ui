@@ -38,48 +38,40 @@ export default class ChannelEncoder<Def extends ChannelDef<Output>, Output exten
     this.channelType = channelType;
 
     this.originalDefinition = originalDefinition;
-    const definition = completeChannelDef(this.channelType, originalDefinition);
-    this.definition = definition;
+    this.definition = completeChannelDef(this.channelType, originalDefinition);
 
-    this.getValue = createGetterFromChannelDef(definition);
-    this.formatValue = createFormatterFromChannelDef(definition);
+    this.getValue = createGetterFromChannelDef(this.definition);
+    this.formatValue = createFormatterFromChannelDef(this.definition);
 
-    const scale = definition.scale && createScaleFromScaleConfig(definition.scale);
+    const scale = this.definition.scale && createScaleFromScaleConfig(this.definition.scale);
     this.encodeValue = scale === false ? identity : (value: ChannelInput) => scale(value);
     this.scale = scale;
-
-    this.encodeDatum = this.encodeDatum.bind(this);
-    this.formatDatum = this.formatDatum.bind(this);
-    this.getValueFromDatum = this.getValueFromDatum.bind(this);
   }
 
-  encodeDatum(datum: PlainObject): Output | null | undefined;
-  // eslint-disable-next-line no-dupe-class-members
-  encodeDatum(datum: PlainObject, otherwise: Output): Output;
-  // eslint-disable-next-line no-dupe-class-members
-  encodeDatum(datum: PlainObject, otherwise?: Output) {
+  encodeDatum: {
+    (datum: PlainObject): Output | null | undefined;
+    (datum: PlainObject, otherwise: Output): Output;
+  } = (datum: PlainObject, otherwise?: Output) => {
     const value = this.getValueFromDatum(datum);
 
     if (otherwise !== undefined && (value === null || value === undefined)) {
       return otherwise;
     }
 
-    return this.encodeValue(value);
-  }
+    return this.encodeValue(value) as Output;
+  };
 
-  formatDatum(datum: PlainObject): string {
-    return this.formatValue(this.getValueFromDatum(datum));
-  }
+  formatDatum = (datum: PlainObject): string => this.formatValue(this.getValueFromDatum(datum));
 
-  getValueFromDatum<T extends ChannelInput | Output>(datum: PlainObject, otherwise?: T) {
+  getValueFromDatum = <T extends ChannelInput | Output>(datum: PlainObject, otherwise?: T) => {
     const value = this.getValue(datum);
 
     return otherwise !== undefined && (value === null || value === undefined)
       ? otherwise
       : (value as T);
-  }
+  };
 
-  getDomain(data: Dataset) {
+  getDomain = (data: Dataset) => {
     if (isValueDef(this.definition)) {
       const { value } = this.definition;
 
@@ -102,7 +94,7 @@ export default class ChannelEncoder<Def extends ChannelDef<Output>, Output exten
     }
 
     return [];
-  }
+  };
 
   getTitle() {
     return this.definition.title;

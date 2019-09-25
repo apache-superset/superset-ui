@@ -191,7 +191,7 @@ export interface WithScale<Output extends Value = Value> {
 /** Each ScaleCategory contains one or more ScaleType */
 export type ScaleCategory = 'continuous' | 'discrete' | 'discretizing';
 
-type CategoricalScaleInput = HasToString | null | undefined;
+export type CategoricalScaleInput = HasToString | null | undefined;
 
 export interface ScaleTypeToD3ScaleType<Output extends Value = Value> {
   [ScaleType.LINEAR]: ScaleLinear<Output, Output>;
