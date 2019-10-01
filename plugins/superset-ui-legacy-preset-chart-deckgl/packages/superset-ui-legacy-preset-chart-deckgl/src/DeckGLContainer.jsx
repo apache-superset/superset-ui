@@ -37,6 +37,8 @@ const propTypes = {
   mapboxApiAccessToken: PropTypes.string.isRequired,
   children: PropTypes.node,
   bottomMargin: PropTypes.number,
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
 };
 const defaultProps = {
   mapStyle: 'light',
@@ -87,12 +89,12 @@ export default class DeckGLContainer extends React.Component {
   }
 
   render() {
-    const { children, bottomMargin } = this.props;
+    const { children, bottomMargin, height, width } = this.props;
     const { viewState } = this.state;
-    const { width, height } = viewState;
     const adjustedHeight = height - bottomMargin;
 
     const layers = this.layers();
+
     return (
       <div style={{ position: 'relative', width, height: adjustedHeight }}>
         <DeckGL

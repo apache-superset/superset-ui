@@ -92,6 +92,8 @@ const propTypes = {
   viewport: PropTypes.object.isRequired,
   onAddFilter: PropTypes.func,
   setTooltip: PropTypes.func,
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
 };
 const defaultProps = {
   onAddFilter() {},
@@ -106,7 +108,6 @@ class DeckGLScreenGrid extends React.PureComponent {
 
     this.getLayers = this.getLayers.bind(this);
     this.onValuesChange = this.onValuesChange.bind(this);
-    this.onViewportChange = this.onViewportChange.bind(this);
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -151,10 +152,6 @@ class DeckGLScreenGrid extends React.PureComponent {
     });
   }
 
-  onViewportChange(viewport) {
-    this.setState({ viewport });
-  }
-
   getLayers(values) {
     const filters = [];
 
@@ -190,7 +187,8 @@ class DeckGLScreenGrid extends React.PureComponent {
           onValuesChange={this.onValuesChange}
           disabled={this.state.disabled}
           viewport={this.state.viewport}
-          onViewportChange={this.onViewportChange}
+          width={this.props.width}
+          height={this.props.height}
           mapboxApiAccessToken={payload.data.mapboxApiKey}
           mapStyle={formData.mapbox_style}
           setControlValue={setControlValue}

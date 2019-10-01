@@ -24,14 +24,16 @@ export default function transformProps(chartProps) {
 
   return {
     formData: rawFormData,
+    height,
     onAddFilter,
     payload: queryData,
     setControlValue,
     setTooltip,
     viewport: {
       ...rawFormData.viewport,
+      height,
+      width,
     },
-    height,
     width,
   };
 }
