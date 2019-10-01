@@ -101,6 +101,7 @@ export default class AnimatableDeckGLContainer extends React.Component {
           mapStyle={mapStyle}
           mapboxApiAccessToken={mapboxApiAccessToken}
           onViewportChange={this.onViewportChange}
+          bottomMargin={disabled ? 0 : PLAYSLIDER_HEIGHT}
         />
         {!disabled && (
           <PlaySlider

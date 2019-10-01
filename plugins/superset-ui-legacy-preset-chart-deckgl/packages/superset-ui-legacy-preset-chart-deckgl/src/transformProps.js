@@ -30,8 +30,8 @@ export default function transformProps(chartProps) {
     setTooltip,
     viewport: {
       ...rawFormData.viewport,
-      height,
-      width,
     },
+    height,
+    width,
   };
 }
