@@ -25,17 +25,3 @@ export type DeriveChannelEncoders<Config extends EncodingConfig> = {
     ? ChannelEncoder<ChannelTypeToDefMap<Config[k]['1']>[Config[k]['0']]>[]
     : ChannelEncoder<ChannelTypeToDefMap<Config[k]['1']>[Config[k]['0']]>;
 };
-
-// // Testing
-
-// type Config = {
-//   x: ['X', number];
-//   y: ['Y', number];
-//   size: ['Numeric', number];
-//   tooltip: ['Text', string, 'multiple'];
-// };
-
-// type ChannelTypes = DeriveChannelTypes<Config>;
-// type ChannelOutputs = DeriveChannelOutputs<Config>;
-// type Encoding = DeriveEncoding<Config>;
-// type ChannelEncoders = DeriveChannelEncoders<Config>;
