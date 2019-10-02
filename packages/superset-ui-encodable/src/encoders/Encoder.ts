@@ -1,8 +1,8 @@
 import { flatMap } from 'lodash';
-import { ChannelDef } from '../types/ChannelDef';
+import { ChannelDef, TypedFieldDef } from '../types/ChannelDef';
 import { MayBeArray } from '../types/Base';
 import { isFieldDef } from '../typeGuards/ChannelDef';
-import { isArray, isNotArray } from '../typeGuards/Base';
+import { isNotArray } from '../typeGuards/Base';
 import ChannelEncoder from './ChannelEncoder';
 import {
   EncodingConfig,
@@ -35,8 +35,8 @@ export default class Encoder<Config extends EncodingConfig> {
     const channels: { [k in keyof Config]?: MayBeArray<ChannelEncoder<ChannelDef>> } = {};
 
     channelNames.forEach(name => {
-      const channelEncoding = encoding[name];
-      if (isArray(channelEncoding)) {
+      const channelEncoding = encoding[name] as MayBeArray<ChannelDef>;
+      if (Array.isArray(channelEncoding)) {
         const definitions = channelEncoding;
         channels[name] = definitions.map(
           (definition, i) =>
@@ -46,7 +46,7 @@ export default class Encoder<Config extends EncodingConfig> {
               name: `${name}[${i}]`,
             }),
         );
-      } else if (isNotArray(channelEncoding)) {
+      } else {
         const definition = channelEncoding;
         channels[name] = new ChannelEncoder({
           channelType: channelTypes[name],
@@ -80,15 +80,14 @@ export default class Encoder<Config extends EncodingConfig> {
     return Object.keys(this.channelTypes) as (keyof Config)[];
   }
 
-  getChannelsAsArray() {
+  getChannelEncoders() {
     return this.getChannelNames().map(name => this.channels[name]);
   }
 
   getGroupBys() {
-    const fields = flatMap(this.getChannelsAsArray())
+    const fields = flatMap(this.getChannelEncoders())
       .filter(c => c.isGroupBy())
-      .map(c => (isFieldDef(c.definition) ? c.definition.field : ''))
-      .filter(field => field !== '');
+      .map(c => (c.definition as TypedFieldDef).field!);
 
     return Array.from(new Set(fields));
   }
