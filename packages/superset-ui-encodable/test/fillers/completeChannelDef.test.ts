@@ -19,7 +19,7 @@ const DEFAULT_OUTPUT = {
     title: 'speed',
     titlePadding: 4,
   },
-  legend: {},
+  legend: false,
   scale: { type: 'linear', nice: true, clamp: true, zero: true },
 };
 
@@ -56,6 +56,6 @@ describe('completeChannelDef(channelType, channelDef)', () => {
     expect(
       // @ts-ignore
       completeChannelDef('X', {}),
-    ).toEqual({ axis: false, legend: {}, scale: false, title: '', type: 'quantitative' });
+    ).toEqual({ axis: false, legend: false, scale: false, title: '', type: 'quantitative' });
   });
 });

@@ -55,7 +55,7 @@ export default function completeChannelDef<Output extends Value>(
   return {
     ...copy,
     axis: completeAxisConfig(channelType, copy),
-    legend: completeLegendConfig(copy),
+    legend: completeLegendConfig(channelType, copy),
     scale: completeScaleConfig(channelType, copy),
   };
 }
