@@ -31,6 +31,7 @@ export type DeriveChannelEncoders<Config extends EncodingConfig> = {
 // type Config = {
 //   x: ['X', number];
 //   y: ['Y', number];
+//   size: ['Numeric', number];
 //   tooltip: ['Text', string, 'multiple'];
 // };
 

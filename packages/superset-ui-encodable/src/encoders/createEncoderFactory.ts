@@ -2,9 +2,10 @@ import Encoder from './Encoder';
 import { EncodingConfig, DeriveChannelTypes, DeriveEncoding } from '../types/Encoding';
 import mergeEncoding from '../utils/mergeEncoding';
 
-type CreateEncoderFactoryParams<Config extends EncodingConfig> =
+type CreateEncoderFactoryParams<Config extends EncodingConfig> = {
+  channelTypes: DeriveChannelTypes<Config>;
+} & (
   | {
-      channelTypes: DeriveChannelTypes<Config>;
       /**
        * use the default approach to merge default encoding with user-specified encoding
        * if there are missing fields
@@ -12,13 +13,12 @@ type CreateEncoderFactoryParams<Config extends EncodingConfig> =
       defaultEncoding: DeriveEncoding<Config>;
     }
   | {
-      channelTypes: DeriveChannelTypes<Config>;
       /**
        * custom way to complete the encoding
        * if there are missing fields
        */
       completeEncoding: (e: Partial<DeriveEncoding<Config>>) => DeriveEncoding<Config>;
-    };
+    });
 
 export default function createEncoderFactory<Config extends EncodingConfig>(
   params: CreateEncoderFactoryParams<Config>,

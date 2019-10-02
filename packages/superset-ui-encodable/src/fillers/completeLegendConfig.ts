@@ -10,7 +10,13 @@ export default function completeLegendConfig<Output extends Value = Value>(
   if ('legend' in channelDef) {
     const { legend } = channelDef;
 
-    return legend === false || legend === null ? false : {};
+    if (legend === false) {
+      return false;
+    } else if (legend === undefined) {
+      return {};
+    }
+
+    return legend;
   }
 
   return {};

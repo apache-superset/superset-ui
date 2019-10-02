@@ -1,9 +1,9 @@
-import { Encoding } from '../types/Encoding';
+import { EncodingConfig, DeriveEncoding } from '../types/Encoding';
 
-export default function mergeEncoding<CustomEncoding extends Encoding<string>>(
-  defaultEncoding: CustomEncoding,
-  encoding: Partial<CustomEncoding>,
-): CustomEncoding {
+export default function mergeEncoding<Config extends EncodingConfig>(
+  defaultEncoding: DeriveEncoding<Config>,
+  encoding: Partial<DeriveEncoding<Config>>,
+): DeriveEncoding<Config> {
   return {
     ...defaultEncoding,
     ...encoding,
