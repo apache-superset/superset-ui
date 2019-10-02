@@ -16,11 +16,11 @@ type AllChannelEncoders<Encoding extends Record<string, MayBeArray<ChannelDef>>>
 };
 
 export default class Encoder<
-  ChannelTypes extends Record<string, ChannelType>,
-  CustomEncoding extends Encoding<keyof ChannelTypes>
+  CustomChannelTypes extends Record<string, ChannelType>,
+  CustomEncoding extends Encoding<keyof CustomChannelTypes>
 > {
   readonly encoding: CustomEncoding;
-  readonly channelTypes: ChannelTypes;
+  readonly channelTypes: CustomChannelTypes;
   readonly channels: AllChannelEncoders<CustomEncoding>;
 
   readonly legends: {
@@ -31,7 +31,7 @@ export default class Encoder<
     channelTypes,
     encoding,
   }: {
-    channelTypes: ChannelTypes;
+    channelTypes: CustomChannelTypes;
     encoding: CustomEncoding;
   }) {
     this.channelTypes = channelTypes;
@@ -84,27 +84,8 @@ export default class Encoder<
       });
   }
 
-  // /**
-  //  * subclass can override this
-  //  */
-  // createFullSpec(spec: PartialSpec<Encoding, Options>, defaultEncoding?: Encoding) {
-  //   if (typeof defaultEncoding === 'undefined') {
-  //     return spec as FullSpec<Encoding, Options>;
-  //   }
-
-  //   const { encoding, ...rest } = spec;
-
-  //   return {
-  //     ...rest,
-  //     encoding: {
-  //       ...defaultEncoding,
-  //       ...encoding,
-  //     },
-  //   };
-  // }
-
   getChannelNames() {
-    return Object.keys(this.channelTypes) as (keyof ChannelTypes)[];
+    return Object.keys(this.channelTypes) as (keyof CustomChannelTypes)[];
   }
 
   getChannelsAsArray() {
@@ -119,43 +100,6 @@ export default class Encoder<
 
     return Array.from(new Set(fields));
   }
-
-  // getLegendInfos(data: Dataset) {
-  //   return Object.keys(this.legends)
-  //     .map((field: string) => {
-  //       const channelNames = this.legends[field];
-  //       const channelEncoder = this.channels[channelNames[0]];
-
-  //       if (isNotArray(channelEncoder) && isTypedFieldDef(channelEncoder.definition)) {
-  //         // Only work for nominal channels now
-  //         // TODO: Add support for numerical scale
-  //         if (channelEncoder.definition.type === 'nominal') {
-  //           const domain = channelEncoder.getDomain(data) as string[];
-
-  //           return domain.map((value: ChannelInput) => ({
-  //             field,
-  //             value,
-  //             // eslint-disable-next-line sort-keys
-  //             encodedValues: channelNames.reduce(
-  //               (prev: Partial<Record<keyof Encoding, Value | undefined>>, curr) => {
-  //                 const map = prev;
-  //                 const channel = this.channels[curr];
-  //                 if (isNotArray(channel)) {
-  //                   map[curr] = channel.encodeValue(value);
-  //                 }
-
-  //                 return map;
-  //               },
-  //               {},
-  //             ),
-  //           }));
-  //         }
-  //       }
-
-  //       return [];
-  //     })
-  //     .filter(items => items.length > 0);
-  // }
 
   hasLegend() {
     return Object.keys(this.legends).length > 0;

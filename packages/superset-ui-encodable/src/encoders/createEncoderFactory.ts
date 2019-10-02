@@ -5,7 +5,7 @@ import mergeEncoding from '../utils/mergeEncoding';
 
 type CreateEncoderFactoryParams<
   ChannelTypes extends Record<string, ChannelType>,
-  Enc extends Encoding<keyof ChannelTypes>
+  CustomEncoding extends Encoding<keyof ChannelTypes>
 > =
   | {
       channelTypes: ChannelTypes;
@@ -13,7 +13,7 @@ type CreateEncoderFactoryParams<
        * use the default approach to merge default encoding with user-specified encoding
        * if there are missing fields
        */
-      defaultEncoding: Enc;
+      defaultEncoding: CustomEncoding;
     }
   | {
       channelTypes: ChannelTypes;
@@ -21,22 +21,23 @@ type CreateEncoderFactoryParams<
        * custom way to complete the encoding
        * if there are missing fields
        */
-      completeEncoding: (e: Partial<Enc>) => Enc;
+      completeEncoding: (e: Partial<CustomEncoding>) => CustomEncoding;
     };
 
 export default function createEncoderFactory<
-  ChannelTypes extends Record<string, ChannelType>,
-  Enc extends Encoding<keyof ChannelTypes>
->(params: CreateEncoderFactoryParams<ChannelTypes, Enc>) {
+  CustomChannelTypes extends Record<string, ChannelType>,
+  CustomEncoding extends Encoding<keyof CustomChannelTypes>
+>(params: CreateEncoderFactoryParams<CustomChannelTypes, CustomEncoding>) {
   const { channelTypes } = params;
   const completeEncoding =
     'defaultEncoding' in params
-      ? (encoding: Partial<Enc>) => mergeEncoding(params.defaultEncoding, encoding)
+      ? (encoding: Partial<CustomEncoding>) => mergeEncoding(params.defaultEncoding, encoding)
       : params.completeEncoding;
 
   return {
-    create: (encoding: Partial<Enc>) =>
-      new Encoder<ChannelTypes, Enc>({
+    channelTypes,
+    create: (encoding: Partial<CustomEncoding>) =>
+      new Encoder<CustomChannelTypes, CustomEncoding>({
         channelTypes,
         encoding: completeEncoding(encoding),
       }),
