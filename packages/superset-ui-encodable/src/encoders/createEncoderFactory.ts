@@ -1,43 +1,40 @@
 import Encoder from './Encoder';
-import { ChannelType } from '../types/Channel';
-import { Encoding } from '../types/Encoding';
+import { EncodingConfig, DeriveChannelTypes, DeriveEncoding } from '../types/Encoding';
 import mergeEncoding from '../utils/mergeEncoding';
 
-type CreateEncoderFactoryParams<
-  ChannelTypes extends Record<string, ChannelType>,
-  CustomEncoding extends Encoding<keyof ChannelTypes>
-> =
+type CreateEncoderFactoryParams<Config extends EncodingConfig> =
   | {
-      channelTypes: ChannelTypes;
+      channelTypes: DeriveChannelTypes<Config>;
       /**
        * use the default approach to merge default encoding with user-specified encoding
        * if there are missing fields
        */
-      defaultEncoding: CustomEncoding;
+      defaultEncoding: DeriveEncoding<Config>;
     }
   | {
-      channelTypes: ChannelTypes;
+      channelTypes: DeriveChannelTypes<Config>;
       /**
        * custom way to complete the encoding
        * if there are missing fields
        */
-      completeEncoding: (e: Partial<CustomEncoding>) => CustomEncoding;
+      completeEncoding: (e: Partial<DeriveEncoding<Config>>) => DeriveEncoding<Config>;
     };
 
-export default function createEncoderFactory<
-  CustomChannelTypes extends Record<string, ChannelType>,
-  CustomEncoding extends Encoding<keyof CustomChannelTypes>
->(params: CreateEncoderFactoryParams<CustomChannelTypes, CustomEncoding>) {
+export default function createEncoderFactory<Config extends EncodingConfig>(
+  params: CreateEncoderFactoryParams<Config>,
+) {
   const { channelTypes } = params;
+  type PartialEncoding = Partial<DeriveEncoding<Config>>;
+
   const completeEncoding =
     'defaultEncoding' in params
-      ? (encoding: Partial<CustomEncoding>) => mergeEncoding(params.defaultEncoding, encoding)
+      ? (encoding: PartialEncoding) => mergeEncoding(params.defaultEncoding, encoding)
       : params.completeEncoding;
 
   return {
     channelTypes,
-    create: (encoding: Partial<CustomEncoding>) =>
-      new Encoder<CustomChannelTypes, CustomEncoding>({
+    create: (encoding: PartialEncoding) =>
+      new Encoder<Config>({
         channelTypes,
         encoding: completeEncoding(encoding),
       }),

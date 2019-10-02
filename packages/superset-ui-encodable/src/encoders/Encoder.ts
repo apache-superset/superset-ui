@@ -1,44 +1,38 @@
 import { flatMap } from 'lodash';
-import { Value } from '../types/VegaLite';
-import { ChannelType, ChannelInput } from '../types/Channel';
 import { ChannelDef } from '../types/ChannelDef';
-import { Dataset } from '../types/Data';
-import { Unarray, MayBeArray } from '../types/Base';
-import { isFieldDef, isTypedFieldDef } from '../typeGuards/ChannelDef';
+import { MayBeArray } from '../types/Base';
+import { isFieldDef } from '../typeGuards/ChannelDef';
 import { isArray, isNotArray } from '../typeGuards/Base';
 import ChannelEncoder from './ChannelEncoder';
-import { Encoding } from '../types/Encoding';
+import {
+  EncodingConfig,
+  DeriveEncoding,
+  DeriveChannelTypes,
+  DeriveChannelEncoders,
+} from '../types/Encoding';
 
-type AllChannelEncoders<Encoding extends Record<string, MayBeArray<ChannelDef>>> = {
-  readonly [k in keyof Encoding]: Encoding[k] extends any[]
-    ? ChannelEncoder<Unarray<Encoding[k]>>[]
-    : ChannelEncoder<Unarray<Encoding[k]>>;
-};
-
-export default class Encoder<
-  CustomChannelTypes extends Record<string, ChannelType>,
-  CustomEncoding extends Encoding<keyof CustomChannelTypes>
-> {
-  readonly encoding: CustomEncoding;
-  readonly channelTypes: CustomChannelTypes;
-  readonly channels: AllChannelEncoders<CustomEncoding>;
+export default class Encoder<Config extends EncodingConfig> {
+  readonly encoding: DeriveEncoding<Config>;
+  readonly channelTypes: DeriveChannelTypes<Config>;
+  readonly channels: DeriveChannelEncoders<Config>;
 
   readonly legends: {
-    [key: string]: (keyof CustomEncoding)[];
+    [key: string]: (keyof Config)[];
   };
 
   constructor({
     channelTypes,
     encoding,
   }: {
-    channelTypes: CustomChannelTypes;
-    encoding: CustomEncoding;
+    channelTypes: DeriveChannelTypes<Config>;
+    encoding: DeriveEncoding<Config>;
   }) {
     this.channelTypes = channelTypes;
     this.encoding = encoding;
     const channelNames = this.getChannelNames();
 
-    const channels: { [k in keyof CustomEncoding]?: MayBeArray<ChannelEncoder<ChannelDef>> } = {};
+    // Create channel encoders
+    const channels: { [k in keyof Config]?: MayBeArray<ChannelEncoder<ChannelDef>> } = {};
 
     channelNames.forEach(name => {
       const channelEncoding = encoding[name];
@@ -62,9 +56,7 @@ export default class Encoder<
       }
     });
 
-    this.channels = channels as AllChannelEncoders<CustomEncoding>;
-
-    type ChannelName = keyof CustomEncoding;
+    this.channels = channels as DeriveChannelEncoders<Config>;
 
     // Group the channels that use the same field together
     // so they can share the same legend.
@@ -73,7 +65,7 @@ export default class Encoder<
       .map(name => this.channels[name])
       .forEach(c => {
         if (isNotArray(c) && c.hasLegend() && isFieldDef(c.definition)) {
-          const name = c.name as ChannelName;
+          const name = c.name as keyof Config;
           const { field } = c.definition;
           if (this.legends[field]) {
             this.legends[field].push(name);
@@ -85,7 +77,7 @@ export default class Encoder<
   }
 
   getChannelNames() {
-    return Object.keys(this.channelTypes) as (keyof CustomChannelTypes)[];
+    return Object.keys(this.channelTypes) as (keyof Config)[];
   }
 
   getChannelsAsArray() {
