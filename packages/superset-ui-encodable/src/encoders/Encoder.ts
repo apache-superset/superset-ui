@@ -41,7 +41,7 @@ export default class Encoder<Config extends EncodingConfig> {
         channels[name] = definitions.map(
           (definition, i) =>
             new ChannelEncoder({
-              channelType: 'Text',
+              channelType: channelTypes[name],
               definition,
               name: `${name}[${i}]`,
             }),
