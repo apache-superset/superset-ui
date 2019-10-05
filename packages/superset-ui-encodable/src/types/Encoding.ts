@@ -11,7 +11,9 @@ export type DeriveChannelTypes<Config extends EncodingConfig> = {
 };
 
 export type DeriveChannelOutputs<Config extends EncodingConfig> = {
-  readonly [k in keyof Config]: Config[k]['1'];
+  readonly [k in keyof Config]: Config[k]['2'] extends 'multiple'
+    ? Config[k]['1'][]
+    : Config[k]['1'];
 };
 
 export type DeriveEncoding<Config extends EncodingConfig> = {

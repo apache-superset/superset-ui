@@ -1,7 +1,7 @@
 import { flatMap } from 'lodash';
 import { ChannelDef, TypedFieldDef } from '../types/ChannelDef';
 import { MayBeArray } from '../types/Base';
-import { isFieldDef } from '../typeGuards/ChannelDef';
+import { isFieldDef, isTypedFieldDef } from '../typeGuards/ChannelDef';
 import { isNotArray } from '../typeGuards/Base';
 import ChannelEncoder from './ChannelEncoder';
 import {
@@ -9,7 +9,11 @@ import {
   DeriveEncoding,
   DeriveChannelTypes,
   DeriveChannelEncoders,
+  DeriveChannelOutputs,
 } from '../types/Encoding';
+import { Dataset } from '../types/Data';
+import { Value } from '../types/VegaLite';
+import { ChannelInput } from '../types/Channel';
 
 export default class Encoder<Config extends EncodingConfig> {
   readonly encoding: DeriveEncoding<Config>;
@@ -90,6 +94,46 @@ export default class Encoder<Config extends EncodingConfig> {
       .map(c => (c.definition as TypedFieldDef).field!);
 
     return Array.from(new Set(fields));
+  }
+
+  getLegendInformation(data: Dataset) {
+    return (
+      Object.keys(this.legends)
+        // for each field that was encoded
+        .map((field: string) => {
+          // get all the channels that use this field
+          const channelNames = this.legends[field];
+          // get first channelEncoder
+          const channelEncoder = this.channels[channelNames[0]];
+          // apply type guards
+          if (isNotArray(channelEncoder) && isTypedFieldDef(channelEncoder.definition)) {
+            // Only work for nominal channels now
+            // TODO: Add support for numerical scale
+            if (channelEncoder.definition.type === 'nominal') {
+              return channelEncoder.getDomain(data).map((value: ChannelInput) => ({
+                field,
+                value,
+                // eslint-disable-next-line sort-keys
+                output: channelNames.reduce(
+                  (prev: Partial<{ [k in keyof Config]: Config[k]['1'] }>, curr) => {
+                    const map = prev;
+                    const channel = this.channels[curr];
+                    if (isNotArray(channel)) {
+                      map[curr] = channel.encodeValue(`${value}`) as Value;
+                    }
+
+                    return map;
+                  },
+                  {},
+                ),
+              }));
+            }
+          }
+
+          return [];
+        })
+        .filter(items => items.length > 0)
+    );
   }
 
   hasLegend() {

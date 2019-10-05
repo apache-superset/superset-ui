@@ -80,7 +80,7 @@ export default class ChannelEncoder<Def extends ChannelDef<Output>, Output exten
 
     const { type } = this.definition;
     if (type === 'nominal' || type === 'ordinal') {
-      return Array.from(new Set(data.map(d => this.getValueFromDatum(d)))) as string[];
+      return Array.from(new Set(data.map(d => this.getValueFromDatum(d)))) as ChannelInput[];
     } else if (type === 'quantitative') {
       const extent = d3Extent(data, d => this.getValueFromDatum<number>(d));
 
