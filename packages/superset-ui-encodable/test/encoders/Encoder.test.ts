@@ -46,6 +46,88 @@ describe('Encoder', () => {
       expect(encoder.getGroupBys()).toEqual(['brand', 'make', 'model']);
     });
   });
+  describe('.getLegendInformation()', () => {
+    it('returns information for each field', () => {
+      expect(
+        factory
+          .create({
+            color: { type: 'nominal', field: 'brand', scale: { range: ['red', 'green', 'blue'] } },
+            shape: { type: 'nominal', field: 'brand', scale: { range: ['circle', 'diamond'] } },
+          })
+          .getLegendInformation([{ brand: 'Gucci' }, { brand: 'Prada' }]),
+      ).toEqual([
+        [
+          {
+            field: 'brand',
+            value: 'Gucci',
+            output: {
+              color: 'red',
+              shape: 'circle',
+            },
+          },
+          {
+            field: 'brand',
+            value: 'Prada',
+            output: {
+              color: 'green',
+              shape: 'diamond',
+            },
+          },
+        ],
+      ]);
+    });
+    it('ignore channels that are ValueDef', () => {
+      expect(
+        factory
+          .create({
+            color: { type: 'nominal', field: 'brand', scale: { range: ['red', 'green', 'blue'] } },
+            shape: { value: 'square' },
+          })
+          .getLegendInformation([{ brand: 'Gucci' }, { brand: 'Prada' }]),
+      ).toEqual([
+        [
+          {
+            field: 'brand',
+            value: 'Gucci',
+            output: {
+              color: 'red',
+            },
+          },
+          {
+            field: 'brand',
+            value: 'Prada',
+            output: {
+              color: 'green',
+            },
+          },
+        ],
+      ]);
+    });
+    it('only works for nominal field', () => {
+      expect(
+        factory
+          .create({
+            color: {
+              type: 'quantitative',
+              field: 'price',
+              scale: { range: ['red', 'green', 'blue'] },
+            },
+            shape: { value: 'square' },
+          })
+          .getLegendInformation([{ brand: 'Gucci', price: 10 }, { brand: 'Prada', price: 20 }]),
+      ).toEqual([]);
+    });
+    it('returns empty array if no legend', () => {
+      expect(
+        factory
+          .create({
+            color: { value: 'black' },
+            shape: { value: 'square' },
+          })
+          .getLegendInformation([{ brand: 'Gucci' }, { brand: 'Prada' }]),
+      ).toEqual([]);
+    });
+  });
   describe('.hasLegend()', () => {
     it('returns true if has legend', () => {
       expect(encoder.hasLegend()).toBeTruthy();

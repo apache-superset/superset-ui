@@ -1,7 +1,7 @@
 import { flatMap } from 'lodash';
 import { ChannelDef, TypedFieldDef } from '../types/ChannelDef';
 import { MayBeArray } from '../types/Base';
-import { isFieldDef, isTypedFieldDef } from '../typeGuards/ChannelDef';
+import { isTypedFieldDef } from '../typeGuards/ChannelDef';
 import { isNotArray } from '../typeGuards/Base';
 import ChannelEncoder from './ChannelEncoder';
 import {
@@ -9,6 +9,7 @@ import {
   DeriveEncoding,
   DeriveChannelTypes,
   DeriveChannelEncoders,
+  DeriveSingleChannelEncoder,
 } from '../types/Encoding';
 import { Dataset } from '../types/Data';
 import { Value } from '../types/VegaLite';
@@ -20,7 +21,7 @@ export default class Encoder<Config extends EncodingConfig> {
   readonly channels: DeriveChannelEncoders<Config>;
 
   readonly legends: {
-    [key: string]: (keyof Config)[];
+    [key: string]: DeriveSingleChannelEncoder<Config>[];
   };
 
   constructor({
@@ -67,13 +68,12 @@ export default class Encoder<Config extends EncodingConfig> {
     channelNames
       .map(name => this.channels[name])
       .forEach(c => {
-        if (isNotArray(c) && c.hasLegend() && isFieldDef(c.definition)) {
-          const name = c.name as keyof Config;
+        if (isNotArray(c) && c.hasLegend() && isTypedFieldDef(c.definition)) {
           const { field } = c.definition;
           if (this.legends[field]) {
-            this.legends[field].push(name);
+            this.legends[field].push(c);
           } else {
-            this.legends[field] = [name];
+            this.legends[field] = [c];
           }
         }
       });
@@ -101,32 +101,26 @@ export default class Encoder<Config extends EncodingConfig> {
         // for each field that was encoded
         .map((field: string) => {
           // get all the channels that use this field
-          const channelNames = this.legends[field];
-          // get first channelEncoder
-          const channelEncoder = this.channels[channelNames[0]];
-          // apply type guards
-          if (isNotArray(channelEncoder) && isTypedFieldDef(channelEncoder.definition)) {
-            // NOTE: Only work for nominal channels now
-            // Need to add support for quantitative channels
-            if (channelEncoder.definition.type === 'nominal') {
-              return channelEncoder.getDomain(data).map((value: ChannelInput) => ({
-                field,
-                value,
-                // eslint-disable-next-line sort-keys
-                output: channelNames.reduce(
-                  (prev: Partial<{ [k in keyof Config]: Config[k]['1'] }>, curr) => {
-                    const map = prev;
-                    const channel = this.channels[curr];
-                    if (isNotArray(channel)) {
-                      map[curr] = channel.encodeValue(`${value}`) as Value;
-                    }
+          const channelEncoders = this.legends[field];
+          const firstEncoder = channelEncoders[0];
+          const definition = firstEncoder.definition as TypedFieldDef;
+          // NOTE: Only work for nominal fields now
+          // Need to add support for quantitative fields
+          if (definition.type === 'nominal') {
+            return firstEncoder.getDomain(data).map((value: ChannelInput) => ({
+              field,
+              value,
+              // eslint-disable-next-line sort-keys
+              output: channelEncoders.reduce(
+                (prev: Partial<{ [k in keyof Config]: Config[k]['1'] }>, curr) => {
+                  const map = prev;
+                  map[curr.name as keyof Config] = curr.encodeValue(`${value}`) as Value;
 
-                    return map;
-                  },
-                  {},
-                ),
-              }));
-            }
+                  return map;
+                },
+                {},
+              ),
+            }));
           }
 
           return [];

@@ -27,3 +27,8 @@ export type DeriveChannelEncoders<Config extends EncodingConfig> = {
     ? ChannelEncoder<ChannelTypeToDefMap<Config[k]['1']>[Config[k]['0']]>[]
     : ChannelEncoder<ChannelTypeToDefMap<Config[k]['1']>[Config[k]['0']]>;
 };
+
+export type DeriveSingleChannelEncoder<
+  Config extends EncodingConfig,
+  k extends keyof Config = keyof Config
+> = ChannelEncoder<ChannelTypeToDefMap<Config[k]['1']>[Config[k]['0']]>;
