@@ -9,7 +9,6 @@ import {
   DeriveEncoding,
   DeriveChannelTypes,
   DeriveChannelEncoders,
-  DeriveChannelOutputs,
 } from '../types/Encoding';
 import { Dataset } from '../types/Data';
 import { Value } from '../types/VegaLite';
@@ -107,8 +106,8 @@ export default class Encoder<Config extends EncodingConfig> {
           const channelEncoder = this.channels[channelNames[0]];
           // apply type guards
           if (isNotArray(channelEncoder) && isTypedFieldDef(channelEncoder.definition)) {
-            // Only work for nominal channels now
-            // TODO: Add support for numerical scale
+            // NOTE: Only work for nominal channels now
+            // Need to add support for quantitative channels
             if (channelEncoder.definition.type === 'nominal') {
               return channelEncoder.getDomain(data).map((value: ChannelInput) => ({
                 field,
