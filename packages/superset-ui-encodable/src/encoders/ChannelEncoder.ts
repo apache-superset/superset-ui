@@ -3,7 +3,10 @@ import { ChannelType, ChannelInput } from '../types/Channel';
 import { PlainObject, Dataset } from '../types/Data';
 import { ChannelDef } from '../types/ChannelDef';
 import createGetterFromChannelDef, { Getter } from '../parsers/createGetterFromChannelDef';
-import completeChannelDef, { CompleteChannelDef } from '../fillers/completeChannelDef';
+import completeChannelDef, {
+  CompleteChannelDef,
+  CompleteValueDef,
+} from '../fillers/completeChannelDef';
 import createFormatterFromChannelDef from '../parsers/format/createFormatterFromChannelDef';
 import createScaleFromScaleConfig from '../parsers/scale/createScaleFromScaleConfig';
 import identity from '../utils/identity';
@@ -44,7 +47,14 @@ export default class ChannelEncoder<Def extends ChannelDef<Output>, Output exten
     this.formatValue = createFormatterFromChannelDef(this.definition);
 
     const scale = this.definition.scale && createScaleFromScaleConfig(this.definition.scale);
-    this.encodeValue = scale === false ? identity : (value: ChannelInput) => scale(value);
+    if (scale === false) {
+      this.encodeValue =
+        'value' in this.definition
+          ? () => (this.definition as CompleteValueDef<Output>).value
+          : identity;
+    } else {
+      this.encodeValue = (value: ChannelInput) => scale(value);
+    }
     this.scale = scale;
   }
 

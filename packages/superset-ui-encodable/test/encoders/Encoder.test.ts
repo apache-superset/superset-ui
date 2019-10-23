@@ -1,10 +1,19 @@
 import createEncoderFactory from '../../src/encoders/createEncoderFactory';
 
+function stripFunction(legendInfo) {
+  return legendInfo.map(legendGroup => {
+    const { createLegendItems, ...rest } = legendGroup;
+
+    return { ...rest };
+  });
+}
+
 describe('Encoder', () => {
   const factory = createEncoderFactory<{
     x: ['X', number];
     y: ['Y', number];
     color: ['Color', string];
+    radius: ['Numeric', number];
     shape: ['Category', string];
     tooltip: ['Text', string, 'multiple'];
   }>({
@@ -12,6 +21,7 @@ describe('Encoder', () => {
       x: 'X',
       y: 'Y',
       color: 'Color',
+      radius: 'Numeric',
       shape: 'Category',
       tooltip: 'Text',
     },
@@ -19,7 +29,8 @@ describe('Encoder', () => {
       x: { type: 'quantitative', field: 'speed' },
       y: { type: 'quantitative', field: 'price' },
       color: { type: 'nominal', field: 'brand' },
-      shape: { type: 'nominal', field: 'brand' },
+      radius: { value: 5 },
+      shape: { value: 'circle' },
       tooltip: [{ field: 'make' }, { field: 'model' }],
     },
   });
@@ -33,12 +44,12 @@ describe('Encoder', () => {
   });
   describe('.getChannelNames()', () => {
     it('returns an array of channel names', () => {
-      expect(encoder.getChannelNames()).toEqual(['x', 'y', 'color', 'shape', 'tooltip']);
+      expect(encoder.getChannelNames()).toEqual(['x', 'y', 'color', 'radius', 'shape', 'tooltip']);
     });
   });
   describe('.getChannelEncoders()', () => {
     it('returns an array of channel encoders', () => {
-      expect(encoder.getChannelEncoders()).toHaveLength(5);
+      expect(encoder.getChannelEncoders()).toHaveLength(6);
     });
   });
   describe('.getGroupBys()', () => {
@@ -48,84 +59,140 @@ describe('Encoder', () => {
   });
   describe('.getLegendInformation()', () => {
     it('returns information for each field', () => {
-      expect(
-        factory
-          .create({
-            color: { type: 'nominal', field: 'brand', scale: { range: ['red', 'green', 'blue'] } },
-            shape: { type: 'nominal', field: 'brand', scale: { range: ['circle', 'diamond'] } },
-          })
-          .getLegendInformation([{ brand: 'Gucci' }, { brand: 'Prada' }]),
-      ).toEqual([
-        [
-          {
-            field: 'brand',
-            value: 'Gucci',
-            output: {
-              color: 'red',
-              shape: 'circle',
+      const legendInfo = factory
+        .create({
+          color: { type: 'nominal', field: 'brand', scale: { range: ['red', 'green', 'blue'] } },
+          shape: { type: 'nominal', field: 'brand', scale: { range: ['circle', 'diamond'] } },
+        })
+        .getLegendInformation([{ brand: 'Gucci' }, { brand: 'Prada' }]);
+
+      expect(stripFunction(legendInfo)).toEqual([
+        {
+          field: 'brand',
+          type: 'nominal',
+          items: [
+            {
+              input: 'Gucci',
+              output: {
+                color: 'red',
+                radius: 5,
+                shape: 'circle',
+              },
             },
-          },
-          {
-            field: 'brand',
-            value: 'Prada',
-            output: {
-              color: 'green',
-              shape: 'diamond',
+            {
+              input: 'Prada',
+              output: {
+                color: 'green',
+                radius: 5,
+                shape: 'diamond',
+              },
             },
-          },
-        ],
+          ],
+        },
       ]);
     });
     it('ignore channels that are ValueDef', () => {
-      expect(
-        factory
-          .create({
-            color: { type: 'nominal', field: 'brand', scale: { range: ['red', 'green', 'blue'] } },
-            shape: { value: 'square' },
-          })
-          .getLegendInformation([{ brand: 'Gucci' }, { brand: 'Prada' }]),
-      ).toEqual([
-        [
-          {
-            field: 'brand',
-            value: 'Gucci',
-            output: {
-              color: 'red',
+      const legendInfo = factory
+        .create({
+          color: { type: 'nominal', field: 'brand', scale: { range: ['red', 'green', 'blue'] } },
+        })
+        .getLegendInformation([{ brand: 'Gucci' }, { brand: 'Prada' }]);
+
+      expect(stripFunction(legendInfo)).toEqual([
+        {
+          field: 'brand',
+          type: 'nominal',
+          items: [
+            {
+              input: 'Gucci',
+              output: {
+                color: 'red',
+                radius: 5,
+                shape: 'circle',
+              },
             },
-          },
-          {
-            field: 'brand',
-            value: 'Prada',
-            output: {
-              color: 'green',
+            {
+              input: 'Prada',
+              output: {
+                color: 'green',
+                radius: 5,
+                shape: 'circle',
+              },
             },
-          },
-        ],
+          ],
+        },
       ]);
     });
-    it('only works for nominal field', () => {
-      expect(
-        factory
-          .create({
-            color: {
-              type: 'quantitative',
-              field: 'price',
-              scale: { range: ['red', 'green', 'blue'] },
-            },
-            shape: { value: 'square' },
-          })
-          .getLegendInformation([{ brand: 'Gucci', price: 10 }, { brand: 'Prada', price: 20 }]),
-      ).toEqual([]);
+    it('for non-nominal fields, does not return items', () => {
+      const legendInfo = factory
+        .create({
+          color: {
+            type: 'quantitative',
+            field: 'price',
+            scale: { domain: [0, 20], range: ['#fff', '#f00'] },
+          },
+        })
+        .getLegendInformation();
+
+      expect(stripFunction(legendInfo)).toEqual([
+        {
+          field: 'price',
+          type: 'quantitative',
+        },
+      ]);
+    });
+    it('for non-nominal fields, can use createLegendItems function', () => {
+      const legendInfo = factory
+        .create({
+          color: {
+            type: 'quantitative',
+            field: 'price',
+            scale: { domain: [0, 20], range: ['#fff', '#f00'] },
+          },
+          radius: {
+            type: 'quantitative',
+            field: 'price',
+            scale: { domain: [0, 20], range: [0, 10] },
+          },
+        })
+        .getLegendInformation();
+
+      expect(legendInfo[0].createLegendItems([0, 10, 20])).toEqual([
+        {
+          input: 0,
+          output: {
+            color: 'rgb(255, 255, 255)',
+            radius: 0,
+            shape: 'circle',
+          },
+        },
+        {
+          input: 10,
+          output: {
+            color: 'rgb(255, 128, 128)',
+            radius: 5,
+            shape: 'circle',
+          },
+        },
+        {
+          input: 20,
+          output: {
+            color: 'rgb(255, 0, 0)',
+            radius: 10,
+            shape: 'circle',
+          },
+        },
+      ]);
     });
     it('returns empty array if no legend', () => {
-      expect(
-        factory
-          .create({
-            color: { value: 'black' },
-            shape: { value: 'square' },
-          })
-          .getLegendInformation([{ brand: 'Gucci' }, { brand: 'Prada' }]),
-      ).toEqual([]);
+      const legendInfo = factory
+        .create({
+          color: { value: 'black' },
+          shape: { value: 'square' },
+        })
+        .getLegendInformation([{ brand: 'Gucci' }, { brand: 'Prada' }]);
+
+      expect(stripFunction(legendInfo)).toEqual([]);
     });
   });
   describe('.hasLegend()', () => {

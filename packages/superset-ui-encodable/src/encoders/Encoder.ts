@@ -1,7 +1,7 @@
 import { flatMap } from 'lodash';
 import { ChannelDef, TypedFieldDef } from '../types/ChannelDef';
 import { MayBeArray } from '../types/Base';
-import { isTypedFieldDef } from '../typeGuards/ChannelDef';
+import { isTypedFieldDef, isValueDef } from '../typeGuards/ChannelDef';
 import { isNotArray } from '../typeGuards/Base';
 import ChannelEncoder from './ChannelEncoder';
 import {
@@ -95,7 +95,27 @@ export default class Encoder<Config extends EncodingConfig> {
     return Array.from(new Set(fields));
   }
 
-  getLegendInformation(data: Dataset) {
+  private createLegendItemsFactory(field: string) {
+    const channelEncoders = flatMap(
+      this.getChannelEncoders().filter(e => isNotArray(e) && isValueDef(e.definition)),
+    ).concat(this.legends[field]);
+
+    return (domain: ChannelInput[]) =>
+      domain.map((input: ChannelInput) => ({
+        input,
+        output: channelEncoders.reduce(
+          (prev: Partial<{ [k in keyof Config]: Config[k]['1'] }>, curr) => {
+            const map = prev;
+            map[curr.name as keyof Config] = curr.encodeValue(`${input}`) as Value;
+
+            return map;
+          },
+          {},
+        ),
+      }));
+  }
+
+  getLegendInformation(data: Dataset = []) {
     return (
       Object.keys(this.legends)
         // for each field that was encoded
@@ -104,28 +124,23 @@ export default class Encoder<Config extends EncodingConfig> {
           const channelEncoders = this.legends[field];
           const firstEncoder = channelEncoders[0];
           const definition = firstEncoder.definition as TypedFieldDef;
-          // NOTE: Only work for nominal fields now
-          // Need to add support for quantitative fields
-          if (definition.type === 'nominal') {
-            return firstEncoder.getDomain(data).map((value: ChannelInput) => ({
-              field,
-              value,
-              // eslint-disable-next-line sort-keys
-              output: channelEncoders.reduce(
-                (prev: Partial<{ [k in keyof Config]: Config[k]['1'] }>, curr) => {
-                  const map = prev;
-                  map[curr.name as keyof Config] = curr.encodeValue(`${value}`) as Value;
+          const createLegendItems = this.createLegendItemsFactory(field);
 
-                  return map;
-                },
-                {},
-              ),
-            }));
+          if (definition.type === 'nominal') {
+            return {
+              createLegendItems,
+              field,
+              items: createLegendItems(firstEncoder.getDomain(data)),
+              type: 'nominal' as const,
+            };
           }
 
-          return [];
+          return {
+            createLegendItems,
+            field,
+            type: definition.type,
+          };
         })
-        .filter(items => items.length > 0)
     );
   }
 
