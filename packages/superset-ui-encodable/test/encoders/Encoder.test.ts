@@ -2,7 +2,7 @@ import createEncoderFactory from '../../src/encoders/createEncoderFactory';
 
 function stripFunction(legendInfo) {
   return legendInfo.map(legendGroup => {
-    const { createLegendItems, ...rest } = legendGroup;
+    const { createLegendItems, channelEncoders, ...rest } = legendGroup;
 
     return { ...rest };
   });

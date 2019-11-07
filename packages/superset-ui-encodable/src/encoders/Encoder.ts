@@ -106,7 +106,7 @@ export default class Encoder<Config extends EncodingConfig> {
         output: channelEncoders.reduce(
           (prev: Partial<{ [k in keyof Config]: Config[k]['1'] }>, curr) => {
             const map = prev;
-            map[curr.name as keyof Config] = curr.encodeValue(`${input}`) as Value;
+            map[curr.name as keyof Config] = curr.encodeValue(input) as Value;
 
             return map;
           },
@@ -128,14 +128,16 @@ export default class Encoder<Config extends EncodingConfig> {
 
           if (definition.type === 'nominal') {
             return {
+              channelEncoders,
               createLegendItems,
               field,
               items: createLegendItems(firstEncoder.getDomain(data)),
-              type: 'nominal' as const,
+              type: definition.type,
             };
           }
 
           return {
+            channelEncoders,
             createLegendItems,
             field,
             type: definition.type,
