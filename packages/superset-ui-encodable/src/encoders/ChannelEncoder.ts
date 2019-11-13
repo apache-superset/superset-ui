@@ -60,7 +60,7 @@ export default class ChannelEncoder<Def extends ChannelDef<Output>, Output exten
     }
 
     if (this.definition.axis) {
-      this.axis = new ChannelAxisEncoder(this, this.definition.axis);
+      this.axis = new ChannelAxisEncoder(this);
     }
   }
 
