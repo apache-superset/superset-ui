@@ -16,15 +16,12 @@ export default class ChannelAxisEncoder<
   readonly config: Exclude<CompleteAxisConfig, false>;
   readonly formatValue: (value: ChannelInput | HasToString) => string;
 
-  constructor(
-    channelEncoder: ChannelEncoder<Def, Output>,
-    axisConfig: Exclude<CompleteAxisConfig, false>,
-  ) {
+  constructor(channelEncoder: ChannelEncoder<Def, Output>) {
     this.channelEncoder = channelEncoder;
-    this.config = axisConfig;
+    this.config = channelEncoder.definition.axis as Exclude<CompleteAxisConfig, false>;
     this.formatValue = createFormatterFromFieldTypeAndFormat(
       (channelEncoder.definition as CompleteFieldDef<Output>).type,
-      axisConfig.format || '',
+      this.config.format || '',
     );
   }
 
