@@ -1,7 +1,12 @@
 import { extent as d3Extent } from 'd3-array';
+import { HasToString, IdentityFunction } from '../types/Base';
 import { ChannelType, ChannelInput } from '../types/Channel';
 import { PlainObject, Dataset } from '../types/Data';
 import { ChannelDef } from '../types/ChannelDef';
+import { Value } from '../types/VegaLite';
+import { isTypedFieldDef, isValueDef } from '../typeGuards/ChannelDef';
+import { isX, isY, isXOrY } from '../typeGuards/Channel';
+import ChannelEncoderAxis from './ChannelEncoderAxis';
 import createGetterFromChannelDef, { Getter } from '../parsers/createGetterFromChannelDef';
 import completeChannelDef, {
   CompleteChannelDef,
@@ -10,11 +15,6 @@ import completeChannelDef, {
 import createFormatterFromChannelDef from '../parsers/format/createFormatterFromChannelDef';
 import createScaleFromScaleConfig from '../parsers/scale/createScaleFromScaleConfig';
 import identity from '../utils/identity';
-import { HasToString, IdentityFunction } from '../types/Base';
-import { isTypedFieldDef, isValueDef } from '../typeGuards/ChannelDef';
-import { isX, isY, isXOrY } from '../typeGuards/Channel';
-import { Value } from '../types/VegaLite';
-import ChannelAxisEncoder from './ChannelAxisEncoder';
 
 type EncodeFunction<Output> = (value: ChannelInput | Output) => Output | null | undefined;
 
@@ -24,7 +24,7 @@ export default class ChannelEncoder<Def extends ChannelDef<Output>, Output exten
   readonly originalDefinition: Def;
   readonly definition: CompleteChannelDef<Output>;
   readonly scale?: ReturnType<typeof createScaleFromScaleConfig>;
-  readonly axis?: ChannelAxisEncoder<Def, Output>;
+  readonly axis?: ChannelEncoderAxis<Def, Output>;
 
   private readonly getValue: Getter<Output>;
   readonly encodeValue: IdentityFunction<ChannelInput | Output> | EncodeFunction<Output>;
@@ -60,7 +60,7 @@ export default class ChannelEncoder<Def extends ChannelDef<Output>, Output exten
     }
 
     if (this.definition.axis) {
-      this.axis = new ChannelAxisEncoder(this);
+      this.axis = new ChannelEncoderAxis(this);
     }
   }
 

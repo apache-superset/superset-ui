@@ -1,7 +1,7 @@
 import { ChannelEncoder } from '../../src';
 
-describe('ChannelAxisEncoder', () => {
-  describe('new ChannelAxisEncoder(channelEncoder)', () => {
+describe('ChannelEncoderAxis', () => {
+  describe('new ChannelEncoderAxis(channelEncoder)', () => {
     it('completes the definition and creates an encoder for it', () => {
       const encoder = new ChannelEncoder({
         name: 'x',

@@ -8,7 +8,7 @@ import { ChannelInput } from '../types/Channel';
 import { HasToString } from '../types/Base';
 import parseDateTime from '../parsers/parseDateTime';
 
-export default class ChannelAxisEncoder<
+export default class ChannelEncoderAxis<
   Def extends ChannelDef<Output>,
   Output extends Value = Value
 > {
