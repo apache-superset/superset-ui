@@ -10,7 +10,7 @@ export default function combineContinuousDomains(
   fixedDomain: (number | Date | null | undefined)[],
   inputDomain?: (number | Date)[],
 ) {
-  if (isEveryElementDefined(fixedDomain)) {
+  if (fixedDomain.length > 0 && isEveryElementDefined(fixedDomain)) {
     return fixedDomain;
   } else if (inputDomain) {
     if (
