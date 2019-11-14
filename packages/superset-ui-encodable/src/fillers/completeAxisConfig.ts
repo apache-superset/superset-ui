@@ -29,7 +29,6 @@ export type CompleteAxisConfig =
       | 'titlePadding'
     > & {
       labelOverlap: LabelOverlapStrategy;
-      title: string;
     });
 
 export default function completeAxisConfig(
@@ -51,10 +50,9 @@ export default function completeAxisConfig(
       orient = isXChannel ? 'bottom' : 'left',
       tickCount = 5,
       ticks = true,
+      title = channelDef.title!,
       titlePadding = 4,
     } = axis;
-
-    const title: string = axis.title || channelDef.title || '';
 
     return {
       ...axis,
