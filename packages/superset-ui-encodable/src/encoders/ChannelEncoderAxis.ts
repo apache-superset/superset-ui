@@ -2,11 +2,12 @@ import ChannelEncoder from './ChannelEncoder';
 import createFormatterFromFieldTypeAndFormat from '../parsers/format/createFormatterFromFieldTypeAndFormat';
 import { CompleteAxisConfig } from '../fillers/completeAxisConfig';
 import { ChannelDef } from '../types/ChannelDef';
-import { Value, DateTime, isDateTime } from '../types/VegaLite';
+import { Value, isDateTime } from '../types/VegaLite';
 import { CompleteFieldDef } from '../fillers/completeChannelDef';
 import { ChannelInput } from '../types/Channel';
 import { HasToString } from '../types/Base';
 import parseDateTime from '../parsers/parseDateTime';
+import inferElementTypeFromUnionOfArrayTypes from '../utils/inferElementTypeFromUnionOfArrayTypes';
 
 export default class ChannelEncoderAxis<
   Def extends ChannelDef<Output>,
@@ -37,19 +38,19 @@ export default class ChannelEncoderAxis<
     const { tickCount, values } = this.config;
 
     if (typeof values !== 'undefined') {
-      return (values as (
-        | number
-        | string
-        | boolean
-        | DateTime
-      )[]).map((v: number | string | boolean | DateTime) =>
+      return inferElementTypeFromUnionOfArrayTypes(values).map(v =>
         this.formatValue(isDateTime(v) ? parseDateTime(v) : v),
       );
     }
 
     const { scale } = this.channelEncoder;
-    if (scale && 'domain' in scale) {
-      return ('ticks' in scale ? scale.ticks(tickCount) : scale.domain()).map(this.formatValue);
+    if (scale) {
+      if ('ticks' in scale) {
+        return scale.ticks(tickCount);
+      }
+      if ('domain' in scale) {
+        return scale.domain().map(this.formatValue);
+      }
     }
 
     return [];

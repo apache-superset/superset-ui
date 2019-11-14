@@ -16,7 +16,7 @@ describe('ChannelEncoderAxis', () => {
   });
 
   describe('.formatValue()', () => {
-    it('format value', () => {
+    it('formats value', () => {
       const encoder = new ChannelEncoder({
         name: 'x',
         channelType: 'X',
@@ -30,7 +30,7 @@ describe('ChannelEncoderAxis', () => {
       });
       expect(encoder.axis && encoder.axis.formatValue(200)).toEqual('200.00');
     });
-    it('fallbacks to field formatter', () => {
+    it('fallsback to field formatter', () => {
       const encoder = new ChannelEncoder({
         name: 'x',
         channelType: 'X',
@@ -42,7 +42,7 @@ describe('ChannelEncoderAxis', () => {
       });
       expect(encoder.axis && encoder.axis.formatValue(200)).toEqual('200.000');
     });
-    it('fallbacks to default formatter', () => {
+    it('fallsback to default formatter', () => {
       const encoder = new ChannelEncoder({
         name: 'x',
         channelType: 'X',
