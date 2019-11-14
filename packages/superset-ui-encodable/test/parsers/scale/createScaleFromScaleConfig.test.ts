@@ -41,7 +41,6 @@ describe('createScaleFromScaleConfig(config)', () => {
             type: 'linear',
             domain: [undefined, 30],
             range: [0, 100],
-            reverse: true,
           });
           expect(scale(10)).toEqual(1000);
         });
@@ -50,7 +49,6 @@ describe('createScaleFromScaleConfig(config)', () => {
             type: 'linear',
             domain: [0, undefined],
             range: [0, 100],
-            reverse: true,
           });
           expect(scale(10)).toEqual(1000);
         });
@@ -59,7 +57,6 @@ describe('createScaleFromScaleConfig(config)', () => {
             type: 'linear',
             domain: [undefined, undefined],
             range: [0, 100],
-            reverse: true,
           });
           expect(scale(10)).toEqual(1000);
         });
@@ -70,7 +67,6 @@ describe('createScaleFromScaleConfig(config)', () => {
             type: 'linear',
             domain: [null, 30],
             range: [0, 100],
-            reverse: true,
           });
           expect(scale(10)).toEqual(1000);
         });
@@ -79,7 +75,6 @@ describe('createScaleFromScaleConfig(config)', () => {
             type: 'linear',
             domain: [0, null],
             range: [0, 100],
-            reverse: true,
           });
           expect(scale(10)).toEqual(1000);
         });
@@ -88,7 +83,6 @@ describe('createScaleFromScaleConfig(config)', () => {
             type: 'linear',
             domain: [null, null],
             range: [0, 100],
-            reverse: true,
           });
           expect(scale(10)).toEqual(1000);
         });
