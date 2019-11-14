@@ -3,36 +3,36 @@ import { isEveryElementDefined, isDefined } from '../typeGuards/Base';
 /**
  * Combine two continuous domain and ensure that the output
  * does not go beyond fixedDomain
- * @param fixedDomain
- * @param inputDomain
+ * @param userSpecifiedDomain
+ * @param dataDomain
  */
 export default function combineContinuousDomains(
-  fixedDomain: (number | Date | null | undefined)[],
-  inputDomain?: (number | Date)[],
+  userSpecifiedDomain: (number | Date | null | undefined)[],
+  dataDomain?: (number | Date)[],
 ) {
-  if (fixedDomain.length > 0 && isEveryElementDefined(fixedDomain)) {
-    return fixedDomain;
-  } else if (inputDomain) {
+  if (userSpecifiedDomain.length > 0 && isEveryElementDefined(userSpecifiedDomain)) {
+    return userSpecifiedDomain;
+  } else if (dataDomain) {
     if (
-      fixedDomain.length === 2 &&
-      inputDomain.length === 2 &&
-      fixedDomain.filter(isDefined).length > 0
+      userSpecifiedDomain.length === 2 &&
+      dataDomain.length === 2 &&
+      userSpecifiedDomain.filter(isDefined).length > 0
     ) {
-      const [min1, max1] = fixedDomain;
-      const [min2, max2] = inputDomain;
-      let min = min2;
-      if (isDefined(min1)) {
-        min = min1.valueOf() > min2.valueOf() ? min1 : min2;
+      const [userSpecifiedMin, userSpecifiedMax] = userSpecifiedDomain;
+      const [dataMin, dataMax] = dataDomain;
+      let min = dataMin;
+      if (isDefined(userSpecifiedMin)) {
+        min = userSpecifiedMin.valueOf() > dataMin.valueOf() ? userSpecifiedMin : dataMin;
       }
-      let max = max2;
-      if (isDefined(max1)) {
-        max = max1.valueOf() < max2.valueOf() ? max1 : max2;
+      let max = dataMax;
+      if (isDefined(userSpecifiedMax)) {
+        max = userSpecifiedMax.valueOf() < dataMax.valueOf() ? userSpecifiedMax : dataMax;
       }
 
       return [min, max];
     }
 
-    return inputDomain;
+    return dataDomain;
   }
 
   return undefined;
