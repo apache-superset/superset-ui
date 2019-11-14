@@ -8,7 +8,6 @@ import { ChannelInput } from '../types/Channel';
 import { HasToString } from '../types/Base';
 import parseDateTime from '../parsers/parseDateTime';
 import inferElementTypeFromUnionOfArrayTypes from '../utils/inferElementTypeFromUnionOfArrayTypes';
-import { isDefined } from '@superset-ui/core';
 
 export default class ChannelEncoderAxis<
   Def extends ChannelDef<Output>,
@@ -33,7 +32,8 @@ export default class ChannelEncoderAxis<
 
   hasTitle() {
     const { title } = this.config;
-    return isDefined(title) && title !== '';
+
+    return title !== null && typeof title !== 'undefined' && title !== '';
   }
 
   getTickLabels() {
