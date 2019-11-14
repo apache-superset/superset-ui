@@ -11,13 +11,15 @@ export default function applyDomain<Output extends Value>(
 ) {
   const { domain, reverse } = config;
   if (typeof domain !== 'undefined' && domain.length > 0) {
-    const processedDomain = inferElementTypeFromUnionOfArrayTypes(
-      reverse ? domain.slice().reverse() : domain,
-    );
+    const processedDomain = inferElementTypeFromUnionOfArrayTypes(domain);
 
     // Only set domain if all items are defined
     if (isEveryElementDefined(processedDomain)) {
-      scale.domain(processedDomain.map(d => (isDateTime(d) ? parseDateTime(d) : d)));
+      scale.domain(
+        (reverse ? processedDomain.slice().reverse() : processedDomain).map(d =>
+          isDateTime(d) ? parseDateTime(d) : d,
+        ),
+      );
     }
   }
 }
