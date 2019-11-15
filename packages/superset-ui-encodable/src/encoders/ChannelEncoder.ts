@@ -6,6 +6,7 @@ import { ChannelDef } from '../types/ChannelDef';
 import { Value } from '../types/VegaLite';
 import { isTypedFieldDef, isValueDef } from '../typeGuards/ChannelDef';
 import { isX, isY, isXOrY } from '../typeGuards/Channel';
+import ChannelEncoderScale from './ChannelEncoderScale';
 import ChannelEncoderAxis from './ChannelEncoderAxis';
 import createGetterFromChannelDef, { Getter } from '../parsers/createGetterFromChannelDef';
 import completeChannelDef, {
@@ -13,7 +14,6 @@ import completeChannelDef, {
   CompleteValueDef,
 } from '../fillers/completeChannelDef';
 import createFormatterFromChannelDef from '../parsers/format/createFormatterFromChannelDef';
-import createScaleFromScaleConfig from '../parsers/scale/createScaleFromScaleConfig';
 import identity from '../utils/identity';
 
 type EncodeFunction<Output> = (value: ChannelInput | Output) => Output | null | undefined;
@@ -23,7 +23,7 @@ export default class ChannelEncoder<Def extends ChannelDef<Output>, Output exten
   readonly channelType: ChannelType;
   readonly originalDefinition: Def;
   readonly definition: CompleteChannelDef<Output>;
-  readonly scale?: ReturnType<typeof createScaleFromScaleConfig>;
+  readonly scale?: ChannelEncoderScale<Def, Output>;
   readonly axis?: ChannelEncoderAxis<Def, Output>;
 
   private readonly getValue: Getter<Output>;
@@ -48,15 +48,15 @@ export default class ChannelEncoder<Def extends ChannelDef<Output>, Output exten
     this.getValue = createGetterFromChannelDef(this.definition);
     this.formatValue = createFormatterFromChannelDef(this.definition);
 
-    const scale = this.definition.scale && createScaleFromScaleConfig(this.definition.scale);
-    if (scale === false) {
+    if (this.definition.scale) {
+      const scale = new ChannelEncoderScale(this);
+      this.encodeValue = (value: ChannelInput) => scale.scale(value);
+      this.scale = scale;
+    } else {
       this.encodeValue =
         'value' in this.definition
           ? () => (this.definition as CompleteValueDef<Output>).value
           : identity;
-    } else {
-      this.encodeValue = (value: ChannelInput) => scale(value);
-      this.scale = scale;
     }
 
     if (this.definition.axis) {

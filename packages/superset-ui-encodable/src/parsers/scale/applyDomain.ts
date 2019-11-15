@@ -7,6 +7,7 @@ import parseDateTimeIfPossible from '../parseDateTimeIfPossible';
 import parseContinuousDomain from '../domain/parseContinuousDomain';
 import parseDiscreteDomain from '../domain/parseDiscreteDomain';
 import combineContinuousDomains from '../../utils/combineContinuousDomains';
+import { ChannelInput } from '../../types/Channel';
 
 function createOrderFunction(reverse: boolean | undefined) {
   return reverse ? <T>(array: T[]) => array.slice().reverse() : <T>(array: T[]) => array;
@@ -15,7 +16,7 @@ function createOrderFunction(reverse: boolean | undefined) {
 export default function applyDomain<Output extends Value>(
   config: ScaleConfig<Output>,
   scale: D3Scale<Output>,
-  domainFromDataset?: string[] | number[] | boolean[] | Date[],
+  domainFromDataset?: ChannelInput[],
 ) {
   const { domain, reverse, type } = config;
 

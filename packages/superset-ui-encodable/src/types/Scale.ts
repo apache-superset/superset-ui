@@ -10,6 +10,7 @@ import {
   ScalePoint,
   ScaleBand,
 } from 'd3-scale';
+import { CategoricalColorScale } from '@superset-ui/color';
 import { Value, DateTime, NiceTime, ScaleType, Scale as VegaLiteScale } from './VegaLite';
 import { HasToString } from './Base';
 
@@ -230,3 +231,5 @@ export type D3Scale<Output extends Value = Value> =
   | ScaleOrdinal<CategoricalScaleInput, Output>
   | ScalePoint<CategoricalScaleInput>
   | ScaleBand<CategoricalScaleInput>;
+
+export type AllScale<Output extends Value = Value> = D3Scale<Output> | ((val?: any) => string);
