@@ -117,7 +117,7 @@ describe('ChannelEncoder', () => {
     });
   });
 
-  describe('.getDomain()', () => {
+  describe('.getDomainFromDataset()', () => {
     describe('for ValueDef', () => {
       it('returns an array of fixed value', () => {
         const encoder = new ChannelEncoder({
@@ -229,6 +229,66 @@ describe('ChannelEncoder', () => {
         },
       });
       expect(encoder.getDomainFromDataset([{}, {}])).toEqual([]);
+    });
+  });
+
+  describe('.setDomain()', () => {
+    it('sets the domain', () => {
+      const encoder = new ChannelEncoder({
+        name: 'x',
+        channelType: 'X',
+        definition: {
+          type: 'quantitative',
+          field: 'speed',
+          title: 'Speed',
+          scale: { zero: false },
+        },
+      });
+      expect(encoder.setDomain([20, 30])).toEqual(encoder);
+      expect('domain' in encoder.scale && encoder.scale!.domain()).toEqual([20, 30]);
+    });
+    it('sets the domain (with zero)', () => {
+      const encoder = new ChannelEncoder({
+        name: 'x',
+        channelType: 'X',
+        definition: {
+          type: 'quantitative',
+          field: 'speed',
+          title: 'Speed',
+        },
+      });
+      expect(encoder.setDomain([20, 30])).toEqual(encoder);
+      expect('domain' in encoder.scale && encoder.scale!.domain()).toEqual([0, 30]);
+    });
+    it('sets the domain (with nice)', () => {
+      const encoder = new ChannelEncoder({
+        name: 'x',
+        channelType: 'X',
+        definition: {
+          type: 'quantitative',
+          field: 'speed',
+          title: 'Speed',
+          scale: { zero: false },
+        },
+      });
+      expect(encoder.setDomain([21.5, 30])).toEqual(encoder);
+      expect('domain' in encoder.scale && encoder.scale!.domain()).toEqual([21, 30]);
+    });
+  });
+
+  describe('.setDomainFromDataset()', () => {
+    it('sets the domain', () => {
+      const encoder = new ChannelEncoder({
+        name: 'x',
+        channelType: 'X',
+        definition: {
+          type: 'quantitative',
+          field: 'price',
+          scale: { zero: false },
+        },
+      });
+      expect(encoder.setDomainFromDataset([{ price: 1 }, { price: 5 }])).toEqual(encoder);
+      expect('domain' in encoder.scale && encoder.scale!.domain()).toEqual([1, 5]);
     });
   });
 
