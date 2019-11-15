@@ -10,7 +10,6 @@ import {
   ScalePoint,
   ScaleBand,
 } from 'd3-scale';
-import { CategoricalColorScale } from '@superset-ui/color';
 import { Value, DateTime, NiceTime, ScaleType, Scale as VegaLiteScale } from './VegaLite';
 import { HasToString } from './Base';
 
