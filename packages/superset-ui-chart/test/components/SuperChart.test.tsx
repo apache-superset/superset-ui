@@ -6,10 +6,10 @@ jest.mock('resize-observer-polyfill');
 // @ts-ignore
 import { triggerResizeObserver } from 'resize-observer-polyfill';
 import ErrorBoundary from 'react-error-boundary';
+import { promiseTimeout } from '@superset-ui/core';
 import { SuperChart } from '../../src';
 import RealSuperChart, { WrapperProps } from '../../src/components/SuperChart';
 import { ChartKeys, DiligentChartPlugin, BuggyChartPlugin } from './MockChartPlugins';
-import promiseTimeout from './promiseTimeout';
 
 function expectDimension(renderedWrapper: Cheerio, width: number, height: number) {
   expect(renderedWrapper.find('.dimension').text()).toEqual([width, height].join('x'));
@@ -36,7 +36,7 @@ describe('SuperChart', () => {
   describe('includes ErrorBoundary', () => {
     let expectedErrors = 0;
     let actualErrors = 0;
-    function onError(e) {
+    function onError(e: Event) {
       e.preventDefault();
       actualErrors += 1;
     }

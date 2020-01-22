@@ -1,6 +1,6 @@
+import { promiseTimeout } from '@superset-ui/core';
 import { getMultipleTextDimensions } from '../src/index';
 import { addDummyFill, removeDummyFill, SAMPLE_TEXT } from './getBBoxDummyFill';
-import promiseTimeout from '../../superset-ui-chart/test/components/promiseTimeout';
 
 describe('getTextDimension(input)', () => {
   describe('returns dimension of the given text', () => {

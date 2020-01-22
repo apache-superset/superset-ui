@@ -1,5 +1,6 @@
 import React from 'react';
-import { ChartMetadata, ChartPlugin, QueryFormData } from '../../src';
+import { QueryFormData } from '@superset-ui/query/src';
+import { ChartMetadata, ChartPlugin } from '../../src';
 
 const DIMENSION_STYLE = {
   fontSize: 36,

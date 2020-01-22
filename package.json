@@ -72,6 +72,9 @@
     "npm": ">=6.8.0",
     "yarn": ">=1.13.0"
   },
+  "workspaces": [
+    "./packages/*"
+  ],
   "nimbus": {
     "drivers": [
       "babel",
@@ -90,8 +93,7 @@
         "caches": true
       },
       "setupFilesAfterEnv": [
-        "@airbnb/config-jest/enzyme",
-        "<rootDir>/test/setupTests.ts"
+        "@airbnb/config-jest/enzyme"
       ],
       "testPathIgnorePatterns": [
         "<rootDir>/packages/generator-superset"
@@ -114,9 +116,6 @@
       }
     }
   },
-  "workspaces": [
-    "./packages/*"
-  ],
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",

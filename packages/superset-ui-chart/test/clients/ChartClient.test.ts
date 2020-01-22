@@ -8,7 +8,7 @@ import {
   ChartMetadata,
 } from '../../src';
 import { SliceIdAndOrFormData } from '../../src/clients/ChartClient';
-import { LOGIN_GLOB } from '../../../superset-ui-connection/test/fixtures/constants';
+import { LOGIN_GLOB } from '../fixtures/constants';
 
 describe('ChartClient', () => {
   let chartClient: ChartClient;

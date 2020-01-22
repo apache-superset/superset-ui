@@ -1,5 +1,6 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
+import { promiseTimeout } from '@superset-ui/core';
 import { ChartProps } from '../../src';
 import {
   ChartKeys,
@@ -8,7 +9,6 @@ import {
   SlowChartPlugin,
 } from './MockChartPlugins';
 import SuperChartCore from '../../src/components/SuperChartCore';
-import promiseTimeout from './promiseTimeout';
 
 describe('SuperChartCore', () => {
   const chartProps = new ChartProps();
