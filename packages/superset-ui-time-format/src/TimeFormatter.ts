@@ -1,5 +1,3 @@
-/* eslint-disable no-magic-numbers */
-
 import { ExtensibleFunction, isRequired } from '@superset-ui/core';
 import { TimeFormatFunction } from './types';
 

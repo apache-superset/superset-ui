@@ -1,4 +1,3 @@
-/* eslint-disable sort-keys */
 import React, { CSSProperties, ReactNode, PureComponent } from 'react';
 import { ParentSize } from '@vx/responsive';
 // eslint-disable-next-line import/no-unresolved

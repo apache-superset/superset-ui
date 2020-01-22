@@ -34,7 +34,6 @@ export default function reactify<Props extends object>(
   callbacks?: LifeCycleCallbacks,
 ): React.ComponentClass<Props & ReactifyProps> {
   class ReactifiedComponent extends React.Component<Props & ReactifyProps> {
-    // eslint-disable-next-line react/sort-comp
     container?: HTMLDivElement;
 
     constructor(props: Props & ReactifyProps) {
