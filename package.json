@@ -110,14 +110,8 @@
     },
     "typescript": {
       "compilerOptions": {
-        "emitDeclarationOnly": true,
-        "typeRoots": [
-          "../../node_modules/vega-lite/typings"
-        ]
-      },
-      "include": [
-        "./storybook/**/*"
-      ]
+        "emitDeclarationOnly": true
+      }
     }
   },
   "workspaces": [
