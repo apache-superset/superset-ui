@@ -91,6 +91,7 @@ class ChartDataProvider extends React.PureComponent<Props, State> {
               this.chartClient.loadQueryData(formData, queryRequestOptions),
             ]).then(
               ([datasource, queryData]) =>
+                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                 ({
                   datasource,
                   formData,

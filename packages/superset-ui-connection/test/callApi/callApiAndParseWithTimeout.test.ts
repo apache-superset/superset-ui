@@ -72,13 +72,11 @@ describe('callApiAndParseWithTimeout()', () => {
 
       callApiAndParseWithTimeout({ url: mockTimeoutUrl, method: 'GET', timeout: 1 })
         .then(throwIfCalled)
-        .catch(timeoutError => {
+        .catch(error => {
           expect(setTimeout).toHaveBeenCalledTimes(1);
           expect(fetchMock.calls(mockTimeoutUrl)).toHaveLength(1);
-          expect(Object.keys(timeoutError)).toEqual(
-            expect.arrayContaining(['error', 'statusText']),
-          );
-          expect(timeoutError.statusText).toBe('timeout');
+          expect(Object.keys(error)).toEqual(expect.arrayContaining(['error', 'statusText']));
+          expect(error.statusText).toBe('timeout');
 
           return done(); // eslint-disable-line promise/no-callback-in-promise
         });

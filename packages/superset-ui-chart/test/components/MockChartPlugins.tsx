@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import React from 'react';
 import { QueryFormData } from '@superset-ui/query/src';
 import { ChartMetadata, ChartPlugin } from '../../src';

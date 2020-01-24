@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-sort-default-props */
 import * as React from 'react';
 import { createSelector } from 'reselect';
 import getChartComponentRegistry from '../registries/ChartComponentRegistrySingleton';

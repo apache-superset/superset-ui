@@ -109,6 +109,7 @@ export default class ChartClient {
       .then(response => response.json as Datasource);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   loadAnnotation(annotationLayer: AnnotationLayerMetadata): Promise<AnnotationData> {
     /* When annotation does not require query */
     if (!isDefined(annotationLayer.sourceType)) {

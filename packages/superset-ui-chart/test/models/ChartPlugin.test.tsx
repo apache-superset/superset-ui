@@ -61,10 +61,9 @@ describe('ChartPlugin', () => {
           Chart: FakeChart,
           loadBuildQuery: () => buildQuery,
         });
-        if (typeof plugin.loadBuildQuery === 'function') {
-          const fn = plugin.loadBuildQuery() as BuildQueryFunction<QueryFormData>;
-          expect(fn(FORM_DATA).queries[0]).toEqual({ granularity: 'day' });
-        }
+
+        const fn = plugin.loadBuildQuery!() as BuildQueryFunction<QueryFormData>;
+        expect(fn(FORM_DATA).queries[0]).toEqual({ granularity: 'day' });
       });
       it('uses buildQuery field if specified', () => {
         expect.assertions(1);
@@ -73,10 +72,9 @@ describe('ChartPlugin', () => {
           Chart: FakeChart,
           buildQuery,
         });
-        if (typeof plugin.loadBuildQuery === 'function') {
-          const fn = plugin.loadBuildQuery() as BuildQueryFunction<QueryFormData>;
-          expect(fn(FORM_DATA).queries[0]).toEqual({ granularity: 'day' });
-        }
+
+        const fn = plugin.loadBuildQuery!() as BuildQueryFunction<QueryFormData>;
+        expect(fn(FORM_DATA).queries[0]).toEqual({ granularity: 'day' });
       });
     });
     describe('Chart', () => {

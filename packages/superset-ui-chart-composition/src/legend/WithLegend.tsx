@@ -6,8 +6,8 @@ import { FlexDirectionProperty } from 'csstype';
 const defaultProps = {
   className: '',
   height: 'auto' as number | string,
-  width: 'auto' as number | string,
   position: 'top',
+  width: 'auto' as number | string,
 };
 
 type Props = {

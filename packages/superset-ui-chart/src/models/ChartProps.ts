@@ -84,8 +84,8 @@ export default class ChartProps<
       datasource = {},
       formData = {} as FormDataType,
       hooks = {},
-      initialValues = [],
-      queryData = [],
+      initialValues = {},
+      queryData = {},
       width = DEFAULT_WIDTH,
       height = DEFAULT_HEIGHT,
     } = config;
@@ -102,6 +102,7 @@ export default class ChartProps<
   }
 }
 
+// eslint-disable-next-line func-name-matching
 ChartProps.createSelector = function create(): ChartPropsSelector {
   return createSelector(
     (input: ChartPropsConfig) => input.annotationData,

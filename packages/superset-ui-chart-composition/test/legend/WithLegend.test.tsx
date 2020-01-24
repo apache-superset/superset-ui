@@ -32,7 +32,6 @@ describe('WithLegend', () => {
     triggerResizeObserver();
     // Have to delay more than debounceTime (1ms)
     return promiseTimeout(() => {
-      console.log('hello!');
       expect(renderChart).toHaveBeenCalledTimes(1);
       expect(wrapper.render().find('div.chart')).toHaveLength(1);
       expect(wrapper.render().find('div.legend')).toHaveLength(0);
