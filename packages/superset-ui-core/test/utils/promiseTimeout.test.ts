@@ -1,10 +1,10 @@
 import { promiseTimeout } from '../../src';
 
 describe('promiseTimeout(func, delay)', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     jest.useFakeTimers();
   });
-  afterAll(() => {
+  afterEach(() => {
     jest.useRealTimers();
   });
 

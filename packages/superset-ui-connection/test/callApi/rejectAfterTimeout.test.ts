@@ -10,7 +10,6 @@ describe('rejectAfterTimeout()', () => {
     rejectAfterTimeout(10)
       .then(throwIfCalled)
       .catch(error => {
-        // expect(jest.setTimeout).toHaveBeenCalledTimes(1);
         expect(error).toBeDefined();
 
         return done();

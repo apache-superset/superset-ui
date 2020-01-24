@@ -16,16 +16,16 @@ describe('callApiAndParseWithTimeout()', () => {
     fetchMock.get(LOGIN_GLOB, { csrf_token: '1234' });
   });
 
-  afterAll(() => {
-    fetchMock.restore();
-    jest.useRealTimers();
-  });
+  afterAll(fetchMock.restore);
 
   const mockGetUrl = '/mock/get/url';
   const mockGetPayload = { get: 'payload' };
   fetchMock.get(mockGetUrl, mockGetPayload);
 
-  afterEach(fetchMock.reset);
+  afterEach(() => {
+    fetchMock.reset();
+    jest.useRealTimers();
+  });
 
   describe('callApi', () => {
     it('calls callApi()', () => {

@@ -20,6 +20,7 @@ describe('SuperChartCore', () => {
   ];
 
   beforeAll(() => {
+    jest.useRealTimers();
     plugins.forEach(p => {
       p.unregister().register();
     });

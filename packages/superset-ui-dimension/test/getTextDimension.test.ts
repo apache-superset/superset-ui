@@ -146,14 +146,14 @@ describe('getTextDimension(input)', () => {
     });
   });
   it('cleans up DOM', () => {
+    jest.useFakeTimers();
     getTextDimension({
       text: SAMPLE_TEXT[0],
     });
 
     expect(document.querySelectorAll('svg')).toHaveLength(1);
-
-    return promiseTimeout(() => {
-      expect(document.querySelector('svg')).toBeNull();
-    }, 600);
+    jest.advanceTimersByTime(500);
+    expect(document.querySelector('svg')).toBeNull();
+    jest.useRealTimers();
   });
 });
