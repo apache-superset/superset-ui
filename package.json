@@ -63,6 +63,7 @@
     "lerna": "^3.15.0",
     "lint-staged": "^9.2.5",
     "react-test-renderer": "^16.9.0",
+    "react-dom": "^16.9.0",
     "react": "^16.9.0"
   },
   "engines": {
