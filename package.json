@@ -21,9 +21,6 @@
     "test": "yarn jest",
     "test:watch": "yarn lint:fix && yarn jest --watch",
     "type:dts": "nimbus typescript --build --reference-workspaces",
-    "type-one": "nimbus typescript --build",
-    "old:type": "NODE_ENV=production beemo typescript --workspaces=\"@superset-ui/!(generator-superset)\" --noEmit",
-    "old:type:dts": "NODE_ENV=production beemo typescript --workspaces=\"@superset-ui/!(demo|generator-superset)\" --emitDeclarationOnly",
     "prepare-release": "git checkout master && git pull --rebase origin master && lerna bootstrap && yarn install && yarn test",
     "prerelease": "yarn build",
     "pretest": "yarn lint",
@@ -107,6 +104,34 @@
             "<rootDir>/test/**/?(*.)+(spec|test).{js,jsx,ts,tsx}"
           ],
           "testEnvironment": "node"
+        }
+      ]
+    },
+    "eslint": {
+      "overrides": [
+        {
+          "files": "./packages/generator-superset/**/*.test.{js,jsx,ts,tsx}",
+          "rules": {
+            "jest/expect-expect": "off"
+          }
+        },
+        {
+          "files": "*.test.{js,jsx,ts,tsx}",
+          "rules": {
+            "import/no-extraneous-dependencies": "off",
+            "promise/param-names": "off",
+            "import/extensions": "off",
+            "jest/require-to-throw-message": "off",
+            "jest/no-test-return-statement": "off",
+            "jest/no-expect-resolves": "off"
+          }
+        },
+        {
+          "files": "*.{js,jsx,ts,tsx}",
+          "rules": {
+            "react/jsx-no-literals": "off",
+            "@typescript-eslint/no-explicit-any": ["warn", { "fixToUnknown": false }]
+          }
         }
       ]
     },
