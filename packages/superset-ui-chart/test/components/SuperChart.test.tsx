@@ -1,3 +1,4 @@
+/* eslint-disable import/imports-first */
 /* eslint-disable import/first */
 import React from 'react';
 import { mount } from 'enzyme';
@@ -49,6 +50,7 @@ describe('SuperChart', () => {
 
     afterEach(() => {
       window.removeEventListener('error', onError);
+      // eslint-disable-next-line jest/no-standalone-expect
       expect(actualErrors).toBe(expectedErrors);
       expectedErrors = 0;
     });

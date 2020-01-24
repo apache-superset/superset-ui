@@ -123,7 +123,8 @@
             "import/extensions": "off",
             "jest/require-to-throw-message": "off",
             "jest/no-test-return-statement": "off",
-            "jest/no-expect-resolves": "off"
+            "jest/no-expect-resolves": "off",
+            "jest/no-test-callback": "off"
           }
         },
         {
