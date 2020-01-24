@@ -43,9 +43,11 @@ class WithLegend extends PureComponent<Props, {}> {
 
     if (position === 'left') {
       return 'row';
-    } else if (position === 'right') {
+    }
+    if (position === 'right') {
       return 'row-reverse';
-    } else if (position === 'bottom') {
+    }
+    if (position === 'bottom') {
       return 'column-reverse';
     }
 

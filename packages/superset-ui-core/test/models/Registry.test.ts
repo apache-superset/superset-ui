@@ -143,7 +143,7 @@ describe('Registry', () => {
 
       return registry.getAsPromise('a').then(value => expect(value).toBe('testValue'));
     });
-    it('given the key, returns a promise of result of the loader function if the item is a loader ', () => {
+    it('given the key, returns a promise of result of the loader function if the item is a loader', () => {
       const registry = new Registry();
       registry.registerLoader('a', () => 'testValue');
 
@@ -272,7 +272,7 @@ describe('Registry', () => {
     });
     it('does not throw error if the key does not exist', () => {
       const registry = new Registry();
-      expect(() => registry.remove('a')).not.toThrowError();
+      expect(() => registry.remove('a')).not.toThrow();
     });
     it('returns itself', () => {
       const registry = new Registry();

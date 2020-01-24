@@ -35,7 +35,7 @@ export const TestComponent = ({
     }}
   >
     <div className="message" style={{ padding: 10 }}>
-      {message || 'custom component'}
+      {message ?? 'custom component'}
     </div>
     <div className="dimension" style={DIMENSION_STYLE}>
       {[width, height].join('x')}

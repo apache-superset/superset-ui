@@ -84,7 +84,7 @@ export default class ChartClient {
 
     if (metaDataRegistry.has(visType)) {
       const { useLegacyApi } = metaDataRegistry.get(visType)!;
-      const buildQuery = (await buildQueryRegistry.get(visType)) || (() => formData);
+      const buildQuery = (await buildQueryRegistry.get(visType)) ?? (() => formData);
 
       return this.client
         .post({

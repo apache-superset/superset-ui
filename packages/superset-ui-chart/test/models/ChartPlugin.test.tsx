@@ -97,7 +97,7 @@ describe('ChartPlugin', () => {
         expect(plugin.loadChart()).toEqual(FakeChart);
       });
       it('throws an error if none of Chart or loadChart is specified', () => {
-        expect(() => new ChartPlugin({ metadata })).toThrowError(Error);
+        expect(() => new ChartPlugin({ metadata })).toThrow(Error);
       });
     });
     describe('transformProps', () => {
@@ -166,8 +166,8 @@ describe('ChartPlugin', () => {
     });
 
     it('throws an error if key is not provided', () => {
-      expect(() => plugin.register()).toThrowError(Error);
-      expect(() => plugin.configure({ key: 'ab' }).register()).not.toThrowError(Error);
+      expect(() => plugin.register()).toThrow(Error);
+      expect(() => plugin.configure({ key: 'ab' }).register()).not.toThrow(Error);
     });
     it('add the plugin to the registries', () => {
       plugin.configure({ key: 'cd' }).register();
@@ -204,8 +204,8 @@ describe('ChartPlugin', () => {
     });
 
     it('throws an error if key is not provided', () => {
-      expect(() => plugin.unregister()).toThrowError(Error);
-      expect(() => plugin.configure({ key: 'abc' }).unregister()).not.toThrowError(Error);
+      expect(() => plugin.unregister()).toThrow(Error);
+      expect(() => plugin.configure({ key: 'abc' }).unregister()).not.toThrow(Error);
     });
     it('removes the chart from the registries', () => {
       plugin.configure({ key: 'def' }).register();

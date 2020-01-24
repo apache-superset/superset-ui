@@ -46,6 +46,7 @@ type State = {
 
 class ChartDataProvider extends React.PureComponent<Props, State> {
   readonly chartClient: ChartClient;
+
   state: State = { status: 'uninitialized' };
 
   constructor(props: Props) {

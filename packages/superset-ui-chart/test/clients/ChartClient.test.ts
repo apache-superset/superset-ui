@@ -140,7 +140,7 @@ describe('ChartClient', () => {
       );
 
       fetchMock.post('glob:*/api/v1/query/', () =>
-        Promise.reject(Error('Unexpected all to v1 API')),
+        Promise.reject(new Error('Unexpected all to v1 API')),
       );
 
       fetchMock.post('glob:*/superset/explore_json/', {

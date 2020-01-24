@@ -1,4 +1,4 @@
-import { computeMaxFontSize } from '../src/index';
+import { computeMaxFontSize } from '../src';
 import { addDummyFill, removeDummyFill } from './getBBoxDummyFill';
 
 describe('computeMaxFontSize(input)', () => {
@@ -11,7 +11,7 @@ describe('computeMaxFontSize(input)', () => {
         computeMaxFontSize({
           text: 'sample text',
         }),
-      ).toThrowError();
+      ).toThrow();
     });
     it('computes maximum font size for given maxWidth and maxHeight', () => {
       expect(

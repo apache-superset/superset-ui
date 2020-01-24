@@ -51,7 +51,7 @@ export default function reactify<Props extends object>(
 
     componentWillUnmount() {
       this.container = undefined;
-      if (callbacks && callbacks.componentWillUnmount) {
+      if (callbacks?.componentWillUnmount) {
         callbacks.componentWillUnmount.bind(this)();
       }
     }
@@ -69,7 +69,7 @@ export default function reactify<Props extends object>(
     render() {
       const { id, className } = this.props;
 
-      return <div id={id} className={className} ref={this.setContainerRef} />;
+      return <div ref={this.setContainerRef} id={id} className={className} />;
     }
   }
 

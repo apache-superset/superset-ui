@@ -78,7 +78,7 @@ describe('SuperChart', () => {
 
       return promiseTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(0);
-        expect(CustomFallbackComponent).toBeCalledTimes(1);
+        expect(CustomFallbackComponent).toHaveBeenCalledTimes(1);
       });
     });
     it('call onErrorBoundary', () => {
@@ -104,10 +104,10 @@ describe('SuperChart', () => {
       mount(
         <ErrorBoundary onError={activeErrorHandler}>
           <SuperChart
+            disableErrorBoundary
             chartType={ChartKeys.BUGGY}
             width="200"
             height="200"
-            disableErrorBoundary
             onErrorBoundary={inactiveErrorHandler}
           />
         </ErrorBoundary>,

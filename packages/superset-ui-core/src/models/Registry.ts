@@ -27,7 +27,9 @@ export interface RegistryConfig {
  */
 export default class Registry<V, W extends V | Promise<V> = V | Promise<V>> {
   name: string;
+
   overwritePolicy: OverwritePolicy;
+
   items: {
     [key: string]: ItemWithValue<V> | ItemWithLoader<W>;
   };

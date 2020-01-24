@@ -59,14 +59,23 @@ export default class ChartProps<
   static createSelector: () => ChartPropsSelector;
 
   annotationData: AnnotationData;
+
   datasource: CamelCaseDatasource;
+
   rawDatasource: SnakeCaseDatasource;
+
   initialValues: InitialValues;
+
   formData: CamelCaseFormData;
+
   rawFormData: SnakeCaseFormData | CamelCaseFormData;
+
   height: number;
+
   hooks: Hooks;
+
   queryData: QueryData;
+
   width: number;
 
   constructor(config: ChartPropsConfig = {}) {
