@@ -107,7 +107,7 @@ describe('createLoadableRenderer', () => {
       const NeverLoadingRenderer = createLoadableRenderer({
         loader: {},
         loading,
-        render,
+        render: () => <div />,
       });
 
       expect(() => shallow(<NeverLoadingRenderer />)).not.toThrow();
