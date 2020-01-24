@@ -38,19 +38,18 @@ describe('createLoadableRenderer', () => {
       expect(loadChartSuccess).toHaveBeenCalledTimes(1);
     });
 
-    it('calls onRenderSuccess when succeeds', done => {
+    it('calls onRenderSuccess when succeeds', async () => {
       const onRenderSuccess = jest.fn();
       const onRenderFailure = jest.fn();
       shallow(
         <LoadableRenderer onRenderSuccess={onRenderSuccess} onRenderFailure={onRenderFailure} />,
       );
       expect(loadChartSuccess).toHaveBeenCalled();
-      setTimeout(() => {
-        expect(render).toHaveBeenCalledTimes(1);
-        expect(onRenderSuccess).toHaveBeenCalledTimes(1);
-        expect(onRenderFailure).not.toHaveBeenCalled();
-        done();
-      }, 10);
+      jest.useRealTimers();
+      await new Promise(resolve => setTimeout(resolve, 10));
+      expect(render).toHaveBeenCalledTimes(1);
+      expect(onRenderSuccess).toHaveBeenCalledTimes(1);
+      expect(onRenderFailure).not.toHaveBeenCalled();
     });
 
     it('calls onRenderFailure when fails', done => {

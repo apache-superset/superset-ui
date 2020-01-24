@@ -1,5 +1,5 @@
 import { computeMaxFontSize } from '../src';
-import { addDummyFill, removeDummyFill } from './getBBoxDummyFill';
+import { addDummyFill, removeDummyFill, SAMPLE_TEXT } from './getBBoxDummyFill';
 
 describe('computeMaxFontSize(input)', () => {
   describe('returns dimension of the given text', () => {
@@ -9,7 +9,7 @@ describe('computeMaxFontSize(input)', () => {
     it('requires either idealFontSize or maxHeight', () => {
       expect(() =>
         computeMaxFontSize({
-          text: 'sample text',
+          text: SAMPLE_TEXT[0],
         }),
       ).toThrow();
     });
@@ -18,7 +18,7 @@ describe('computeMaxFontSize(input)', () => {
         computeMaxFontSize({
           maxWidth: 400,
           maxHeight: 30,
-          text: 'sample text',
+          text: SAMPLE_TEXT[0],
         }),
       ).toEqual(30);
     });
@@ -27,7 +27,7 @@ describe('computeMaxFontSize(input)', () => {
         computeMaxFontSize({
           maxHeight: 20,
           idealFontSize: 40,
-          text: 'sample text',
+          text: SAMPLE_TEXT[0],
         }),
       ).toEqual(20);
     });
@@ -36,7 +36,7 @@ describe('computeMaxFontSize(input)', () => {
         computeMaxFontSize({
           maxWidth: 250,
           idealFontSize: 40,
-          text: 'sample text',
+          text: SAMPLE_TEXT[0],
         }),
       ).toEqual(25);
     });
