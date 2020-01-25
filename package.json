@@ -104,7 +104,7 @@
         "@airbnb/config-jest/enzyme"
       ],
       "testPathIgnorePatterns": [
-        "<rootDir>/packages/generator-superset"
+        "packages/generator-superset/generators"
       ],
       "projects": [
         "<rootDir>",
