@@ -18,7 +18,7 @@ describe('computeMaxFontSize(input)', () => {
         computeMaxFontSize({
           maxWidth: 400,
           maxHeight: 30,
-          text: SAMPLE_TEXT[0],
+          text: 'sample text',
         }),
       ).toEqual(30);
     });
