@@ -1,4 +1,4 @@
-import Loadable from 'react-loadable';
+import Loadable from '@yeutech-lab/react-loadable';
 
 export type LoadableRendererProps = {
   onRenderFailure?: Function;

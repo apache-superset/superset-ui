@@ -1,3 +1,4 @@
+import mockConsole from 'jest-mock-console';
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { promiseTimeout } from '@superset-ui/core';
@@ -20,7 +21,6 @@ describe('SuperChartCore', () => {
   ];
 
   beforeAll(() => {
-    jest.useRealTimers();
     plugins.forEach(p => {
       p.unregister().register();
     });
@@ -50,11 +50,14 @@ describe('SuperChartCore', () => {
       });
     });
     it('does not render if chartType is not set', () => {
+      // Suppress warning
+      const restoreConsole = mockConsole();
       // @ts-ignore chartType is required
       const wrapper = shallow(<SuperChartCore />);
 
       return promiseTimeout(() => {
         expect(wrapper.render().children()).toHaveLength(0);
+        restoreConsole();
       }, 5);
     });
     it('adds id to container if specified', () => {
@@ -143,10 +146,13 @@ describe('SuperChartCore', () => {
       });
     });
     it('eventually renders after Chart is loaded', () => {
-      const wrapper = shallow(<SuperChartCore chartType={ChartKeys.SLOW} />);
+      // Suppress warning
+      const restoreConsole = mockConsole();
+      const wrapper = mount(<SuperChartCore chartType={ChartKeys.SLOW} />);
 
       return promiseTimeout(() => {
         expect(wrapper.render().find('div.test-component')).toHaveLength(1);
+        restoreConsole();
       }, 1500);
     });
     it('does not render if chartProps is null', () => {
