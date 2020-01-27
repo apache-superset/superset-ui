@@ -2,6 +2,7 @@
 /* eslint-disable import/first */
 import React from 'react';
 import { mount } from 'enzyme';
+import mockConsole, { RestoreConsole } from 'jest-mock-console';
 
 jest.mock('resize-observer-polyfill');
 // @ts-ignore
@@ -22,6 +23,8 @@ describe('SuperChart', () => {
     new BuggyChartPlugin().configure({ key: ChartKeys.BUGGY }),
   ];
 
+  let restoreConsole: RestoreConsole;
+
   beforeAll(() => {
     plugins.forEach(p => {
       p.unregister().register();
@@ -32,6 +35,14 @@ describe('SuperChart', () => {
     plugins.forEach(p => {
       p.unregister();
     });
+  });
+
+  beforeEach(() => {
+    restoreConsole = mockConsole();
+  });
+
+  afterEach(() => {
+    restoreConsole();
   });
 
   describe('includes ErrorBoundary', () => {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+import mockConsole, { RestoreConsole } from 'jest-mock-console';
 import createLoadableRenderer, {
   LoadableRenderer as LoadableRendererType,
 } from '../../src/components/createLoadableRenderer';
@@ -12,8 +13,10 @@ describe('createLoadableRenderer', () => {
   let render: (loaded: { [key: string]: any }) => JSX.Element;
   let loading: () => JSX.Element;
   let LoadableRenderer: LoadableRendererType<{}, {}>;
+  let restoreConsole: RestoreConsole;
 
   beforeEach(() => {
+    restoreConsole = mockConsole();
     loadChartSuccess = jest.fn(() => Promise.resolve(TestComponent));
     render = jest.fn(loaded => {
       const { Chart } = loaded;
@@ -29,6 +32,10 @@ describe('createLoadableRenderer', () => {
       loading,
       render,
     });
+  });
+
+  afterEach(() => {
+    restoreConsole();
   });
 
   describe('returns a LoadableRenderer class', () => {
