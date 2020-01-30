@@ -130,7 +130,6 @@
           "rules": {
             "import/no-extraneous-dependencies": "off",
             "promise/param-names": "off",
-            "import/extensions": "off",
             "jest/require-to-throw-message": "off",
             "jest/no-test-return-statement": "off",
             "jest/no-expect-resolves": "off"
