@@ -84,11 +84,7 @@
     "settings": {
       "library": true,
       "react": true,
-      "next": true,
-      "env": {
-        "corejs": 3,
-        "useBuiltIns": "usage"
-      }
+      "next": true
     },
     "jest": {
       "globals": {
