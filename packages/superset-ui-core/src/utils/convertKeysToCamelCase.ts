@@ -1,8 +1,8 @@
-import camelCase from 'lodash/camelCase';
-import isPlainObject from 'lodash/isPlainObject';
-import mapKeys from 'lodash/mapKeys';
+import camelCase from 'lodash-es/camelCase';
+import isPlainObject from 'lodash-es/isPlainObject';
+import mapKeys from 'lodash-es/mapKeys';
 
-export default function convertKeysToCamelCase(object: any) {
+export default function convertKeysToCamelCase(object: unknown) {
   if (object === null || object === undefined) {
     return object;
   }
