@@ -45,7 +45,7 @@
     "@airbnb/config-eslint": "^2.1.3",
     "@airbnb/config-jest": "^2.1.3",
     "@airbnb/config-prettier": "^2.0.4",
-    "@airbnb/config-typescript": "^2.1.2",
+    "@airbnb/config-typescript": "^3.0.0",
     "@airbnb/nimbus": "^2.1.3",
     "@superset-ui/commit-config": "^0.0.9",
     "@types/enzyme": "^3.10.3",
