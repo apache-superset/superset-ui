@@ -41,7 +41,7 @@
   ],
   "license": "Apache-2.0",
   "devDependencies": {
-    "@airbnb/config-babel": "^2.1.3",
+    "@airbnb/config-babel": "^3.0.0",
     "@airbnb/config-eslint": "^2.1.3",
     "@airbnb/config-jest": "^2.1.3",
     "@airbnb/config-prettier": "^2.0.4",
