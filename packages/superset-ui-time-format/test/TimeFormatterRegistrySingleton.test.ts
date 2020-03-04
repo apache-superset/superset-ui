@@ -22,5 +22,8 @@ describe('TimeFormatterRegistrySingleton', () => {
       const output = formatTime('%Y-%m-%d', PREVIEW_TIME);
       expect(output).toEqual('2017-02-14');
     });
+    it('falls back to the default formatter if the format is undefined', () => {
+      expect(formatTime(undefined, PREVIEW_TIME)).toEqual('2017-02-14 11:22:33');
+    });
   });
 });
