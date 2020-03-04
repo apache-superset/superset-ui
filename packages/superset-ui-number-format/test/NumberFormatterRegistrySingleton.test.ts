@@ -19,6 +19,10 @@ describe('NumberFormatterRegistrySingleton', () => {
       const format = getNumberFormatter('xkcd');
       expect(format(12345)).toEqual('12345 (Invalid format: xkcd)');
     });
+    it('falls back to default format if format is not specified', () => {
+      const formatter = getNumberFormatter();
+      expect(formatter.format(100)).toEqual('100');
+    });
   });
   describe('formatNumber(format, value)', () => {
     it('format the given number using the specified format', () => {

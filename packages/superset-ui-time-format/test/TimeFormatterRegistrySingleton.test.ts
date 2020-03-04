@@ -16,6 +16,10 @@ describe('TimeFormatterRegistrySingleton', () => {
       const format = getTimeFormatter('%d/%m/%Y');
       expect(format(PREVIEW_TIME)).toEqual('14/02/2017');
     });
+    it('falls back to default format if format is not specified', () => {
+      const formatter = getTimeFormatter();
+      expect(formatter.format(PREVIEW_TIME)).toEqual('2017-02-14 11:22:33');
+    });
   });
   describe('formatTime(format, value)', () => {
     it('format the given time using the specified format', () => {
