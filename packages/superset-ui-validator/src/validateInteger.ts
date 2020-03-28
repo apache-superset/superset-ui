@@ -2,7 +2,7 @@ import { t } from '@superset-ui/translation';
 
 export default function validateInteger(v: unknown) {
   if (
-    (typeof v === 'string' && Number.isInteger(Number(v))) ||
+    (typeof v === 'string' && v.trim().length > 0 && Number.isInteger(Number(v.trim()))) ||
     (typeof v === 'number' && Number.isInteger(v))
   ) {
     return false;

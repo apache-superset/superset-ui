@@ -8,6 +8,7 @@ describe('validateInteger()', () => {
     expect(validateInteger('')).toBeTruthy();
   });
   it('returns false if the input is valid', () => {
+    expect(validateInteger(0)).toBeFalsy();
     expect(validateInteger(10)).toBeFalsy();
     expect(validateInteger('10')).toBeFalsy();
   });
