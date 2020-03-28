@@ -2,8 +2,11 @@ import { validateNumber } from '../src';
 
 describe('validateNumber()', () => {
   it('returns the warning message if invalid', () => {
+    expect(validateNumber(NaN)).toBeTruthy();
+    expect(validateNumber(Infinity)).toBeTruthy();
     expect(validateNumber(undefined)).toBeTruthy();
     expect(validateNumber(null)).toBeTruthy();
+    expect(validateNumber('abc')).toBeTruthy();
     expect(validateNumber('')).toBeTruthy();
   });
   it('returns false if the input is valid', () => {
