@@ -3231,13 +3231,14 @@
     prop-types "^15.6.2"
 
 "@superset-ui/legacy-preset-chart-big-number@^0.11.15":
-  version "0.11.15"
-  resolved "https://registry.yarnpkg.com/@superset-ui/legacy-preset-chart-big-number/-/legacy-preset-chart-big-number-0.11.15.tgz#cdedf3e12e170d75f33b96c0d78e46c05463a7e8"
-  integrity sha512-Nd1ezgdzBfHIxUlGbYZ8Je3rklHvlygq1LE2dYGCKuOQkSDSpGLHU9Y9CMDOkurnmC46hMIxNe3DkVtY7xzTNQ==
+  version "0.11.21"
+  resolved "https://registry.yarnpkg.com/@superset-ui/legacy-preset-chart-big-number/-/legacy-preset-chart-big-number-0.11.21.tgz#6532af34cc4ce123ea4e04604177c5fdd7f9ad69"
+  integrity sha512-LvDrCfpNTUGaXFUvrd1vHFJqPsBZlva97Z/Wy8izn7ZRv7PrrsvxJ584mh+JBfPg2YiklYB7E2F18MN1NaJEmw==
   dependencies:
     "@data-ui/xy-chart" "^0.0.84"
+    "@types/d3-color" "^1.2.2"
+    "@types/shortid" "^0.0.29"
     d3-color "^1.2.3"
-    prop-types "^15.6.2"
     shortid "^2.2.14"
 
 "@superset-ui/plugin-chart-word-cloud@^0.11.15":
@@ -3427,7 +3428,7 @@
   dependencies:
     "@types/d3" "^3"
 
-"@types/d3-color@*":
+"@types/d3-color@*", "@types/d3-color@^1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@types/d3-color/-/d3-color-1.2.2.tgz#80cf7cfff7401587b8f89307ba36fe4a576bc7cf"
   integrity sha512-6pBxzJ8ZP3dYEQ4YjQ+NVbQaOflfgXq/JbDiS99oLobM2o72uAST4q6yPxHv6FOTCRC/n35ktuo8pvw/S4M7sw==
@@ -3677,6 +3678,11 @@
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
+
+"@types/shortid@^0.0.29":
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/@types/shortid/-/shortid-0.0.29.tgz#8093ee0416a6e2bf2aa6338109114b3fbffa0e9b"
+  integrity sha1-gJPuBBam4r8qpjOBCRFLP7/6Dps=
 
 "@types/source-list-map@*":
   version "0.1.2"
