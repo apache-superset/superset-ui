@@ -1,4 +1,10 @@
-import { addParameters, configure } from '@storybook/react';
+import { addParameters, addDecorator } from '@storybook/react';
+import { jsxDecorator } from 'storybook-addon-jsx';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './storybook.css';
+
+addDecorator(jsxDecorator);
 
 addParameters({
   options: {
@@ -15,12 +21,8 @@ addParameters({
     sidebarAnimations: true,
     sortStoriesByKind: false,
     url: '#',
+    storySort: (a, b) => {
+      return a[1].kind === b[1].kind ? 0 : a[1].id.localeCompare(b[1].id, undefined, { numeric: true });
+    },
   },
 });
-
-function loadStorybook() {
-  require('./storybook.css');
-  require('../storybook/stories'); // all of the stories
-}
-
-configure(loadStorybook, module);

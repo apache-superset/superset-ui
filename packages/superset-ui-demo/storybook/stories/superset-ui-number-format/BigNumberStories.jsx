@@ -115,10 +115,8 @@ class NumberFormatValidator extends React.PureComponent {
 NumberFormatValidator.propTypes = propTypes;
 NumberFormatValidator.defaultProps = defaultProps;
 
-export default [
-  {
-    renderStory: () => <NumberFormatValidator />,
-    storyName: 'Validator',
-    storyPath: '@superset-ui/number-format',
-  },
-];
+export default {
+  title: 'Core Packages|@superset-ui/number-format',
+};
+
+export const validator = () => <NumberFormatValidator />;

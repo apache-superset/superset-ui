@@ -104,10 +104,8 @@ class TimeFormatValidator extends React.PureComponent {
 TimeFormatValidator.propTypes = propTypes;
 TimeFormatValidator.defaultProps = defaultProps;
 
-export default [
-  {
-    renderStory: () => <TimeFormatValidator />,
-    storyName: 'Validator',
-    storyPath: '@superset-ui/time-format',
-  },
-];
+export default {
+  title: 'Core Packages|@superset-ui/time-format',
+};
+
+export const validator = () => <TimeFormatValidator />;
