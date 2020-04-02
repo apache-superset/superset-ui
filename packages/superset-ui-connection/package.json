@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/apache-superset/superset-ui#readme",
   "devDependencies": {
-    "@types/fetch-mock": "^6.0.0",
+    "@types/fetch-mock": "^7.3.2",
     "fetch-mock": "^6.5.2",
     "node-fetch": "^2.2.0"
   },
