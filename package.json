@@ -134,7 +134,10 @@
     },
     "eslint": {
       "rules": {
-        "arrow-parens": ["warn", "as-needed"]
+        "arrow-parens": [
+          "warn",
+          "as-needed"
+        ]
       },
       "overrides": [
         {

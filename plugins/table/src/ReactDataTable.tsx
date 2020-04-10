@@ -52,6 +52,7 @@ export default function ReactDataTable(props: DataTableProps) {
     metrics: aggMetrics,
     pageLength,
     percentMetrics,
+    hideCellBars = false,
     tableTimestampFormat,
     // orderDesc,
     // TODO: add back the broken dashboard filters feature
@@ -236,15 +237,16 @@ export default function ReactDataTable(props: DataTableProps) {
               const keyIsMetric = metricsSet.has(key);
               const text = cellText(key, format, val);
               const isHtml = !keyIsMetric && isProbablyHTML(text);
+              const showCellBar = keyIsMetric && !hideCellBars;
               return (
                 <td
                   key={key}
                   // only set innerHTML for actual html content, this saves time
                   dangerouslySetInnerHTML={isHtml ? { __html: text } : undefined}
                   data-sort={val}
-                  className={keyIsMetric ? 'text-right' : ''}
+                  className={showCellBar ? 'text-right' : ''}
                   style={{
-                    backgroundImage: keyIsMetric ? cellBar(key, val as number) : undefined,
+                    backgroundImage: showCellBar ? cellBar(key, val as number) : undefined,
                   }}
                   title={keyIsMetric || percentMetricsSet.has(key) ? String(val) : ''}
                 >
