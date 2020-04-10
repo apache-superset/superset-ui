@@ -1,3 +1,4 @@
+import { ScaleOrdinal } from 'd3-scale';
 import CategoricalColorScale from '../src/CategoricalColorScale';
 
 describe('CategoricalColorScale', () => {
@@ -99,11 +100,23 @@ describe('CategoricalColorScale', () => {
       });
     });
   });
+
   describe('a CategoricalColorScale instance is also a color function itself', () => {
     it('scale(value) returns color similar to calling scale.getColor(value)', () => {
       const scale = new CategoricalColorScale(['blue', 'red', 'green']);
       expect(scale.getColor('pig')).toBe(scale('pig'));
       expect(scale.getColor('cat')).toBe(scale('cat'));
+    });
+  });
+
+  describe("is compatible with D3's scaleOrdinal", () => {
+    it('passes type check', () => {
+      const scale: ScaleOrdinal<{ toString(): string }, string> = new CategoricalColorScale([
+        'blue',
+        'red',
+        'green',
+      ]);
+      expect(scale('pig')).toBe('blue');
     });
   });
 });

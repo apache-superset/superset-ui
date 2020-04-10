@@ -78,4 +78,27 @@ export default class CategoricalColorScale extends ExtensibleFunction {
       ...this.parentForcedColors,
     };
   }
+
+  copy() {
+    return this;
+  }
+
+  domain(): { toString(): string }[];
+
+  domain(newDomain: { toString(): string }[]): CategoricalColorScale;
+
+  domain(newDomain?: any): { toString(): string }[] | this {
+    if (typeof newDomain === 'undefined') {
+      return Object.keys(this.getColorMap()) as { toString(): string }[];
+    }
+    return this;
+  }
+
+  range() {
+    return this.colors;
+  }
+
+  unknown() {
+    return this.getColor(undefined);
+  }
 }
