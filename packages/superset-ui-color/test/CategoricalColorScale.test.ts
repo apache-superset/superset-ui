@@ -101,6 +101,21 @@ describe('CategoricalColorScale', () => {
     });
   });
 
+  describe('.copy()', () => {
+    it('returns a copy', () => {
+      const scale = new CategoricalColorScale(['blue', 'red', 'green']);
+      const copy = scale.copy();
+      expect(copy).not.toBe(scale);
+      expect(copy('cat')).toEqual(scale('cat'));
+      expect(copy.domain()).toEqual(scale.domain());
+      expect(copy.range()).toEqual(scale.range());
+      expect(copy.unknown()).toEqual(scale.unknown());
+    });
+  });
+  describe('.domain()', () => {});
+  describe('.range()', () => {});
+  describe('.unknown()', () => {});
+
   describe('a CategoricalColorScale instance is also a color function itself', () => {
     it('scale(value) returns color similar to calling scale.getColor(value)', () => {
       const scale = new CategoricalColorScale(['blue', 'red', 'green']);
