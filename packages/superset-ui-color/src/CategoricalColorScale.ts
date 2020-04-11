@@ -1,5 +1,6 @@
 /* eslint-disable no-dupe-class-members */
 import { ExtensibleFunction } from '@superset-ui/core';
+import { scaleOrdinal, ScaleOrdinal } from 'd3-scale';
 import { ColorsLookup } from './types';
 import stringifyAndTrim from './stringifyAndTrim';
 
@@ -13,11 +14,11 @@ interface CategoricalColorScale {
 class CategoricalColorScale extends ExtensibleFunction {
   colors: string[];
 
+  scale: ScaleOrdinal<{ toString(): string }, string>;
+
   parentForcedColors?: ColorsLookup;
 
   forcedColors: ColorsLookup;
-
-  seen: { [key: string]: number };
 
   /**
    * Constructor
@@ -27,10 +28,12 @@ class CategoricalColorScale extends ExtensibleFunction {
    */
   constructor(colors: string[], parentForcedColors?: ColorsLookup) {
     super((value: string) => this.getColor(value));
+
     this.colors = colors;
+    this.scale = scaleOrdinal<{ toString(): string }, string>();
+    this.scale.range(colors);
     this.parentForcedColors = parentForcedColors;
     this.forcedColors = {};
-    this.seen = {};
   }
 
   getColor(value?: string) {
@@ -46,16 +49,7 @@ class CategoricalColorScale extends ExtensibleFunction {
       return forcedColor;
     }
 
-    const seenColor = this.seen[cleanedValue];
-    const { length } = this.colors;
-    if (seenColor !== undefined) {
-      return this.colors[seenColor % length];
-    }
-
-    const index = Object.keys(this.seen).length;
-    this.seen[cleanedValue] = index;
-
-    return this.colors[index % length];
+    return this.scale(cleanedValue);
   }
 
   /**
@@ -75,9 +69,8 @@ class CategoricalColorScale extends ExtensibleFunction {
    */
   getColorMap() {
     const colorMap: { [key: string]: string } = {};
-    const { length } = this.colors;
-    Object.keys(this.seen).forEach(value => {
-      colorMap[value] = this.colors[this.seen[value] % length];
+    this.scale.domain().forEach(value => {
+      colorMap[value.toString()] = this.scale(value);
     });
 
     return {
@@ -91,11 +84,12 @@ class CategoricalColorScale extends ExtensibleFunction {
    * Returns an exact copy of this scale. Changes to this scale will not affect the returned scale, and vice versa.
    */
   copy() {
-    const scale = new CategoricalColorScale(this.colors, this.parentForcedColors);
-    scale.forcedColors = { ...this.forcedColors };
-    scale.seen = { ...this.seen };
+    const copy = new CategoricalColorScale(this.scale.range(), this.parentForcedColors);
+    copy.forcedColors = { ...this.forcedColors };
+    copy.domain(this.domain());
+    copy.unknown(this.unknown());
 
-    return scale;
+    return copy;
   }
 
   /**
@@ -110,10 +104,10 @@ class CategoricalColorScale extends ExtensibleFunction {
 
   domain(newDomain?: { toString(): string }[]): unknown {
     if (typeof newDomain === 'undefined') {
-      return Object.keys(this.seen);
+      return this.scale.domain();
     }
 
-    newDomain.forEach(d => this.getColor(`${d}`));
+    this.scale.domain(newDomain);
     return this;
   }
 
@@ -135,33 +129,33 @@ class CategoricalColorScale extends ExtensibleFunction {
 
   range(newRange?: string[]): unknown {
     if (typeof newRange === 'undefined') {
-      return this.colors;
+      return this.scale.range();
     }
 
     this.colors = newRange;
+    this.scale.range(newRange);
     return this;
   }
 
   /**
    * Returns the current unknown value, which defaults to "implicit".
    */
-  unknown(): { name: 'implicit' };
+  unknown(): string | { name: 'implicit' };
 
   /**
-   * This method does nothing and returns the scale
-   * because CategoricalColorScale always extends the domain to include unknown values.
-   * This is different from D3's scaleOrdinal behavior
-   * that sets the output value of the scale for unknown input values and returns this scale.
+   * Sets the output value of the scale for unknown input values and returns this scale.
+   * The implicit value enables implicit domain construction. scaleImplicit can be used as a convenience to set the implicit value.
    *
    * @param value Unknown value to be used or scaleImplicit to set implicit scale generation.
    */
-  unknown(value: string): this;
+  unknown(value: string | { name: 'implicit' }): this;
 
-  unknown(value?: string): unknown {
+  unknown(value?: string | { name: 'implicit' }): unknown {
     if (typeof value === 'undefined') {
-      return { name: 'implicit' };
+      return this.scale.unknown();
     }
 
+    this.scale.unknown(value);
     return this;
   }
 }
