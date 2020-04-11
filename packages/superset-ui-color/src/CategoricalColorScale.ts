@@ -1,8 +1,16 @@
+/* eslint-disable no-dupe-class-members */
 import { ExtensibleFunction } from '@superset-ui/core';
 import { ColorsLookup } from './types';
 import stringifyAndTrim from './stringifyAndTrim';
 
-export default class CategoricalColorScale extends ExtensibleFunction {
+// Use type augmentation to correct the fact that
+// an instance of CategoricalScale is also a function
+
+interface CategoricalColorScale {
+  (x: { toString(): string }): string;
+}
+
+class CategoricalColorScale extends ExtensibleFunction {
   colors: string[];
 
   parentForcedColors?: ColorsLookup;
@@ -79,26 +87,83 @@ export default class CategoricalColorScale extends ExtensibleFunction {
     };
   }
 
+  /**
+   * Returns an exact copy of this scale. Changes to this scale will not affect the returned scale, and vice versa.
+   */
   copy() {
-    return this;
+    const scale = new CategoricalColorScale(this.colors, this.parentForcedColors);
+    scale.forcedColors = { ...this.forcedColors };
+    scale.seen = { ...this.seen };
+
+    return scale;
   }
 
+  /**
+   * Returns the scale's current domain.
+   */
   domain(): { toString(): string }[];
 
-  domain(newDomain: { toString(): string }[]): CategoricalColorScale;
+  /**
+   * Expands the domain to include the specified array of values.
+   */
+  domain(newDomain: { toString(): string }[]): this;
 
-  domain(newDomain?: any): { toString(): string }[] | this {
+  domain(newDomain?: { toString(): string }[]): unknown {
     if (typeof newDomain === 'undefined') {
-      return Object.keys(this.getColorMap()) as { toString(): string }[];
+      return Object.keys(this.seen);
     }
+
+    newDomain.forEach(d => this.getColor(`${d}`));
     return this;
   }
 
-  range() {
-    return this.colors;
+  /**
+   * Returns the scale's current range.
+   */
+  range(): string[];
+
+  /**
+   * Sets the range of the ordinal scale to the specified array of values.
+   *
+   * The first element in the domain will be mapped to the first element in range, the second domain value to the second range value, and so on.
+   *
+   * If there are fewer elements in the range than in the domain, the scale will reuse values from the start of the range.
+   *
+   * @param range Array of range values.
+   */
+  range(newRange: string[]): this;
+
+  range(newRange?: string[]): unknown {
+    if (typeof newRange === 'undefined') {
+      return this.colors;
+    }
+
+    this.colors = newRange;
+    return this;
   }
 
-  unknown() {
-    return this.getColor(undefined);
+  /**
+   * Returns the current unknown value, which defaults to "implicit".
+   */
+  unknown(): { name: 'implicit' };
+
+  /**
+   * This method does nothing and returns the scale
+   * because CategoricalColorScale always extends the domain to include unknown values.
+   * This is different from D3's scaleOrdinal behavior
+   * that sets the output value of the scale for unknown input values and returns this scale.
+   *
+   * @param value Unknown value to be used or scaleImplicit to set implicit scale generation.
+   */
+  unknown(value: string): this;
+
+  unknown(value?: string): unknown {
+    if (typeof value === 'undefined') {
+      return { name: 'implicit' };
+    }
+
+    return this;
   }
 }
+
+export default CategoricalColorScale;
