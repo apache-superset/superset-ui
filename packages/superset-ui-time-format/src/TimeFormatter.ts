@@ -3,6 +3,8 @@ import { TimeFormatFunction } from './types';
 
 export const PREVIEW_TIME = new Date(Date.UTC(2017, 1, 14, 11, 22, 33));
 
+// Use type augmentation to indicate that
+// an instance of TimeFormatter is also a function
 interface TimeFormatter {
   (value: Date | null | undefined): string;
 }

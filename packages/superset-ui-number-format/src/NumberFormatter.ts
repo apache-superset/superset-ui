@@ -11,6 +11,8 @@ export interface NumberFormatterConfig {
   isInvalid?: boolean;
 }
 
+// Use type augmentation to indicate that
+// an instance of NumberFormatter is also a function
 interface NumberFormatter {
   (value: number): string;
 }
