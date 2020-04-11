@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@types/fetch-mock": "^6.0.4",
-    "fetch-mock": "^7.2.5",
+    "fetch-mock": "^9.3.1",
     "node-fetch": "^2.2.0"
   },
   "peerDependencies": {
