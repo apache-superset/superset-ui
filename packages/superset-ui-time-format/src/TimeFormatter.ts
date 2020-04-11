@@ -3,7 +3,11 @@ import { TimeFormatFunction } from './types';
 
 export const PREVIEW_TIME = new Date(Date.UTC(2017, 1, 14, 11, 22, 33));
 
-export default class TimeFormatter extends ExtensibleFunction {
+interface TimeFormatter {
+  (value: Date | null | undefined): string;
+}
+
+class TimeFormatter extends ExtensibleFunction {
   id: string;
 
   label: string;
@@ -50,3 +54,5 @@ export default class TimeFormatter extends ExtensibleFunction {
     return `${value.toUTCString()} => ${this.format(value)}`;
   }
 }
+
+export default TimeFormatter;
