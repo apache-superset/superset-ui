@@ -14,7 +14,7 @@ export interface NumberFormatterConfig {
 // Use type augmentation to indicate that
 // an instance of NumberFormatter is also a function
 interface NumberFormatter {
-  (value: number): string;
+  (value: number | null | undefined): string;
 }
 
 class NumberFormatter extends ExtensibleFunction {
