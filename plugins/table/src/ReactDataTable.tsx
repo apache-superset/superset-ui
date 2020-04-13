@@ -244,7 +244,7 @@ export default function ReactDataTable(props: DataTableProps) {
                   // only set innerHTML for actual html content, this saves time
                   dangerouslySetInnerHTML={isHtml ? { __html: text } : undefined}
                   data-sort={val}
-                  className={showCellBar ? 'text-right' : ''}
+                  className={keyIsMetric ? 'text-right' : ''}
                   style={{
                     backgroundImage: showCellBar ? cellBar(key, val as number) : undefined,
                   }}
