@@ -89,7 +89,7 @@ export const basic = () => (
       orderDesc: true,
       pageLength: 0,
       percentMetrics: null,
-      hideCellBars: true,
+      showCellBars: true,
       tableFilter: false,
       tableTimestampFormat: '%Y-%m-%d %H:%M:%S',
       timeseriesLimitMetric: null,

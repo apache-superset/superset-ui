@@ -38,7 +38,7 @@ export interface DataTableProps {
   alignPositiveNegative: boolean;
   colorPositiveNegative: boolean;
   columns: DataColumnMeta[];
-  hideCellBars: boolean;
+  showCellBars: boolean;
   metrics: string[];
   percentMetrics: string[];
   includeSearch: boolean;
@@ -56,7 +56,7 @@ export interface DataTableProps {
 export interface TableChartFormData {
   alignPn?: boolean;
   colorPn?: boolean;
-  hideCellBars?: boolean;
+  showCellBars?: boolean;
   includeSearch?: boolean;
   orderDesc?: boolean;
   pageLength?: string;
@@ -82,7 +82,7 @@ export default function transformProps(chartProps: ChartProps): DataTableProps {
   const {
     alignPn = true,
     colorPn = true,
-    hideCellBars = false,
+    showCellBars = true,
     includeSearch = false,
     orderDesc = false,
     pageLength = 0,
@@ -121,7 +121,7 @@ export default function transformProps(chartProps: ChartProps): DataTableProps {
     percentMetrics,
     alignPositiveNegative: alignPn,
     colorPositiveNegative: colorPn,
-    hideCellBars,
+    showCellBars,
     includeSearch,
     orderDesc,
     pageLength: pageLength ? parseInt(pageLength, 10) : 0,
