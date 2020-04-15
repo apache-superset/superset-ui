@@ -1,6 +1,6 @@
 import React from 'react';
 import { SuperChart } from '@superset-ui/chart';
-import ChordChartPlugin from '../../../../../../plugins/legacy-plugin-chart-chord';
+import ChordChartPlugin from '@superset-ui/legacy-plugin-chart-chord';
 import data from './data';
 
 new ChordChartPlugin().configure({ key: 'chord' }).register();
