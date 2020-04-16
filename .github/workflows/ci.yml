@@ -1,6 +1,6 @@
 name: Node.js CI
 
-on: [ push ]
+on: [ push, pull_request ]
 
 jobs:
   build:
@@ -14,6 +14,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        # pulls all commits (needed for lerna / semantic release to correctly version)
+        fetch-depth: "0"
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
