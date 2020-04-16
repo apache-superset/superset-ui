@@ -1,6 +1,9 @@
 name: Node.js CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
 
 jobs:
   build:
@@ -52,14 +55,3 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         fail_ci_if_error: true
-
-    - name: Configure npm and git
-      # if: github.ref == 'refs/heads/master'
-      if: github.ref == 'refs/heads/kristw-ci'
-      run: |
-        echo "@superset-ui:registry=http://registry.npmjs.org/" > .npmrc
-        echo "registry=http://registry.npmjs.org/" >> .npmrc
-        echo "//registry.npmjs.org/:_authToken=\${{ secrets.NPM_TOKEN }}" >> $HOME/.npmrc 2> /dev/null
-        npm whoami
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
