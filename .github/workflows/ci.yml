@@ -54,7 +54,7 @@ jobs:
         fail_ci_if_error: true
 
     # - if: github.ref == 'refs/heads/master'
-    - if: github.ref == 'refs/heads/kristw-ci'
+    if: github.ref == 'refs/heads/kristw-ci'
       steps:
       - name: Configure npm and git
         run: |
