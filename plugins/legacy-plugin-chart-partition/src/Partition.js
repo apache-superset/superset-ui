@@ -84,6 +84,17 @@ const propTypes = {
   useRichTooltip: PropTypes.bool,
 };
 
+function getAncestors(d) {
+  const ancestors = [d];
+  let node = d;
+  while (node.parent) {
+    ancestors.push(node.parent);
+    node = node.parent;
+  }
+
+  return ancestors;
+}
+
 // This vis is based on
 // http://mbostock.github.io/d3/talk/20111018/partition.html
 function Icicle(element, props) {
@@ -117,6 +128,21 @@ function Icicle(element, props) {
   div.selectAll('*').remove();
   const tooltip = div.append('div').classed('partition-tooltip', true);
 
+  function hasDateNode(n) {
+    return metrics.includes(n.data.name) && hasTime;
+  }
+
+  function getCategory(depth) {
+    if (!depth) {
+      return 'Metric';
+    }
+    if (hasTime && depth === 1) {
+      return 'Date';
+    }
+
+    return levels[depth - (hasTime ? 2 : 1)];
+  }
+
   function drawVis(i, dat) {
     const datum = dat[i];
     const w = width;
@@ -142,10 +168,6 @@ function Icicle(element, props) {
     }
 
     const root = hierarchy(datum);
-
-    function hasDateNode(n) {
-      return metrics.includes(n.data.name) && hasTime;
-    }
 
     // node.name is the metric/group name
     // node.disp is the display value
@@ -227,28 +249,6 @@ function Icicle(element, props) {
       n.sum = n.children ? n.children.reduce((a, v) => a + v.weight, 0) || 1 : 1;
     });
 
-    function getCategory(depth) {
-      if (!depth) {
-        return 'Metric';
-      }
-      if (hasTime && depth === 1) {
-        return 'Date';
-      }
-
-      return levels[depth - (hasTime ? 2 : 1)];
-    }
-
-    function getAncestors(d) {
-      const ancestors = [d];
-      let node = d;
-      while (node.parent) {
-        ancestors.push(node.parent);
-        node = node.parent;
-      }
-
-      return ancestors;
-    }
-
     function positionAndPopulate(tip, d) {
       let t = '<table>';
       if (useRichTooltip) {
@@ -309,22 +309,14 @@ function Icicle(element, props) {
       .append('svg:g')
       .attr('transform', d => `translate(${x(d.y)},${y(d.x)})`)
       .on('mouseover', d => {
-        tooltip
-          .interrupt()
-          .transition()
-          .duration(100)
-          .style('opacity', 0.9);
+        tooltip.interrupt().transition().duration(100).style('opacity', 0.9);
         positionAndPopulate(tooltip, d);
       })
       .on('mousemove', d => {
         positionAndPopulate(tooltip, d);
       })
       .on('mouseout', () => {
-        tooltip
-          .interrupt()
-          .transition()
-          .duration(250)
-          .style('opacity', 0);
+        tooltip.interrupt().transition().duration(250).style('opacity', 0);
       });
 
     // When clicking a subdivision, the vis will zoom in to it

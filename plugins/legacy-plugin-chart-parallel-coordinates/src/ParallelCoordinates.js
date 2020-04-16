@@ -70,10 +70,7 @@ function ParallelCoordinates(element, props) {
   container.selectAll('*').remove();
   const effHeight = showDatatable ? height / 2 : height;
 
-  const div = container
-    .append('div')
-    .style('height', `${effHeight}px`)
-    .classed('parcoords', true);
+  const div = container.append('div').style('height', `${effHeight}px`).classed('parcoords', true);
 
   const chart = parcoords()(div.node())
     .width(width)
