@@ -3147,15 +3147,6 @@
     conventional-changelog-cli "^2.0.12"
     cz-conventional-changelog "^2.1.0"
 
-"@superset-ui/legacy-plugin-chart-sankey@^0.11.15":
-  version "0.11.15"
-  resolved "https://registry.yarnpkg.com/@superset-ui/legacy-plugin-chart-sankey/-/legacy-plugin-chart-sankey-0.11.15.tgz#170c6737da3423a688b05132a02d58fc5bf97948"
-  integrity sha512-heI9cJi+FvAum3vgX1Q80g0pZPZYlvwdMWJ9/Tm6tkxaUC4aIEuX6G04eMkie/jUXoKtLHZcbHkDeUu2r1QKyg==
-  dependencies:
-    d3 "^3.5.17"
-    d3-sankey "^0.4.2"
-    prop-types "^15.6.2"
-
 "@superset-ui/legacy-plugin-chart-sunburst@^0.11.15":
   version "0.11.15"
   resolved "https://registry.yarnpkg.com/@superset-ui/legacy-plugin-chart-sunburst/-/legacy-plugin-chart-sunburst-0.11.15.tgz#ff39cfe46ad553dfa154d868757560b11f99a2f3"
@@ -6682,7 +6673,7 @@ cz-conventional-changelog@2.1.0, cz-conventional-changelog@^2.1.0:
     right-pad "^1.0.1"
     word-wrap "^1.0.3"
 
-d3-array@1, d3-array@^1.2.0, d3-array@^1.2.1:
+d3-array@1, d3-array@^1.0.2, d3-array@^1.2.0, d3-array@^1.2.1:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/d3-array/-/d3-array-1.2.4.tgz#635ce4d5eea759f6f605863dbcfc30edc737f71f"
   integrity sha512-KHW6M86R+FUPYGb3R5XiYjXPq7VzwxZ22buHhAEVG5ztoEcZZMLov530mmccaqA1GghZArjQV46fuc8kUqhhHw==
@@ -6699,7 +6690,7 @@ d3-cloud@^1.2.1, d3-cloud@^1.2.5:
   dependencies:
     d3-dispatch "^1.0.3"
 
-d3-collection@1, d3-collection@^1.0.4:
+d3-collection@1, d3-collection@^1.0.2, d3-collection@^1.0.4:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/d3-collection/-/d3-collection-1.0.7.tgz#349bd2aa9977db071091c13144d5e4f16b5b310e"
   integrity sha512-ii0/r5f4sjKNTfh84Di+DpztYwqKhEyUlKoPrzUFfeSkWxjW49xU2QzO9qrPrNkpdI0XJkfzvmTu8V2Zylln6A==
@@ -6730,6 +6721,11 @@ d3-dsv@^1.2.0:
     iconv-lite "0.4"
     rw "1"
 
+d3-ease@1:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/d3-ease/-/d3-ease-1.0.6.tgz#ebdb6da22dfac0a22222f2d4da06f66c416a0ec0"
+  integrity sha512-SZ/lVU7LRXafqp7XtIcBdxnWl8yyLpgOmzAk0mWBI9gXNzLDx5ybZgnRbH9dN/yY5tzVBqCQ9avltSnqVwessQ==
+
 d3-force@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/d3-force/-/d3-force-2.0.1.tgz#31750eee8c43535301d571195bf9683beda534e2"
@@ -6739,7 +6735,7 @@ d3-force@^2.0.1:
     d3-quadtree "1"
     d3-timer "1"
 
-d3-format@1, d3-format@^1.3.2, d3-format@^1.4.2, d3-format@^1.4.3:
+d3-format@1, d3-format@^1.1.1, d3-format@^1.3.2, d3-format@^1.4.2, d3-format@^1.4.3:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/d3-format/-/d3-format-1.4.4.tgz#356925f28d0fd7c7983bfad593726fce46844030"
   integrity sha512-TWks25e7t8/cqctxCmxpUuzZN11QxIA7YrMbram94zMQ0PXjE4LVIMe/f6a4+xxL8HQ3OsAFULOINQi1pE62Aw==
@@ -6766,7 +6762,7 @@ d3-hierarchy@^1.1.8:
   resolved "https://registry.yarnpkg.com/d3-hierarchy/-/d3-hierarchy-1.1.9.tgz#2f6bee24caaea43f8dc37545fa01628559647a83"
   integrity sha512-j8tPxlqh1srJHAtxfvOUwKNYJkQuBFdM1+JAUfq6xqH5eAqf93L7oG1NVqDa4CpFZNvnNKtCYEUC8KY9yEn9lQ==
 
-d3-interpolate@1, d3-interpolate@^1.2.0, d3-interpolate@^1.3.2, d3-interpolate@^1.4.0:
+d3-interpolate@1, d3-interpolate@^1.1.3, d3-interpolate@^1.2.0, d3-interpolate@^1.3.2, d3-interpolate@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/d3-interpolate/-/d3-interpolate-1.4.0.tgz#526e79e2d80daa383f9e0c1c1c7dcc0f0583e987"
   integrity sha512-V9znK0zc3jOPV4VD2zZn0sDhZU3WAE2bmlxdIwwQPPzPjvyLkd8B3JUVdS1IDUFDkWZ72c9qnv1GK2ZagTZ8EA==
@@ -6782,6 +6778,20 @@ d3-quadtree@1:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/d3-quadtree/-/d3-quadtree-1.0.7.tgz#ca8b84df7bb53763fe3c2f24bd435137f4e53135"
   integrity sha512-RKPAeXnkC59IDGD0Wu5mANy0Q2V28L+fNe65pOCXVdVuTJS3WPKaJlFHer32Rbh9gIo9qMuJXio8ra4+YmIymA==
+
+d3-sankey-diagram@^0.7.3:
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/d3-sankey-diagram/-/d3-sankey-diagram-0.7.3.tgz#1616be0362ac6950665aa5cefea723aef832b53c"
+  integrity sha512-k9DOe7MaLWhWV6J/aqY/CGw88Briu8drTQ+uGGyQg55MIR2WXjKUXryLs0ONFmRQkOSH1F+TSz5XiMc4KwKtuA==
+  dependencies:
+    d3-array "^1.0.2"
+    d3-collection "^1.0.2"
+    d3-dispatch "^1.0.3"
+    d3-format "^1.1.1"
+    d3-interpolate "^1.1.3"
+    d3-selection "^1.0.3"
+    d3-transition "^1.0.4"
+    graphlib "~2.1.0"
 
 d3-sankey@^0.4.2:
   version "0.4.2"
@@ -6815,7 +6825,7 @@ d3-scale@^3.0.0, d3-scale@^3.0.1, d3-scale@^3.2.1:
     d3-time "1"
     d3-time-format "2"
 
-d3-selection@^1.3.0, d3-selection@^1.4.0:
+d3-selection@^1.0.3, d3-selection@^1.1.0, d3-selection@^1.3.0, d3-selection@^1.4.0:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/d3-selection/-/d3-selection-1.4.1.tgz#98eedbbe085fbda5bafa2f9e3f3a2f4d7d622a98"
   integrity sha512-BTIbRjv/m5rcVTfBs4AMBLKs4x8XaaLkwm28KWu9S2vKNqXkXt2AH2Qf0sdPZHjFxcWg/YL53zcqAz+3g4/7PA==
@@ -6856,6 +6866,18 @@ d3-tip@^0.9.1:
   dependencies:
     d3-collection "^1.0.4"
     d3-selection "^1.3.0"
+
+d3-transition@^1.0.4:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/d3-transition/-/d3-transition-1.3.2.tgz#a98ef2151be8d8600543434c1ca80140ae23b398"
+  integrity sha512-sc0gRU4PFqZ47lPVHloMn9tlPcv8jxgOQg+0zjhfZXMQuvppjG6YuwdMBE0TuqCZjeJkLecku/l9R0JPcRhaDA==
+  dependencies:
+    d3-color "1"
+    d3-dispatch "1"
+    d3-ease "1"
+    d3-interpolate "1"
+    d3-selection "^1.1.0"
+    d3-timer "1"
 
 d3-voronoi@^1.1.2:
   version "1.1.4"
@@ -9184,6 +9206,13 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.3
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.3.tgz#4a12ff1b60376ef09862c2093edd908328be8423"
   integrity sha512-a30VEBm4PEdx1dRB7MFK7BejejvCvBronbLjht+sHuGYj8PHs7M/5Z+rt5lw551vZ7yfTCj4Vuyy3mSJytDWRQ==
+
+graphlib@~2.1.0:
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/graphlib/-/graphlib-2.1.8.tgz#5761d414737870084c92ec7b5dbcb0592c9d35da"
+  integrity sha512-jcLLfkpoVGmH7/InMC/1hIvOPSUh38oJtGhvrOFGzioE1DZ+0YW16RgmOJhHiuWTvGiJQ9Z1Ik43JvkRPRvE+A==
+  dependencies:
+    lodash "^4.17.15"
 
 grouped-queue@^1.0.0:
   version "1.0.0"
@@ -12385,6 +12414,11 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
+
+nvd3@1.8.6:
+  version "1.8.6"
+  resolved "https://registry.yarnpkg.com/nvd3/-/nvd3-1.8.6.tgz#2d3eba74bf33363b5101ebf1d093c59a53ae73c4"
+  integrity sha1-LT66dL8zNjtRAevx0JPFmlOuc8Q=
 
 nwsapi@^2.2.0:
   version "2.2.0"
