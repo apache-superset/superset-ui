@@ -28,7 +28,7 @@
     "access": "public"
   },
   "dependencies": {
-    "d3": "^3.5.17",
+    "d3": "^5.15.1",
     "nvd3": "1.8.6",
     "prop-types": "^15.6.2"
   },
