@@ -62,17 +62,11 @@ function Sankey(element, props) {
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
 
-  const tooltip = div
-    .append('div')
-    .attr('class', 'sankey-tooltip')
-    .style('opacity', 0);
+  const tooltip = div.append('div').attr('class', 'sankey-tooltip').style('opacity', 0);
 
   const colorFn = CategoricalColorNamespace.getScale(colorScheme);
 
-  const sankey = d3Sankey()
-    .nodeWidth(15)
-    .nodePadding(10)
-    .size([innerWidth, innerHeight]);
+  const sankey = d3Sankey().nodeWidth(15).nodePadding(10).size([innerWidth, innerHeight]);
 
   const path = sankey.link();
 
@@ -88,10 +82,7 @@ function Sankey(element, props) {
   });
   nodes = d3.values(nodes);
 
-  sankey
-    .nodes(nodes)
-    .links(links)
-    .layout(32);
+  sankey.nodes(nodes).links(links).layout(32);
 
   function getTooltipHtml(d) {
     let html;
@@ -134,10 +125,7 @@ function Sankey(element, props) {
   }
 
   function onmouseout() {
-    tooltip
-      .transition()
-      .duration(100)
-      .style('opacity', 0);
+    tooltip.transition().duration(100).style('opacity', 0);
   }
 
   const link = svg
