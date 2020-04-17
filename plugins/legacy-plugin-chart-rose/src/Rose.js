@@ -97,15 +97,9 @@ function Rose(element, props) {
   const tooltip = nv.models.tooltip();
   const state = { disabled: datum[times[0]].map(() => false) };
 
-  const svg = div
-    .append('svg')
-    .attr('width', width)
-    .attr('height', height);
+  const svg = div.append('svg').attr('width', width).attr('height', height);
 
-  const g = svg
-    .append('g')
-    .attr('class', 'rose')
-    .append('g');
+  const g = svg.append('g').attr('class', 'rose').append('g');
 
   const legendWrap = g.append('g').attr('class', 'legendWrap');
 
@@ -151,15 +145,9 @@ function Rose(element, props) {
   const mini = 0.075;
 
   const centerTranslate = `translate(${width / 2},${roseHeight / 2 + margin.top})`;
-  const roseWrap = g
-    .append('g')
-    .attr('transform', centerTranslate)
-    .attr('class', 'roseWrap');
+  const roseWrap = g.append('g').attr('transform', centerTranslate).attr('class', 'roseWrap');
 
-  const labelsWrap = g
-    .append('g')
-    .attr('transform', centerTranslate)
-    .attr('class', 'labelsWrap');
+  const labelsWrap = g.append('g').attr('transform', centerTranslate).attr('class', 'labelsWrap');
 
   const groupLabelsWrap = g
     .append('g')
