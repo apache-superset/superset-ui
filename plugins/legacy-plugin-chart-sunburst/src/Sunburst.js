@@ -58,6 +58,75 @@ function getAncestors(node) {
   return path;
 }
 
+function buildHierarchy(rows) {
+  const root = {
+    name: 'root',
+    children: [],
+  };
+
+  // each record [groupby1val, groupby2val, (<string> or 0)n, m1, m2]
+  rows.forEach(row => {
+    const m1 = Number(row[row.length - 2]);
+    const m2 = Number(row[row.length - 1]);
+    const levels = row.slice(0, -2);
+    if (Number.isNaN(m1)) {
+      // e.g. if this is a header row
+      return;
+    }
+    let currentNode = root;
+    for (let level = 0; level < levels.length; level++) {
+      const children = currentNode.children || [];
+      const nodeName = levels[level].toString();
+      // If the next node has the name '0', it will
+      const isLeafNode = level >= levels.length - 1 || levels[level + 1] === 0;
+      let childNode;
+
+      if (!isLeafNode) {
+        childNode = children.find(child => child.name === nodeName && child.level === level);
+
+        if (!childNode) {
+          childNode = {
+            name: nodeName,
+            children: [],
+            level,
+          };
+          children.push(childNode);
+        }
+        currentNode = childNode;
+      } else if (nodeName !== 0) {
+        // Reached the end of the sequence; create a leaf node.
+        childNode = {
+          name: nodeName,
+          m1,
+          m2,
+        };
+        children.push(childNode);
+      }
+    }
+  });
+
+  function recurse(node) {
+    if (node.children) {
+      let sums;
+      let m1 = 0;
+      let m2 = 0;
+      for (let i = 0; i < node.children.length; i++) {
+        sums = recurse(node.children[i]);
+        m1 += sums[0];
+        m2 += sums[1];
+      }
+      node.m1 = m1;
+      node.m2 = m2;
+    }
+
+    return [node.m1, node.m2];
+  }
+
+  recurse(root);
+
+  return root;
+}
+
 // Modified from http://bl.ocks.org/kerryrodden/7090426
 function Sunburst(element, props) {
   const container = d3.select(element);
@@ -246,11 +315,7 @@ function Sunburst(element, props) {
       );
 
     // Reset and fade all the segments.
-    arcs
-      .selectAll('path')
-      .style('stroke-width', null)
-      .style('stroke', null)
-      .style('opacity', 0.3);
+    arcs.selectAll('path').style('stroke-width', null).style('stroke', null).style('opacity', 0.3);
 
     // Then highlight only those that are an ancestor of the current segment.
     arcs
@@ -285,75 +350,6 @@ function Sunburst(element, props) {
       });
   }
 
-  function buildHierarchy(rows) {
-    const root = {
-      name: 'root',
-      children: [],
-    };
-
-    // each record [groupby1val, groupby2val, (<string> or 0)n, m1, m2]
-    rows.forEach(row => {
-      const m1 = Number(row[row.length - 2]);
-      const m2 = Number(row[row.length - 1]);
-      const levels = row.slice(0, -2);
-      if (Number.isNaN(m1)) {
-        // e.g. if this is a header row
-        return;
-      }
-      let currentNode = root;
-      for (let level = 0; level < levels.length; level++) {
-        const children = currentNode.children || [];
-        const nodeName = levels[level].toString();
-        // If the next node has the name '0', it will
-        const isLeafNode = level >= levels.length - 1 || levels[level + 1] === 0;
-        let childNode;
-
-        if (!isLeafNode) {
-          childNode = children.find(child => child.name === nodeName && child.level === level);
-
-          if (!childNode) {
-            childNode = {
-              name: nodeName,
-              children: [],
-              level,
-            };
-            children.push(childNode);
-          }
-          currentNode = childNode;
-        } else if (nodeName !== 0) {
-          // Reached the end of the sequence; create a leaf node.
-          childNode = {
-            name: nodeName,
-            m1,
-            m2,
-          };
-          children.push(childNode);
-        }
-      }
-    });
-
-    function recurse(node) {
-      if (node.children) {
-        let sums;
-        let m1 = 0;
-        let m2 = 0;
-        for (let i = 0; i < node.children.length; i++) {
-          sums = recurse(node.children[i]);
-          m1 += sums[0];
-          m2 += sums[1];
-        }
-        node.m1 = m1;
-        node.m2 = m2;
-      }
-
-      return [node.m1, node.m2];
-    }
-
-    recurse(root);
-
-    return root;
-  }
-
   // Main function to draw and set up the visualization, once we have the data.
   function createVisualization(rows) {
     const root = buildHierarchy(rows);
@@ -376,10 +372,7 @@ function Sunburst(element, props) {
 
     // Bounding circle underneath the sunburst, to make it easier to detect
     // when the mouse leaves the parent g.
-    arcs
-      .append('svg:circle')
-      .attr('r', radius)
-      .style('opacity', 0);
+    arcs.append('svg:circle').attr('r', radius).style('opacity', 0);
 
     // For efficiency, filter nodes to keep only those large enough to see.
     const nodes = partition.nodes(root).filter(d => d.dx > 0.005); // 0.005 radians = 0.29 degrees
