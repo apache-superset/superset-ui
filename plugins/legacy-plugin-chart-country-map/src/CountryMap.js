@@ -79,10 +79,7 @@ function CountryMap(element, props) {
     .classed('text-layer', true)
     .attr('transform', `translate(${width / 2}, 45)`);
   const bigText = textLayer.append('text').classed('big-text', true);
-  const resultText = textLayer
-    .append('text')
-    .classed('result-text', true)
-    .attr('dy', '1em');
+  const resultText = textLayer.append('text').classed('result-text', true).attr('dy', '1em');
 
   let centered;
 
@@ -149,10 +146,7 @@ function CountryMap(element, props) {
     // Darken color
     let c = colorFn(d);
     if (c !== 'none') {
-      c = d3
-        .rgb(c)
-        .darker()
-        .toString();
+      c = d3.rgb(c).darker().toString();
     }
     d3.select(this).style('fill', c);
     selectAndDisplayNameOfRegion(d);
