@@ -60,7 +60,7 @@ const propTypes = {
 };
 
 function hovered(hover) {
-  return function(node) {
+  return function (node) {
     d3SelectAll(node.ancestors().map(d => d.node))
       .classed('node--hover', hover)
       .select('rect')
@@ -111,7 +111,7 @@ function Treemap(element, props) {
       .append('g')
       .attr('transform', d => `translate(${d.x0},${d.y0})`)
       .attr('class', 'node')
-      .each(function(d) {
+      .each(function (d) {
         d.node = this;
       })
       .on('mouseover', hovered(true))
