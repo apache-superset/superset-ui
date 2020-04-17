@@ -108,10 +108,7 @@ function ForceDirected(element, props) {
     .start();
 
   div.selectAll('*').remove();
-  const svg = div
-    .append('svg')
-    .attr('width', width)
-    .attr('height', height);
+  const svg = div.append('svg').attr('width', width).attr('height', height);
 
   // build the arrow.
   svg
@@ -149,35 +146,20 @@ function ForceDirected(element, props) {
     .enter()
     .append('g')
     .attr('class', 'node')
-    .on('mouseenter', function() {
-      d3.select(this)
-        .select('circle')
-        .transition()
-        .style('stroke-width', 5);
+    .on('mouseenter', function () {
+      d3.select(this).select('circle').transition().style('stroke-width', 5);
 
-      d3.select(this)
-        .select('text')
-        .transition()
-        .style('font-size', 25);
+      d3.select(this).select('text').transition().style('font-size', 25);
     })
-    .on('mouseleave', function() {
-      d3.select(this)
-        .select('circle')
-        .transition()
-        .style('stroke-width', 1.5);
-      d3.select(this)
-        .select('text')
-        .transition()
-        .style('font-size', 12);
+    .on('mouseleave', function () {
+      d3.select(this).select('circle').transition().style('stroke-width', 1.5);
+      d3.select(this).select('text').transition().style('font-size', 12);
     })
     .call(force.drag);
 
   // add the nodes
   const ext = d3.extent(d3.values(nodes), d => Math.sqrt(d.total));
-  const circleScale = d3.scale
-    .linear()
-    .domain(ext)
-    .range([3, 30]);
+  const circleScale = d3.scale.linear().domain(ext).range([3, 30]);
 
   node.append('circle').attr('r', d => circleScale(Math.sqrt(d.total)));
 
