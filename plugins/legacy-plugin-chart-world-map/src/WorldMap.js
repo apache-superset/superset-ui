@@ -62,10 +62,7 @@ function WorldMap(element, props) {
     .range([1, maxBubbleSize]);
 
   // color gradient based on http://colorbrewer2.org/#type=sequential&scheme=Greens&n=9
-  const colorScale = d3.scale
-    .linear()
-    .domain([ext[0], ext[1]])
-    .range(['#c7e9c0', '#00441b']);
+  const colorScale = d3.scale.linear().domain([ext[0], ext[1]]).range(['#c7e9c0', '#00441b']);
 
   const processedData = filteredData.map(d => ({
     ...d,
