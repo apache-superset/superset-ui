@@ -1,15 +1,16 @@
 import {
   ScatterPlotChartPlugin,
   LegacyScatterPlotChartPlugin,
-} from '../../../../../superset-ui-preset-chart-xy';
-import BasicStories from './stories/basic';
-import BubbleStories from './stories/bubble';
-import LegacyStories from './stories/legacy';
+} from '@superset-ui/preset-chart-xy';
 import { SCATTER_PLOT_PLUGIN_TYPE, SCATTER_PLOT_PLUGIN_LEGACY_TYPE } from './constants';
 
 new LegacyScatterPlotChartPlugin().configure({ key: SCATTER_PLOT_PLUGIN_LEGACY_TYPE }).register();
 new ScatterPlotChartPlugin().configure({ key: SCATTER_PLOT_PLUGIN_TYPE }).register();
 
 export default {
-  examples: [...BasicStories, ...BubbleStories, ...LegacyStories],
+  title: 'Chart Plugins|preset-chart-xy/ScatterPlot',
 };
+
+export { default as basic } from './stories/basic';
+export { default as bubble } from './stories/bubble';
+export { default as legacy } from './stories/legacy';
