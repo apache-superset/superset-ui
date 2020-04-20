@@ -24,10 +24,21 @@ import { XYChart, AreaSeries, CrossHair, LinearGradient } from '@data-ui/xy-char
 import { BRAND_COLOR } from '@superset-ui/color';
 import { computeMaxFontSize } from '@superset-ui/dimension';
 import NumberFormatter from '@superset-ui/number-format/src/NumberFormatter';
+import styled from '@superset-ui/style';
 import { smartDateVerboseFormatter } from '@superset-ui/time-format';
 import TimeFormatter from '@superset-ui/time-format/src/TimeFormatter';
 
 import './BigNumber.css';
+
+const Header = styled.div`
+  color: ${({ theme }) => theme.colors.secondary.dark3};
+  font-weight: 600;
+`;
+
+// once more theme variables are available, put them here
+const SubHeader = styled.div`
+  color: ${({ theme }) => theme.colors.secondary.dark3};
+`;
 
 const defaultNumberFormatter = getNumberFormatter();
 
@@ -151,7 +162,7 @@ class BigNumberVis extends React.PureComponent<BigNumberVisProps, {}> {
     container.remove();
 
     return (
-      <div
+      <Header
         className="header-line"
         style={{
           fontSize,
@@ -159,7 +170,7 @@ class BigNumberVis extends React.PureComponent<BigNumberVisProps, {}> {
         }}
       >
         {text}
-      </div>
+      </Header>
     );
   }
 
@@ -188,7 +199,7 @@ class BigNumberVis extends React.PureComponent<BigNumberVisProps, {}> {
       container.remove();
 
       return (
-        <div
+        <SubHeader
           className="subheader-line"
           style={{
             fontSize,
@@ -196,7 +207,7 @@ class BigNumberVis extends React.PureComponent<BigNumberVisProps, {}> {
           }}
         >
           {text}
-        </div>
+        </SubHeader>
       );
     }
     return null;

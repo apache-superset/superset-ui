@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@data-ui/xy-chart": "^0.0.84",
+    "@superset-ui/style": "^0.12.21",
     "@types/d3-color": "^1.2.2",
     "@types/shortid": "^0.0.29",
     "d3-color": "^1.2.3",
