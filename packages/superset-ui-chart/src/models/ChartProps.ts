@@ -15,8 +15,12 @@ type ChartPropsSelector = (c: ChartPropsConfig) => ChartProps;
 
 /** Optional field for event handlers, renderers */
 type Hooks = {
+  /**
+   * sync active filters between chart and dashboard, "add" actually
+   * also handles "change" and "remove".
+   */
   onAddFilter?: (newFilters: DataRecordFilters, merge?: boolean) => void;
-  /** handle errors  */
+  /** handle errors */
   onError?: HandlerFunction;
   /** use the vis as control to update state */
   setControlValue?: HandlerFunction;
