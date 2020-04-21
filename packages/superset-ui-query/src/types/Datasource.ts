@@ -14,6 +14,7 @@ export interface Datasource {
   columns: Column[];
   metrics: QueryObjectMetric[];
   description?: string;
+  // key is column names (labels)
   columnFormats?: {
     [key: string]: string;
   };

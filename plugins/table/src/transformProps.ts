@@ -66,13 +66,12 @@ export interface DataTableProps {
   onChangeFilter: ChartProps['hooks']['onAddFilter'];
 }
 
-export type TableChartProps = {
-  initialValues?: DataRecordFilters;
+export type TableChartProps = ChartProps & {
   formData: TableChartFormData;
-  queryData: {
+  queryData: ChartProps['queryData'] & {
     data?: TableChartData;
-  } & ChartProps['queryData'];
-} & ChartProps;
+  };
+};
 
 /**
  * Consolidate list of metrics to string, identified by its unique identifier

@@ -17,8 +17,11 @@
  * under the License.
  */
 import { DatasourceType } from '@superset-ui/query';
-import transformProps, { BignumberChartProps, BigNumberDatum } from '../BigNumber/transformProps';
-import { TimeGranularity } from '../utils/getTimeFormatterForGranularity';
+import transformProps, {
+  BignumberChartProps,
+  BigNumberDatum,
+} from '../src/BigNumber/transformProps';
+import { TimeGranularity } from '../src/utils/getTimeFormatterForGranularity';
 
 const formData = {
   metric: 'value',

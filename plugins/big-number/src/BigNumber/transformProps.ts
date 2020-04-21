@@ -52,13 +52,13 @@ export type BigNumberFormData = {
   compareLag?: string | number;
   yAxisFormat?: string;
   timeGrainSqla?: TimeGranularity;
-} & ChartProps['formData'];
+};
 
 export type BignumberChartProps = ChartProps & {
   formData: BigNumberFormData;
-  queryData: {
+  queryData: ChartProps['queryData'] & {
     data?: BigNumberDatum[];
-  } & ChartProps['queryData'];
+  };
 };
 
 export default function transformProps(chartProps: BignumberChartProps) {
