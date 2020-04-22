@@ -2,12 +2,11 @@ name: release-workflow
 
 on:
   push:
-    branches:
-      - 'master'
+    branches: ['master']
 
 jobs:
   build:
-    name: Bump version and publish package(s)
+    name: Build and release
 
     runs-on: ubuntu-latest
 
@@ -22,7 +21,7 @@ jobs:
         fetch-depth: 0
     - name: Get tags and filter trigger tags
       run: |
-        git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+        git fetch --depth=1 origin "+refs/tags/*:refs/tags/*"
         git fetch --prune --unshallow
         git tag -d `git tag | grep -E '^trigger-'`
 
@@ -43,6 +42,7 @@ jobs:
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
       run: echo "::set-output name=dir::$(yarn cache dir)"
+
     - name: Cache yarn
       uses: actions/cache@v1
       id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
@@ -54,34 +54,17 @@ jobs:
 
     - name: Install dependencies
       run: yarn install --frozen-lockfile
+
     - name: Build packages
       run: yarn build
+
     - name: Run unit tests
       run: yarn test
 
-    - name: List changed packages
-      run: yarn list-changed-packages
-
-    - name: Configure npm and git
+    - name: Publish new versions found in package.json
+      env:
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       run: |
-        yarn logout
-        echo "@superset-ui:registry=http://registry.npmjs.org/" > .npmrc
-        echo "registry=http://registry.npmjs.org/" >> .npmrc
         echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
         npm whoami
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git remote set-url origin "https://${GITHUB_TOKEN}@github.com/apache-superset/superset-ui.git" > /dev/null 2>&1
-      env:
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Bump version and publish package(s)
-      run: |
-        git update-index --assume-unchanged .npmrc
-        git tag -d `git tag | grep -E '^trigger-'`
-        yarn ci:release-from-tag
-      env:
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GH_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+        yarn ci:release-from-tag  # lerna publish from-package
