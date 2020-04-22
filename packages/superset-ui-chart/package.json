@@ -27,6 +27,8 @@
     "access": "public"
   },
   "dependencies": {
+    "@superset-ui/translation": "^0.12.21",
+    "@superset-ui/validator": "^0.12.21",
     "@types/react": "^16.9.34",
     "@types/react-loadable": "^5.4.2",
     "@vx/responsive": "^0.0.195",
