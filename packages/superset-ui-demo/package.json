@@ -61,7 +61,7 @@
     "@superset-ui/legacy-plugin-chart-treemap": "0.12.21",
     "@superset-ui/legacy-plugin-chart-word-cloud": "^0.11.15",
     "@superset-ui/legacy-plugin-chart-world-map": "0.12.21",
-    "@superset-ui/legacy-preset-chart-big-number": "0.12.22",
+    "@superset-ui/legacy-preset-chart-big-number": "0.12.23",
     "@superset-ui/number-format": "0.12.21",
     "@superset-ui/plugin-chart-word-cloud": "^0.11.15",
     "@superset-ui/query": "0.12.23",

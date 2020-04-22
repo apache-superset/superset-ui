@@ -85,7 +85,7 @@ type BigNumberVisProps = {
   startYAxisAtZero?: boolean;
   timeRangeFixed?: boolean;
   trendLineData?: TimeSeriesDatum[];
-  mainColor: string;
+  mainColor?: string;
 };
 
 class BigNumberVis extends React.PureComponent<BigNumberVisProps, {}> {
