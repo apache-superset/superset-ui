@@ -24,7 +24,7 @@ export const D3_FORMAT_DOCS = 'D3 format syntax: https://github.com/d3/d3-format
 // input choices & options
 export const D3_FORMAT_OPTIONS = [
   ['SMART_NUMBER', 'Adaptative formating'],
-  [' ', 'Original value'],
+  ['~g', 'Original value'],
   [',d', ',d (12345.432 => 12,345)'],
   ['.1s', '.1s (12345.432 => 10k)'],
   ['.3s', '.3s (12345.432 => 12.3k)'],
