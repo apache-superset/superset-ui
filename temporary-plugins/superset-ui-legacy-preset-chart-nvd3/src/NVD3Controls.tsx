@@ -17,12 +17,11 @@
  * under the License.
  */
 
-// These are control configurations that are shared ONLY within the NVD3 viz plugin repo.
-// It is not recommended to use these for third-party plugins.
-
+import React from 'react';
 import { t } from '@superset-ui/translation';
-import { formatSelectOptions } from './selectOptions';
-import { D3_TIME_FORMAT_OPTIONS, D3_FORMAT_DOCS, D3_FORMAT_OPTIONS } from './D3Formatting';
+import { controls } from '@superset-ui/chart';
+
+const { formatSelectOptions, D3_TIME_FORMAT_OPTIONS, D3_FORMAT_DOCS, D3_FORMAT_OPTIONS } = controls;
 
 /*
   Plugins in question:
@@ -297,3 +296,87 @@ export const yAxisLabel = {
     default: '',
   },
 };
+
+export const TimeSeriesSection = [
+  {
+    label: t('Query'),
+    expanded: true,
+    controlSetRows: [
+      ['metrics'],
+      ['adhoc_filters'],
+      ['groupby'],
+      ['limit', 'timeseries_limit_metric'],
+      ['order_desc', 'contribution'],
+      ['row_limit', null],
+    ],
+  },
+  {
+    label: t('Advanced Analytics'),
+    description: t(
+      'This section contains options ' +
+        'that allow for advanced analytical post processing ' +
+        'of query results',
+    ),
+    controlSetRows: [
+      // eslint-disable-next-line react/jsx-key
+      [<h1 className="section-header">{t('Rolling Window')}</h1>],
+      ['rolling_type', 'rolling_periods', 'min_periods'],
+      // eslint-disable-next-line react/jsx-key
+      [<h1 className="section-header">{t('Time Comparison')}</h1>],
+      [
+        {
+          name: 'time_compare',
+          config: {
+            type: 'SelectControl',
+            multi: true,
+            freeForm: true,
+            label: t('Time Shift'),
+            choices: formatSelectOptions([
+              '1 day',
+              '1 week',
+              '28 days',
+              '30 days',
+              '52 weeks',
+              '1 year',
+            ]),
+            description: t(
+              'Overlay one or more timeseries from a ' +
+                'relative time period. Expects relative time deltas ' +
+                'in natural language (example:  24 hours, 7 days, ' +
+                '56 weeks, 365 days)',
+            ),
+          },
+        },
+        'comparison_type',
+      ],
+      // eslint-disable-next-line react/jsx-key
+      [<h1 className="section-header">{t('Python Functions')}</h1>],
+      // eslint-disable-next-line react/jsx-key
+      [<h2 className="section-header">pandas.resample</h2>],
+      [
+        {
+          name: 'resample_rule',
+          config: {
+            type: 'SelectControl',
+            freeForm: true,
+            label: t('Rule'),
+            default: null,
+            choices: formatSelectOptions(['1T', '1H', '1D', '7D', '1M', '1AS']),
+            description: t('Pandas resample rule'),
+          },
+        },
+        {
+          name: 'resample_method',
+          config: {
+            type: 'SelectControl',
+            freeForm: true,
+            label: t('Method'),
+            default: null,
+            choices: formatSelectOptions(['asfreq', 'bfill', 'ffill', 'median', 'mean', 'sum']),
+            description: t('Pandas resample method'),
+          },
+        },
+      ],
+    ],
+  },
+];
