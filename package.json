@@ -179,7 +179,8 @@
               {
                 "fixToUnknown": false
               }
-            ]
+            ],
+            "@typescript-eslint/no-plusplus": "off"
           }
         },
         {
