@@ -34,7 +34,44 @@ export const datasourceAndVizType = {
   controlSetRows: [
     ['datasource'],
     ['viz_type'],
-    ['slice_id', 'cache_timeout', 'url_params', 'time_range_endpoints'],
+    [
+      {
+        name: 'slice_id',
+        config: {
+          type: 'HiddenControl',
+          label: t('Chart ID'),
+          hidden: true,
+          description: t('The id of the active chart'),
+        },
+      },
+      {
+        name: 'cache_timeout',
+        config: {
+          type: 'HiddenControl',
+          label: t('Cache Timeout (seconds)'),
+          hidden: true,
+          description: t('The number of seconds before expiring the cache'),
+        },
+      },
+      {
+        name: 'url_params',
+        config: {
+          type: 'HiddenControl',
+          label: t('URL Parameters'),
+          hidden: true,
+          description: t('Extra parameters for use in jinja templated queries'),
+        },
+      },
+      {
+        name: 'time_range_endpoints',
+        config: {
+          type: 'HiddenControl',
+          label: t('Time range endpoints'),
+          hidden: true,
+          description: t('Time range endpoints (SIP-15)'),
+        },
+      },
+    ],
   ],
 };
 
@@ -52,6 +89,21 @@ export const sqlaTimeSeries = {
 
 export const annotations = {
   label: t('Annotations and Layers'),
+  tabOverride: 'data',
   expanded: true,
-  controlSetRows: [['annotation_layers']],
+  controlSetRows: [
+    [
+      {
+        name: 'annotation_layers',
+        config: {
+          type: 'AnnotationLayerControl',
+          label: '',
+          default: [],
+          description: 'Annotation Layers',
+          renderTrigger: true,
+          tabOverride: 'data',
+        },
+      },
+    ],
+  ],
 };

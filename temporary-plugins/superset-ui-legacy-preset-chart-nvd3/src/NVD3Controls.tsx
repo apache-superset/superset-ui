@@ -297,7 +297,7 @@ export const yAxisLabel = {
   },
 };
 
-export const TimeSeriesSection = [
+export const timeSeriesSection = [
   {
     label: t('Query'),
     expanded: true,
@@ -306,22 +306,81 @@ export const TimeSeriesSection = [
       ['adhoc_filters'],
       ['groupby'],
       ['limit', 'timeseries_limit_metric'],
-      ['order_desc', 'contribution'],
+      [
+        {
+          name: 'order_desc',
+          config: {
+            type: 'CheckboxControl',
+            label: t('Sort Descending'),
+            default: true,
+            description: t('Whether to sort descending or ascending'),
+          },
+        },
+        {
+          name: 'contribution',
+          config: {
+            type: 'CheckboxControl',
+            label: t('Contribution'),
+            default: false,
+            description: t('Compute the contribution to the total'),
+          },
+        },
+      ],
       ['row_limit', null],
     ],
   },
   {
     label: t('Advanced Analytics'),
+    tabOverride: 'data',
     description: t(
       'This section contains options ' +
         'that allow for advanced analytical post processing ' +
         'of query results',
     ),
     controlSetRows: [
-      // eslint-disable-next-line react/jsx-key
       [<h1 className="section-header">{t('Rolling Window')}</h1>],
-      ['rolling_type', 'rolling_periods', 'min_periods'],
-      // eslint-disable-next-line react/jsx-key
+      [
+        {
+          name: 'rolling_type',
+          config: {
+            type: 'SelectControl',
+            label: t('Rolling Function'),
+            default: 'None',
+            choices: formatSelectOptions(['None', 'mean', 'sum', 'std', 'cumsum']),
+            description: t(
+              'Defines a rolling window function to apply, works along ' +
+                'with the [Periods] text box',
+            ),
+          },
+        },
+        {
+          name: 'rolling_periods',
+          config: {
+            type: 'TextControl',
+            label: t('Periods'),
+            isInt: true,
+            description: t(
+              'Defines the size of the rolling window function, ' +
+                'relative to the time granularity selected',
+            ),
+          },
+        },
+        {
+          name: 'min_periods',
+          config: {
+            type: 'TextControl',
+            label: t('Min Periods'),
+            isInt: true,
+            description: t(
+              'The minimum number of rolling periods required to show ' +
+                'a value. For instance if you do a cumulative sum on 7 days ' +
+                'you may want your "Min Period" to be 7, so that all data points ' +
+                'shown are the total of 7 periods. This will hide the "ramp up" ' +
+                'taking place over the first 7 periods',
+            ),
+          },
+        },
+      ],
       [<h1 className="section-header">{t('Time Comparison')}</h1>],
       [
         {
@@ -347,11 +406,27 @@ export const TimeSeriesSection = [
             ),
           },
         },
-        'comparison_type',
+        {
+          name: 'comparison_type',
+          config: {
+            type: 'SelectControl',
+            label: t('Calculation type'),
+            default: 'values',
+            choices: [
+              ['values', 'Actual Values'],
+              ['absolute', 'Absolute difference'],
+              ['percentage', 'Percentage change'],
+              ['ratio', 'Ratio'],
+            ],
+            description: t(
+              'How to display time shifts: as individual lines; as the ' +
+                'absolute difference between the main time series and each time shift; ' +
+                'as the percentage change; or as the ratio between series and time shifts.',
+            ),
+          },
+        },
       ],
-      // eslint-disable-next-line react/jsx-key
       [<h1 className="section-header">{t('Python Functions')}</h1>],
-      // eslint-disable-next-line react/jsx-key
       [<h2 className="section-header">pandas.resample</h2>],
       [
         {
