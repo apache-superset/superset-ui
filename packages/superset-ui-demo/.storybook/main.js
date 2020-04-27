@@ -46,18 +46,16 @@ module.exports = {
 
     config.resolve.extensions.push('.ts', '.tsx');
 
-    // // Let webpack know where to find the source code
-    // Object.assign(config.resolve.alias, {
-    //   ...packages.reduce(
-    //     (acc, name) => ({
-    //       ...acc,
-    //       [`@superset-ui/${name}$`]: path.join(basePath, name, 'src'),
-    //     }),
-    //     {},
-    //   ),
-    // });
-
-    console.log('config.resolve.alias', config.resolve.alias);
+    // Let webpack know where to find the source code
+    Object.assign(config.resolve.alias, {
+      ...packages.reduce(
+        (acc, name) => ({
+          ...acc,
+          [`@superset-ui/${name}$`]: path.join(basePath, name, 'src'),
+        }),
+        {},
+      ),
+    });
 
     config.stats = 'errors-warnings';
 

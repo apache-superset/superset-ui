@@ -18,7 +18,7 @@ export default function DefaultTooltipRenderer({
 
   const { formatValue } = channels.y;
 
-  const data = [];
+  const data: { key: string; valueColumn: number | string }[] = [];
   if (isDefined(min)) {
     data.push({ key: 'Min', valueColumn: formatValue(min) });
   }

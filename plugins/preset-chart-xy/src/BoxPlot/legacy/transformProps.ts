@@ -20,7 +20,7 @@ import { ChartProps } from '@superset-ui/chart';
 import { RawBoxPlotDataRow, BoxPlotDataRow } from '../../components/BoxPlot/types';
 
 export default function transformProps(chartProps: ChartProps) {
-  const { width, height, datasource = {}, formData, queryData } = chartProps;
+  const { width, height, datasource, formData, queryData } = chartProps;
   const { verboseMap = {} } = datasource;
   const { colorScheme, groupby, metrics } = formData;
 
