@@ -11,7 +11,7 @@ import SequantialD3Palettes from '@superset-ui/color/src/colorSchemes/sequential
 import RenderPalettes from './RenderPalettes';
 
 export default {
-  title: '*Core Packages|@superset-ui/color',
+  title: 'Core Packages|@superset-ui/color',
 };
 
 export const categoricalPalettes = () =>

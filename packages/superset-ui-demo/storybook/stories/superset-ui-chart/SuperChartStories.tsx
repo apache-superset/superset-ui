@@ -13,7 +13,7 @@ new BuggyChartPlugin().configure({ key: ChartKeys.BUGGY }).register();
 const DEFAULT_QUERY_DATA = { data: ['foo', 'bar'] };
 
 export default {
-  title: '*Core Packages|@superset-ui/chart',
+  title: 'Core Packages|@superset-ui/chart',
   decorators: [withKnobs],
 };
 
