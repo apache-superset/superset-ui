@@ -13,3 +13,4 @@ export { default as withLabelFlush } from './stories/flush';
 export { default as withMissingData } from './stories/missing';
 export { default as legacyShim } from './stories/legacy';
 export { default as withTimeShift } from './stories/timeShift';
+export { default as query } from './stories/query';
