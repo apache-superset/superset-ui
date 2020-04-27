@@ -8,7 +8,7 @@ import Expandable from '../../shared/components/Expandable';
 const REQUEST_METHODS = ['GET', 'POST'];
 
 export default {
-  title: 'Core Packages|@superset-ui/connection',
+  title: '*Core Packages|@superset-ui/connection',
   decorators: [withKnobs],
 };
 

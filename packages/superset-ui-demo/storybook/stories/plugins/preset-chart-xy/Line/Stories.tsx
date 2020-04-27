@@ -1,11 +1,13 @@
 import { LineChartPlugin, LegacyLineChartPlugin } from '@superset-ui/preset-chart-xy';
 import { LINE_PLUGIN_TYPE, LINE_PLUGIN_LEGACY_TYPE } from './constants';
+import { withKnobs } from '@storybook/addon-knobs';
 
 new LegacyLineChartPlugin().configure({ key: LINE_PLUGIN_LEGACY_TYPE }).register();
 new LineChartPlugin().configure({ key: LINE_PLUGIN_TYPE }).register();
 
 export default {
   title: 'Chart Plugins|preset-chart-xy/Line',
+  decorators: [withKnobs],
 };
 
 export { default as basic } from './stories/basic';

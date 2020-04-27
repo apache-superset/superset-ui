@@ -116,7 +116,7 @@ NumberFormatValidator.propTypes = propTypes;
 NumberFormatValidator.defaultProps = defaultProps;
 
 export default {
-  title: 'Core Packages|@superset-ui/number-format',
+  title: '*Core Packages|@superset-ui/number-format',
 };
 
 export const validator = () => <NumberFormatValidator />;

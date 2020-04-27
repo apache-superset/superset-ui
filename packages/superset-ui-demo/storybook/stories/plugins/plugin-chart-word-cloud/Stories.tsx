@@ -1,6 +1,6 @@
 import React from 'react';
 import { SuperChart } from '@superset-ui/chart';
-import { select } from '@storybook/addon-knobs';
+import { select, withKnobs } from '@storybook/addon-knobs';
 import WordCloudChartPlugin from '@superset-ui/plugin-chart-word-cloud';
 import LegacyWordCloudChartPlugin from '@superset-ui/plugin-chart-word-cloud/esm/legacy';
 import data from './data';
@@ -10,6 +10,7 @@ new LegacyWordCloudChartPlugin().configure({ key: 'legacy-word-cloud2' }).regist
 
 export default {
   title: 'Chart Plugins|plugin-chart-word-cloud',
+  decorators: [withKnobs],
 };
 
 export const basic = () => (
@@ -77,7 +78,6 @@ export const encodesColorByWordLength = () => (
     }}
   />
 );
-
 
 export const encodesFontByFirstLetter = () => (
   <SuperChart
