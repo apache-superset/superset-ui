@@ -1,7 +1,4 @@
-import {
-  ScatterPlotChartPlugin,
-  LegacyScatterPlotChartPlugin,
-} from '@superset-ui/preset-chart-xy';
+import { ScatterPlotChartPlugin, LegacyScatterPlotChartPlugin } from '@superset-ui/preset-chart-xy';
 import { SCATTER_PLOT_PLUGIN_TYPE, SCATTER_PLOT_PLUGIN_LEGACY_TYPE } from './constants';
 
 new LegacyScatterPlotChartPlugin().configure({ key: SCATTER_PLOT_PLUGIN_LEGACY_TYPE }).register();

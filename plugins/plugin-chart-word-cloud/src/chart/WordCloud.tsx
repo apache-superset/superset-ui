@@ -39,7 +39,9 @@ export default class WordCloud extends React.PureComponent<
   WordCloudProps & typeof defaultProps,
   State
 > {
-  isMounted: boolean = false;
+  // Cannot name it isMounted because of conflict
+  // with React's component function name
+  isComponentMounted: boolean = false;
 
   state: State = {
     words: [],
@@ -50,7 +52,7 @@ export default class WordCloud extends React.PureComponent<
   static defaultProps = defaultProps;
 
   componentDidMount() {
-    this.isMounted = true;
+    this.isComponentMounted = true;
     this.update();
   }
 
@@ -69,11 +71,11 @@ export default class WordCloud extends React.PureComponent<
   }
 
   componentWillUnmount() {
-    this.isMounted = false;
+    this.isComponentMounted = false;
   }
 
   setWords = (words: Word[]) => {
-    if (this.isMounted) {
+    if (this.isComponentMounted) {
       this.setState({ words });
     }
   };

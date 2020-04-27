@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { SuperChart } from '@superset-ui/chart';
 import data from '../data/legacyData';
 import { LINE_PLUGIN_LEGACY_TYPE } from '../constants';
@@ -33,7 +33,8 @@ export default () => (
         yAxisShowminmax: false,
         yLogScale: false,
       }}
-    />,
+    />
+    ,
     <SuperChart
       key="line2"
       chartType={LINE_PLUGIN_LEGACY_TYPE}

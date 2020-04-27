@@ -23,7 +23,7 @@ export default () => (
             type: 'linear',
           },
           axis: {
-            orient: radios('x.axis.orient', ['top', 'bottom'], 'bottom'),
+            orient: radios('x.axis.orient', { top: 'top', bottom: 'bottom' }, 'bottom'),
           },
         },
         y: {
@@ -33,7 +33,7 @@ export default () => (
             type: 'linear',
           },
           axis: {
-            orient: radios('y.axis.orient', ['left', 'right'], 'left'),
+            orient: radios('y.axis.orient', { left: 'left', right: 'right' }, 'left'),
           },
         },
         fill: {
@@ -44,5 +44,5 @@ export default () => (
         group: [{ field: 'country_name', title: 'Country' }],
       },
     }}
-  />,
+  />
 );

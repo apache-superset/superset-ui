@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { SuperChart } from '@superset-ui/chart';
 import { radios } from '@storybook/addon-knobs';
 import rawData from '../data/data';
@@ -30,11 +30,7 @@ export default () => (
             axis: {
               tickCount: 6,
               orient: radios('x.axis.orient', { top: 'top', bottom: 'bottom' }, 'bottom'),
-              title: radios(
-                'x.axis.title',
-                { enable: 'Time', disable: '', '': undefined },
-                'Time',
-              ),
+              title: radios('x.axis.title', { enable: 'Time', disable: '', '': undefined }, 'Time'),
             },
           },
           y: {
@@ -64,7 +60,8 @@ export default () => (
           },
         },
       }}
-    />,
+    />
+    ,
     <SuperChart
       key="line2"
       chartType={LINE_PLUGIN_TYPE}
@@ -85,11 +82,7 @@ export default () => (
               labelFlush: 5,
               tickCount: 6,
               orient: radios('x.axis.orient', { top: 'top', bottom: 'bottom' }, 'bottom'),
-              title: radios(
-                'x.axis.title',
-                { enable: 'Time', disable: '', '': undefined },
-                'Time',
-              ),
+              title: radios('x.axis.title', { enable: 'Time', disable: '', '': undefined }, 'Time'),
             },
           },
           y: {
