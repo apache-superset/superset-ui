@@ -1,7 +1,7 @@
 import React from 'react';
 import { SuperChart } from '@superset-ui/chart';
 import { select } from '@storybook/addon-knobs';
-import WordCloudChartPlugin from '@superset-ui/plugin-chart-word-cloud/esm/index';
+import WordCloudChartPlugin from '@superset-ui/plugin-chart-word-cloud';
 import LegacyWordCloudChartPlugin from '@superset-ui/plugin-chart-word-cloud/esm/legacy';
 import data from './data';
 
