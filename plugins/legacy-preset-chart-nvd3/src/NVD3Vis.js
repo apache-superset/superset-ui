@@ -74,7 +74,7 @@ const NO_DATA_RENDER_DATA = [
 
 // Override the noData render function to make a prettier UX
 // Code adapted from https://github.com/novus/nvd3/blob/master/src/utils.js#L653
-nv.utils.noData = function(chart, container) {
+nv.utils.noData = function (chart, container) {
   const opt = chart.options();
   const margin = opt.margin();
   const height = nv.utils.availableHeight(null, container, margin);
@@ -364,10 +364,7 @@ function nvd3Vis(element, props) {
         break;
 
       case 'bar':
-        chart = nv.models
-          .multiBarChart()
-          .showControls(showControls)
-          .groupSpacing(0.1);
+        chart = nv.models.multiBarChart().showControls(showControls).groupSpacing(0.1);
 
         if (!reduceXTicks) {
           width = computeBarChartWidth(data, isBarStacked, maxWidth);
@@ -702,16 +699,8 @@ function nvd3Vis(element, props) {
     // align yAxis1 and yAxis2 ticks
     if (isVizTypes(['dual_line', 'line_multi'])) {
       const count = chart.yAxis1.ticks();
-      const ticks1 = chart.yAxis1
-        .scale()
-        .domain(chart.yAxis1.domain())
-        .nice(count)
-        .ticks(count);
-      const ticks2 = chart.yAxis2
-        .scale()
-        .domain(chart.yAxis2.domain())
-        .nice(count)
-        .ticks(count);
+      const ticks1 = chart.yAxis1.scale().domain(chart.yAxis1.domain()).nice(count).ticks(count);
+      const ticks2 = chart.yAxis2.scale().domain(chart.yAxis2.domain()).nice(count).ticks(count);
 
       // match number of ticks in both axes
       const difference = ticks1.length - ticks2.length;
@@ -733,19 +722,13 @@ function nvd3Vis(element, props) {
     }
 
     if (showMarkers) {
-      svg
-        .selectAll('.nv-point')
-        .style('stroke-opacity', 1)
-        .style('fill-opacity', 1);
+      svg.selectAll('.nv-point').style('stroke-opacity', 1).style('fill-opacity', 1);
 
       // redo on legend toggle; nvd3 calls the callback *before* the line is
       // drawn, so we need to add a small delay here
       chart.dispatch.on('stateChange.showMarkers', () => {
         setTimeout(() => {
-          svg
-            .selectAll('.nv-point')
-            .style('stroke-opacity', 1)
-            .style('fill-opacity', 1);
+          svg.selectAll('.nv-point').style('stroke-opacity', 1).style('fill-opacity', 1);
         }, 10);
       });
     }
@@ -886,19 +869,10 @@ function nvd3Vis(element, props) {
         if (vizType === 'bar') {
           xMin = d3.min(data[0].values, d => d.x);
           xMax = d3.max(data[0].values, d => d.x);
-          xScale = d3.scale
-            .quantile()
-            .domain([xMin, xMax])
-            .range(chart.xAxis.range());
+          xScale = d3.scale.quantile().domain([xMin, xMax]).range(chart.xAxis.range());
         } else {
-          xMin = chart.xAxis
-            .scale()
-            .domain()[0]
-            .valueOf();
-          xMax = chart.xAxis
-            .scale()
-            .domain()[1]
-            .valueOf();
+          xMin = chart.xAxis.scale().domain()[0].valueOf();
+          xMax = chart.xAxis.scale().domain()[1].valueOf();
           if (chart.xScale) {
             xScale = chart.xScale();
           } else if (chart.xAxis.scale) {
@@ -1119,11 +1093,7 @@ function nvd3Vis(element, props) {
         }
 
         // rerender chart appended with annotation layer
-        svg
-          .datum(data)
-          .attr('height', height)
-          .attr('width', width)
-          .call(chart);
+        svg.datum(data).attr('height', height).attr('width', width).call(chart);
 
         // Display styles for Time Series Annotations
         chart.dispatch.on('renderEnd.timeseries-annotation', () => {
