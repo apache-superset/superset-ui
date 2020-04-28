@@ -1,37 +1,10 @@
-/* eslint-disable no-magic-numbers */
-import React from 'react';
-import { SuperChart } from '@superset-ui/chart';
-import data from './data';
-import dummyDatasource from '../../../shared/dummyDatasource';
+import { DistBarChartPlugin } from '@superset-ui/legacy-preset-chart-nvd3';
 
-export default [
-  {
-    renderStory: () => (
-      <SuperChart
-        chartType="dist-bar"
-        width={400}
-        height={400}
-        datasource={dummyDatasource}
-        queryData={{ data }}
-        formData={{
-          barstacked: false,
-          bottomMargin: 'auto',
-          colorScheme: 'd3Category10',
-          contribution: false,
-          orderBars: false,
-          reduceXTicks: false,
-          showBarValue: false,
-          showControls: false,
-          showLegend: true,
-          vizType: 'dist_bar',
-          xAxisLabel: 'ddd',
-          xTicksLayout: 'auto',
-          yAxisFormat: '.3s',
-          yAxisLabel: 'ddd',
-        }}
-      />
-    ),
-    storyName: 'Basic',
-    storyPath: 'legacy-|preset-chart-nvd3|DistBarChartPlugin',
-  },
-];
+new DistBarChartPlugin().configure({ key: 'dist-bar' }).register();
+
+export default {
+  title: 'Legacy Chart Plugins|legacy-preset-chart-nvd3/DistBar',
+};
+
+export { basic } from './stories/basic';
+export { manyBars } from './stories/manyBars';

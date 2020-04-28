@@ -1,30 +1,9 @@
-/* eslint-disable no-magic-numbers */
-import React from 'react';
-import { SuperChart } from '@superset-ui/chart';
-import data from './data';
-import dummyDatasource from '../../../shared/dummyDatasource';
+import { BulletChartPlugin } from '@superset-ui/legacy-preset-chart-nvd3';
 
-export default [
-  {
-    renderStory: () => (
-      <SuperChart
-        chartType="bullet"
-        width={400}
-        height={400}
-        datasource={dummyDatasource}
-        queryData={{ data }}
-        formData={{
-          markerLabels: '',
-          markerLineLabels: '',
-          markerLines: '',
-          markers: '',
-          rangeLabels: '',
-          ranges: '',
-          vizType: 'bullet',
-        }}
-      />
-    ),
-    storyName: 'Basic',
-    storyPath: 'legacy-|preset-chart-nvd3|BulletChartPlugin',
-  },
-];
+new BulletChartPlugin().configure({ key: 'bullet' }).register();
+
+export default {
+  title: 'Legacy Chart Plugins|legacy-preset-chart-nvd3/Bullet',
+};
+
+export { basic } from './stories/basic';

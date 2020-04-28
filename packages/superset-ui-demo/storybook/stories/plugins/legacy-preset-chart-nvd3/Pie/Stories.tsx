@@ -1,54 +1,10 @@
-/* eslint-disable no-magic-numbers */
-import React from 'react';
-import { SuperChart } from '@superset-ui/chart';
-import data from './data';
-import dummyDatasource from '../../../shared/dummyDatasource';
+import { PieChartPlugin } from '@superset-ui/legacy-preset-chart-nvd3';
 
-export default [
-  {
-    renderStory: () => (
-      <SuperChart
-        chartType="pie"
-        width={400}
-        height={400}
-        datasource={dummyDatasource}
-        queryData={{ data }}
-        formData={{
-          colorScheme: 'd3Category10',
-          donut: false,
-          labelsOutside: true,
-          numberFormat: '.3s',
-          pieLabelType: 'key',
-          showLabels: true,
-          showLegend: true,
-          vizType: 'pie',
-        }}
-      />
-    ),
-    storyName: 'Basic',
-    storyPath: 'legacy-|preset-chart-nvd3|PieChartPlugin',
-  },
-  {
-    renderStory: () => (
-      <SuperChart
-        chartType="pie"
-        width={400}
-        height={400}
-        datasource={dummyDatasource}
-        queryData={{ data: [] }}
-        formData={{
-          colorScheme: 'd3Category10',
-          donut: false,
-          labelsOutside: true,
-          numberFormat: '.3s',
-          pieLabelType: 'key',
-          showLabels: true,
-          showLegend: true,
-          vizType: 'pie',
-        }}
-      />
-    ),
-    storyName: 'No Data',
-    storyPath: 'legacy-|preset-chart-nvd3|PieChartPlugin',
-  },
-];
+new PieChartPlugin().configure({ key: 'pie' }).register();
+
+export default {
+  title: 'Legacy Chart Plugins|legacy-preset-chart-nvd3/Pie',
+};
+
+export { basic } from './stories/basic';
+export { noData } from './stories/noData';

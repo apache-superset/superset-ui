@@ -21,9 +21,10 @@ import { formatLabel } from './utils';
 
 const NOOP = () => {};
 
-const grabD3Format = (chartProps, targetMetric) => {
+const grabD3Format = (datasource, targetMetric) => {
   let foundFormatter;
-  chartProps.datasource.metrics.forEach(metric => {
+  const { metrics = [] } = datasource || {};
+  metrics.forEach(metric => {
     if (metric.d3format && metric.metric_name === targetMetric) {
       foundFormatter = metric.d3format;
     }
@@ -51,6 +52,9 @@ export default function transformProps(chartProps) {
     leftMargin,
     lineInterpolation,
     maxBubbleSize,
+    metric,
+    metric2,
+    metrics = [],
     orderBars,
     pieLabelType,
     reduceXTicks,
@@ -88,13 +92,14 @@ export default function transformProps(chartProps) {
       }))
     : rawData;
 
-  if (chartProps.formData.vizType === 'pie') {
-    numberFormat = numberFormat || grabD3Format(chartProps, chartProps.formData.metric);
-  } else if (chartProps.formData.vizType === 'dual_line') {
-    yAxisFormat = yAxisFormat || grabD3Format(chartProps, chartProps.formData.metric);
-    yAxis2Format = yAxis2Format || grabD3Format(chartProps, chartProps.formData.metric2);
+  if (vizType === 'pie') {
+    numberFormat = numberFormat || grabD3Format(datasource, metric);
+  } else if (vizType === 'dual_line') {
+    yAxisFormat = yAxisFormat || grabD3Format(datasource, metric);
+    yAxis2Format = yAxis2Format || grabD3Format(datasource, metric2);
   } else if (['line', 'dist_bar', 'bar', 'area'].includes(chartProps.formData.vizType)) {
-    yAxisFormat = yAxisFormat || grabD3Format(chartProps, chartProps.formData.metrics[0]);
+    yAxisFormat =
+      yAxisFormat || grabD3Format(datasource, metrics.length > 0 ? metrics[0] : undefined);
   }
 
   return {

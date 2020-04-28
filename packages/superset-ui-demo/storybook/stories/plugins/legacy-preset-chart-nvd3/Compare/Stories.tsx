@@ -1,37 +1,9 @@
-/* eslint-disable no-magic-numbers */
-import React from 'react';
-import { SuperChart } from '@superset-ui/chart';
-import data from './data';
-import dummyDatasource from '../../../shared/dummyDatasource';
+import { CompareChartPlugin } from '@superset-ui/legacy-preset-chart-nvd3';
 
-export default [
-  {
-    renderStory: () => (
-      <SuperChart
-        chartType="compare"
-        width={400}
-        height={400}
-        datasource={dummyDatasource}
-        queryData={{ data }}
-        formData={{
-          bottomMargin: 'auto',
-          colorScheme: 'd3Category10',
-          contribution: false,
-          leftMargin: 'auto',
-          vizType: 'compare',
-          xAxisFormat: 'smart_date',
-          xAxisLabel: '',
-          xAxisShowminmax: false,
-          xTicksLayout: 'auto',
-          yAxisBounds: [null, null],
-          yAxisFormat: '.3s',
-          yAxisLabel: '',
-          yAxisShowminmax: false,
-          yLogscale: false,
-        }}
-      />
-    ),
-    storyName: 'Basic',
-    storyPath: 'legacy-|preset-chart-nvd3|CompareChartPlugin',
-  },
-];
+new CompareChartPlugin().configure({ key: 'compare' }).register();
+
+export default {
+  title: 'Legacy Chart Plugins|legacy-preset-chart-nvd3/Compare',
+};
+
+export { basic } from './stories/basic';

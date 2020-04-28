@@ -3,14 +3,18 @@ import { SuperChart } from '@superset-ui/chart';
 import dummyDatasource from '../../../../../shared/dummyDatasource';
 import data from '../data';
 
-export const stacked = () => (
+export const barWithPositiveAndNegativeValues = () => (
   <SuperChart
-    id="stacked-area-chart"
-    chartType="area"
-    datasource={dummyDatasource}
+    chartType="bar"
     width={400}
     height={400}
-    queryData={{ data }}
+    datasource={dummyDatasource}
+    queryData={{
+      data: data.map((group, i) => ({
+        ...group,
+        values: group.values.map(pair => ({ ...pair, y: (i % 2 === 0 ? 1 : -1) * pair.y })),
+      })),
+    }}
     formData={{
       bottomMargin: 'auto',
       colorScheme: 'd3Category10',
@@ -19,11 +23,12 @@ export const stacked = () => (
       lineInterpolation: 'linear',
       metrics: ['sum__SP_POP_TOTL'],
       richTooltip: true,
+      showBarValue: true,
       showBrush: 'auto',
       showControls: false,
       showLegend: true,
       stackedStyle: 'stack',
-      vizType: 'area',
+      vizType: 'bar',
       xAxisFormat: '%Y',
       xAxisLabel: '',
       xAxisShowminmax: false,

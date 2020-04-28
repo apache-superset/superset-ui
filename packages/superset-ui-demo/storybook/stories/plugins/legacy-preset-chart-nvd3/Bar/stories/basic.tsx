@@ -3,13 +3,12 @@ import { SuperChart } from '@superset-ui/chart';
 import dummyDatasource from '../../../../../shared/dummyDatasource';
 import data from '../data';
 
-export const stacked = () => (
+export const basic = () => (
   <SuperChart
-    id="stacked-area-chart"
-    chartType="area"
-    datasource={dummyDatasource}
+    chartType="bar"
     width={400}
     height={400}
+    datasource={dummyDatasource}
     queryData={{ data }}
     formData={{
       bottomMargin: 'auto',
@@ -19,11 +18,12 @@ export const stacked = () => (
       lineInterpolation: 'linear',
       metrics: ['sum__SP_POP_TOTL'],
       richTooltip: true,
+      showBarValue: false,
       showBrush: 'auto',
       showControls: false,
       showLegend: true,
       stackedStyle: 'stack',
-      vizType: 'area',
+      vizType: 'bar',
       xAxisFormat: '%Y',
       xAxisLabel: '',
       xAxisShowminmax: false,
