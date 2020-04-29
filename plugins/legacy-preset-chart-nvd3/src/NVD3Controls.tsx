@@ -341,6 +341,7 @@ export const timeSeriesSection = [
         'of query results',
     ),
     controlSetRows: [
+      // eslint-disable-next-line react/jsx-key
       [<h1 className="section-header">{t('Rolling Window')}</h1>],
       [
         {
@@ -384,6 +385,7 @@ export const timeSeriesSection = [
           },
         },
       ],
+      // eslint-disable-next-line react/jsx-key
       [<h1 className="section-header">{t('Time Comparison')}</h1>],
       [
         {
@@ -429,7 +431,9 @@ export const timeSeriesSection = [
           },
         },
       ],
+      // eslint-disable-next-line react/jsx-key
       [<h1 className="section-header">{t('Python Functions')}</h1>],
+      // eslint-disable-next-line react/jsx-key
       [<h2 className="section-header">pandas.resample</h2>],
       [
         {
