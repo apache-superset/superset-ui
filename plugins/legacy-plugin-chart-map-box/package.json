@@ -31,7 +31,7 @@
     "immutable": "^3.8.2",
     "mapbox-gl": "^0.53.0",
     "prop-types": "^15.6.2",
-    "react-map-gl": "^4.0.10",
+    "react-map-gl": "^5.2.5",
     "supercluster": "^4.1.1",
     "viewport-mercator-project": "^6.1.1"
   },
