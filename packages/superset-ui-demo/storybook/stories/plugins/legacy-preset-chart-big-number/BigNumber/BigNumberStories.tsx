@@ -17,9 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { ThemeProvider } from 'emotion-theming';
 import { SuperChart } from '@superset-ui/chart';
-import { supersetTheme } from '@superset-ui/style';
 import { BigNumberChartPlugin } from '@superset-ui/legacy-preset-chart-big-number';
 import testData from './data';
 
@@ -57,18 +55,12 @@ function withNulls(origData: object[], nullPosition: number = 3) {
   return data;
 }
 
-const ThemedSuperChart = props => (
-  <ThemeProvider theme={supersetTheme}>
-    <SuperChart {...props} />
-  </ThemeProvider>
-);
-
 export default {
   title: 'Legacy Chart Plugins|legacy-preset-big-number/BigNumber',
 };
 
 export const basicWithTrendline = () => (
-  <ThemedSuperChart
+  <SuperChart
     chartType="big-number"
     width={400}
     height={400}
@@ -91,7 +83,7 @@ export const weeklyTimeGranularity = () => (
 );
 
 export const nullInTheMiddle = () => (
-  <ThemedSuperChart
+  <SuperChart
     chartType="big-number"
     width={400}
     height={400}
@@ -101,7 +93,7 @@ export const nullInTheMiddle = () => (
 );
 
 export const fixedRange = () => (
-  <ThemedSuperChart
+  <SuperChart
     chartType="big-number"
     width={400}
     height={400}
@@ -118,7 +110,7 @@ export const fixedRange = () => (
 );
 
 export const noFixedRange = () => (
-  <ThemedSuperChart
+  <SuperChart
     chartType="big-number"
     width={400}
     height={400}
