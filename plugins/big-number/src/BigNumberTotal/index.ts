@@ -18,7 +18,7 @@
  */
 import { t } from '@superset-ui/translation';
 import { ChartMetadata, ChartPlugin } from '@superset-ui/chart';
-import controlPanel from './controls';
+import controlPanel from './controlPanel';
 import transformProps from '../BigNumber/transformProps';
 import thumbnail from './images/thumbnail.png';
 
