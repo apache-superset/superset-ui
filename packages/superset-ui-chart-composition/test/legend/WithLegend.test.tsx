@@ -66,6 +66,7 @@ describe('WithLegend', () => {
       <WithLegend debounceTime={1} renderChart={renderChart} renderLegend={renderLegend} />,
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     triggerResizeObserver();
     // Have to delay more than debounceTime (1ms)
     return promiseTimeout(() => {
