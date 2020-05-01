@@ -12,15 +12,15 @@ module.exports = class extends Generator {
         type: 'input',
         name: 'packageName',
         message: 'Package name:',
-        default: _.kebabCase(this.appname.replace('superset ui legacy plugin chart', '').trim()), // Default to current folder name
+        // Default to current folder name
+        default: _.kebabCase(this.appname.replace('plugin chart', '').trim()),
       },
       {
         type: 'input',
         name: 'description',
         message: 'Description:',
-        default: _.upperFirst(
-          _.startCase(this.appname.replace('superset ui legacy plugin chart', '').trim()),
-        ), // Default to current folder name
+        // Default to current folder name
+        default: _.upperFirst(_.startCase(this.appname.replace('plugin chart', '').trim())),
       },
     ]);
   }
@@ -31,9 +31,19 @@ module.exports = class extends Generator {
       this.destinationPath('package.json'),
       this.answers,
     );
-    this.fs.copyTpl(this.templatePath('README.md'), this.destinationPath('README.md'), {
+
+    const packageLabel = _.upperFirst(_.camelCase(this.answers.packageName));
+
+    const params = {
       ...this.answers,
-      packageLabel: _.upperFirst(_.camelCase(this.answers.packageName)),
+      packageLabel,
+    };
+
+    [
+      ['_README.md', 'README.md'],
+      ['test/_index.test.ts', 'test/index.test.ts'],
+    ].map(([src, dest]) => {
+      this.fs.copyTpl(this.templatePath(src), this.destinationPath(dest), params);
     });
   }
 };

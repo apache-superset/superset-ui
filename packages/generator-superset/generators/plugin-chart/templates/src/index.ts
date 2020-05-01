@@ -1,0 +1,1 @@
+export { MyChartPlugin } from './plugin';
