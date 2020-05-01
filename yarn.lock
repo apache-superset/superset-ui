@@ -14296,10 +14296,12 @@ react-element-to-jsx-string@^14.0.2, react-element-to-jsx-string@^14.3.1:
     "@base2/pretty-print-object" "1.0.0"
     is-plain-object "3.0.0"
 
-react-error-boundary@^1.2.5:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/react-error-boundary/-/react-error-boundary-1.2.5.tgz#a362cb799d2e58ff8f114f7c4bc25677ce4e4149"
-  integrity sha512-5CPSeLJA2igJNppAgFRwnTL9aK3ojenk65enNzhVyoxYNbHpIJXnChUO7+4vPhkncRA9wvQMXq6Azp2XeXd+iQ==
+react-error-boundary@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/react-error-boundary/-/react-error-boundary-2.2.0.tgz#37bae7dde7a5e728ada2e5dd36749f89b1bb08e5"
+  integrity sha512-ZYcixxKQroKNAreBAkps9wfX9S0qd+tKjQt42Ee9nHEyn9+FbVevRKyD5BSSC30RhJvHKOsTMp1/BQ7H0SkS/Q==
+  dependencies:
+    "@babel/runtime" "^7.8.4"
 
 react-error-overlay@^6.0.3:
   version "6.0.7"
