@@ -18,6 +18,7 @@
  */
 import isTruthy from './utils/isTruthy';
 import { formatLabel } from './utils';
+import { validateNumber } from '@superset-ui/validator';
 
 const NOOP = () => {};
 
@@ -31,6 +32,23 @@ const grabD3Format = (datasource, targetMetric) => {
   });
 
   return foundFormatter;
+};
+
+const tokenizeToNumericArray = value => {
+  if (value) {
+    const tokens = value.split(',');
+    if (tokens.some(validateNumber)) throw Error('All values should be numeric');
+    return tokens.map(token => parseFloat(token));
+  }
+  return null;
+};
+
+const tokenizeToStringArray = value => {
+  if (value) {
+    const tokens = value.split(',');
+    return tokens.map(token => token.trim());
+  }
+  return null;
 };
 
 export default function transformProps(chartProps) {
@@ -82,7 +100,17 @@ export default function transformProps(chartProps) {
     yLogScale,
   } = formData;
 
-  let { numberFormat, yAxisFormat, yAxis2Format } = formData;
+  let {
+    markerLabels,
+    markerLines,
+    markerLineLabels,
+    markers,
+    numberFormat,
+    rangeLabels,
+    ranges,
+    yAxisFormat,
+    yAxis2Format,
+  } = formData;
 
   const rawData = queryData.data || [];
   const data = Array.isArray(rawData)
@@ -100,6 +128,13 @@ export default function transformProps(chartProps) {
   } else if (['line', 'dist_bar', 'bar', 'area'].includes(chartProps.formData.vizType)) {
     yAxisFormat =
       yAxisFormat || grabD3Format(datasource, metrics.length > 0 ? metrics[0] : undefined);
+  } else if (vizType === 'bullet') {
+    ranges = tokenizeToNumericArray(ranges) || [0, data.measures * 1.1];
+    rangeLabels = tokenizeToStringArray(rangeLabels);
+    markerLabels = tokenizeToStringArray(markerLabels);
+    markerLines = tokenizeToNumericArray(markerLines);
+    markerLineLabels = tokenizeToStringArray(markerLineLabels);
+    markers = tokenizeToNumericArray(markers);
   }
 
   return {
@@ -120,6 +155,10 @@ export default function transformProps(chartProps) {
     isPieLabelOutside: labelsOutside,
     leftMargin,
     lineInterpolation,
+    markerLabels,
+    markerLines,
+    markerLineLabels,
+    markers,
     maxBubbleSize: parseInt(maxBubbleSize, 10),
     numberFormat,
     onBrushEnd: isTruthy(sendTimeRange)
@@ -130,6 +169,8 @@ export default function transformProps(chartProps) {
     onError,
     orderBars,
     pieLabelType,
+    rangeLabels,
+    ranges,
     reduceXTicks,
     showBarValue,
     showBrush,
