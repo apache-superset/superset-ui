@@ -20,9 +20,9 @@ import { tokenizeToNumericArray, tokenizeToStringArray } from '../../src/utils/t
 
 describe('tokenizeToNumericArray', () => {
   it('evals numeric strings properly', () => {
-    expect(tokenizeToNumericArray('1')).toBe([1]);
-    expect(tokenizeToNumericArray('1,2,3,4')).toBe([1, 2, 3, 4]);
-    expect(tokenizeToNumericArray('   1, 2,   3,    4 ')).toBe([1, 2, 3, 4]);
+    expect(tokenizeToNumericArray('1')).toStrictEqual([1]);
+    expect(tokenizeToNumericArray('1,2,3,4')).toStrictEqual([1, 2, 3, 4]);
+    expect(tokenizeToNumericArray('   1, 2,   3,    4 ')).toStrictEqual([1, 2, 3, 4]);
   });
 
   it('evals empty strings to null', () => {
@@ -37,9 +37,9 @@ describe('tokenizeToNumericArray', () => {
 
 describe('tokenizeToStringArray', () => {
   it('evals numeric strings properly', () => {
-    expect(tokenizeToStringArray('a')).toBe(['a']);
-    expect(tokenizeToStringArray('1,2,3,4')).toBe(['1', '2', '3', '4']);
-    expect(tokenizeToStringArray('1,a,3, bc ,d')).toBe(['1', 'a', '3', 'bc', 'd']);
+    expect(tokenizeToStringArray('a')).toStrictEqual(['a']);
+    expect(tokenizeToStringArray('1,2,3,4')).toStrictEqual(['1', '2', '3', '4']);
+    expect(tokenizeToStringArray('1,a,3, bc ,d')).toStrictEqual(['1', 'a', '3', 'bc', 'd']);
   });
 
   it('evals empty string to null', () => {
