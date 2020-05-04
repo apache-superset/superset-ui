@@ -16,13 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export default function isTruthy(obj) {
-  if (typeof obj === 'boolean') {
-    return obj;
-  }
-  if (typeof obj === 'string') {
-    return ['yes', 'y', 'true', 't', '1'].includes(obj.toLowerCase());
-  }
+import { validateNumber } from '@superset-ui/validator';
 
-  return !!obj;
-}
+const tokenizeToNumericArray = value => {
+  if (value) {
+    const tokens = value.split(',');
+    if (tokens.some(token => validateNumber(token)))
+      throw new Error('All values should be numeric');
+    return tokens.map(token => parseFloat(token));
+  }
+  return null;
+};
+
+const tokenizeToStringArray = value => {
+  if (value) {
+    const tokens = value.split(',');
+    return tokens.map(token => token.trim());
+  }
+  return null;
+};
+
+export { tokenizeToNumericArray, tokenizeToStringArray };

@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { validateNumber } from '@superset-ui/validator';
 import isTruthy from './utils/isTruthy';
+import { tokenizeToNumericArray, tokenizeToStringArray } from './utils/tokenize';
 import { formatLabel } from './utils';
 
 const NOOP = () => {};
@@ -32,24 +32,6 @@ const grabD3Format = (datasource, targetMetric) => {
   });
 
   return foundFormatter;
-};
-
-const tokenizeToNumericArray = value => {
-  if (value) {
-    const tokens = value.split(',');
-    if (tokens.some(token => validateNumber(token)))
-      throw new Error('All values should be numeric');
-    return tokens.map(token => parseFloat(token));
-  }
-  return null;
-};
-
-const tokenizeToStringArray = value => {
-  if (value) {
-    const tokens = value.split(',');
-    return tokens.map(token => token.trim());
-  }
-  return null;
 };
 
 export default function transformProps(chartProps) {
