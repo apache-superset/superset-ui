@@ -25,23 +25,25 @@ describe('tokenizeToNumericArray', () => {
     expect(tokenizeToNumericArray('   1, 2,   3,    4 ')).toBe([1, 2, 3, 4]);
   });
 
-  it('evals empty string to null', () => {
-    expect(tokenizeToNumericArray('')).toBe(null);
+  it('evals empty strings to null', () => {
+    expect(tokenizeToNumericArray('')).toBeNull();
+    expect(tokenizeToNumericArray('    ')).toBeNull();
   });
 
   it('throws error on incorrect string', () => {
-    expect(tokenizeToNumericArray('qwerty,1,2,3')).toBe(new Error());
+    expect(() => tokenizeToNumericArray('qwerty,1,2,3')).toThrow(Error);
   });
 });
 
 describe('tokenizeToStringArray', () => {
   it('evals numeric strings properly', () => {
-    expect(tokenizeToNumericArray('a')).toBe(['a']);
-    expect(tokenizeToNumericArray('1,2,3,4')).toBe(['1', '2', '3', '4']);
-    expect(tokenizeToNumericArray('1,a,3, bc ,d')).toBe(['1', 'a', '3', 'bc', 'd']);
+    expect(tokenizeToStringArray('a')).toBe(['a']);
+    expect(tokenizeToStringArray('1,2,3,4')).toBe(['1', '2', '3', '4']);
+    expect(tokenizeToStringArray('1,a,3, bc ,d')).toBe(['1', 'a', '3', 'bc', 'd']);
   });
 
   it('evals empty string to null', () => {
-    expect(tokenizeToNumericArray('')).toBe(null);
+    expect(tokenizeToStringArray('')).toBeNull();
+    expect(tokenizeToStringArray('    ')).toBeNull();
   });
 });

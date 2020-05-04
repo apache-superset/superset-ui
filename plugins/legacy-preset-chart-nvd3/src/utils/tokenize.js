@@ -19,7 +19,7 @@
 import { validateNumber } from '@superset-ui/validator';
 
 const tokenizeToNumericArray = value => {
-  if (value) {
+  if (value && value.trim()) {
     const tokens = value.split(',');
     if (tokens.some(token => validateNumber(token)))
       throw new Error('All values should be numeric');
@@ -29,7 +29,7 @@ const tokenizeToNumericArray = value => {
 };
 
 const tokenizeToStringArray = value => {
-  if (value) {
+  if (value && value.trim()) {
     const tokens = value.split(',');
     return tokens.map(token => token.trim());
   }
