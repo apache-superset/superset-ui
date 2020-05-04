@@ -37,7 +37,8 @@ const grabD3Format = (datasource, targetMetric) => {
 const tokenizeToNumericArray = value => {
   if (value) {
     const tokens = value.split(',');
-    if (tokens.some(validateNumber)) throw new Error('All values should be numeric');
+    if (tokens.some(token => validateNumber(token)))
+      throw new Error('All values should be numeric');
     return tokens.map(token => parseFloat(token));
   }
   return null;
