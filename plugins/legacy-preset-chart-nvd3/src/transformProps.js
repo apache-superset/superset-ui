@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { validateNumber } from '@superset-ui/validator';
 import isTruthy from './utils/isTruthy';
 import { formatLabel } from './utils';
-import { validateNumber } from '@superset-ui/validator';
 
 const NOOP = () => {};
 
@@ -37,7 +37,7 @@ const grabD3Format = (datasource, targetMetric) => {
 const tokenizeToNumericArray = value => {
   if (value) {
     const tokens = value.split(',');
-    if (tokens.some(validateNumber)) throw Error('All values should be numeric');
+    if (tokens.some(validateNumber)) throw new Error('All values should be numeric');
     return tokens.map(token => parseFloat(token));
   }
   return null;
