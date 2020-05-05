@@ -17,7 +17,7 @@
  * under the License.
  */
 import isTruthy from './utils/isTruthy';
-import { tokenizeToNumericArray, tokenizeToStringArray } from './utils/tokenize';
+import { tokenizeToNumericArray, tokenizeToStringArray } from './utils/tokenize.ts';
 import { formatLabel } from './utils';
 
 const NOOP = () => {};
