@@ -18,22 +18,15 @@
  */
 import { validateNumber } from '@superset-ui/validator';
 
-const tokenizeToNumericArray = value => {
-  if (value && value.trim()) {
-    const tokens = value.split(',');
-    if (tokens.some(token => validateNumber(token)))
-      throw new Error('All values should be numeric');
-    return tokens.map(token => parseFloat(token));
-  }
-  return null;
-};
+export function tokenizeToNumericArray(value: string): Number[] | null {
+  if (!value.trim()) return null;
+  const tokens = value.split(',');
+  if (tokens.some(token => validateNumber(token))) throw new Error('All values should be numeric');
+  return tokens.map(token => parseFloat(token));
+}
 
-const tokenizeToStringArray = value => {
-  if (value && value.trim()) {
-    const tokens = value.split(',');
-    return tokens.map(token => token.trim());
-  }
-  return null;
-};
-
-export { tokenizeToNumericArray, tokenizeToStringArray };
+export function tokenizeToStringArray(value: string): string[] | null {
+  if (!value.trim()) return null;
+  const tokens = value.split(',');
+  return tokens.map(token => token.trim());
+}
