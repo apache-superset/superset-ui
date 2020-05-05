@@ -39,7 +39,7 @@ describe('tokenizeToNumericArray', () => {
 describe('tokenizeToStringArray', () => {
   it('evals numeric strings properly', () => {
     expect(tokenizeToStringArray('a')).toStrictEqual(['a']);
-    expect(tokenizeToStringArray('1.1,2.2,3.0,4')).toStrictEqual(['1', '2', '3.0', '4']);
+    expect(tokenizeToStringArray('1.1 , 2.2, 3.0 ,4')).toStrictEqual(['1.1', '2.2', '3.0', '4']);
     expect(tokenizeToStringArray('1.1,a,3, bc ,d')).toStrictEqual(['1.1', 'a', '3', 'bc', 'd']);
   });
 
