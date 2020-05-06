@@ -56,7 +56,7 @@ describe('ChartPlugin', () => {
         expect(plugin.loadBuildQuery).toBeUndefined();
       });
       it('uses loadBuildQuery field if specified', () => {
-        expect.assertions(1);
+        expect.assertions(2);
         const plugin = new ChartPlugin({
           metadata,
           Chart: FakeChart,
