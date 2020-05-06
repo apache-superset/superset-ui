@@ -18,34 +18,28 @@
  */
 import React from 'react';
 import { kebabCase } from 'lodash';
-// @ts-ignore
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
-const defaultProps = {
-  className: 'text-muted',
-  icon: 'info-circle',
-  placement: 'right',
-};
-const tooltipStyle = { wordWrap: 'break-word' } as any;
+const tooltipStyle: React.CSSProperties = { wordWrap: 'break-word' };
 
 interface Props {
-  label: string;
-  tooltip: string;
-  icon: string;
-  onClick: () => void;
-  placement: string;
-  bsStyle: string;
-  className: string;
+  label?: string;
+  tooltip?: string;
+  icon?: string;
+  onClick?: () => void;
+  placement?: string;
+  bsStyle?: string;
+  className?: string;
 }
 
 export default function InfoTooltipWithTrigger({
   label,
   tooltip,
-  icon,
-  className,
-  onClick,
-  placement,
   bsStyle,
+  icon = 'info-circle',
+  className = 'text-muted',
+  onClick = () => {},
+  placement = 'right',
 }: Props) {
   const iconClass = `fa fa-${icon} ${className} ${bsStyle ? `text-${bsStyle}` : ''}`;
   const onKeyPress = (event: React.KeyboardEvent) => {
@@ -60,7 +54,7 @@ export default function InfoTooltipWithTrigger({
       className={iconClass}
       style={{ cursor: onClick ? 'pointer' : undefined }}
       onClick={onClick}
-      onKeyPress={onClick && onKeyPress}
+      onKeyPress={onKeyPress}
     />
   );
   if (!tooltip) {
@@ -68,7 +62,7 @@ export default function InfoTooltipWithTrigger({
   }
   return (
     <OverlayTrigger
-      placement={placement as any}
+      placement={placement}
       overlay={
         <Tooltip id={`${kebabCase(label)}-tooltip`} style={tooltipStyle}>
           {tooltip}
@@ -79,5 +73,3 @@ export default function InfoTooltipWithTrigger({
     </OverlayTrigger>
   );
 }
-
-InfoTooltipWithTrigger.defaultProps = defaultProps;
