@@ -28,6 +28,15 @@ const defaultProps = {
 };
 const tooltipStyle = { wordWrap: 'break-word' } as any;
 
+interface Props {
+  label: string;
+  tooltip: string;
+  icon: string;
+  onClick: Function;
+  placement: string;
+  bsStyle: string;
+}
+
 export default function InfoTooltipWithTrigger({
   label,
   tooltip,
@@ -39,7 +48,11 @@ export default function InfoTooltipWithTrigger({
 }) {
   const iconClass = `fa fa-${icon} ${className} ${bsStyle ? `text-${bsStyle}` : ''}`;
   const iconEl = (
-    <i className={iconClass} onClick={onClick} style={{ cursor: onClick ? 'pointer' : null }} />
+    <i
+      className={iconClass}
+      onClick={onClick}
+      style={{ cursor: onClick ? 'pointer' : undefined }}
+    />
   );
   if (!tooltip) {
     return iconEl;
