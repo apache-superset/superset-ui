@@ -22,8 +22,8 @@ import { kebabCase } from 'lodash';
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 const defaultProps = {
-  icon: 'info-circle',
   className: 'text-muted',
+  icon: 'info-circle',
   placement: 'right',
 };
 const tooltipStyle = { wordWrap: 'break-word' } as any;
@@ -32,7 +32,7 @@ interface Props {
   label: string;
   tooltip: string;
   icon: string;
-  onClick: React.MouseEventHandler;
+  onClick: () => void;
   placement: string;
   bsStyle: string;
   className: string;
@@ -48,11 +48,19 @@ export default function InfoTooltipWithTrigger({
   bsStyle,
 }: Props) {
   const iconClass = `fa fa-${icon} ${className} ${bsStyle ? `text-${bsStyle}` : ''}`;
+  const onKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === 'space') {
+      onClick();
+    }
+  };
   const iconEl = (
     <i
+      role="button"
+      tabIndex={0}
       className={iconClass}
-      onClick={onClick}
       style={{ cursor: onClick ? 'pointer' : undefined }}
+      onClick={onClick}
+      onKeyPress={onClick && onKeyPress}
     />
   );
   if (!tooltip) {
