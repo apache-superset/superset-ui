@@ -32,9 +32,10 @@ interface Props {
   label: string;
   tooltip: string;
   icon: string;
-  onClick: Function;
+  onClick: React.MouseEventHandler;
   placement: string;
   bsStyle: string;
+  className: string;
 }
 
 export default function InfoTooltipWithTrigger({
@@ -45,7 +46,7 @@ export default function InfoTooltipWithTrigger({
   onClick,
   placement,
   bsStyle,
-}) {
+}: Props) {
   const iconClass = `fa fa-${icon} ${className} ${bsStyle ? `text-${bsStyle}` : ''}`;
   const iconEl = (
     <i
@@ -59,7 +60,7 @@ export default function InfoTooltipWithTrigger({
   }
   return (
     <OverlayTrigger
-      placement={placement}
+      placement={placement as any}
       overlay={
         <Tooltip id={`${kebabCase(label)}-tooltip`} style={tooltipStyle}>
           {tooltip}
