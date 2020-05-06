@@ -28,5 +28,8 @@
   "peerDependencies": {
     "@superset-ui/translation": "^0.13",
     "@superset-ui/validator": "^0.13"
+  },
+  "dependencies": {
+    "react-bootstrap": "^1.0.1"
   }
 }
