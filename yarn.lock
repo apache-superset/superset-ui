@@ -1020,7 +1020,7 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.2.0", "@babel/runtime@^7.3.1", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.4", "@babel/runtime@^7.4.5", "@babel/runtime@^7.5.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.2.0", "@babel/runtime@^7.3.1", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.4", "@babel/runtime@^7.4.5", "@babel/runtime@^7.5.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2", "@babel/runtime@^7.9.6":
   version "7.9.6"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.9.6.tgz#a9102eb5cadedf3f31d08a9ecf294af7827ea29f"
   integrity sha512-64AF1xY3OAkFHqOb9s4jpgk1Mm5vDZ4L3acHvAml+53nO1XbXLuDodsVpO4OIUsmemlUHMxNdYMNJmsvOwLrvQ==
@@ -14296,10 +14296,12 @@ react-element-to-jsx-string@^14.0.2, react-element-to-jsx-string@^14.3.1:
     "@base2/pretty-print-object" "1.0.0"
     is-plain-object "3.0.0"
 
-react-error-boundary@^1.2.5:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/react-error-boundary/-/react-error-boundary-1.2.5.tgz#a362cb799d2e58ff8f114f7c4bc25677ce4e4149"
-  integrity sha512-5CPSeLJA2igJNppAgFRwnTL9aK3ojenk65enNzhVyoxYNbHpIJXnChUO7+4vPhkncRA9wvQMXq6Azp2XeXd+iQ==
+react-error-boundary@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/react-error-boundary/-/react-error-boundary-2.2.1.tgz#32ed74386a90482060cc2fea948bb7135465c4cb"
+  integrity sha512-8SZMkJRFUb0JuluHKwuUtkh5vvVWBg3O/bJIWgNMhMJv529aG//TmcphR3cSMhCWjz1vFZDb4taJd6pmwP5mEQ==
+  dependencies:
+    "@babel/runtime" "^7.9.6"
 
 react-error-overlay@^6.0.3:
   version "6.0.7"
