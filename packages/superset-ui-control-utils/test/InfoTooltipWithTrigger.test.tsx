@@ -19,11 +19,11 @@ describe('InfoTooltipWithTrigger', () => {
     const wrapper = shallow(
       <InfoTooltipWithTrigger label="test" tooltip="this is a test" onClick={clickHandler} />,
     );
-    wrapper.find('.fa-info-circle').simulate('keypress', { code: 'Tab' });
+    wrapper.find('.fa-info-circle').simulate('keypress', { key: 'Tab' });
     expect(clickHandler).toHaveBeenCalledTimes(0);
-    wrapper.find('.fa-info-circle').simulate('keypress', { code: 'Enter' });
+    wrapper.find('.fa-info-circle').simulate('keypress', { key: 'Enter' });
     expect(clickHandler).toHaveBeenCalledTimes(1);
-    wrapper.find('.fa-info-circle').simulate('keypress', { code: 'Space' });
+    wrapper.find('.fa-info-circle').simulate('keypress', { key: ' ' });
     expect(clickHandler).toHaveBeenCalledTimes(2);
   });
 
