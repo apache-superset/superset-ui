@@ -20,7 +20,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import { InfoTooltipWithTrigger } from '@superset-ui/control-utils';
-import OptionDescription from '../optionDescription';
+import OptionDescription from '../src/OptionDescription';
 
 const defaultProps = {
   option: {
