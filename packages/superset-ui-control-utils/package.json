@@ -31,10 +31,10 @@
     "react": "^16.13.1"
   },
   "devDependencies": {
-    "@types/react-bootstrap": "0.32.2",
     "enzyme": "^3.11.0"
   },
   "dependencies": {
+    "@types/react-bootstrap": "0.32.21",
     "lodash": "^4.17.15",
     "react-bootstrap": "^0.33.1"
   }
