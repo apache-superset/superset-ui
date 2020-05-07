@@ -18,7 +18,7 @@ const EMPTY = {};
 
 export type PromiseOrValue<T> = Promise<T> | T;
 export type PromiseOrValueLoader<T> = () => PromiseOrValue<T>;
-export type ChartType = ComponentType;
+export type ChartType = ComponentType<any>;
 type ValueOrModuleWithValue<T> = T | { default: T };
 
 interface ChartPluginConfig<T extends QueryFormData> {
