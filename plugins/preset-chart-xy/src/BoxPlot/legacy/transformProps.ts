@@ -22,7 +22,9 @@ import { RawBoxPlotDataRow, BoxPlotDataRow } from '../../components/BoxPlot/type
 export default function transformProps(chartProps: ChartProps) {
   const { width, height, datasource, formData, queryData } = chartProps;
   const { verboseMap = {} } = datasource;
-  const { colorScheme, groupby, metrics } = formData;
+  const { colorScheme } = formData;
+  const groupby = formData.groupby as string[];
+  const metrics = formData.metrics as string[];
 
   const data = (queryData.data as RawBoxPlotDataRow[]).map(({ label, values }) => ({
     label,

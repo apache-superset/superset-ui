@@ -100,7 +100,7 @@ describe('SupersetClientClass', () => {
       return new SupersetClientClass({})
         .init()
         .then(throwIfCalled)
-        .catch(error => {
+        .catch((error: { status: number }) => {
           expect(error.status).toBe(403);
 
           return true;
