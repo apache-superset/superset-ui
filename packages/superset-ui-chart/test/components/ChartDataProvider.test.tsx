@@ -4,7 +4,7 @@ import ChartClient from '../../src/clients/ChartClient';
 import ChartDataProvider, { Props } from '../../src/components/ChartDataProvider';
 import { bigNumberFormData } from '../fixtures/formData';
 
-// Note: the mock implentatino of these function directly affects the expected results below
+// Note: the mock implementation of these function directly affects the expected results below
 const defaultMockLoadFormData = jest.fn(allProps => Promise.resolve(allProps.formData));
 
 // coerce here else get: Type 'Mock<Promise<any>, []>' is not assignable to type 'Mock<Promise<any>, any[]>'
