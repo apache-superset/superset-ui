@@ -3,6 +3,10 @@ import { SupersetClientClass, ClientConfig } from '../src';
 import throwIfCalled from './utils/throwIfCalled';
 import { LOGIN_GLOB } from './fixtures/constants';
 
+function getObjectKeys<T>(object: T) {
+  return Object.keys(object) as (keyof T)[];
+}
+
 describe('SupersetClientClass', () => {
   beforeAll(() => {
     fetchMock.get(LOGIN_GLOB, { csrf_token: '' });
@@ -114,7 +118,7 @@ describe('SupersetClientClass', () => {
       return new SupersetClientClass({})
         .init()
         .then(throwIfCalled)
-        .catch(error => {
+        .catch((error: unknown) => {
           expect(error).toBeDefined();
 
           return true;
@@ -129,7 +133,7 @@ describe('SupersetClientClass', () => {
       return new SupersetClientClass({})
         .init()
         .then(throwIfCalled)
-        .catch(error => {
+        .catch((error: unknown) => {
           expect(error).toBeDefined();
 
           return true;
@@ -171,8 +175,10 @@ describe('SupersetClientClass', () => {
       return client
         .ensureAuth()
         .then(throwIfCalled)
-        .catch(error => {
-          expect(error).toEqual(expect.objectContaining({ error: expect.any(String) }));
+        .catch((error: { error: string }) => {
+          expect(error).toEqual(
+            expect.objectContaining({ error: expect.any(String) }) as typeof error,
+          );
           expect(client.isAuthenticated()).toBe(false);
 
           return true;
@@ -209,14 +215,14 @@ describe('SupersetClientClass', () => {
       return client
         .init()
         .then(throwIfCalled)
-        .catch(error => {
-          expect(error).toEqual(expect.objectContaining(rejectValue));
+        .catch((error: unknown) => {
+          expect(error).toEqual(expect.objectContaining(rejectValue) as unknown);
 
           return client
             .ensureAuth()
             .then(throwIfCalled)
-            .catch(error2 => {
-              expect(error2).toEqual(expect.objectContaining(rejectValue));
+            .catch((error2: unknown) => {
+              expect(error2).toEqual(expect.objectContaining(rejectValue) as unknown);
               expect(client.isAuthenticated()).toBe(false);
 
               // reset
@@ -305,7 +311,7 @@ describe('SupersetClientClass', () => {
           expect(fetchRequest.mode).toBe(clientConfig.mode);
           expect(fetchRequest.credentials).toBe(clientConfig.credentials);
           expect(fetchRequest.headers).toEqual(
-            expect.objectContaining(clientConfig.headers as Object),
+            expect.objectContaining(clientConfig.headers) as typeof fetchRequest.headers,
           );
 
           return true;
@@ -379,7 +385,7 @@ describe('SupersetClientClass', () => {
                 expect(fetchRequest.mode).toBe(overrideConfig.mode);
                 expect(fetchRequest.credentials).toBe(overrideConfig.credentials);
                 expect(fetchRequest.headers).toEqual(
-                  expect.objectContaining(overrideConfig.headers as Object),
+                  expect.objectContaining(overrideConfig.headers) as typeof fetchRequest.headers,
                 );
 
                 return true;
@@ -431,7 +437,7 @@ describe('SupersetClientClass', () => {
             expect(fetchRequest.mode).toBe(overrideConfig.mode);
             expect(fetchRequest.credentials).toBe(overrideConfig.credentials);
             expect(fetchRequest.headers).toEqual(
-              expect.objectContaining(overrideConfig.headers as Object),
+              expect.objectContaining(overrideConfig.headers) as typeof fetchRequest.headers,
             );
 
             return true;
@@ -456,14 +462,14 @@ describe('SupersetClientClass', () => {
       it('passes postPayload key,values in the body', () => {
         expect.assertions(3);
 
-        const postPayload = { number: 123, array: [1, 2, 3] } as any;
+        const postPayload = { number: 123, array: [1, 2, 3] };
         const client = new SupersetClientClass({ protocol, host });
 
         return client.init().then(() =>
           client.post({ url: mockPostUrl, postPayload }).then(() => {
             const formData = fetchMock.calls(mockPostUrl)[0][1].body as FormData;
             expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
-            Object.keys(postPayload).forEach(key => {
+            getObjectKeys(postPayload).forEach(key => {
               expect(formData.get(key)).toBe(JSON.stringify(postPayload[key]));
             });
 
@@ -474,14 +480,14 @@ describe('SupersetClientClass', () => {
 
       it('respects the stringify parameter for postPayload key,values', () => {
         expect.assertions(3);
-        const postPayload = { number: 123, array: [1, 2, 3] } as any;
+        const postPayload = { number: 123, array: [1, 2, 3] };
         const client = new SupersetClientClass({ protocol, host });
 
         return client.init().then(() =>
           client.post({ url: mockPostUrl, postPayload, stringify: false }).then(() => {
             const formData = fetchMock.calls(mockPostUrl)[0][1].body as FormData;
             expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
-            Object.keys(postPayload).forEach(key => {
+            getObjectKeys(postPayload).forEach(key => {
               expect(formData.get(key)).toBe(String(postPayload[key]));
             });
 
