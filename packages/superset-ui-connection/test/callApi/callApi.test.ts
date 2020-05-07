@@ -8,10 +8,6 @@ import throwIfCalled from '../utils/throwIfCalled';
 import { CallApi } from '../../src/types';
 import { DEFAULT_FETCH_RETRY_OPTIONS } from '../../src/constants';
 
-function getObjectKeys<T>(object: T) {
-  return Object.keys(object) as (keyof T)[];
-}
-
 describe('callApi()', () => {
   beforeAll(() => {
     fetchMock.get(LOGIN_GLOB, { csrf_token: '1234' });
@@ -116,8 +112,8 @@ describe('callApi()', () => {
         const fetchParams = calls[0][1];
         const body = fetchParams.body as FormData;
 
-        getObjectKeys(postPayload).forEach(key => {
-          expect(body.get(key)).toBe(JSON.stringify(postPayload[key]));
+        Object.entries(postPayload).forEach(([key, value]) => {
+          expect(body.get(key)).toBe(JSON.stringify(value));
         });
 
         return true;
@@ -164,9 +160,9 @@ describe('callApi()', () => {
         const stringified = calls[0][1].body as FormData;
         const unstringified = calls[1][1].body as FormData;
 
-        getObjectKeys(postPayload).forEach(key => {
-          expect(stringified.get(key)).toBe(JSON.stringify(postPayload[key]));
-          expect(unstringified.get(key)).toBe(String(postPayload[key]));
+        Object.entries(postPayload).forEach(([key, value]) => {
+          expect(stringified.get(key)).toBe(JSON.stringify(value));
+          expect(unstringified.get(key)).toBe(String(value));
         });
 
         return true;
@@ -186,8 +182,8 @@ describe('callApi()', () => {
         const fetchParams = calls[0][1];
         const body = fetchParams.body as FormData;
 
-        getObjectKeys(postPayload).forEach(key => {
-          expect(body.get(key)).toBe(JSON.stringify(postPayload[key]));
+        Object.entries(postPayload).forEach(([key, value]) => {
+          expect(body.get(key)).toBe(JSON.stringify(value));
         });
 
         return true;
@@ -234,9 +230,9 @@ describe('callApi()', () => {
         const stringified = calls[0][1].body as FormData;
         const unstringified = calls[1][1].body as FormData;
 
-        getObjectKeys(postPayload).forEach(key => {
-          expect(stringified.get(key)).toBe(JSON.stringify(postPayload[key]));
-          expect(unstringified.get(key)).toBe(String(postPayload[key]));
+        Object.entries(postPayload).forEach(([key, value]) => {
+          expect(stringified.get(key)).toBe(JSON.stringify(value));
+          expect(unstringified.get(key)).toBe(String(value));
         });
 
         return true;
@@ -256,8 +252,8 @@ describe('callApi()', () => {
         const fetchParams = calls[0][1];
         const body = fetchParams.body as FormData;
 
-        getObjectKeys(postPayload).forEach(key => {
-          expect(body.get(key)).toBe(JSON.stringify(postPayload[key]));
+        Object.entries(postPayload).forEach(([key, value]) => {
+          expect(body.get(key)).toBe(JSON.stringify(value));
         });
 
         return true;
@@ -304,9 +300,9 @@ describe('callApi()', () => {
         const stringified = calls[0][1].body as FormData;
         const unstringified = calls[1][1].body as FormData;
 
-        getObjectKeys(postPayload).forEach(key => {
-          expect(stringified.get(key)).toBe(JSON.stringify(postPayload[key]));
-          expect(unstringified.get(key)).toBe(String(postPayload[key]));
+        Object.entries(postPayload).forEach(([key, value]) => {
+          expect(stringified.get(key)).toBe(JSON.stringify(value));
+          expect(unstringified.get(key)).toBe(String(value));
         });
 
         return true;

@@ -3,10 +3,6 @@ import { SupersetClientClass, ClientConfig } from '../src';
 import throwIfCalled from './utils/throwIfCalled';
 import { LOGIN_GLOB } from './fixtures/constants';
 
-function getObjectKeys<T>(object: T) {
-  return Object.keys(object) as (keyof T)[];
-}
-
 describe('SupersetClientClass', () => {
   beforeAll(() => {
     fetchMock.get(LOGIN_GLOB, { csrf_token: '' });
@@ -469,8 +465,8 @@ describe('SupersetClientClass', () => {
           client.post({ url: mockPostUrl, postPayload }).then(() => {
             const formData = fetchMock.calls(mockPostUrl)[0][1].body as FormData;
             expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
-            getObjectKeys(postPayload).forEach(key => {
-              expect(formData.get(key)).toBe(JSON.stringify(postPayload[key]));
+            Object.entries(postPayload).forEach(([key, value]) => {
+              expect(formData.get(key)).toBe(JSON.stringify(value));
             });
 
             return true;
@@ -487,8 +483,8 @@ describe('SupersetClientClass', () => {
           client.post({ url: mockPostUrl, postPayload, stringify: false }).then(() => {
             const formData = fetchMock.calls(mockPostUrl)[0][1].body as FormData;
             expect(fetchMock.calls(mockPostUrl)).toHaveLength(1);
-            getObjectKeys(postPayload).forEach(key => {
-              expect(formData.get(key)).toBe(String(postPayload[key]));
+            Object.entries(postPayload).forEach(([key, value]) => {
+              expect(formData.get(key)).toBe(String(value));
             });
 
             return true;
