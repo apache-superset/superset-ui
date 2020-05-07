@@ -14,12 +14,21 @@ describe('InfoTooltipWithTrigger', () => {
     expect(wrapper.find('.fa-info-circle')).toHaveLength(1);
   });
 
-  it('responds to an enter key', () => {
+  it('responds to keypresses', () => {
     const clickHandler = jest.fn();
     const wrapper = shallow(
       <InfoTooltipWithTrigger label="test" tooltip="this is a test" onClick={clickHandler} />,
     );
+    wrapper.find('.fa-info-circle').simulate('keypress', { key: 'Tab' });
+    expect(clickHandler).toHaveBeenCalledTimes(0);
     wrapper.find('.fa-info-circle').simulate('keypress', { key: 'Enter' });
-    expect(clickHandler).toHaveBeenCalled();
+    expect(clickHandler).toHaveBeenCalledTimes(1);
+    wrapper.find('.fa-info-circle').simulate('keypress', { key: 'Space' });
+    expect(clickHandler).toHaveBeenCalledTimes(2);
+  });
+
+  it('has a bsStyle', () => {
+    const wrapper = shallow(<InfoTooltipWithTrigger bsStyle="something" />);
+    expect(wrapper.find('.text-something')).toHaveLength(1);
   });
 });

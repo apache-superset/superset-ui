@@ -36,17 +36,12 @@ export default function InfoTooltipWithTrigger({
   label,
   tooltip,
   bsStyle,
+  onClick,
   icon = 'info-circle',
   className = 'text-muted',
-  onClick = () => {},
   placement = 'right',
 }: Props) {
   const iconClass = `fa fa-${icon} ${className} ${bsStyle ? `text-${bsStyle}` : ''}`;
-  const onKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === 'space') {
-      onClick();
-    }
-  };
   const iconEl = (
     <i
       role="button"
@@ -54,7 +49,14 @@ export default function InfoTooltipWithTrigger({
       className={iconClass}
       style={{ cursor: onClick ? 'pointer' : undefined }}
       onClick={onClick}
-      onKeyPress={onKeyPress}
+      onKeyPress={
+        onClick &&
+        ((event: React.KeyboardEvent) => {
+          if (event.key === 'Enter' || event.key === 'space') {
+            onClick();
+          }
+        })
+      }
     />
   );
   if (!tooltip) {
