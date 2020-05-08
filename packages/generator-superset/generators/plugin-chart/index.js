@@ -38,7 +38,7 @@ module.exports = class extends Generator {
       ['README.erb', 'README.md'],
       ['src/plugin/index.erb', 'src/plugin/index.ts'],
       ['src/index.erb', 'src/index.ts'],
-      ['src/MyChart.erb', `src/${packageLabel}.ts`],
+      ['src/MyChart.erb', `src/${packageLabel}.tsx`],
       ['test/index.erb', 'test/index.test.ts'],
     ].forEach(([src, dest]) => {
       this.fs.copyTpl(this.templatePath(src), this.destinationPath(dest), params);
