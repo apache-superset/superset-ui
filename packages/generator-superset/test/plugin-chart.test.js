@@ -36,7 +36,7 @@ describe('generator-superset:plugin-chart', () => {
       'src/plugin/index.ts',
       'src/plugin/transformProps.ts',
       'src/index.ts',
-      'src/ColdMap.ts',
+      'src/ColdMap.tsx',
       'test/index.test.ts',
       'types/external.d.ts',
       'src/images/thumbnail.png',
