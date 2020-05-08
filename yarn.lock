@@ -3669,12 +3669,10 @@
     "@types/history" "*"
     "@types/react" "*"
 
-"@types/react-bootstrap@0.32.21":
-  version "0.32.21"
-  resolved "https://registry.yarnpkg.com/@types/react-bootstrap/-/react-bootstrap-0.32.21.tgz#ac614f8c2f42bff9d7e1e01c2c3dddb22ff86e43"
-  integrity sha512-AV/6cMUBbKArEQcjXEzpoHexHi6hJL0cH3Vcw9qI4Ob2g/XFRvyTAFdMlGlp8HZmOHXL35PdF0K75Z31Po87qg==
-  dependencies:
-    "@types/react" "*"
+"@types/react-bootstrap@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/react-bootstrap/-/react-bootstrap-1.0.1.tgz#3badd512fc37913b5e72f1ed94e3aacbd1452d97"
+  integrity sha512-n68SeFrpOFWiSN2DCpyn17ZwTZzY8+mio8E9oCrl7abHytUz3r7ZYIKPxaETHYQxCi8oxF3NultpMAyBxFIjhg==
 
 "@types/react-color@^3.0.1":
   version "3.0.1"
