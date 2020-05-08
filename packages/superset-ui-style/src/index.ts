@@ -36,6 +36,27 @@ const defaultTheme = {
       light5: '#F5F5F8',
     },
   },
+  typography: {
+    families: {
+      sansSerif: `'Inter', Helvetica, Arial`,
+      serif: `Georgia, 'Times New Roman', Times, serif`,
+      monospace: `'Fira Code', 'Courier New', monospace`,
+    },
+    weights: {
+      light: 200,
+      normal: 400,
+      bold: 700,
+    },
+    sizes: {
+      xxs: '9px',
+      xs: '10px',
+      s: '12px',
+      m: '14px',
+      l: '16px',
+      xl: '21px',
+      xxl: '28px',
+    },
+  },
   gridUnit: '4px',
 };
 
