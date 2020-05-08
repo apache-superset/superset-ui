@@ -19,7 +19,7 @@
 import styled, { CreateStyled } from '@emotion/styled';
 
 const defaultTheme = {
-  borderRadius: '4px',
+  borderRadius: 4,
   colors: {
     primary: {
       base: '#20A7C9',
@@ -48,16 +48,16 @@ const defaultTheme = {
       bold: 700,
     },
     sizes: {
-      xxs: '9px',
-      xs: '10px',
-      s: '12px',
-      m: '14px',
-      l: '16px',
-      xl: '21px',
-      xxl: '28px',
+      xxs: 9,
+      xs: 10,
+      s: 12,
+      m: 14,
+      l: 16,
+      xl: 21,
+      xxl: 28,
     },
   },
-  gridUnit: '4px',
+  gridUnit: 4,
 };
 
 export default styled as CreateStyled<typeof defaultTheme>;
