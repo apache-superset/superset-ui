@@ -36,6 +36,6 @@
   "dependencies": {
     "@types/react-bootstrap": "0.32.21",
     "lodash": "^4.17.15",
-    "react-bootstrap": "^0.33.1"
+    "react-bootstrap": "^1.0.1"
   }
 }
