@@ -16,34 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from 'react';
+import { t } from '@superset-ui/translation';
+import { ChartMetadata, ChartPlugin } from '@superset-ui/chart';
+import transformProps from './transformProps';
+import thumbnail from './images/thumbnail.png';
 
-export type MyChartProps = {
-  height: number;
-  width: number;
-  data: { x: number; y: number }[];
-};
+const metadata = new ChartMetadata({
+  description: '<%= description %>',
+  name: t('<%= packageLabel %>'),
+  thumbnail,
+});
 
-export default class MyChart extends React.PureComponent<MyChartProps> {
-  render() {
-    const { data, height, width } = this.props;
-
-    return (
-      <svg style={{ backgroundColor: '#ffe459', borderRadius: 8, height, width }}>
-        {data.map(({ x, y }) => (
-          <circle
-            key={[x, y].join('-')}
-            cx={x * width}
-            cy={y * height}
-            r={Math.random() * 20}
-            fill="#fff"
-            opacity="0.5"
-          />
-        ))}
-        <text x={width / 2} y={height / 2} textAnchor="middle" fontWeight="bold" fontSize="36">
-          Hello!
-        </text>
-      </svg>
-    );
+export default class <%= packageLabel %>ChartPlugin extends ChartPlugin {
+  constructor() {
+    super({
+      loadChart: () => import('../<%= packageLabel %>'),
+      metadata,
+      transformProps,
+    });
   }
 }

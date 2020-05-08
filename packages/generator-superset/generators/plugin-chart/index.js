@@ -26,12 +26,6 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    this.fs.copyTpl(
-      this.templatePath('_package.json'),
-      this.destinationPath('package.json'),
-      this.answers,
-    );
-
     const packageLabel = _.upperFirst(_.camelCase(this.answers.packageName));
 
     const params = {
@@ -40,10 +34,20 @@ module.exports = class extends Generator {
     };
 
     [
-      ['_README.md', 'README.md'],
-      ['test/_index.test.ts', 'test/index.test.ts'],
-    ].map(([src, dest]) => {
+      ['package.erb', 'package.json'],
+      ['README.erb', 'README.md'],
+      ['src/plugin/index.erb', 'src/plugin/index.ts'],
+      ['src/index.erb', 'src/index.ts'],
+      ['src/MyChart.erb', `src/${packageLabel}.ts`],
+      ['test/index.erb', 'test/index.test.ts'],
+    ].forEach(([src, dest]) => {
       this.fs.copyTpl(this.templatePath(src), this.destinationPath(dest), params);
     });
+
+    ['types/external.d.ts', 'src/images/thumbnail.png', 'src/plugin/transformProps.ts'].forEach(
+      file => {
+        this.fs.copy(this.templatePath(file), this.destinationPath(file));
+      },
+    );
   }
 };
