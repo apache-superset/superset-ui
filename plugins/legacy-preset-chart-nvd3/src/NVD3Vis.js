@@ -73,7 +73,7 @@ const NO_DATA_RENDER_DATA = [
 
 // Override the noData render function to make a prettier UX
 // Code adapted from https://github.com/novus/nvd3/blob/master/src/utils.js#L653
-nv.utils.noData = function (chart, container) {
+nv.utils.noData = function noData(chart, container) {
   const opt = chart.options();
   const margin = opt.margin();
   const height = nv.utils.availableHeight(null, container, margin);
@@ -253,11 +253,17 @@ function nvd3Vis(element, props) {
     isPieLabelOutside,
     leftMargin,
     lineInterpolation = 'linear',
+    markerLabels,
+    markerLines,
+    markerLineLabels,
+    markers,
     maxBubbleSize,
     onBrushEnd = NOOP,
     onError = NOOP,
     orderBars,
     pieLabelType,
+    rangeLabels,
+    ranges,
     reduceXTicks = false,
     showBarValue,
     showBrush,
@@ -467,6 +473,12 @@ function nvd3Vis(element, props) {
 
       case 'bullet':
         chart = nv.models.bulletChart();
+        data.rangeLabels = rangeLabels;
+        data.ranges = ranges;
+        data.markerLabels = markerLabels;
+        data.markerLines = markerLines;
+        data.markerLineLabels = markerLineLabels;
+        data.markers = markers;
         break;
 
       default:

@@ -20,12 +20,14 @@ import { t } from '@superset-ui/translation';
 import { ChartMetadata, ChartPlugin } from '@superset-ui/chart';
 import transformProps from './transformProps';
 import thumbnail from './images/thumbnail.png';
+import controlPanel from './controlPanel';
 
 const metadata = new ChartMetadata({
   credits: ['http://datamaps.github.io/'],
   description: '',
   name: t('World Map'),
   thumbnail,
+  useLegacyApi: true,
 });
 
 export default class WorldMapChartPlugin extends ChartPlugin {
@@ -34,6 +36,7 @@ export default class WorldMapChartPlugin extends ChartPlugin {
       loadChart: () => import('./ReactWorldMap.js'),
       metadata,
       transformProps,
+      controlPanel,
     });
   }
 }

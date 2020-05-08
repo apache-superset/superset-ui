@@ -16,26 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { t } from '@superset-ui/translation';
-import { ChartMetadata, ChartPlugin } from '@superset-ui/chart';
-import transformProps from './transformProps';
-import thumbnail from './images/thumbnail.png';
-import controlPanel from './controlPanel';
+import { validateNumber } from '@superset-ui/validator';
 
-const metadata = new ChartMetadata({
-  description: '',
-  name: t('Pivot Table'),
-  thumbnail,
-  useLegacyApi: true,
-});
+export function tokenizeToNumericArray(value: string): number[] | null {
+  if (!value.trim()) return null;
+  const tokens = value.split(',');
+  if (tokens.some(token => validateNumber(token))) throw new Error('All values should be numeric');
+  return tokens.map(token => parseFloat(token));
+}
 
-export default class PivotTableChartPlugin extends ChartPlugin {
-  constructor() {
-    super({
-      loadChart: () => import('./ReactPivotTable.js'),
-      metadata,
-      transformProps,
-      controlPanel,
-    });
-  }
+export function tokenizeToStringArray(value: string): string[] | null {
+  if (!value.trim()) return null;
+  const tokens = value.split(',');
+  return tokens.map(token => token.trim());
 }

@@ -17,6 +17,8 @@
  * under the License.
  */
 import isTruthy from './utils/isTruthy';
+// eslint-disable-next-line import/extensions
+import { tokenizeToNumericArray, tokenizeToStringArray } from './utils/tokenize';
 import { formatLabel } from './utils';
 
 const NOOP = () => {};
@@ -82,7 +84,17 @@ export default function transformProps(chartProps) {
     yLogScale,
   } = formData;
 
-  let { numberFormat, yAxisFormat, yAxis2Format } = formData;
+  let {
+    markerLabels,
+    markerLines,
+    markerLineLabels,
+    markers,
+    numberFormat,
+    rangeLabels,
+    ranges,
+    yAxisFormat,
+    yAxis2Format,
+  } = formData;
 
   const rawData = queryData.data || [];
   const data = Array.isArray(rawData)
@@ -100,6 +112,13 @@ export default function transformProps(chartProps) {
   } else if (['line', 'dist_bar', 'bar', 'area'].includes(chartProps.formData.vizType)) {
     yAxisFormat =
       yAxisFormat || grabD3Format(datasource, metrics.length > 0 ? metrics[0] : undefined);
+  } else if (vizType === 'bullet') {
+    ranges = tokenizeToNumericArray(ranges) || [0, data.measures * 1.1];
+    rangeLabels = tokenizeToStringArray(rangeLabels);
+    markerLabels = tokenizeToStringArray(markerLabels);
+    markerLines = tokenizeToNumericArray(markerLines);
+    markerLineLabels = tokenizeToStringArray(markerLineLabels);
+    markers = tokenizeToNumericArray(markers);
   }
 
   return {
@@ -120,6 +139,10 @@ export default function transformProps(chartProps) {
     isPieLabelOutside: labelsOutside,
     leftMargin,
     lineInterpolation,
+    markerLabels,
+    markerLines,
+    markerLineLabels,
+    markers,
     maxBubbleSize: parseInt(maxBubbleSize, 10),
     numberFormat,
     onBrushEnd: isTruthy(sendTimeRange)
@@ -130,6 +153,8 @@ export default function transformProps(chartProps) {
     onError,
     orderBars,
     pieLabelType,
+    rangeLabels,
+    ranges,
     reduceXTicks,
     showBarValue,
     showBrush,

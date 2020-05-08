@@ -1,6 +1,6 @@
 {
   "name": "@superset-ui/chart-composition",
-  "version": "0.13.5",
+  "version": "0.13.7",
   "description": "Superset UI chart-composition",
   "sideEffects": false,
   "main": "lib/index.js",
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@types/react": "^16.9.34",
-    "@vx/responsive": "^0.0.195",
+    "@vx/responsive": "^0.0.196",
     "csstype": "^2.6.4"
   },
   "peerDependencies": {
