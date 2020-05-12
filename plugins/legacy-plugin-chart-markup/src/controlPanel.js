@@ -20,7 +20,6 @@ import { t } from '@superset-ui/translation';
 import { validateNonEmpty } from '@superset-ui/validator';
 import { formatSelectOptions } from '@superset-ui/control-utils';
 
-console.log('what are going on with these controls')
 export default {
   controlPanelSections: [
     {
