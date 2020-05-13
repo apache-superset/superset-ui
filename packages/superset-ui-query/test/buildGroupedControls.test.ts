@@ -10,7 +10,7 @@ describe('buildGroupedControls', () => {
   });
 
   it('should group default metric controls to metrics', () => {
-    expect(buildGroupedControls({ metric: 'my_metric' }).metric).toEqual(['my_metric']);
+    expect(buildGroupedControls({ metric: 'my_metric' }).metrics).toEqual(['my_metric']);
   });
 
   it('should group custom metrics with default metrics', () => {
