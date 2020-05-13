@@ -29,21 +29,12 @@ export default class <%= packageLabel %> extends React.PureComponent<<%= package
     const { data, height, width } = this.props;
 
     return (
-      <svg style={{ backgroundColor: '#ffe459', borderRadius: 8, height, width }}>
-        {data.map(({ x, y }) => (
-          <circle
-            key={[x, y].join('-')}
-            cx={x * width}
-            cy={y * height}
-            r={Math.random() * 20}
-            fill="#fff"
-            opacity="0.5"
-          />
-        ))}
-        <text x={width / 2} y={height / 2} textAnchor="middle" fontWeight="bold" fontSize="36">
-          Hello!
-        </text>
-      </svg>
+      <div style={{ backgroundColor: '#ffe459', padding: 16, borderRadius: 8, height, width }}>
+        <h3>Hello!</h3>
+        <pre>
+          {JSON.stringify(this.props, null, 2)}
+        </pre>
+      </div>
     );
   }
 }
