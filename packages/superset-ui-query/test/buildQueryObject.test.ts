@@ -21,14 +21,38 @@ describe('buildQueryObject', () => {
     expect(query.granularity).toEqual('ds');
   });
 
-  it('should build metrics', () => {
+  it('should build metrics based on default controlGroups', () => {
     query = buildQueryObject({
       datasource: '5__table',
       granularity_sqla: 'ds',
       viz_type: 'table',
       metric: 'sum__num',
+      secondary_metric: 'avg__num',
+    });
+    expect(query.metrics).toEqual([{ label: 'sum__num' }, { label: 'avg__num' }]);
+  });
+
+  it('should group custom metric control', () => {
+    query = buildQueryObject({
+      datasource: '5__table',
+      granularity_sqla: 'ds',
+      viz_type: 'table',
+      my_custom_metric_control: 'sum__num',
+      controlGroups: { my_custom_metric_control: 'metrics' },
     });
     expect(query.metrics).toEqual([{ label: 'sum__num' }]);
+  });
+
+  it('should group custom metric control with predefined metrics', () => {
+    query = buildQueryObject({
+      datasource: '5__table',
+      granularity_sqla: 'ds',
+      viz_type: 'table',
+      metrics: ['sum__num'],
+      my_custom_metric_control: 'avg__num',
+      controlGroups: { my_custom_metric_control: 'metrics' },
+    });
+    expect(query.metrics).toEqual([{ label: 'sum__num' }, { label: 'avg__num' }]);
   });
 
   it('should build limit', () => {
@@ -71,29 +95,6 @@ describe('buildQueryObject', () => {
       viz_type: 'table',
       row_limit: null,
     };
-
-    it('should group custom metric control', () => {
-      query = buildQueryObject({
-        datasource: '5__table',
-        granularity_sqla: 'ds',
-        viz_type: 'table',
-        my_custom_metric_control: 'sum__num',
-        controlGroups: { my_custom_metric_control: 'metrics' },
-      });
-      expect(query.metrics).toEqual([{ label: 'sum__num' }]);
-    });
-
-    it('should group custom metric control with predefined metrics', () => {
-      query = buildQueryObject({
-        datasource: '5__table',
-        granularity_sqla: 'ds',
-        viz_type: 'table',
-        metrics: ['sum__num'],
-        my_custom_metric_control: 'avg__num',
-        controlGroups: { my_custom_metric_control: 'metrics' },
-      });
-      expect(query.metrics).toEqual([{ label: 'sum__num' }, { label: 'avg__num' }]);
-    });
 
     // undefined
     query = buildQueryObject({ ...baseQuery });
