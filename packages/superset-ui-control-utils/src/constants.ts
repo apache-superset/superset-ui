@@ -16,26 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import { t } from '@superset-ui/translation';
-import { ChartMetadata, ChartPlugin } from '@superset-ui/chart';
-import thumbnail from './images/thumbnail.png';
-import transformProps from './transformProps';
-import controlPanel from './controlPanel';
 
-const metadata = new ChartMetadata({
-  description: 'HTML Markup',
-  name: t('Markup'),
-  thumbnail,
-  useLegacyApi: true,
-});
-
-export default class IframeChartPlugin extends ChartPlugin {
-  constructor() {
-    super({
-      loadChart: () => import('./Markup'),
-      metadata,
-      transformProps,
-      controlPanel,
-    });
-  }
-}
+// eslint-disable-next-line import/prefer-default-export
+export const TIME_FILTER_LABELS = {
+  time_range: t('Time Range'),
+  granularity_sqla: t('Time Column'),
+  time_grain_sqla: t('Time Grain'),
+  druid_time_origin: t('Origin'),
+  granularity: t('Time Granularity'),
+};

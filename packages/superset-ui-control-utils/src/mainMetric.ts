@@ -16,26 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { t } from '@superset-ui/translation';
-import { ChartMetadata, ChartPlugin } from '@superset-ui/chart';
-import thumbnail from './images/thumbnail.png';
-import transformProps from './transformProps';
-import controlPanel from './controlPanel';
+/* eslint-disable camelcase */
 
-const metadata = new ChartMetadata({
-  description: 'HTML Markup',
-  name: t('Markup'),
-  thumbnail,
-  useLegacyApi: true,
-});
+export type Metric = {
+  metric_name: string;
+};
 
-export default class IframeChartPlugin extends ChartPlugin {
-  constructor() {
-    super({
-      loadChart: () => import('./Markup'),
-      metadata,
-      transformProps,
-      controlPanel,
+export function mainMetric(savedMetrics?: Metric[] | null) {
+  // Using 'count' as default metric if it exists, otherwise using whatever one shows up first
+  let metric;
+  if (savedMetrics && savedMetrics.length > 0) {
+    savedMetrics.forEach(m => {
+      if (m.metric_name === 'count') {
+        metric = 'count';
+      }
     });
+    if (!metric) {
+      metric = savedMetrics[0].metric_name;
+    }
   }
+  return metric;
 }
