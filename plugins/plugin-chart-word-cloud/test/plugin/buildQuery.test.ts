@@ -7,6 +7,7 @@ describe('WordCloud buildQuery', () => {
     granularity_sqla: 'ds',
     series: 'foo',
     viz_type: 'word_cloud',
+    controlGroups: { series: 'groupby' },
   };
 
   it('should build groupby with series in form data', () => {
