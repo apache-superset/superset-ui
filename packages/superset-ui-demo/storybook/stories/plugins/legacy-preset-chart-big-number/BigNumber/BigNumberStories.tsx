@@ -74,7 +74,10 @@ export const nullInTheMiddle = () => (
     width={400}
     height={400}
     queryData={{ data: withNulls(testData, 3) }}
-    formData={formData}
+    formData={{
+      ...formData,
+      timeGrainSqla: 'P1W', // weekly
+    }}
   />
 );
 
