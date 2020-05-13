@@ -19,6 +19,7 @@
 import TimeFormats from '../TimeFormats';
 import { getTimeFormatter } from '../TimeFormatterRegistrySingleton';
 import smartDateVerboseFormatter from '../formatters/smartDateVerbose';
+import { TimeGranularity } from '../types';
 
 // Translate time granularity to d3-format
 const MINUTE = '%Y-%m-%d %H:%M';
@@ -46,23 +47,6 @@ const formats = {
   'P1W/1970-01-03T00:00:00Z': SUNDAY_BASED_WEEK, // 'week_ending_saturday'
   'P1W/1970-01-04T00:00:00Z': MONDAY_BASED_WEEK, // 'week_ending_sunday'
 };
-
-export type TimeGranularity =
-  | 'date'
-  | 'PT1S'
-  | 'PT1M'
-  | 'PT5M'
-  | 'PT10M'
-  | 'PT15M'
-  | 'PT0.5H'
-  | 'PT1H'
-  | 'P1D'
-  | 'P1W'
-  | 'P0.25Y'
-  | 'P1Y'
-  | '1969-12-28T00:00:00Z/P1W'
-  | '1969-12-29T00:00:00Z/P1W'
-  | 'P1W/1970-01-03T00:00:00Z';
 
 export default function getTimeFormatterForGranularity(granularity?: TimeGranularity) {
   return granularity && granularity in formats
