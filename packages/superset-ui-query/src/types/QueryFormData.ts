@@ -1,18 +1,14 @@
 /* eslint camelcase: 0 */
 // FormData uses snake_cased keys.
-import { MetricKey, AdhocMetric } from './Metric';
+import { AdhocMetric } from './Metric';
 import { TimeRange } from './Time';
 import { AdhocFilter } from './Filter';
 
 export type QueryFormDataMetric = string | AdhocMetric;
-
-// Define mapped type separately to work around a limitation of TypeScript
-// https://github.com/Microsoft/TypeScript/issues/13573
-// The Metrics in formData is either a string or a proper metric. It will be
-// unified into a proper Metric type during buildQuery (see `/query/Metrics.ts`).
-export type QueryFormDataMetrics = Partial<
-  Record<MetricKey, QueryFormDataMetric | QueryFormDataMetric[]>
->;
+export type ResidualFormData = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+};
 
 // Type signature for formData shared by all viz types
 // It will be gradually filled out as we build out the query object
@@ -47,8 +43,11 @@ export type BaseFormData = {
   timeseries_limit_metric?: QueryFormDataMetric;
   /** Force refresh */
   force?: boolean;
+  controlGroups?: {
+    [key in string]: string;
+  };
 } & TimeRange &
-  QueryFormDataMetrics;
+  ResidualFormData;
 
 // FormData is either sqla-based or druid-based
 export type SqlaFormData = {

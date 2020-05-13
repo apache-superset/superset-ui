@@ -40,6 +40,11 @@ export type QueryObjectExtras = Partial<{
   where?: string;
 }>;
 
+export type ResidualQueryObjectData = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+};
+
 export type QueryObject = {
   /** Columns to group by */
   groupby?: string[];
@@ -73,7 +78,8 @@ export type QueryObject = {
 
   /** If set, will group by timestamp */
   is_timeseries?: boolean;
-} & TimeRange;
+} & TimeRange &
+  ResidualQueryObjectData;
 
 export interface QueryContext {
   datasource: {
