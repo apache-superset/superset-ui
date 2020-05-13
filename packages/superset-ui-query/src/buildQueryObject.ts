@@ -1,10 +1,11 @@
 /* eslint-disable camelcase */
 import { QueryObject } from './types/Query';
-import { QueryFormData, isSqlaFormData, QueryFormDataMetric } from './types/QueryFormData';
+import { isSqlaFormData, QueryFormData } from './types/QueryFormData';
 import convertMetric from './convertMetric';
 import processFilters from './processFilters';
 import processMetrics from './processMetrics';
 import processExtras from './processExtras';
+import buildGroupedControlData from './buildGroupedControls';
 
 export const DTTM_ALIAS = '__timestamp';
 
@@ -28,44 +29,11 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
     row_limit,
     limit,
     timeseries_limit_metric,
-    controlGroups = {
-      /** These are predefined for backward compatibility */
-      metric: 'metrics',
-      percent_metrics: 'metrics',
-      metric_2: 'metrics',
-      secondary_metric: 'metrics',
-      x: 'metrics',
-      y: 'metrics',
-      size: 'metrics',
-    },
+    controlGroups,
     ...residualFormData
   } = formData;
 
-  type GroupedControlData = {
-    columns: string[];
-    groupby: string[];
-    metrics: QueryFormDataMetric[];
-  };
-  type ResidualGroupedControlData = {
-    [key: string]: QueryFormDataMetric[];
-  };
-  const groupedControls: GroupedControlData & ResidualGroupedControlData = {
-    columns: [],
-    groupby: [],
-    metrics: [],
-  };
-
-  Object.entries(residualFormData).forEach(entry => {
-    const [key, residualValue] = entry;
-    if (Object.prototype.hasOwnProperty.call(controlGroups, key)) {
-      const controlGroup = controlGroups[key];
-      const controlValue = residualFormData[key];
-      groupedControls[controlGroup] = (groupedControls[controlGroup] || []).concat(controlValue);
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      groupedControls[key] = (groupedControls[key] || []).concat(residualValue);
-    }
-  });
+  const groupedControls = buildGroupedControlData(residualFormData, controlGroups);
   const { metrics, groupby, columns } = groupedControls;
   const groupbySet = new Set([...columns, ...groupby]);
   const numericRowLimit = Number(row_limit);

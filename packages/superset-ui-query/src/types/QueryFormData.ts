@@ -9,6 +9,9 @@ export type ResidualFormData = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 };
+export type ControlGroups = {
+  [key: string]: string;
+};
 
 // Type signature for formData shared by all viz types
 // It will be gradually filled out as we build out the query object
@@ -43,9 +46,7 @@ export type BaseFormData = {
   timeseries_limit_metric?: QueryFormDataMetric;
   /** Force refresh */
   force?: boolean;
-  controlGroups?: {
-    [key in string]: string;
-  };
+  controlGroups?: ControlGroups;
 } & TimeRange &
   ResidualFormData;
 
