@@ -38,7 +38,7 @@ const formats = {
   'PT0.5H': MINUTE, // half hour
   PT1H: '%Y-%m-%d %H:00', // hour
   P1D: DATABASE_DATE, // day
-  P1W: SUNDAY_BASED_WEEK, // week
+  P1W: MONDAY_BASED_WEEK, // week
   P1M: '%Y-%m', // month
   'P0.25Y': '%Y Q%q', // quarter
   P1Y: '%Y', // year

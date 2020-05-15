@@ -20,7 +20,7 @@ describe('getTimeFormatterForGranularity()', () => {
     expect(getFormatter('PT0.5H')(date)).toBe('2020-05-10 11:10');
     expect(getFormatter('PT1H')(date)).toBe('2020-05-10 11:00');
     expect(getFormatter('P1D')(date)).toBe('2020-05-10');
-    expect(getFormatter('P1W')(date)).toBe('2020-05-10 W19');
+    expect(getFormatter('P1W')(date)).toBe('2020-05-10 W18');
     expect(getFormatter('P1M')(date)).toBe('2020-05');
     expect(getFormatter('P0.25Y')(date)).toBe('2020 Q2');
     expect(getFormatter('P1Y')(date)).toBe('2020');
