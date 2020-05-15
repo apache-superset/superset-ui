@@ -5,9 +5,8 @@ import { AdhocMetric } from './types/Metric';
 function getDefaultLabel(metric: AdhocMetric) {
   if (metric.expressionType === 'SIMPLE') {
     return `${metric.aggregate}(${metric.column.columnName})`;
-  } else {
-    return metric.sqlExpression;
   }
+  return metric.sqlExpression;
 }
 
 export default function convertMetric(metric: QueryFormDataMetric): QueryObjectMetric {
