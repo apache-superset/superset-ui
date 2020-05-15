@@ -10,7 +10,7 @@ export type QueryFormResidualData = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 };
-export type ControlGroups = {
+export type QueryFields = {
   [key: string]: string;
 };
 
@@ -47,7 +47,7 @@ export type BaseFormData = {
   timeseries_limit_metric?: QueryFormResidualDataValue;
   /** Force refresh */
   force?: boolean;
-  controlGroups?: ControlGroups;
+  queryFields?: QueryFields;
 } & TimeRange &
   QueryFormResidualData;
 

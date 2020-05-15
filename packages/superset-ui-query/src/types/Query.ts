@@ -41,7 +41,6 @@ export type QueryObjectExtras = Partial<{
 }>;
 
 export type ResidualQueryObjectData = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: unknown;
 };
 
@@ -90,3 +89,12 @@ export interface QueryContext {
   force: boolean;
   queries: QueryObject[];
 }
+
+import { QueryFormDataMetric, QueryFormResidualDataValue } from './QueryFormData';
+
+export type QueryFieldData = {
+  columns: QueryFormResidualDataValue[];
+  groupby: QueryFormResidualDataValue[];
+  metrics: QueryFormDataMetric[];
+  [key: string]: QueryFormResidualDataValue[];
+};

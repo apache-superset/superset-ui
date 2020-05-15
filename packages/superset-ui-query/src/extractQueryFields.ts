@@ -1,11 +1,11 @@
-import { ControlGroups, QueryFormResidualData } from './types/QueryFormData';
-import { GroupedControlData } from './types/ControlData';
+import { QueryFields, QueryFormResidualData } from './types/QueryFormData';
+import { QueryFieldData } from './types/Query';
 
-export default function buildGroupedControlData(
+export default function buildQueryFieldData(
   residualFormData: QueryFormResidualData,
-  controlGroups?: ControlGroups,
+  queryFields?: QueryFields,
 ) {
-  const defaultedControlGroups: ControlGroups = {
+  const queryFieldAliases: QueryFields = {
     /** These are predefined for backward compatibility */
     metric: 'metrics',
     percent_metrics: 'metrics',
@@ -14,17 +14,17 @@ export default function buildGroupedControlData(
     x: 'metrics',
     y: 'metrics',
     size: 'metrics',
-    ...controlGroups,
+    ...queryFields,
   };
-  const groupedControls: GroupedControlData = {
+  const groupedControls: QueryFieldData = {
     columns: [],
     groupby: [],
     metrics: [],
   };
   Object.entries(residualFormData).forEach(entry => {
     const [key, residualValue] = entry;
-    const normalizedKey = Object.prototype.hasOwnProperty.call(defaultedControlGroups, key)
-      ? defaultedControlGroups[key]
+    const normalizedKey = Object.prototype.hasOwnProperty.call(queryFieldAliases, key)
+      ? queryFieldAliases[key]
       : key;
     groupedControls[normalizedKey] = (groupedControls[normalizedKey] || []).concat(residualValue);
   });

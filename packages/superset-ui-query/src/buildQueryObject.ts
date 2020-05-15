@@ -5,7 +5,7 @@ import processGroupby from './processGroupby';
 import convertMetric from './convertMetric';
 import processFilters from './processFilters';
 import processExtras from './processExtras';
-import buildGroupedControlData from './buildGroupedControls';
+import extractQueryFields from './extractQueryFields';
 
 export const DTTM_ALIAS = '__timestamp';
 
@@ -29,12 +29,12 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
     row_limit,
     limit,
     timeseries_limit_metric,
-    controlGroups,
+    queryFields,
     ...residualFormData
   } = formData;
 
   const numericRowLimit = Number(row_limit);
-  const { metrics, groupby, columns } = buildGroupedControlData(residualFormData, controlGroups);
+  const { metrics, groupby, columns } = extractQueryFields(residualFormData, queryFields);
   const groupbySet = new Set([...columns, ...groupby]);
 
   return {

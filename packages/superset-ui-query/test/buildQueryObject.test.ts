@@ -21,7 +21,7 @@ describe('buildQueryObject', () => {
     expect(query.granularity).toEqual('ds');
   });
 
-  it('should build metrics based on default controlGroups', () => {
+  it('should build metrics based on default queryFields', () => {
     query = buildQueryObject({
       datasource: '5__table',
       granularity_sqla: 'ds',
@@ -38,7 +38,7 @@ describe('buildQueryObject', () => {
       granularity_sqla: 'ds',
       viz_type: 'table',
       my_custom_metric_control: 'sum__num',
-      controlGroups: { my_custom_metric_control: 'metrics' },
+      queryFields: { my_custom_metric_control: 'metrics' },
     });
     expect(query.metrics).toEqual([{ label: 'sum__num' }]);
   });
@@ -50,7 +50,7 @@ describe('buildQueryObject', () => {
       viz_type: 'table',
       metrics: ['sum__num'],
       my_custom_metric_control: 'avg__num',
-      controlGroups: { my_custom_metric_control: 'metrics' },
+      queryFields: { my_custom_metric_control: 'metrics' },
     });
     expect(query.metrics).toEqual([{ label: 'sum__num' }, { label: 'avg__num' }]);
   });
