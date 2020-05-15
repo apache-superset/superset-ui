@@ -3,6 +3,7 @@ import { DatasourceType } from './Datasource';
 import { AdhocMetric } from './Metric';
 import { BinaryOperator, SetOperator, UnaryOperator } from './Operator';
 import { TimeRange } from './Time';
+import { QueryFormDataMetric, QueryFormResidualDataValue } from './QueryFormData';
 
 export type QueryObjectFilterClause = {
   col: string;
@@ -89,8 +90,6 @@ export interface QueryContext {
   force: boolean;
   queries: QueryObject[];
 }
-
-import { QueryFormDataMetric, QueryFormResidualDataValue } from './QueryFormData';
 
 export type QueryFieldData = {
   columns: QueryFormResidualDataValue[];
