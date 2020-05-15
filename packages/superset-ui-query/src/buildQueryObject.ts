@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 import { QueryObject } from './types/Query';
 import { isSqlaFormData, QueryFormData } from './types/QueryFormData';
+import processGroupby from './processGroupby';
 import convertMetric from './convertMetric';
 import processFilters from './processFilters';
-import processMetrics from './processMetrics';
 import processExtras from './processExtras';
 import buildGroupedControlData from './buildGroupedControls';
 
@@ -33,17 +33,16 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
     ...residualFormData
   } = formData;
 
-  const groupedControls = buildGroupedControlData(residualFormData, controlGroups);
-  const { metrics, groupby, columns } = groupedControls;
-  const groupbySet = new Set([...columns, ...groupby]);
   const numericRowLimit = Number(row_limit);
+  const { metrics, groupby, columns } = buildGroupedControlData(residualFormData, controlGroups);
+  const groupbySet = new Set([...columns, ...groupby]);
 
   return {
     extras: processExtras(formData),
     granularity: processGranularity(formData),
-    groupby: Array.from(groupbySet),
+    groupby: processGroupby(Array.from(groupbySet)),
     is_timeseries: groupbySet.has(DTTM_ALIAS),
-    metrics: processMetrics(metrics),
+    metrics: metrics.map(convertMetric),
     order_desc: typeof order_desc === 'undefined' ? true : order_desc,
     orderby: [],
     row_limit: row_limit == null || Number.isNaN(numericRowLimit) ? undefined : numericRowLimit,

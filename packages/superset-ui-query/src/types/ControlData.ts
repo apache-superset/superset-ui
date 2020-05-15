@@ -1,10 +1,8 @@
-import { QueryFormDataMetric } from './QueryFormData';
+import { QueryFormDataMetric, QueryFormResidualDataValue } from './QueryFormData';
 
 export type GroupedControlData = {
-  columns: string[];
-  groupby: string[];
+  columns: QueryFormResidualDataValue[];
+  groupby: QueryFormResidualDataValue[];
   metrics: QueryFormDataMetric[];
-};
-export type ResidualGroupedControlData = {
-  [key: string]: QueryFormDataMetric[];
+  [key: string]: QueryFormResidualDataValue[];
 };

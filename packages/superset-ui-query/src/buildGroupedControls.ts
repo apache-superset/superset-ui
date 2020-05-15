@@ -1,10 +1,10 @@
-import { ControlGroups, ResidualFormData } from './types/QueryFormData';
-import { GroupedControlData, ResidualGroupedControlData } from './types/ControlData';
+import { ControlGroups, QueryFormResidualData } from './types/QueryFormData';
+import { GroupedControlData } from './types/ControlData';
 
 export default function buildGroupedControlData(
-  residualFormData: ResidualFormData,
+  residualFormData: QueryFormResidualData,
   controlGroups?: ControlGroups,
-): GroupedControlData & ResidualGroupedControlData {
+) {
   const defaultedControlGroups: ControlGroups = {
     /** These are predefined for backward compatibility */
     metric: 'metrics',
@@ -16,23 +16,17 @@ export default function buildGroupedControlData(
     size: 'metrics',
     ...controlGroups,
   };
-  const groupedControls: GroupedControlData & ResidualGroupedControlData = {
+  const groupedControls: GroupedControlData = {
     columns: [],
     groupby: [],
     metrics: [],
   };
-
   Object.entries(residualFormData).forEach(entry => {
     const [key, residualValue] = entry;
-    if (Object.prototype.hasOwnProperty.call(defaultedControlGroups, key)) {
-      const controlGroup: string = defaultedControlGroups[key];
-      const controlValue = residualFormData[key];
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      groupedControls[controlGroup] = (groupedControls[controlGroup] || []).concat(controlValue);
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      groupedControls[key] = (groupedControls[key] || []).concat(residualValue);
-    }
+    const normalizedKey = Object.prototype.hasOwnProperty.call(defaultedControlGroups, key)
+      ? defaultedControlGroups[key]
+      : key;
+    groupedControls[normalizedKey] = (groupedControls[normalizedKey] || []).concat(residualValue);
   });
   return groupedControls;
 }

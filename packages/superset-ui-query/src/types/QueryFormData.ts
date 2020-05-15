@@ -5,7 +5,8 @@ import { TimeRange } from './Time';
 import { AdhocFilter } from './Filter';
 
 export type QueryFormDataMetric = string | AdhocMetric;
-export type ResidualFormData = {
+export type QueryFormResidualDataValue = string | AdhocMetric;
+export type QueryFormResidualData = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 };
@@ -43,12 +44,12 @@ export type BaseFormData = {
   /** limit number of row in the results */
   row_limit?: string | number | null;
   /** The metric used to order timeseries for limiting */
-  timeseries_limit_metric?: QueryFormDataMetric;
+  timeseries_limit_metric?: QueryFormResidualDataValue;
   /** Force refresh */
   force?: boolean;
   controlGroups?: ControlGroups;
 } & TimeRange &
-  ResidualFormData;
+  QueryFormResidualData;
 
 // FormData is either sqla-based or druid-based
 export type SqlaFormData = {
