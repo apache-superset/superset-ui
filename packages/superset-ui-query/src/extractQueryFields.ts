@@ -16,7 +16,7 @@ export default function buildQueryFieldData(
     size: 'metrics',
     ...queryFields,
   };
-  const groupedControls: QueryFieldData = {
+  const finalQueryFields: QueryFieldData = {
     columns: [],
     groupby: [],
     metrics: [],
@@ -26,7 +26,7 @@ export default function buildQueryFieldData(
     const normalizedKey = Object.prototype.hasOwnProperty.call(queryFieldAliases, key)
       ? queryFieldAliases[key]
       : key;
-    groupedControls[normalizedKey] = (groupedControls[normalizedKey] || []).concat(residualValue);
+    finalQueryFields[normalizedKey] = (finalQueryFields[normalizedKey] || []).concat(residualValue);
   });
-  return groupedControls;
+  return finalQueryFields;
 }
