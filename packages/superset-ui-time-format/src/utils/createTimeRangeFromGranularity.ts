@@ -1,4 +1,5 @@
 import { TimeGranularity } from '../types';
+import createDate from './createDate';
 
 const MS_IN_SECOND = 1000;
 const MS_IN_MINUTE = 60 * MS_IN_SECOND;
@@ -29,20 +30,6 @@ const Offsets: Record<
   [TimeGranularity.WEEK_ENDING_SUNDAY]: -MS_IN_WEEK + 1,
 };
 
-function createDate({
-  year,
-  month = 0,
-  date = 1,
-  useLocalTime = false,
-}: {
-  year: number;
-  month?: number;
-  date?: number;
-  useLocalTime?: boolean;
-}): Date {
-  return useLocalTime ? new Date(year, month, date) : new Date(Date.UTC(year, month, date));
-}
-
 function deductOneMs(time: Date) {
   return new Date(time.getTime() - 1);
 }
@@ -55,8 +42,8 @@ function computeEndTimeFromGranularity(
     | typeof TimeGranularity.YEAR,
   useLocalTime: boolean = false,
 ) {
-  const month = time.getMonth();
-  const year = time.getFullYear();
+  const month = useLocalTime ? time.getMonth() : time.getUTCMonth();
+  const year = useLocalTime ? time.getFullYear() : time.getUTCFullYear();
   if (granularity === TimeGranularity.MONTH) {
     return deductOneMs(
       createDate(
@@ -92,6 +79,16 @@ export default function createTimeRangeFromGranularity(
     return [time, computeEndTimeFromGranularity(time, granularity, useLocalTime)];
   }
   const offset = Offsets[granularity];
-  const offsetTime = new Date(time.getTime() + offset);
-  return offset >= 0 ? [time, offsetTime] : [offsetTime, time];
+
+  if (offset >= 0) {
+    const offsetTime = new Date(time.getTime() + offset);
+    return [time, offsetTime];
+  }
+
+  // For the WEEK_ENDING_XXX cases
+  // Assume given time is at 00:00:00.000
+  // so add 23:59:59.999
+  const endTime = new Date(time.getTime() + MS_IN_DAY - 1);
+  const offsetTime = new Date(endTime.getTime() + offset);
+  return [offsetTime, endTime];
 }

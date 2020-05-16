@@ -12,7 +12,7 @@ export default getInstance;
 export function formatTimeRange(formatId: string | undefined, range: (Date | null | undefined)[]) {
   const format = getInstance().get(formatId);
   const [start, end] = range.map(value => format(value));
-  return start === end ? start : `${start}—${end}`;
+  return start === end ? start : `${start} — ${end}`;
 }
 
 export function formatTime(
@@ -35,4 +35,8 @@ export function getTimeFormatter(formatId?: string, granularity?: TimeGranularit
   }
 
   return getInstance().get(formatId);
+}
+
+export function getTimeRangeFormatter(formatId?: string) {
+  return (range: (Date | null | undefined)[]) => formatTimeRange(formatId, range);
 }
