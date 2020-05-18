@@ -3251,16 +3251,6 @@
     conventional-changelog-cli "^2.0.12"
     cz-conventional-changelog "^2.1.0"
 
-"@superset-ui/legacy-plugin-chart-calendar@0.13.6":
-  version "0.13.6"
-  resolved "https://registry.yarnpkg.com/@superset-ui/legacy-plugin-chart-calendar/-/legacy-plugin-chart-calendar-0.13.6.tgz#30c29582eb537a7ec3ba2730c07b66101985177b"
-  integrity sha512-Ziv7fVdXNYATziITy1sXjMMg6e3NTJymUFdzkqYPVYl2CMszuXKS7LM7xTbwrcJ6og0eKhofyiGznR0TEvUMlg==
-  dependencies:
-    d3-array "^2.0.3"
-    d3-selection "^1.4.0"
-    d3-tip "^0.9.1"
-    prop-types "^15.6.2"
-
 "@superset-ui/legacy-plugin-chart-word-cloud@^0.11.15":
   version "0.11.15"
   resolved "https://registry.yarnpkg.com/@superset-ui/legacy-plugin-chart-word-cloud/-/legacy-plugin-chart-word-cloud-0.11.15.tgz#70a146aaf3cf1977c29086c069f0216325f092b2"
@@ -3269,11 +3259,6 @@
     d3 "^3.5.17"
     d3-cloud "^1.2.1"
     prop-types "^15.6.2"
-
-"@superset-ui/query@0.13.6":
-  version "0.13.6"
-  resolved "https://registry.yarnpkg.com/@superset-ui/query/-/query-0.13.6.tgz#e9c4cba4b7e5181491429e15d5badf97e307a036"
-  integrity sha512-wJvqXuzv9vJNxDPKNAaHzCCly7LF8UP9AQ1zdoA88QcfYJqCzNvbt3j8XSR4nABrvNVZHnsn67wQNG4HS/IPpQ==
 
 "@svgr/babel-plugin-add-jsx-attribute@^4.2.0":
   version "4.2.0"
