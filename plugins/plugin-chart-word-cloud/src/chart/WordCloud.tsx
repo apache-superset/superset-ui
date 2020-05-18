@@ -1,6 +1,7 @@
 import React from 'react';
 import cloudLayout, { Word } from 'd3-cloud';
 import { PlainObject } from 'encodable';
+import { supersetTheme } from '@superset-ui/style';
 import { WordCloudEncoding, wordCloudEncoderFactory } from './Encoder';
 
 export const ROTATION = {
@@ -93,7 +94,9 @@ export default class WordCloud extends React.PureComponent<
       .padding(5)
       .rotate(ROTATION[rotation] || ROTATION.flat)
       .text(d => encoder.channels.text.getValueFromDatum(d))
-      .font(d => encoder.channels.fontFamily.encodeDatum(d, 'Helvetica'))
+      .font(d =>
+        encoder.channels.fontFamily.encodeDatum(d, supersetTheme.typography.families.sansSerif),
+      )
       .fontWeight(d => encoder.channels.fontWeight.encodeDatum(d, 'normal'))
       .fontSize(d => encoder.channels.fontSize.encodeDatum(d, 0))
       .on('end', this.setWords)
