@@ -1,5 +1,7 @@
 export type TimeFormatFunction = (value: Date) => string;
 
+export type TimeRangeFormatFunction = (values: Date[]) => string;
+
 /**
  * search for `builtin_time_grains` in incubator-superset/superset/db_engine_specs/base.py
  */
