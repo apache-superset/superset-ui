@@ -23,10 +23,10 @@ import { getNumberFormatter } from '@superset-ui/number-format';
 import { XYChart, AreaSeries, CrossHair, LinearGradient } from '@data-ui/xy-chart';
 import { BRAND_COLOR } from '@superset-ui/color';
 import { computeMaxFontSize } from '@superset-ui/dimension';
-import NumberFormatter from '@superset-ui/number-format/src/NumberFormatter';
+import { NumberFormatter } from '@superset-ui/number-format';
 import styled from '@superset-ui/style';
 import { smartDateVerboseFormatter } from '@superset-ui/time-format';
-import TimeFormatter from '@superset-ui/time-format/src/TimeFormatter';
+import { TimeFormatter } from '@superset-ui/time-format';
 
 import './BigNumber.css';
 
