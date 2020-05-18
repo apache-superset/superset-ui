@@ -31,13 +31,14 @@ import TimeFormatter from '@superset-ui/time-format/src/TimeFormatter';
 import './BigNumber.css';
 
 const Header = styled.div`
-  color: ${({ theme }) => theme.colors.secondary.dark3};
-  font-weight: 600;
+  font-family: ${({ theme }) => theme.typography.families.sansSerif};
+  font-weight: ${({ theme }) => theme.typography.weights.bold};
 `;
 
 // once more theme variables are available, put them here
 const SubHeader = styled.div`
-  color: ${({ theme }) => theme.colors.secondary.dark3};
+  font-family: ${({ theme }) => theme.typography.families.sansSerif};
+  font-weight: ${({ theme }) => theme.typography.weights.bold};
 `;
 
 const defaultNumberFormatter = getNumberFormatter();
