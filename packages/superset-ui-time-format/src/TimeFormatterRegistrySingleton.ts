@@ -19,6 +19,7 @@ export function getTimeRangeFormatter(formatId?: string) {
       const [start, end] = range.map(value => format(value));
       return start === end ? start : [start, end].join(' — ');
     },
+    useLocalTime: formatId?.startsWith(LOCAL_PREFIX),
   });
 }
 
@@ -28,16 +29,16 @@ export function formatTimeRange(formatId: string | undefined, range: (Date | nul
 
 export function getTimeFormatter(formatId?: string, granularity?: TimeGranularity) {
   if (granularity) {
-    const useLocalTime = formatId?.startsWith(LOCAL_PREFIX);
+    const formatString = formatId || TimeFormatsForGranularity[granularity];
+    const timeRangeFormatter = getTimeRangeFormatter(formatString);
 
     return new TimeFormatter({
-      id: [formatId, granularity].join('/'),
+      id: [formatString, granularity].join('/'),
       formatFunc: (value: Date) =>
-        formatTimeRange(
-          formatId || TimeFormatsForGranularity[granularity],
-          createTimeRangeFromGranularity(value, granularity, useLocalTime),
+        timeRangeFormatter.format(
+          createTimeRangeFromGranularity(value, granularity, timeRangeFormatter.useLocalTime),
         ),
-      useLocalTime,
+      useLocalTime: timeRangeFormatter.useLocalTime,
     });
   }
 

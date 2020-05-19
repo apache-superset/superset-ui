@@ -1,8 +1,5 @@
 import { ExtensibleFunction } from '@superset-ui/core';
 import { TimeRangeFormatFunction } from './types';
-import { PREVIEW_TIME } from './TimeFormatter';
-
-export const PREVIEW_TIME2 = new Date(Date.UTC(2017, 1, 20, 14, 25, 36));
 
 // Use type augmentation to indicate that
 // an instance of TimeFormatter is also a function
@@ -41,10 +38,6 @@ class TimeRangeFormatter extends ExtensibleFunction {
 
   format(values: (Date | number | null | undefined)[]) {
     return this.formatFunc(values);
-  }
-
-  preview(values: Date[] = [PREVIEW_TIME, PREVIEW_TIME2]) {
-    return `[${values.map(v => v.toUTCString()).join(',')}] => ${this.format(values)}`;
   }
 }
 
