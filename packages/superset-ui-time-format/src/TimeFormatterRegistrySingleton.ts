@@ -5,17 +5,21 @@ import TimeFormatsForGranularity from './TimeFormatsForGranularity';
 import { LOCAL_PREFIX } from './TimeFormats';
 import { TimeGranularity } from './types';
 import createTimeRangeFromGranularity from './utils/createTimeRangeFromGranularity';
+import TimeRangeFormatter from './TimeRangeFormatter';
 
 const getInstance = makeSingleton(TimeFormatterRegistry);
 
 export default getInstance;
 
 export function getTimeRangeFormatter(formatId?: string) {
-  return (range: (Date | null | undefined)[]) => {
-    const format = getInstance().get(formatId);
-    const [start, end] = range.map(value => format(value));
-    return start === end ? start : [start, end].join(' — ');
-  };
+  return new TimeRangeFormatter({
+    id: formatId || 'undefined',
+    formatFunc: (range: (Date | number | null | undefined)[]) => {
+      const format = getInstance().get(formatId);
+      const [start, end] = range.map(value => format(value));
+      return start === end ? start : [start, end].join(' — ');
+    },
+  });
 }
 
 export function formatTimeRange(formatId: string | undefined, range: (Date | null | undefined)[]) {
@@ -38,6 +42,15 @@ export function getTimeFormatter(formatId?: string, granularity?: TimeGranularit
   }
 
   return getInstance().get(formatId);
+}
+
+/**
+ * Syntactic sugar for backward compatibility
+ * TODO: Deprecate this in the next breaking change.
+ * @param granularity
+ */
+export function getTimeFormatterForGranularity(granularity?: TimeGranularity) {
+  return getTimeFormatter(undefined, granularity);
 }
 
 export function formatTime(

@@ -1,5 +1,5 @@
 import { ExtensibleFunction } from '@superset-ui/core';
-import { TimeFormatFunction } from './types';
+import { TimeRangeFormatFunction } from './types';
 import { PREVIEW_TIME } from './TimeFormatter';
 
 export const PREVIEW_TIME2 = new Date(Date.UTC(2017, 1, 20, 14, 25, 36));
@@ -17,7 +17,7 @@ class TimeRangeFormatter extends ExtensibleFunction {
 
   description: string;
 
-  formatFunc: TimeFormatFunction;
+  formatFunc: TimeRangeFormatFunction;
 
   useLocalTime: boolean;
 
@@ -25,7 +25,7 @@ class TimeRangeFormatter extends ExtensibleFunction {
     id: string;
     label?: string;
     description?: string;
-    formatFunc: TimeFormatFunction;
+    formatFunc: TimeRangeFormatFunction;
     useLocalTime?: boolean;
   }) {
     super((value: (Date | number | null | undefined)[]) => this.format(value));
@@ -39,12 +39,8 @@ class TimeRangeFormatter extends ExtensibleFunction {
     this.useLocalTime = useLocalTime;
   }
 
-  format(value: (Date | number | null | undefined)[]) {
-    if (value === null || value === undefined) {
-      return `${value}`;
-    }
-
-    return this.formatFunc(value instanceof Date ? value : new Date(value));
+  format(values: (Date | number | null | undefined)[]) {
+    return this.formatFunc(values);
   }
 
   preview(values: Date[] = [PREVIEW_TIME, PREVIEW_TIME2]) {
