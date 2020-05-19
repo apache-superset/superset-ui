@@ -88,8 +88,14 @@ describe('createTimeRangeFromGranularity(time, granularity, useLocalTime)', () =
       expect(testUTC(TimeGranularity.MONTH, 2020, 4, 1)).toEqual(
         '2020-05-01 00:00:00.000 — 2020-05-31 23:59:59.999',
       );
+      expect(testUTC(TimeGranularity.MONTH, 2020, 11, 1)).toEqual(
+        '2020-12-01 00:00:00.000 — 2020-12-31 23:59:59.999',
+      );
       expect(testUTC(TimeGranularity.QUARTER, 2020, 3, 1)).toEqual(
         '2020-04-01 00:00:00.000 — 2020-06-30 23:59:59.999',
+      );
+      expect(testUTC(TimeGranularity.QUARTER, 2020, 9, 1)).toEqual(
+        '2020-10-01 00:00:00.000 — 2020-12-31 23:59:59.999',
       );
       expect(testUTC(TimeGranularity.YEAR, 2020, 0, 1)).toEqual(
         '2020-01-01 00:00:00.000 — 2020-12-31 23:59:59.999',
@@ -143,8 +149,14 @@ describe('createTimeRangeFromGranularity(time, granularity, useLocalTime)', () =
       expect(testLocal(TimeGranularity.MONTH, 2020, 4, 1)).toEqual(
         '2020-05-01 00:00:00.000 — 2020-05-31 23:59:59.999',
       );
+      expect(testLocal(TimeGranularity.MONTH, 2020, 11, 1)).toEqual(
+        '2020-12-01 00:00:00.000 — 2020-12-31 23:59:59.999',
+      );
       expect(testLocal(TimeGranularity.QUARTER, 2020, 3, 1)).toEqual(
         '2020-04-01 00:00:00.000 — 2020-06-30 23:59:59.999',
+      );
+      expect(testLocal(TimeGranularity.QUARTER, 2020, 9, 1)).toEqual(
+        '2020-10-01 00:00:00.000 — 2020-12-31 23:59:59.999',
       );
       expect(testLocal(TimeGranularity.YEAR, 2020, 0, 1)).toEqual(
         '2020-01-01 00:00:00.000 — 2020-12-31 23:59:59.999',

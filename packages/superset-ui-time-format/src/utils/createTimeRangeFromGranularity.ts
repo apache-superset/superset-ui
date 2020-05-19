@@ -40,7 +40,7 @@ function computeEndTimeFromGranularity(
     | typeof TimeGranularity.MONTH
     | typeof TimeGranularity.QUARTER
     | typeof TimeGranularity.YEAR,
-  useLocalTime: boolean = false,
+  useLocalTime: boolean,
 ) {
   const month = useLocalTime ? time.getMonth() : time.getUTCMonth();
   const year = useLocalTime ? time.getFullYear() : time.getUTCFullYear();
@@ -85,8 +85,8 @@ export default function createTimeRangeFromGranularity(
     return [time, offsetTime];
   }
 
-  // For the WEEK_ENDING_XXX cases
-  // Assume given time is at 00:00:00.000
+  // For the WEEK_ENDING_XXX cases,
+  // currently assume given time is at 00:00:00.000 from database
   // so add 23:59:59.999
   const endTime = new Date(time.getTime() + MS_IN_DAY - 1);
   const offsetTime = new Date(endTime.getTime() + offset);
