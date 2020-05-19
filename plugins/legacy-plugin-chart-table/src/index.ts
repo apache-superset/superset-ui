@@ -20,6 +20,7 @@ import { t } from '@superset-ui/translation';
 import { ChartMetadata, ChartPlugin } from '@superset-ui/chart';
 import transformProps from './transformProps';
 import thumbnail from './images/thumbnail.png';
+import controlPanel from './controlPanel';
 
 const metadata = new ChartMetadata({
   canBeAnnotationTypes: ['EVENT', 'INTERVAL'],
@@ -29,12 +30,15 @@ const metadata = new ChartMetadata({
   useLegacyApi: true,
 });
 
+console.log('hello I worked with symlink!!!!!');
+
 export default class TableChartPlugin extends ChartPlugin {
   constructor() {
     super({
       loadChart: () => import('./ReactDataTable'),
       metadata,
       transformProps,
+      controlPanel,
     });
   }
 }
