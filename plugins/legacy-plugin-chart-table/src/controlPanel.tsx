@@ -18,7 +18,6 @@
  */
 import React from 'react';
 import { t } from '@superset-ui/translation';
-// @ts-ignore
 import {
   formatSelectOptions,
   D3_TIME_FORMAT_OPTIONS,
@@ -26,7 +25,6 @@ import {
 } from '@superset-ui/control-utils';
 import { validateNonEmpty } from '@superset-ui/validator';
 
-console.log('hello i worked');
 export default {
   controlPanelSections: [
     {
@@ -162,7 +160,6 @@ export default {
               renderTrigger: true,
               label: t('Page Length'),
               default: 0,
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-call
               choices: formatSelectOptions([0, 10, 25, 40, 50, 75, 100, 150, 200]),
               description: t('Rows per page, 0 means no pagination'),
             },

@@ -30,8 +30,6 @@ const metadata = new ChartMetadata({
   useLegacyApi: true,
 });
 
-console.log('hello I worked with symlink!!!!!');
-
 export default class TableChartPlugin extends ChartPlugin {
   constructor() {
     super({
