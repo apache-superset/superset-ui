@@ -28,7 +28,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@superset-ui/control-utils": "^0.13.12",
     "@types/datatables.net": "^1.10.18",
     "@types/react-dom": "^16.9.6",
     "datatables.net-bs": "^1.10.20",
