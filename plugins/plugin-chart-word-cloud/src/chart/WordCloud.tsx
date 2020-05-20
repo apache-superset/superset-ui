@@ -1,6 +1,7 @@
 import React from 'react';
 import cloudLayout, { Word } from 'd3-cloud';
 import { PlainObject } from 'encodable';
+import { supersetTheme } from '@superset-ui/style';
 import { WordCloudEncoding, wordCloudEncoderFactory } from './Encoder';
 
 export const ROTATION = {
