@@ -1,5 +1,5 @@
 import { TimeGranularity } from '../types';
-import createDate from './createDate';
+import createTime from './createTime';
 
 const MS_IN_SECOND = 1000;
 const MS_IN_MINUTE = 60 * MS_IN_SECOND;
@@ -44,26 +44,22 @@ function computeEndTimeFromGranularity(
 ) {
   const month = useLocalTime ? time.getMonth() : time.getUTCMonth();
   const year = useLocalTime ? time.getFullYear() : time.getUTCFullYear();
+  const mode = useLocalTime ? 'local' : 'utc';
+
   if (granularity === TimeGranularity.MONTH) {
     return deductOneMs(
-      createDate(
-        month === 11 ? { year: year + 1, useLocalTime } : { year, month: month + 1, useLocalTime },
-      ),
+      month === 11 ? createTime(mode, year + 1) : createTime(mode, year, month + 1),
     );
   }
   if (granularity === TimeGranularity.QUARTER) {
     const quarter = Math.floor(month / 3) + 1;
     return deductOneMs(
-      createDate(
-        quarter <= 3
-          ? { year, month: quarter * 3, useLocalTime }
-          : { year: year + 1, useLocalTime },
-      ),
+      quarter <= 3 ? createTime(mode, year, quarter * 3) : createTime(mode, year + 1),
     );
   }
 
   // Year
-  return deductOneMs(createDate({ year: year + 1, useLocalTime }));
+  return deductOneMs(createTime(mode, year + 1));
 }
 
 export default function createTimeRangeFromGranularity(
