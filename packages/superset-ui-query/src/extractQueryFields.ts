@@ -23,10 +23,8 @@ export default function extractQueryFields(
   };
   Object.entries(residualFormData).forEach(entry => {
     const [key, residualValue] = entry;
-    const normalizedKey = Object.prototype.hasOwnProperty.call(queryFieldAliases, key)
-      ? queryFieldAliases[key]
-      : key;
-    finalQueryFields[normalizedKey] = (finalQueryFields[normalizedKey] || []).concat(residualValue);
+    const normalizedKey = queryFieldAliases[key] || key;
+    finalQueryFields[normalizedKey] = [...(finalQueryFields[normalizedKey] || []), residualValue];
   });
   return finalQueryFields;
 }
