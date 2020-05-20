@@ -29,13 +29,14 @@
   },
   "dependencies": {
     "@data-ui/xy-chart": "^0.0.84",
-    "@superset-ui/style": "^0.13.11",
     "@types/d3-color": "^1.2.2",
     "@types/shortid": "^0.0.29",
     "d3-color": "^1.2.3",
+    "emotion-theming": "^10.0.27",
     "shortid": "^2.2.14"
   },
   "peerDependencies": {
+    "@superset-ui/style": "^0.13.11",
     "@superset-ui/chart": "^0.13.0",
     "@superset-ui/color": "^0.13.0",
     "@superset-ui/control-utils": "^0.13.0",
