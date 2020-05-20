@@ -94,7 +94,9 @@ export default class WordCloud extends React.PureComponent<
       .padding(5)
       .rotate(ROTATION[rotation] || ROTATION.flat)
       .text(d => encoder.channels.text.getValueFromDatum(d))
-      .font(d => encoder.channels.fontFamily.encodeDatum(d, 'Helvetica'))
+      .font(d =>
+        encoder.channels.fontFamily.encodeDatum(d, supersetTheme.typography.families.sansSerif),
+      )
       .fontWeight(d => encoder.channels.fontWeight.encodeDatum(d, 'normal'))
       .fontSize(d => encoder.channels.fontSize.encodeDatum(d, 0))
       .on('end', this.setWords)
