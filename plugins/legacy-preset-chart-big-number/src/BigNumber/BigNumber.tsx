@@ -28,19 +28,6 @@ import styled from '@superset-ui/style';
 import { smartDateVerboseFormatter } from '@superset-ui/time-format';
 import { TimeFormatter } from '@superset-ui/time-format';
 
-import './BigNumber.css';
-
-const Header = styled.div`
-  font-family: ${({ theme }) => theme.typography.families.sansSerif};
-  font-weight: ${({ theme }) => theme.typography.weights.bold};
-`;
-
-// once more theme variables are available, put them here
-const SubHeader = styled.div`
-  font-family: ${({ theme }) => theme.typography.families.sansSerif};
-  font-weight: ${({ theme }) => theme.typography.weights.bold};
-`;
-
 const defaultNumberFormatter = getNumberFormatter();
 
 const CHART_MARGIN = {
@@ -163,7 +150,7 @@ class BigNumberVis extends React.PureComponent<BigNumberVisProps, {}> {
     container.remove();
 
     return (
-      <Header
+      <div
         className="header-line"
         style={{
           fontSize,
@@ -171,7 +158,7 @@ class BigNumberVis extends React.PureComponent<BigNumberVisProps, {}> {
         }}
       >
         {text}
-      </Header>
+      </div>
     );
   }
 
@@ -200,7 +187,7 @@ class BigNumberVis extends React.PureComponent<BigNumberVisProps, {}> {
       container.remove();
 
       return (
-        <SubHeader
+        <div
           className="subheader-line"
           style={{
             fontSize,
@@ -208,7 +195,7 @@ class BigNumberVis extends React.PureComponent<BigNumberVisProps, {}> {
           }}
         >
           {text}
-        </SubHeader>
+        </div>
       );
     }
     return null;
@@ -314,4 +301,55 @@ class BigNumberVis extends React.PureComponent<BigNumberVisProps, {}> {
   }
 }
 
-export default BigNumberVis;
+export default styled(BigNumberVis)`
+  font-family: ${({ theme }) => theme.typography.families.sansSerif};
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  &.no-trendline .subheader-line {
+    padding-bottom: 0.3em;
+  }
+
+  .text-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    .alert {
+      font-size: ${({ theme }) => theme.typography.sizes.s};
+      margin: -0.5em 0 0.4em;
+      line-height: 1;
+      padding: 2px 4px 3px;
+      border-radius: 3px;
+    }
+  }
+
+  .header-line {
+    font-weight: ${({ theme }) => theme.typography.weights.normal};
+    position: relative;
+    line-height: 1em;
+    span {
+      position: absolute;
+      bottom: 0;
+    }
+  }
+
+  .subheader-line {
+    font-weight: ${({ theme }) => theme.typography.weights.light};
+    line-height: 1em;
+    padding-bottom: 0;
+  }
+
+  &.is-fallback-value{
+    .header-line, .subheader-line {
+    opacity: 0.5;
+  }
+ 
+  .superset-data-ui-tooltip {
+    z-index: 1000;
+    background: #000;
+  }
+
+`;
