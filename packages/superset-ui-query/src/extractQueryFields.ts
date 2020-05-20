@@ -1,7 +1,7 @@
 import { QueryFields, QueryFormResidualData } from './types/QueryFormData';
 import { QueryFieldData } from './types/Query';
 
-export default function buildQueryFieldData(
+export default function extractQueryFields(
   residualFormData: QueryFormResidualData,
   queryFields?: QueryFields,
 ) {

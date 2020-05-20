@@ -1,8 +1,8 @@
-import buildQueryFields from '../src/extractQueryFields';
+import extractQueryFields from '../src/extractQueryFields';
 
-describe('buildQueryFields', () => {
+describe('extractQueryFields', () => {
   it('should return default object', () => {
-    expect(buildQueryFields({})).toEqual({
+    expect(extractQueryFields({})).toEqual({
       columns: [],
       groupby: [],
       metrics: [],
@@ -10,12 +10,12 @@ describe('buildQueryFields', () => {
   });
 
   it('should group default metric controls to metrics', () => {
-    expect(buildQueryFields({ metric: 'my_metric' }).metrics).toEqual(['my_metric']);
+    expect(extractQueryFields({ metric: 'my_metric' }).metrics).toEqual(['my_metric']);
   });
 
   it('should group custom metrics with default metrics', () => {
     expect(
-      buildQueryFields(
+      extractQueryFields(
         { metric: 'metric_1', my_custom_metric: 'metric_2' },
         { my_custom_metric: 'metrics' },
       ).metrics,
@@ -23,7 +23,7 @@ describe('buildQueryFields', () => {
   });
 
   it('should extract columns', () => {
-    expect(buildQueryFields({ columns: 'col_1' })).toEqual({
+    expect(extractQueryFields({ columns: 'col_1' })).toEqual({
       columns: ['col_1'],
       groupby: [],
       metrics: [],
@@ -31,7 +31,7 @@ describe('buildQueryFields', () => {
   });
 
   it('should extract groupby', () => {
-    expect(buildQueryFields({ groupby: 'col_1' })).toEqual({
+    expect(extractQueryFields({ groupby: 'col_1' })).toEqual({
       columns: [],
       groupby: ['col_1'],
       metrics: [],
@@ -40,7 +40,7 @@ describe('buildQueryFields', () => {
 
   it('should extract custom groupby', () => {
     expect(
-      buildQueryFields({ series: 'col_1', metric: 'metric_1' }, { series: 'groupby' }),
+      extractQueryFields({ series: 'col_1', metric: 'metric_1' }, { series: 'groupby' }),
     ).toEqual({
       columns: [],
       groupby: ['col_1'],
@@ -50,7 +50,7 @@ describe('buildQueryFields', () => {
 
   it('should merge custom groupby with default group', () => {
     expect(
-      buildQueryFields(
+      extractQueryFields(
         { groupby: 'col_1', series: 'col_2', metric: 'metric_1' },
         { series: 'groupby' },
       ),
