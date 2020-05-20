@@ -24,7 +24,7 @@ export default function extractQueryFields(
   Object.entries(residualFormData).forEach(entry => {
     const [key, residualValue] = entry;
     const normalizedKey = queryFieldAliases[key] || key;
-    finalQueryFields[normalizedKey] = [...(finalQueryFields[normalizedKey] || []), residualValue];
+    finalQueryFields[normalizedKey] = (finalQueryFields[normalizedKey] || []).concat(residualValue);
   });
   return finalQueryFields;
 }
