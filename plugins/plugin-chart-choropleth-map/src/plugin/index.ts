@@ -30,7 +30,7 @@ const metadata = new ChartMetadata({
 export default class ChoroplethMapChartPlugin extends ChartPlugin {
   constructor() {
     super({
-      loadChart: () => import('../ChoroplethMap'),
+      loadChart: () => import('../chart/ChoroplethMap'),
       metadata,
       transformProps,
     });

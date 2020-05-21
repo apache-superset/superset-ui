@@ -26,7 +26,7 @@ export type ChoroplethMapProps = {
 
 export default class ChoroplethMap extends React.PureComponent<ChoroplethMapProps> {
   render() {
-    const { data, height, width } = this.props;
+    const { height, width } = this.props;
 
     return (
       <div style={{ backgroundColor: '#ffe459', padding: 16, borderRadius: 8, height, width }}>

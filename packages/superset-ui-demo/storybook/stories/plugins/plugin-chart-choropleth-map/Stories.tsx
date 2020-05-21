@@ -14,7 +14,7 @@ export default {
   decorators: [withKnobs],
 };
 
-export const legacyShim = () => (
+export const basic = () => (
   <SuperChart
     chartType="choropleth-map"
     width={400}
