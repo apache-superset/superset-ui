@@ -1,4 +1,5 @@
 import { createEncoderFactory, DeriveEncoding } from 'encodable';
+import { supersetTheme } from '@superset-ui/style';
 
 type WordCloudEncodingConfig = {
   color: ['Color', string];
@@ -18,7 +19,7 @@ export const wordCloudEncoderFactory = createEncoderFactory<WordCloudEncodingCon
   },
   defaultEncoding: {
     color: { value: 'black' },
-    fontFamily: { value: 'Helvetica' },
+    fontFamily: { value: supersetTheme.typography.families.sansSerif },
     fontSize: { value: 20 },
     fontWeight: { value: 'bold' },
     text: { value: '' },
