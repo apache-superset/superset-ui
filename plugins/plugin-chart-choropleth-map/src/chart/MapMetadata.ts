@@ -13,8 +13,7 @@ export default class MapMetadata {
     const { keyField } = metadata;
 
     this.config = metadata;
-    const keyAccessor = get(keyField);
-    this.keyAccessor = keyAccessor;
+    this.keyAccessor = get(keyField);
   }
 
   loadMap(): Promise<FeatureCollection> {

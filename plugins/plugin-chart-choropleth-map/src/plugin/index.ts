@@ -22,7 +22,7 @@ import transformProps from './transformProps';
 import thumbnail from '../images/thumbnail.png';
 
 const metadata = new ChartMetadata({
-  description: 'Choropleth Map',
+  description: t('Choropleth Map'),
   name: t('ChoroplethMap'),
   thumbnail,
 });

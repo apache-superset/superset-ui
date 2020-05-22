@@ -1,9 +1,9 @@
 import { keyBy } from 'lodash/fp';
 import { RawMapMetadata } from '../types';
 
-const maps: RawMapMetadata[] = [
-  {
-    key: 'usa',
+// Edit here if you are adding new map
+const mapsInfo: Record<string, Omit<RawMapMetadata, 'key'>> = {
+  usa: {
     name: 'USA',
     type: 'topojson',
     // @ts-ignore
@@ -11,8 +11,7 @@ const maps: RawMapMetadata[] = [
     keyField: 'properties.STATE',
     projection: 'Albers',
   },
-  {
-    key: 'world',
+  world: {
     name: 'World Map',
     type: 'topojson',
     // @ts-ignore
@@ -21,8 +20,14 @@ const maps: RawMapMetadata[] = [
     projection: 'Equirectangular',
     rotate: [-9, 0, 0],
   },
-];
+};
 
-const mapsLookup: Record<string, RawMapMetadata> = keyBy((map: RawMapMetadata) => map.key)(maps);
+/** List of available maps */
+export const maps: RawMapMetadata[] = Object.entries(mapsInfo).map(
+  ([key, metadata]) =>
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    ({ ...metadata, key } as RawMapMetadata),
+);
 
-export { mapsLookup, maps };
+/** All maps indexed by map key */
+export const mapsLookup = keyBy((m: RawMapMetadata) => m.key)(maps);
