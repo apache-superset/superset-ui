@@ -1,7 +1,7 @@
 import { keyBy } from 'lodash/fp';
 import { RawMapMetadata } from '../types';
 
-// Edit here if you are adding new map
+// Edit here if you are adding a new map
 const mapsInfo: Record<string, Omit<RawMapMetadata, 'key'>> = {
   usa: {
     name: 'USA',
