@@ -17,7 +17,6 @@
  * under the License.
  */
 import React from 'react';
-import styled from '@superset-ui/style';
 import { Zoom } from '@vx/zoom';
 import { localPoint } from '@vx/event';
 import { RectClipPath } from '@vx/clip-path';
@@ -25,8 +24,14 @@ import { geoPath } from 'd3-geo';
 import type { FeatureCollection } from 'geojson';
 import loadMap from './loadMap';
 import MapMetadata from './MapMetadata';
-
-const PADDING = 16;
+import {
+  PADDING,
+  RelativeDiv,
+  IconButton,
+  TextButton,
+  ZoomControls,
+  MiniMapControl,
+} from './components';
 
 const initialTransform = {
   scaleX: 1,
@@ -43,52 +48,6 @@ export type ChoroplethMapProps = {
   map: string;
   data: { x: number; y: number }[];
 };
-
-const RelativeDiv = styled.div`
-  position: relative;
-`;
-
-const ZoomControls = styled.div`
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-`;
-
-const MiniMapControl = styled.div`
-  position: absolute;
-  bottom: 22px;
-  right: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-`;
-
-const IconButton = styled.button`
-  width: 26px;
-  font-size: 20px;
-  text-align: center;
-  color: #222;
-  margin: 0px;
-  margin-bottom: 2px;
-  background: #f5f8fb;
-  padding: 0px 4px;
-  borderradius: 4px;
-  border: none;
-`;
-
-const TextButton = styled.button`
-  text-align: center;
-  font-size: 0.9em;
-  color: #222;
-  margin: 0px;
-  background: #f5f8fb;
-  padding: 2px 6px;
-  borderradius: 4px;
-  border: none;
-`;
 
 export default class ChoroplethMap extends React.PureComponent<
   ChoroplethMapProps,
@@ -151,7 +110,13 @@ export default class ChoroplethMap extends React.PureComponent<
       const path = geoPath().projection(projection);
 
       return object.features.map(f => (
-        <path key={keyAccessor(f)} stroke="#ccc" fill="#f0f0f0" d={path(f) || ''} />
+        <path
+          key={keyAccessor(f)}
+          vectorEffect="non-scaling-stroke"
+          stroke="#ccc"
+          fill="#f0f0f0"
+          d={path(f) || ''}
+        />
       ));
     }
 
@@ -163,7 +128,9 @@ export default class ChoroplethMap extends React.PureComponent<
     const { showMiniMap } = this.state;
 
     const renderedMap = this.renderMap();
-    const miniMapTransform = `scale(0.25) translate(${width * 3 - 60}, ${height * 3 - 60})`;
+    const miniMapTransform = `translate(${(width * 3) / 4 - PADDING}, ${
+      (height * 3) / 4 - PADDING
+    }) scale(0.25)`;
 
     return (
       <Zoom
