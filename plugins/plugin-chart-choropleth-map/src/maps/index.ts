@@ -1,9 +1,4 @@
-/* eslint-disable import/no-webpack-loader-syntax, import/no-unresolved */
 import { keyBy } from 'lodash/fp';
-// @ts-ignore
-import usa from 'file-loader!./usa.topojson';
-// @ts-ignore
-import world from 'file-loader!./world.topojson';
 import { RawMapMetadata } from '../types';
 
 const maps: RawMapMetadata[] = [
@@ -11,7 +6,8 @@ const maps: RawMapMetadata[] = [
     key: 'usa',
     name: 'USA',
     type: 'topojson',
-    url: usa,
+    // @ts-ignore
+    load: () => import('./usa-topo.json'),
     keyField: 'properties.STATE',
     projection: 'Albers',
   },
@@ -19,7 +15,8 @@ const maps: RawMapMetadata[] = [
     key: 'world',
     name: 'World Map',
     type: 'topojson',
-    url: world,
+    // @ts-ignore
+    load: () => import('./world-topo.json'),
     keyField: 'id',
     projection: 'Equirectangular',
     rotate: [-9, 0, 0],
