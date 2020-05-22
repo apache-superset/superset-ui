@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "@types/react": "^16.9.35",
-    "@types/d3-fetch": "^1.1.5",
     "@types/d3-geo": "^1.11.1",
     "@types/geojson": "^7946.0.3",
     "@types/topojson-client": "^3.0.0",
@@ -36,7 +35,6 @@
     "geojson": "^0.5.0",
     "lodash": "^4.17.15",
     "topojson-client": "^3.1.0",
-    "d3-fetch": "^1.1.2",
     "d3-geo": "^1.12.0"
   },
   "peerDependencies": {
