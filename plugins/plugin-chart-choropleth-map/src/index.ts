@@ -1,2 +1,2 @@
 export { default as ChoroplethMapChartPlugin } from './plugin';
-export * from './maps';
+export { maps, mapsLookup } from './maps';
