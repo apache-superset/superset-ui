@@ -8,5 +8,4 @@ export interface RawMapMetadata {
   type?: 'topojson' | 'geojson';
   projection?: Projection;
   rotate?: [number, number] | [number, number, number];
-  exclude?: string[];
 }

@@ -22,6 +22,8 @@ import type { FeatureCollection } from 'geojson';
 import loadMap from './loadMap';
 import MapMetadata from './MapMetadata';
 
+const PADDING = 16;
+
 export type ChoroplethMapProps = {
   height: number;
   width: number;
@@ -47,7 +49,18 @@ export default class ChoroplethMap extends React.PureComponent<
   }
 
   componentDidMount() {
+    this.loadMap();
+  }
+
+  componentDidUpdate(prevProps: ChoroplethMapProps) {
+    if (prevProps.map !== this.props.map) {
+      this.loadMap();
+    }
+  }
+
+  loadMap() {
     const { map } = this.props;
+    this.setState({ mapData: undefined });
     loadMap(map).then(mapData => {
       this.setState({ mapData });
     });
@@ -60,17 +73,17 @@ export default class ChoroplethMap extends React.PureComponent<
     if (typeof mapData !== 'undefined') {
       const { metadata, object } = mapData;
       const { keyAccessor } = metadata;
-      const projection = metadata.createProjection().fitSize([width, height], object);
+      const projection = metadata.createProjection().fitExtent(
+        [
+          [PADDING, PADDING],
+          [width - PADDING * 2, height - PADDING * 2],
+        ],
+        object,
+      );
       const path = geoPath().projection(projection);
 
       return object.features.map(f => (
-        <path
-          key={keyAccessor(f)}
-          d={path(f) || ''}
-          onClick={() => {
-            console.log(f);
-          }}
-        />
+        <path key={keyAccessor(f)} stroke="#ccc" fill="#f0f0f0" d={path(f) || ''} />
       ));
     }
 
@@ -81,11 +94,7 @@ export default class ChoroplethMap extends React.PureComponent<
     const { height, width } = this.props;
 
     return (
-      <svg
-        width={width}
-        height={height}
-        style={{ backgroundColor: '#ffe459', padding: 16, height, width }}
-      >
+      <svg width={width} height={height}>
         {this.renderMap()}
       </svg>
     );

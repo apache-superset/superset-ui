@@ -21,10 +21,7 @@ export const worldMap = () => (
     height={450}
     queryData={{ data }}
     formData={{
-      map: 'world',
-      linearColorScheme: 'schemeRdYlBu',
-      numberFormat: '.3s',
-      selectCountry: select(
+      map: select(
         'Map',
         maps.map(m => m.key),
         'world',

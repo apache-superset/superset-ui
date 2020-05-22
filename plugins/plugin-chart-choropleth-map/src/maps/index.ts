@@ -23,7 +23,6 @@ const maps: RawMapMetadata[] = [
     keyField: 'id',
     projection: 'Equirectangular',
     rotate: [-9, 0, 0],
-    exclude: ['ATA'],
   },
 ];
 
