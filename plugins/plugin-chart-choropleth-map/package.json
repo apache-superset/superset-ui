@@ -31,6 +31,8 @@
     "@types/geojson": "^7946.0.3",
     "@types/topojson-client": "^3.0.0",
     "@types/topojson-specification": "^1.0.0",
+    "@vx/event": "^0.0.196",
+    "@vx/zoom": "^0.0.196",
     "encodable": "^0.3.5",
     "geojson": "^0.5.0",
     "lodash": "^4.17.15",

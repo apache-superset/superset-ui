@@ -4089,6 +4089,14 @@
   dependencies:
     "@vx/point" "0.0.136"
 
+"@vx/event@0.0.196", "@vx/event@^0.0.196":
+  version "0.0.196"
+  resolved "https://registry.yarnpkg.com/@vx/event/-/event-0.0.196.tgz#be859997ef127819ef14a79e2447d737134b7dd2"
+  integrity sha512-Tv9AaXce3tuT5bSjvi26pHWVdRll44iYJVAmT4SPIK3brVxejngiL/Z+HCWeNjBg+YXexzKETJSbp8XjwFxohw==
+  dependencies:
+    "@types/react" "*"
+    "@vx/point" "0.0.196"
+
 "@vx/event@^0.0.165":
   version "0.0.165"
   resolved "https://registry.yarnpkg.com/@vx/event/-/event-0.0.165.tgz#675d89fdfdc08d0c99c36ff1a381ea50fccfba2e"
@@ -4508,6 +4516,15 @@
     classnames "^2.2.5"
     d3-voronoi "^1.1.2"
     prop-types "^15.6.1"
+
+"@vx/zoom@^0.0.196":
+  version "0.0.196"
+  resolved "https://registry.yarnpkg.com/@vx/zoom/-/zoom-0.0.196.tgz#22dcd91f1c058d2d5cd35f1d9a06a6b4d134a4e4"
+  integrity sha512-RGGREy4VcBx0z3miQQ8z/FZTuSptcdip2LiDKAnMlr/SJE8U5MGGAfxtkoLsbuIlJgatSHg0V86lCw7AY7EG9g==
+  dependencies:
+    "@types/react" "*"
+    "@vx/event" "0.0.196"
+    prop-types "^15.6.2"
 
 "@webassemblyjs/ast@1.9.0":
   version "1.9.0"
