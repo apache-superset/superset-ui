@@ -17,12 +17,25 @@
  * under the License.
  */
 import React from 'react';
+import styled from '@superset-ui/style';
+import { Zoom } from '@vx/zoom';
+import { localPoint } from '@vx/event';
+import { RectClipPath } from '@vx/clip-path';
 import { geoPath } from 'd3-geo';
 import type { FeatureCollection } from 'geojson';
 import loadMap from './loadMap';
 import MapMetadata from './MapMetadata';
 
 const PADDING = 16;
+
+const initialTransform = {
+  scaleX: 1,
+  scaleY: 1,
+  translateX: 0,
+  translateY: 0,
+  skewX: 0,
+  skewY: 0,
+};
 
 export type ChoroplethMapProps = {
   height: number;
@@ -31,6 +44,10 @@ export type ChoroplethMapProps = {
   data: { x: number; y: number }[];
 };
 
+const RelativeDiv = styled.div`
+  position: relative;
+`;
+
 export default class ChoroplethMap extends React.PureComponent<
   ChoroplethMapProps,
   {
@@ -38,6 +55,7 @@ export default class ChoroplethMap extends React.PureComponent<
       metadata: MapMetadata;
       object: FeatureCollection;
     };
+    showMinimap: boolean;
   }
 > {
   constructor(props: ChoroplethMapProps) {
@@ -45,6 +63,7 @@ export default class ChoroplethMap extends React.PureComponent<
 
     this.state = {
       mapData: undefined,
+      showMinimap: true,
     };
   }
 
@@ -94,9 +113,40 @@ export default class ChoroplethMap extends React.PureComponent<
     const { height, width } = this.props;
 
     return (
-      <svg width={width} height={height}>
-        {this.renderMap()}
-      </svg>
+      <Zoom
+        width={width}
+        height={height}
+        scaleXMin={1}
+        scaleXMax={8}
+        scaleYMin={1}
+        scaleYMax={8}
+        transformMatrix={initialTransform}
+      >
+        {zoom => (
+          <RelativeDiv>
+            <svg width={width} height={height}>
+              <RectClipPath id="zoom-clip" width={width} height={height} />
+              <g
+                onWheel={zoom.handleWheel}
+                onMouseDown={zoom.dragStart}
+                onMouseMove={zoom.dragMove}
+                onMouseUp={zoom.dragEnd}
+                onMouseLeave={() => {
+                  if (!zoom.isDragging) return;
+                  zoom.dragEnd();
+                }}
+                onDoubleClick={event => {
+                  const point = localPoint(event) || undefined;
+                  zoom.scale({ scaleX: 1.1, scaleY: 1.1, point });
+                }}
+              >
+                <rect width={width} height={height} fill="transparent" />
+                <g transform={zoom.toString()}>{this.renderMap()}</g>
+              </g>
+            </svg>
+          </RelativeDiv>
+        )}
+      </Zoom>
     );
   }
 }
