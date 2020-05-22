@@ -1,7 +1,7 @@
 import React from 'react';
 import { SuperChart } from '@superset-ui/chart';
 import {
-  MAPS,
+  maps,
   ChoroplethMapChartPlugin,
 } from '../../../../../../plugins/plugin-chart-choropleth-map/src';
 import { withKnobs, select } from '@storybook/addon-knobs';
@@ -14,21 +14,34 @@ export default {
   decorators: [withKnobs],
 };
 
-export const basic = () => (
+export const worldMap = () => (
   <SuperChart
     chartType="choropleth-map"
-    width={400}
-    height={400}
+    width={800}
+    height={450}
     queryData={{ data }}
     formData={{
+      map: 'world',
       linearColorScheme: 'schemeRdYlBu',
       numberFormat: '.3s',
       selectCountry: select(
         'Map',
-        MAPS.map(m => m.key),
-        'france',
+        maps.map(m => m.key),
+        'world',
         'map',
       ),
+    }}
+  />
+);
+
+export const usa = () => (
+  <SuperChart
+    chartType="choropleth-map"
+    width={800}
+    height={450}
+    queryData={{ data }}
+    formData={{
+      map: 'usa',
     }}
   />
 );

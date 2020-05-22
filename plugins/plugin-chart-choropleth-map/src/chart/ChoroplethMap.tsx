@@ -17,22 +17,77 @@
  * under the License.
  */
 import React from 'react';
+import { geoPath } from 'd3-geo';
+import type { FeatureCollection } from 'geojson';
+import loadMap from './loadMap';
+import MapMetadata from './MapMetadata';
 
 export type ChoroplethMapProps = {
   height: number;
   width: number;
+  map: string;
   data: { x: number; y: number }[];
 };
 
-export default class ChoroplethMap extends React.PureComponent<ChoroplethMapProps> {
+export default class ChoroplethMap extends React.PureComponent<
+  ChoroplethMapProps,
+  {
+    mapData?: {
+      metadata: MapMetadata;
+      object: FeatureCollection;
+    };
+  }
+> {
+  constructor(props: ChoroplethMapProps) {
+    super(props);
+
+    this.state = {
+      mapData: undefined,
+    };
+  }
+
+  componentDidMount() {
+    const { map } = this.props;
+    loadMap(map).then(mapData => {
+      this.setState({ mapData });
+    });
+  }
+
+  renderMap() {
+    const { height, width } = this.props;
+    const { mapData } = this.state;
+
+    if (typeof mapData !== 'undefined') {
+      const { metadata, object } = mapData;
+      const { keyAccessor } = metadata;
+      const projection = metadata.createProjection().fitSize([width, height], object);
+      const path = geoPath().projection(projection);
+
+      return object.features.map(f => (
+        <path
+          key={keyAccessor(f)}
+          d={path(f) || ''}
+          onClick={() => {
+            console.log(f);
+          }}
+        />
+      ));
+    }
+
+    return null;
+  }
+
   render() {
     const { height, width } = this.props;
 
     return (
-      <div style={{ backgroundColor: '#ffe459', padding: 16, borderRadius: 8, height, width }}>
-        <h3>Hello!</h3>
-        <pre>{JSON.stringify(this.props, null, 2)}</pre>
-      </div>
+      <svg
+        width={width}
+        height={height}
+        style={{ backgroundColor: '#ffe459', padding: 16, height, width }}
+      >
+        {this.renderMap()}
+      </svg>
     );
   }
 }
