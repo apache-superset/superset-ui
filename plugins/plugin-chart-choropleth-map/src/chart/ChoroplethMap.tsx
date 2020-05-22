@@ -48,6 +48,48 @@ const RelativeDiv = styled.div`
   position: relative;
 `;
 
+const ZoomControls = styled.div`
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
+
+const MiniMapControl = styled.div`
+  position: absolute;
+  bottom: 22px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
+
+const IconButton = styled.button`
+  width: 26px;
+  font-size: 20px;
+  text-align: center;
+  color: #222;
+  margin: 0px;
+  margin-bottom: 2px;
+  background: #f5f8fb;
+  padding: 0px 4px;
+  borderradius: 4px;
+  border: none;
+`;
+
+const TextButton = styled.button`
+  text-align: center;
+  font-size: 0.9em;
+  color: #222;
+  margin: 0px;
+  background: #f5f8fb;
+  padding: 2px 6px;
+  borderradius: 4px;
+  border: none;
+`;
+
 export default class ChoroplethMap extends React.PureComponent<
   ChoroplethMapProps,
   {
@@ -55,7 +97,7 @@ export default class ChoroplethMap extends React.PureComponent<
       metadata: MapMetadata;
       object: FeatureCollection;
     };
-    showMinimap: boolean;
+    showMiniMap: boolean;
   }
 > {
   constructor(props: ChoroplethMapProps) {
@@ -63,7 +105,7 @@ export default class ChoroplethMap extends React.PureComponent<
 
     this.state = {
       mapData: undefined,
-      showMinimap: true,
+      showMiniMap: true,
     };
   }
 
@@ -84,6 +126,13 @@ export default class ChoroplethMap extends React.PureComponent<
       this.setState({ mapData });
     });
   }
+
+  toggleMiniMap = () => {
+    const { showMiniMap } = this.state;
+    this.setState({
+      showMiniMap: !showMiniMap,
+    });
+  };
 
   renderMap() {
     const { height, width } = this.props;
@@ -111,14 +160,19 @@ export default class ChoroplethMap extends React.PureComponent<
 
   render() {
     const { height, width } = this.props;
+    const { showMiniMap } = this.state;
+
+    const renderedMap = this.renderMap();
+    const miniMapTransform = `scale(0.25) translate(${width * 3 - 60}, ${height * 3 - 60})`;
 
     return (
       <Zoom
+        style={{ width, height }}
         width={width}
         height={height}
-        scaleXMin={1}
+        scaleXMin={0.75}
         scaleXMax={8}
-        scaleYMin={1}
+        scaleYMin={0.75}
         scaleYMax={8}
         transformMatrix={initialTransform}
       >
@@ -128,8 +182,11 @@ export default class ChoroplethMap extends React.PureComponent<
               <RectClipPath id="zoom-clip" width={width} height={height} />
               <g
                 onWheel={zoom.handleWheel}
+                // eslint-disable-next-line react/jsx-handler-names
                 onMouseDown={zoom.dragStart}
+                // eslint-disable-next-line react/jsx-handler-names
                 onMouseMove={zoom.dragMove}
+                // eslint-disable-next-line react/jsx-handler-names
                 onMouseUp={zoom.dragEnd}
                 onMouseLeave={() => {
                   if (!zoom.isDragging) return;
@@ -141,9 +198,48 @@ export default class ChoroplethMap extends React.PureComponent<
                 }}
               >
                 <rect width={width} height={height} fill="transparent" />
-                <g transform={zoom.toString()}>{this.renderMap()}</g>
+                <g transform={zoom.toString()}>{renderedMap}</g>
               </g>
+              {showMiniMap && (
+                <g clipPath="url(#zoom-clip)" transform={miniMapTransform}>
+                  <rect width={width} height={height} fill="#fff" stroke="#999" />
+                  {renderedMap}
+                  <rect
+                    width={width}
+                    height={height}
+                    fill="white"
+                    fillOpacity={0.2}
+                    stroke="#999"
+                    strokeWidth={4}
+                    transform={zoom.toStringInvert()}
+                  />
+                </g>
+              )}
             </svg>
+            <ZoomControls>
+              <IconButton type="button" onClick={() => zoom.scale({ scaleX: 1.2, scaleY: 1.2 })}>
+                +
+              </IconButton>
+              <IconButton type="button" onClick={() => zoom.scale({ scaleX: 0.8, scaleY: 0.8 })}>
+                -
+              </IconButton>
+              <TextButton
+                type="button"
+                // eslint-disable-next-line react/jsx-handler-names
+                onClick={zoom.clear}
+              >
+                Reset
+              </TextButton>
+            </ZoomControls>
+            <MiniMapControl>
+              <TextButton
+                type="button"
+                // eslint-disable-next-line react/jsx-handler-names
+                onClick={this.toggleMiniMap}
+              >
+                {showMiniMap ? 'Hide' : 'Show'} Mini Map
+              </TextButton>
+            </MiniMapControl>
           </RelativeDiv>
         )}
       </Zoom>
