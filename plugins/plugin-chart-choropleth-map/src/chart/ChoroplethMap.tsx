@@ -17,6 +17,7 @@
  * under the License.
  */
 import React from 'react';
+import { t } from '@superset-ui/translation';
 import { Zoom } from '@vx/zoom';
 import { localPoint } from '@vx/event';
 import { RectClipPath } from '@vx/clip-path';
@@ -145,7 +146,11 @@ export default class ChoroplethMap extends React.PureComponent<
       >
         {zoom => (
           <RelativeDiv>
-            <svg width={width} height={height}>
+            <svg
+              width={width}
+              height={height}
+              style={{ cursor: zoom.isDragging ? 'grabbing' : 'grab' }}
+            >
               <RectClipPath id="zoom-clip" width={width} height={height} />
               <g
                 onWheel={zoom.handleWheel}
@@ -204,7 +209,7 @@ export default class ChoroplethMap extends React.PureComponent<
                 // eslint-disable-next-line react/jsx-handler-names
                 onClick={this.toggleMiniMap}
               >
-                {showMiniMap ? 'Hide' : 'Show'} Mini Map
+                {showMiniMap ? t('Hide Mini Map') : t('Show Mini Map')}
               </TextButton>
             </MiniMapControl>
           </RelativeDiv>
