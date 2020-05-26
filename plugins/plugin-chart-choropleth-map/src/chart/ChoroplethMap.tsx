@@ -21,6 +21,7 @@ import { t } from '@superset-ui/translation';
 import { Zoom } from '@vx/zoom';
 import { localPoint } from '@vx/event';
 import { RectClipPath } from '@vx/clip-path';
+import { keyBy } from 'lodash';
 import { geoPath } from 'd3-geo';
 import type { FeatureCollection } from 'geojson';
 import loadMap from './loadMap';
@@ -33,8 +34,14 @@ import {
   ZoomControls,
   MiniMapControl,
 } from './components';
+import {
+  ChoroplethMapEncoding,
+  choroplethMapEncoderFactory,
+  ChoroplethMapChannelOutputs,
+  DefaultChannelOutputs,
+} from './Encoder';
 
-const initialTransform = {
+const INITIAL_TRANSFORM = {
   scaleX: 1,
   scaleY: 1,
   translateX: 0,
@@ -43,47 +50,97 @@ const initialTransform = {
   skewY: 0,
 };
 
-export type ChoroplethMapProps = {
-  height: number;
-  width: number;
-  map: string;
-  data: { x: number; y: number }[];
+/**
+ * These props should be stored when saving the chart.
+ */
+export type ChoroplethMapVisualProps = {
+  encoding?: Partial<ChoroplethMapEncoding>;
+  map?: string;
 };
 
+export type ChoroplethMapProps = ChoroplethMapVisualProps & {
+  data: Record<string, unknown>[];
+  height: number;
+  width: number;
+};
+
+const defaultProps = {
+  encoding: {},
+  map: 'world',
+};
+
+const missingItem: ChoroplethMapChannelOutputs = DefaultChannelOutputs;
+
 export default class ChoroplethMap extends React.PureComponent<
-  ChoroplethMapProps,
+  ChoroplethMapProps & typeof defaultProps,
   {
-    mapData?: {
+    mapShape?: {
       metadata: MapMetadata;
       object: FeatureCollection;
+    };
+    mapData: {
+      [key: string]: ChoroplethMapChannelOutputs & {
+        datum: Record<string, unknown>;
+      };
     };
     showMiniMap: boolean;
   }
 > {
-  constructor(props: ChoroplethMapProps) {
+  static defaultProps = defaultProps;
+
+  createEncoder = choroplethMapEncoderFactory.createSelector();
+
+  constructor(props: ChoroplethMapProps & typeof defaultProps) {
     super(props);
 
     this.state = {
-      mapData: undefined,
+      mapData: {},
+      mapShape: undefined,
       showMiniMap: true,
     };
   }
 
   componentDidMount() {
     this.loadMap();
+    this.processData();
   }
 
   componentDidUpdate(prevProps: ChoroplethMapProps) {
     if (prevProps.map !== this.props.map) {
       this.loadMap();
     }
+    if (prevProps.data !== this.props.data || prevProps.encoding !== this.props.encoding) {
+      this.processData();
+    }
+  }
+
+  processData() {
+    const { data, encoding } = this.props;
+    const encoder = this.createEncoder(encoding);
+    const { key, fill, opacity, stroke, strokeWidth } = encoder.channels;
+
+    encoder.setDomainFromDataset(data);
+
+    const mapData = keyBy(
+      data.map(d => ({
+        key: key.getValueFromDatum<string>(d, DefaultChannelOutputs.key),
+        fill: fill.encodeDatum(d, DefaultChannelOutputs.fill),
+        opacity: opacity.encodeDatum(d, DefaultChannelOutputs.opacity),
+        stroke: stroke.encodeDatum(d, DefaultChannelOutputs.stroke),
+        strokeWidth: strokeWidth.encodeDatum(d, DefaultChannelOutputs.strokeWidth),
+        datum: d,
+      })),
+      d => d.key,
+    );
+
+    this.setState({ mapData });
   }
 
   loadMap() {
     const { map } = this.props;
-    this.setState({ mapData: undefined });
-    loadMap(map).then(mapData => {
-      this.setState({ mapData });
+    this.setState({ mapShape: undefined });
+    loadMap(map).then(mapShape => {
+      this.setState({ mapShape });
     });
   }
 
@@ -96,10 +153,10 @@ export default class ChoroplethMap extends React.PureComponent<
 
   renderMap() {
     const { height, width } = this.props;
-    const { mapData } = this.state;
+    const { mapShape, mapData } = this.state;
 
-    if (typeof mapData !== 'undefined') {
-      const { metadata, object } = mapData;
+    if (typeof mapShape !== 'undefined') {
+      const { metadata, object } = mapShape;
       const { keyAccessor } = metadata;
       const projection = metadata.createProjection().fitExtent(
         [
@@ -110,15 +167,23 @@ export default class ChoroplethMap extends React.PureComponent<
       );
       const path = geoPath().projection(projection);
 
-      return object.features.map(f => (
-        <path
-          key={keyAccessor(f)}
-          vectorEffect="non-scaling-stroke"
-          stroke="#ccc"
-          fill="#f0f0f0"
-          d={path(f) || ''}
-        />
-      ));
+      return object.features.map(f => {
+        const key = keyAccessor(f);
+        const encodedDatum = mapData[key] || missingItem;
+        const { stroke, fill, strokeWidth, opacity } = encodedDatum;
+
+        return (
+          <path
+            key={key}
+            vectorEffect="non-scaling-stroke"
+            stroke={stroke}
+            strokeWidth={strokeWidth}
+            fill={fill}
+            opacity={opacity}
+            d={path(f) || ''}
+          />
+        );
+      });
     }
 
     return null;
@@ -142,7 +207,7 @@ export default class ChoroplethMap extends React.PureComponent<
         scaleXMax={8}
         scaleYMin={0.75}
         scaleYMax={8}
-        transformMatrix={initialTransform}
+        transformMatrix={INITIAL_TRANSFORM}
       >
         {zoom => (
           <RelativeDiv>
