@@ -1,7 +1,9 @@
 import { ChartProps } from '@superset-ui/chart';
-import { WordCloudEncoding } from '../chart/Encoder';
-import { WordCloudProps } from '../chart/WordCloud';
-import { LegacyWordCloudFormData } from './types';
+import {
+  WordCloudProps,
+  WordCloudEncoding,
+} from '@superset-ui/plugin-chart-word-cloud/src/chart/WordCloud';
+import { LegacyWordCloudFormData } from '@superset-ui/plugin-chart-word-cloud/src/legacyPlugin/types';
 
 function getMetricLabel(metric: LegacyWordCloudFormData['metric']): string | undefined {
   if (typeof metric === 'string' || typeof metric === 'undefined') {

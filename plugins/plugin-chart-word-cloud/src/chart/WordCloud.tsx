@@ -1,8 +1,8 @@
 import React from 'react';
 import cloudLayout, { Word } from 'd3-cloud';
-import { PlainObject } from 'encodable';
-import { supersetTheme } from '@superset-ui/style';
-import { WordCloudEncoding, wordCloudEncoderFactory } from './Encoder';
+import { PlainObject, createEncoderFactory, DeriveEncoding } from 'encodable';
+import { SupersetThemeProps } from '@superset-ui/style';
+import { withTheme } from 'emotion-theming';
 
 export const ROTATION = {
   flat: () => 0,
@@ -12,6 +12,16 @@ export const ROTATION = {
 };
 
 export type RotationType = keyof typeof ROTATION;
+
+export type WordCloudEncoding = DeriveEncoding<WordCloudEncodingConfig>;
+
+type WordCloudEncodingConfig = {
+  color: ['Color', string];
+  fontFamily: ['Category', string];
+  fontSize: ['Numeric', number];
+  fontWeight: ['Category', string | number];
+  text: ['Text', string];
+};
 
 /**
  * These props should be stored when saving the chart.
@@ -36,8 +46,8 @@ const defaultProps = {
   rotation: 'flat',
 };
 
-export default class WordCloud extends React.PureComponent<
-  WordCloudProps & typeof defaultProps,
+class WordCloud extends React.PureComponent<
+  WordCloudProps & typeof defaultProps & SupersetThemeProps,
   State
 > {
   // Cannot name it isMounted because of conflict
@@ -48,7 +58,24 @@ export default class WordCloud extends React.PureComponent<
     words: [],
   };
 
-  createEncoder = wordCloudEncoderFactory.createSelector();
+  wordCloudEncoderFactory = createEncoderFactory<WordCloudEncodingConfig>({
+    channelTypes: {
+      color: 'Color',
+      fontFamily: 'Category',
+      fontSize: 'Numeric',
+      fontWeight: 'Category',
+      text: 'Text',
+    },
+    defaultEncoding: {
+      color: { value: 'black' },
+      fontFamily: { value: this.props.theme.typography.families.sansSerif },
+      fontSize: { value: 20 },
+      fontWeight: { value: 'bold' },
+      text: { value: '' },
+    },
+  });
+
+  createEncoder = this.wordCloudEncoderFactory.createSelector();
 
   static defaultProps = defaultProps;
 
@@ -95,7 +122,7 @@ export default class WordCloud extends React.PureComponent<
       .rotate(ROTATION[rotation] || ROTATION.flat)
       .text(d => encoder.channels.text.getValueFromDatum(d))
       .font(d =>
-        encoder.channels.fontFamily.encodeDatum(d, supersetTheme.typography.families.sansSerif),
+        encoder.channels.fontFamily.encodeDatum(d, this.props.theme.typography.families.sansSerif),
       )
       .fontWeight(d => encoder.channels.fontWeight.encodeDatum(d, 'normal'))
       .fontSize(d => encoder.channels.fontSize.encodeDatum(d, 0))
@@ -104,8 +131,9 @@ export default class WordCloud extends React.PureComponent<
   }
 
   render() {
-    const { width, height, encoding } = this.props;
+    const { width, height, encoding, theme } = this.props;
     const { words } = this.state;
+    console.warn('theme!!!!!', theme, this.context);
 
     const encoder = this.createEncoder(encoding);
     encoder.channels.color.setDomainFromDataset(words);
@@ -131,3 +159,5 @@ export default class WordCloud extends React.PureComponent<
     );
   }
 }
+
+export default withTheme(WordCloud);
