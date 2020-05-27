@@ -5,7 +5,7 @@ import { Runtime, Inspector } from '@observablehq/runtime';
 interface Props {
   observableUrl: string;
   data: any;
-  displayCells: string[]
+  displayedCells: string[];
 }
 
 interface State {
@@ -14,6 +14,10 @@ interface State {
 export default class ObservableWrapper extends Component<Props, State> {
   state = { cellNames: [] };
   notebookWrapperRef = React.createRef();
+  refs = this.props.displayedCells.reduce((acc, cellName) => {
+    acc[cellName] = React.createRef();
+    return acc;
+  }, {});
   notebook = null;
   dataCell = {
     value: null,
@@ -31,9 +35,8 @@ export default class ObservableWrapper extends Component<Props, State> {
       const cellNames: string[] = [];
       runtime.module(this.notebook, (name: string) => {
         if (name) cellNames.push(name);
-        console.log(this.props.displayCells)
-        if (this.props.displayCells.includes(name)) {
-          return new Inspector(this.notebookWrapperRef.current);
+        if (this.props.displayedCells.includes(name)) {
+          return new Inspector(this.refs[name].current);
         }
         if (name === 'mutable data') {
           return {
@@ -54,6 +57,13 @@ export default class ObservableWrapper extends Component<Props, State> {
   }
 
   render() {
-    return <div className="notebook-wrapper" ref={this.notebookWrapperRef} />;
+    console.log(this.props.displayedCells);
+    return (
+      <div className="notebook-wrapper">
+        {this.props.displayedCells.map(name => (
+          <div id={`cell-${name}`} ref={this.refs[name]} />
+        ))}
+      </div>
+    );
   }
 }

@@ -9,7 +9,7 @@ import ObservableWrapper from './ObservableWrapper';
 export interface ObservableVisualProps {
   observableUrl?: string;
   displayedCells: string[];
-  showDebug: boolean
+  showDebug: boolean;
 }
 
 export interface ObservableProps extends ObservableVisualProps {
@@ -38,9 +38,13 @@ class Observable extends React.PureComponent<ObservableProps & SupersetThemeProp
             <pre>{JSON.stringify(data, undefined, 2)}</pre>
           </div>
         )}
-        <ObservableWrapper observableUrl={observableUrl} data={data} displayCells={displayedCells} />
+        <ObservableWrapper
+          observableUrl={observableUrl}
+          data={data}
+          displayedCells={displayedCells}
+        />
       </div>
-    )
+    );
   }
 }
 
