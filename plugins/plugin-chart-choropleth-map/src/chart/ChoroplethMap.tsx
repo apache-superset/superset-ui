@@ -39,10 +39,9 @@ import {
 import {
   ChoroplethMapEncoding,
   choroplethMapEncoderFactory,
-  ChoroplethMapChannelOutputs,
   DefaultChannelOutputs,
 } from './Encoder';
-import MapTooltip, { TooltipData } from './MapTooltip';
+import MapTooltip, { MapDataPoint } from './MapTooltip';
 
 const INITIAL_TRANSFORM = {
   scaleX: 1,
@@ -62,7 +61,7 @@ export type ChoroplethMapVisualProps = {
 };
 
 export type ChoroplethMapProps = ChoroplethMapVisualProps &
-  WithTooltipProvidedProps<TooltipData> & {
+  WithTooltipProvidedProps<MapDataPoint> & {
     data: Record<string, unknown>[];
     height: number;
     width: number;
@@ -74,7 +73,7 @@ const defaultProps = {
   map: 'world',
 };
 
-const missingItem: ChoroplethMapChannelOutputs = DefaultChannelOutputs;
+const missingItem = DefaultChannelOutputs;
 
 class ChoroplethMap extends React.PureComponent<
   ChoroplethMapProps & typeof defaultProps,
@@ -84,9 +83,7 @@ class ChoroplethMap extends React.PureComponent<
       object: FeatureCollection;
     };
     mapData: {
-      [key: string]: ChoroplethMapChannelOutputs & {
-        datum: Record<string, unknown>;
-      };
+      [key: string]: MapDataPoint;
     };
     showMiniMap: boolean;
   }
@@ -156,7 +153,7 @@ class ChoroplethMap extends React.PureComponent<
     });
   };
 
-  handleMouseOver = (event: React.MouseEvent<SVGPathElement>, datum?: TooltipData) => {
+  handleMouseOver = (event: React.MouseEvent<SVGPathElement>, datum?: MapDataPoint) => {
     const coords = localPoint(event);
     this.props.showTooltip({
       tooltipLeft: coords?.x,

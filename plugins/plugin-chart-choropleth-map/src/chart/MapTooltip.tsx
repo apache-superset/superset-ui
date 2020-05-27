@@ -5,7 +5,7 @@ import { Tooltip } from '@vx/tooltip';
 import { TooltipFrame, TooltipTable } from '@superset-ui/chart-composition';
 import { ChoroplethMapChannelOutputs, ChoroplethMapEncoder } from './Encoder';
 
-export type TooltipData = ChoroplethMapChannelOutputs & {
+export type MapDataPoint = Omit<ChoroplethMapChannelOutputs, 'tooltip'> & {
   datum: Record<string, unknown>;
 };
 
@@ -13,7 +13,7 @@ export type MapTooltipProps = {
   top?: number;
   left?: number;
   encoder: ChoroplethMapEncoder;
-  tooltipData?: TooltipData;
+  tooltipData?: MapDataPoint;
 };
 
 export default function MapTooltip({ encoder, left, top, tooltipData }: MapTooltipProps) {
@@ -22,7 +22,7 @@ export default function MapTooltip({ encoder, left, top, tooltipData }: MapToolt
   }
 
   const { channels } = encoder;
-  const { key, fill, stroke, strokeWidth, opacity } = channels;
+  const { key, fill, stroke, strokeWidth, opacity, tooltip } = channels;
   const { datum } = tooltipData;
 
   const tooltipRows = [
@@ -37,6 +37,14 @@ export default function MapTooltip({ encoder, left, top, tooltipData }: MapToolt
         valueColumn: channel.formatDatum(datum),
       });
     }
+  });
+
+  tooltip.forEach(g => {
+    tooltipRows.push({
+      key: `${g.name}`,
+      keyColumn: g.getTitle(),
+      valueColumn: g.formatDatum(datum),
+    });
   });
 
   return (

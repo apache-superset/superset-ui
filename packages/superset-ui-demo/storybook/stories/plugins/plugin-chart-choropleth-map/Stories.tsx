@@ -69,6 +69,12 @@ export const usa = () => (
             range: ['#fdc28c', '#7f2704'],
           },
         },
+        tooltip: [
+          {
+            field: 'favoriteFruit',
+            title: 'Fruit',
+          },
+        ],
       },
     }}
   />
