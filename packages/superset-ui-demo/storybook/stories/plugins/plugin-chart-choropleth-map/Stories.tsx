@@ -5,7 +5,7 @@ import {
   ChoroplethMapChartPlugin,
 } from '../../../../../../plugins/plugin-chart-choropleth-map/src';
 import { withKnobs, select } from '@storybook/addon-knobs';
-import data from './Stories';
+import useFakeMapData from './useFakeMapData';
 
 new ChoroplethMapChartPlugin().configure({ key: 'choropleth-map' }).register();
 
@@ -14,31 +14,81 @@ export default {
   decorators: [withKnobs],
 };
 
-export const worldMap = () => (
-  <SuperChart
-    chartType="choropleth-map"
-    width={800}
-    height={450}
-    queryData={{ data }}
-    formData={{
-      map: select(
-        'Map',
-        maps.map(m => m.key),
-        'world',
-        'map',
-      ),
-    }}
-  />
-);
+export const worldMap = () => {
+  const map = select(
+    'Map',
+    maps.map(m => m.key),
+    'world',
+    'map',
+  );
+
+  return (
+    <SuperChart
+      chartType="choropleth-map"
+      width={800}
+      height={450}
+      queryData={{ data: useFakeMapData(map) }}
+      formData={{
+        map,
+        encoding: {
+          key: {
+            field: 'key',
+          },
+          fill: {
+            type: 'quantitative',
+            field: 'numStudents',
+            scale: {
+              range: ['#cecee5', '#3f007d'],
+            },
+          },
+        },
+      }}
+    />
+  );
+};
 
 export const usa = () => (
   <SuperChart
     chartType="choropleth-map"
     width={800}
     height={450}
-    queryData={{ data }}
+    queryData={{ data: useFakeMapData('usa') }}
     formData={{
       map: 'usa',
+      encoding: {
+        key: {
+          field: 'key',
+        },
+        fill: {
+          type: 'quantitative',
+          field: 'numStudents',
+          scale: {
+            range: ['#fdc28c', '#7f2704'],
+          },
+        },
+      },
+    }}
+  />
+);
+
+export const categoricalColor = () => (
+  <SuperChart
+    chartType="choropleth-map"
+    width={800}
+    height={450}
+    queryData={{ data: useFakeMapData('usa') }}
+    formData={{
+      map: 'usa',
+      encoding: {
+        fill: {
+          type: 'nominal',
+          field: 'favoriteFruit',
+          scale: {
+            domain: ['apple', 'banana', 'grape'],
+            range: ['#e74c3c', '#f1c40f', '#9b59b6'],
+          },
+        },
+      },
     }}
   />
 );
