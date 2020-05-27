@@ -11,6 +11,11 @@ function range(count: number) {
   return values;
 }
 
+function rangeZeroToOne(steps: number) {
+  const denominator = steps - 1;
+  return range(steps).map(i => i / denominator);
+}
+
 export interface SequentialSchemeConfig extends ColorSchemeConfig {
   isDiverging?: boolean;
 }
@@ -33,11 +38,9 @@ export default class SequentialScheme extends ColorScheme {
    * the domain of this scale will be
    * [0, 0.5, 1]
    */
-  private createPiecewiseScale() {
-    const denominator = this.colors.length - 1;
-
+  private createZeroToOnePiecewiseScale() {
     return scaleLinear<string>()
-      .domain(range(this.colors.length).map(i => i / denominator))
+      .domain(rangeZeroToOne(this.colors.length))
       .range(this.colors)
       .interpolate(interpolateHcl)
       .clamp(true);
@@ -48,7 +51,7 @@ export default class SequentialScheme extends ColorScheme {
    * to match the number of elements in the color scheme
    * because D3 continuous scale uses piecewise mapping between domain and range.
    * This is a common use-case when the domain is [min, max]
-   * and the palette such as ColorBrewer's has multiple elements.
+   * and the palette has more than two colors.
    *
    * @param domain domain of the scale
    * @param modifyRange Set this to true if you don't want to modify the domain and
@@ -62,8 +65,11 @@ export default class SequentialScheme extends ColorScheme {
         .range(this.getColors(domain.length));
     }
 
-    const piecewiseScale = this.createPiecewiseScale();
-    const adjustDomain = scaleLinear().range(domain).clamp(true);
+    const piecewiseScale = this.createZeroToOnePiecewiseScale();
+    const adjustDomain = scaleLinear()
+      .domain(rangeZeroToOne(domain.length))
+      .range(domain)
+      .clamp(true);
     const newDomain = piecewiseScale.domain().map(d => adjustDomain(d));
 
     return piecewiseScale.domain(newDomain);
@@ -82,10 +88,9 @@ export default class SequentialScheme extends ColorScheme {
       return this.colors;
     }
 
-    const piecewiseScale = this.createPiecewiseScale();
+    const piecewiseScale = this.createZeroToOnePiecewiseScale();
     const adjustExtent = scaleLinear().range(extent).clamp(true);
-    const denominator2 = numColors - 1;
 
-    return range(numColors).map(i => piecewiseScale(adjustExtent(i / denominator2)));
+    return rangeZeroToOne(numColors).map(x => piecewiseScale(adjustExtent(x)));
   }
 }
