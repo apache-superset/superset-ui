@@ -42,6 +42,8 @@ class Observable extends React.PureComponent<ObservableProps & SupersetThemeProp
           observableUrl={observableUrl}
           data={data}
           displayedCells={displayedCells}
+          width={width}
+          height={height}
         />
       </div>
     );

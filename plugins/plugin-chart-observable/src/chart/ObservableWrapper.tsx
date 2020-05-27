@@ -6,6 +6,8 @@ interface Props {
   observableUrl: string;
   data: any;
   displayedCells: string[];
+  width: number;
+  height: number;
 }
 
 interface State {
@@ -14,10 +16,7 @@ interface State {
 export default class ObservableWrapper extends Component<Props, State> {
   state = { cellNames: [] };
   notebookWrapperRef = React.createRef();
-  refs = this.props.displayedCells.reduce((acc, cellName) => {
-    acc[cellName] = React.createRef();
-    return acc;
-  }, {});
+  displayRefs: { [key: string]: HTMLDivElement | null } = {};
   notebook = null;
   dataCell = {
     value: null,
@@ -32,20 +31,26 @@ export default class ObservableWrapper extends Component<Props, State> {
     import(/* webpackIgnore: true */ this.notebookURL).then(module => {
       this.notebook = module.default;
       const runtime = new Runtime();
-      const cellNames: string[] = [];
-      runtime.module(this.notebook, (name: string) => {
-        if (name) cellNames.push(name);
-        if (this.props.displayedCells.includes(name)) {
-          return new Inspector(this.refs[name].current);
-        }
-        if (name === 'mutable data') {
-          return {
-            fulfilled: (value: any) => {
-              this.dataCell = value;
-            },
-          };
-        }
-      });
+      let cellNames: string[] = [];
+      if (!this.props.displayedCells.length) {
+        runtime.module(this.notebook, Inspector.into(this.notebookWrapperRef.current));
+      } else {
+        runtime.module(this.notebook, (name: string) => {
+          if (name) cellNames.push(name);
+
+          if (this.props.displayedCells.includes(name) && this.displayRefs[name] !== null) {
+            console.log(this.refs);
+            return new Inspector(this.displayRefs[name]);
+          }
+          if (name === 'mutable data') {
+            return {
+              fulfilled: (value: any) => {
+                this.dataCell = value;
+              },
+            };
+          }
+        });
+      }
       this.setState({ cellNames });
     });
   }
@@ -57,11 +62,21 @@ export default class ObservableWrapper extends Component<Props, State> {
   }
 
   render() {
-    console.log(this.props.displayedCells);
+    const wrapperStyles = {
+      overflow: 'auto',
+      width: this.props.width,
+      height: this.props.height,
+    };
     return (
-      <div className="notebook-wrapper">
+      <div style={wrapperStyles} className="notebook-wrapper" ref={this.notebookWrapperRef}>
         {this.props.displayedCells.map(name => (
-          <div id={`cell-${name}`} ref={this.refs[name]} />
+          <div
+            key={name}
+            id={`cell-${name}`}
+            ref={ref => {
+              this.displayRefs[name] = ref;
+            }}
+          />
         ))}
       </div>
     );
