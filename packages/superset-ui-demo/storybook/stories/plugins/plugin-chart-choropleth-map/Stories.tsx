@@ -5,7 +5,7 @@ import {
   ChoroplethMapChartPlugin,
 } from '../../../../../../plugins/plugin-chart-choropleth-map/src';
 import { withKnobs, select } from '@storybook/addon-knobs';
-import data from './Stories';
+import MapDataProvider from './MapDataProvider';
 
 new ChoroplethMapChartPlugin().configure({ key: 'choropleth-map' }).register();
 
@@ -14,31 +14,67 @@ export default {
   decorators: [withKnobs],
 };
 
-export const worldMap = () => (
-  <SuperChart
-    chartType="choropleth-map"
-    width={800}
-    height={450}
-    queryData={{ data }}
-    formData={{
-      map: select(
-        'Map',
-        maps.map(m => m.key),
-        'world',
-        'map',
-      ),
-    }}
-  />
-);
+export const worldMap = () => {
+  const map = select(
+    'Map',
+    maps.map(m => m.key),
+    'world',
+    'map',
+  );
+
+  return (
+    <MapDataProvider map={map}>
+      {({ data }) => (
+        <SuperChart
+          chartType="choropleth-map"
+          width={800}
+          height={450}
+          queryData={{ data }}
+          formData={{
+            map,
+            encoding: {
+              key: {
+                field: 'key',
+              },
+              fill: {
+                type: 'quantitative',
+                field: 'count',
+                scale: {
+                  range: ['#cecee5', '#3f007d'],
+                },
+              },
+            },
+          }}
+        />
+      )}
+    </MapDataProvider>
+  );
+};
 
 export const usa = () => (
-  <SuperChart
-    chartType="choropleth-map"
-    width={800}
-    height={450}
-    queryData={{ data }}
-    formData={{
-      map: 'usa',
-    }}
-  />
+  <MapDataProvider map="usa">
+    {({ data }) => (
+      <SuperChart
+        chartType="choropleth-map"
+        width={800}
+        height={450}
+        queryData={{ data }}
+        formData={{
+          map: 'usa',
+          encoding: {
+            key: {
+              field: 'key',
+            },
+            fill: {
+              type: 'quantitative',
+              field: 'count',
+              scale: {
+                range: ['#fdc28c', '#7f2704'],
+              },
+            },
+          },
+        }}
+      />
+    )}
+  </MapDataProvider>
 );
