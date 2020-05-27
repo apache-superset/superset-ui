@@ -65,6 +65,7 @@ export type ChoroplethMapProps = ChoroplethMapVisualProps & {
 };
 
 const defaultProps = {
+  data: [],
   encoding: {},
   map: 'world',
 };
