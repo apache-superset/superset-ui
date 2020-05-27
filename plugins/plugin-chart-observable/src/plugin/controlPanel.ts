@@ -19,6 +19,8 @@
 import { t } from '@superset-ui/translation';
 import { validateNonEmpty } from '@superset-ui/validator';
 
+// type State = unknown;
+
 export default {
   controlPanelSections: [
     {
@@ -30,33 +32,9 @@ export default {
       label: t('Options'),
       expanded: true,
       controlSetRows: [
-        // [
-        //   {
-        //     name: 'size_from',
-        //     config: {
-        //       type: 'TextControl',
-        //       isInt: true,
-        //       label: t('Minimum Font Size'),
-        //       renderTrigger: true,
-        //       default: 10,
-        //       description: t('Font size for the smallest value in the list'),
-        //     },
-        //   },
-        //   {
-        //     name: 'size_to',
-        //     config: {
-        //       type: 'TextControl',
-        //       isInt: true,
-        //       label: t('Maximum Font Size'),
-        //       renderTrigger: true,
-        //       default: 70,
-        //       description: t('Font size for the biggest value in the list'),
-        //     },
-        //   },
-        // ],
         [
           {
-            name: 'observableUrl',
+            name: 'observable_url',
             config: {
               type: 'TextControl',
               label: t('Observable URL'),
@@ -66,7 +44,34 @@ export default {
             },
           },
         ],
-        // ['color_scheme', 'label_colors'],
+        [
+          {
+            name: 'displayed_cells',
+            config: {
+              type: 'SelectControl',
+              multi: true,
+              label: t('Displayed Cells'),
+              default: [],
+              description: t(
+                'Select the cells from your Observable notebook that you wish to display on the Dashboard',
+              ),
+              // optionRenderer: c => <ColumnOption showType column={c} />,
+              // valueRenderer: c => <ColumnOption column={c} />,
+              // valueKey: 'column_name',
+              allowAll: true,
+              // mapStateToProps: (state: State) => {
+              //   console.warn('state!!!!!!!!!!!', state);
+              //   return {
+              //     options: state.datasource ? state.datasource.columns : [],
+              //   };
+              // },
+              options: ['some', 'observable', 'cells', 'here'],
+              // commaChoosesOption: false,
+              // freeForm: true,
+              renderTrigger: true,
+            },
+          },
+        ],
       ],
     },
   ],

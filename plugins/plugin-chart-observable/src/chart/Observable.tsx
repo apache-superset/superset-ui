@@ -7,6 +7,7 @@ import { SupersetThemeProps } from '@superset-ui/style';
  */
 export interface ObservableVisualProps {
   observableUrl?: string;
+  displayedCells: string[];
 }
 
 export interface ObservableProps extends ObservableVisualProps {
@@ -17,7 +18,7 @@ export interface ObservableProps extends ObservableVisualProps {
 
 class Observable extends React.PureComponent<ObservableProps & SupersetThemeProps> {
   render() {
-    const { width, height, data, observableUrl } = this.props;
+    const { width, height, data, observableUrl, displayedCells } = this.props;
 
     return (
       <>
@@ -27,6 +28,8 @@ class Observable extends React.PureComponent<ObservableProps & SupersetThemeProp
         <div>
           {width} / {height}
         </div>
+        <h2>Displayed Cells</h2>
+        <pre>{JSON.stringify(displayedCells, undefined, 2)}</pre>
         <h2>Data</h2>
         <pre>{JSON.stringify(data, undefined, 2)}</pre>
       </>
