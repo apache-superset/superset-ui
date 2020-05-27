@@ -1,6 +1,6 @@
 import { ChartProps } from '@superset-ui/chart';
-import { WordCloudProps } from '@superset-ui/plugin-chart-word-cloud/src/chart/WordCloud';
-import { WordCloudFormData } from '@superset-ui/plugin-chart-word-cloud/src/types';
+import { WordCloudProps } from '../chart/WordCloud';
+import { WordCloudFormData } from '../types';
 
 export default function transformProps(chartProps: ChartProps): WordCloudProps {
   const { width, height, formData, queryData } = chartProps;
