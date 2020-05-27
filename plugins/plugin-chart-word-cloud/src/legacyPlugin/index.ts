@@ -1,6 +1,6 @@
 import { t } from '@superset-ui/translation';
 import { ChartMetadata, ChartPlugin } from '@superset-ui/chart';
-import transformProps from '@superset-ui/plugin-chart-word-cloud/src/legacyPlugin/transformProps';
+import transformProps from './transformProps';
 import buildQuery from '../plugin/buildQuery';
 import thumbnail from '../images/thumbnail.png';
 import { LegacyWordCloudFormData } from './types';
