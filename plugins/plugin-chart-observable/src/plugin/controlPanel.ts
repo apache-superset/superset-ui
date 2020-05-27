@@ -58,7 +58,7 @@ export default {
               // optionRenderer: c => <ColumnOption showType column={c} />,
               // valueRenderer: c => <ColumnOption column={c} />,
               // valueKey: 'column_name',
-              allowAll: true,
+              // allowAll: true,
               // mapStateToProps: (state: State) => {
               //   console.warn('state!!!!!!!!!!!', state);
               //   return {
