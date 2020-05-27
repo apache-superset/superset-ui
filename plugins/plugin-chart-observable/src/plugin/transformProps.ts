@@ -12,7 +12,7 @@ export default function transformProps(chartProps: ChartProps): ObservableProps 
     data: queryData.data,
     height,
     observableUrl: observableUrl || 'nada',
-    displayedCells: [],
+    displayedCells: displayedCells || [],
     showDebug: showDebug || false,
     width,
   };
