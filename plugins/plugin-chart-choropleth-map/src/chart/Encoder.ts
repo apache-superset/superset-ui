@@ -31,7 +31,7 @@ export const choroplethMapEncoderFactory = createEncoderFactory<ChoroplethMapEnc
     strokeWidth: 'Numeric',
   },
   defaultEncoding: {
-    key: { field: 'key' },
+    key: { field: 'key', title: 'Location' },
     fill: { value: DefaultChannelOutputs.fill },
     opacity: { value: DefaultChannelOutputs.opacity },
     stroke: { value: DefaultChannelOutputs.stroke },

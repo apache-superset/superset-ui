@@ -33,6 +33,8 @@
     "@types/topojson-specification": "^1.0.0",
     "@vx/clip-path": "^0.0.196",
     "@vx/event": "^0.0.196",
+    "@vx/pattern": "^0.0.196",
+    "@vx/tooltip": "^0.0.196",
     "@vx/zoom": "^0.0.196",
     "encodable": "^0.3.5",
     "geojson": "^0.5.0",
@@ -43,6 +45,7 @@
   "peerDependencies": {
     "react": "^16.13.1",
     "@superset-ui/chart": "^0.13.3",
+    "@superset-ui/chart-composition": "^0.13.3",
     "@superset-ui/translation": "^0.13.3",
     "@superset-ui/style": "^0.13.3"
   }

@@ -21,9 +21,11 @@ import { t } from '@superset-ui/translation';
 import { Zoom } from '@vx/zoom';
 import { localPoint } from '@vx/event';
 import { RectClipPath } from '@vx/clip-path';
+import { withTooltip } from '@vx/tooltip';
 import { keyBy } from 'lodash';
 import { geoPath } from 'd3-geo';
 import type { FeatureCollection } from 'geojson';
+import { WithTooltipProvidedProps } from '@vx/tooltip/lib/enhancers/withTooltip';
 import loadMap from './loadMap';
 import MapMetadata from './MapMetadata';
 import {
@@ -40,6 +42,7 @@ import {
   ChoroplethMapChannelOutputs,
   DefaultChannelOutputs,
 } from './Encoder';
+import MapTooltip, { TooltipData } from './MapTooltip';
 
 const INITIAL_TRANSFORM = {
   scaleX: 1,
@@ -58,11 +61,12 @@ export type ChoroplethMapVisualProps = {
   map?: string;
 };
 
-export type ChoroplethMapProps = ChoroplethMapVisualProps & {
-  data: Record<string, unknown>[];
-  height: number;
-  width: number;
-};
+export type ChoroplethMapProps = ChoroplethMapVisualProps &
+  WithTooltipProvidedProps<TooltipData> & {
+    data: Record<string, unknown>[];
+    height: number;
+    width: number;
+  };
 
 const defaultProps = {
   data: [],
@@ -72,7 +76,7 @@ const defaultProps = {
 
 const missingItem: ChoroplethMapChannelOutputs = DefaultChannelOutputs;
 
-export default class ChoroplethMap extends React.PureComponent<
+class ChoroplethMap extends React.PureComponent<
   ChoroplethMapProps & typeof defaultProps,
   {
     mapShape?: {
@@ -152,8 +156,17 @@ export default class ChoroplethMap extends React.PureComponent<
     });
   };
 
+  handleMouseOver = (event: React.MouseEvent<SVGPathElement>, datum?: TooltipData) => {
+    const coords = localPoint(event);
+    this.props.showTooltip({
+      tooltipLeft: coords?.x,
+      tooltipTop: coords?.y,
+      tooltipData: datum,
+    });
+  };
+
   renderMap() {
-    const { height, width } = this.props;
+    const { height, width, hideTooltip } = this.props;
     const { mapShape, mapData } = this.state;
 
     if (typeof mapShape !== 'undefined') {
@@ -174,6 +187,7 @@ export default class ChoroplethMap extends React.PureComponent<
         const { stroke, fill, strokeWidth, opacity } = encodedDatum;
 
         return (
+          // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
           <path
             key={key}
             vectorEffect="non-scaling-stroke"
@@ -182,6 +196,10 @@ export default class ChoroplethMap extends React.PureComponent<
             fill={fill}
             opacity={opacity}
             d={path(f) || ''}
+            onMouseOver={event => this.handleMouseOver(event, encodedDatum)}
+            onMouseMove={event => this.handleMouseOver(event, encodedDatum)}
+            onMouseOut={hideTooltip}
+            onBlur={hideTooltip}
           />
         );
       });
@@ -191,8 +209,17 @@ export default class ChoroplethMap extends React.PureComponent<
   }
 
   render() {
-    const { height, width } = this.props;
+    const {
+      height,
+      width,
+      encoding,
+      tooltipOpen,
+      tooltipLeft,
+      tooltipTop,
+      tooltipData,
+    } = this.props;
     const { showMiniMap } = this.state;
+    const encoder = this.createEncoder(encoding);
 
     const renderedMap = this.renderMap();
     const miniMapTransform = `translate(${(width * 3) / 4 - PADDING}, ${
@@ -200,87 +227,99 @@ export default class ChoroplethMap extends React.PureComponent<
     }) scale(0.25)`;
 
     return (
-      <Zoom
-        style={{ width, height }}
-        width={width}
-        height={height}
-        scaleXMin={0.75}
-        scaleXMax={8}
-        scaleYMin={0.75}
-        scaleYMax={8}
-        transformMatrix={INITIAL_TRANSFORM}
-      >
-        {zoom => (
-          <RelativeDiv>
-            <svg
-              width={width}
-              height={height}
-              style={{ cursor: zoom.isDragging ? 'grabbing' : 'grab' }}
-            >
-              <RectClipPath id="zoom-clip" width={width} height={height} />
-              <g
-                onWheel={zoom.handleWheel}
-                // eslint-disable-next-line react/jsx-handler-names
-                onMouseDown={zoom.dragStart}
-                // eslint-disable-next-line react/jsx-handler-names
-                onMouseMove={zoom.dragMove}
-                // eslint-disable-next-line react/jsx-handler-names
-                onMouseUp={zoom.dragEnd}
-                onMouseLeave={() => {
-                  if (!zoom.isDragging) return;
-                  zoom.dragEnd();
-                }}
-                onDoubleClick={event => {
-                  const point = localPoint(event) || undefined;
-                  zoom.scale({ scaleX: 1.1, scaleY: 1.1, point });
-                }}
+      <>
+        <Zoom
+          style={{ width, height }}
+          width={width}
+          height={height}
+          scaleXMin={0.75}
+          scaleXMax={8}
+          scaleYMin={0.75}
+          scaleYMax={8}
+          transformMatrix={INITIAL_TRANSFORM}
+        >
+          {zoom => (
+            <RelativeDiv>
+              <svg
+                width={width}
+                height={height}
+                style={{ cursor: zoom.isDragging ? 'grabbing' : 'grab' }}
               >
-                <rect width={width} height={height} fill="transparent" />
-                <g transform={zoom.toString()}>{renderedMap}</g>
-              </g>
-              {showMiniMap && (
-                <g clipPath="url(#zoom-clip)" transform={miniMapTransform}>
-                  <rect width={width} height={height} fill="#fff" stroke="#999" />
-                  {renderedMap}
-                  <rect
-                    width={width}
-                    height={height}
-                    fill="white"
-                    fillOpacity={0.2}
-                    stroke="#999"
-                    strokeWidth={4}
-                    transform={zoom.toStringInvert()}
-                  />
+                <RectClipPath id="zoom-clip" width={width} height={height} />
+                <g
+                  onWheel={zoom.handleWheel}
+                  // eslint-disable-next-line react/jsx-handler-names
+                  onMouseDown={zoom.dragStart}
+                  // eslint-disable-next-line react/jsx-handler-names
+                  onMouseMove={zoom.dragMove}
+                  // eslint-disable-next-line react/jsx-handler-names
+                  onMouseUp={zoom.dragEnd}
+                  onMouseLeave={() => {
+                    if (!zoom.isDragging) return;
+                    zoom.dragEnd();
+                  }}
+                  onDoubleClick={event => {
+                    const point = localPoint(event) || undefined;
+                    zoom.scale({ scaleX: 1.1, scaleY: 1.1, point });
+                  }}
+                >
+                  <rect width={width} height={height} fill="transparent" />
+                  <g transform={zoom.toString()}>{renderedMap}</g>
                 </g>
-              )}
-            </svg>
-            <ZoomControls>
-              <IconButton type="button" onClick={() => zoom.scale({ scaleX: 1.2, scaleY: 1.2 })}>
-                +
-              </IconButton>
-              <IconButton type="button" onClick={() => zoom.scale({ scaleX: 0.8, scaleY: 0.8 })}>
-                -
-              </IconButton>
-              <TextButton
-                type="button"
-                // eslint-disable-next-line react/jsx-handler-names
-                onClick={zoom.clear}
-              >
-                Reset
-              </TextButton>
-            </ZoomControls>
-            <MiniMapControl>
-              <TextButton
-                type="button"
-                // eslint-disable-next-line react/jsx-handler-names
-                onClick={this.toggleMiniMap}
-              >
-                {showMiniMap ? t('Hide Mini Map') : t('Show Mini Map')}
-              </TextButton>
-            </MiniMapControl>
-          </RelativeDiv>
+                {showMiniMap && (
+                  <g clipPath="url(#zoom-clip)" transform={miniMapTransform}>
+                    <rect width={width} height={height} fill="#fff" stroke="#999" />
+                    {renderedMap}
+                    <rect
+                      width={width}
+                      height={height}
+                      fill="white"
+                      fillOpacity={0.2}
+                      stroke="#999"
+                      strokeWidth={4}
+                      transform={zoom.toStringInvert()}
+                    />
+                  </g>
+                )}
+              </svg>
+              <ZoomControls>
+                <IconButton type="button" onClick={() => zoom.scale({ scaleX: 1.2, scaleY: 1.2 })}>
+                  +
+                </IconButton>
+                <IconButton type="button" onClick={() => zoom.scale({ scaleX: 0.8, scaleY: 0.8 })}>
+                  -
+                </IconButton>
+                <TextButton
+                  type="button"
+                  // eslint-disable-next-line react/jsx-handler-names
+                  onClick={zoom.clear}
+                >
+                  Reset
+                </TextButton>
+              </ZoomControls>
+              <MiniMapControl>
+                <TextButton
+                  type="button"
+                  // eslint-disable-next-line react/jsx-handler-names
+                  onClick={this.toggleMiniMap}
+                >
+                  {showMiniMap ? t('Hide Mini Map') : t('Show Mini Map')}
+                </TextButton>
+              </MiniMapControl>
+            </RelativeDiv>
+          )}
+        </Zoom>
+        {tooltipOpen && (
+          <MapTooltip
+            encoder={encoder}
+            top={tooltipTop}
+            left={tooltipLeft}
+            tooltipData={tooltipData}
+          />
         )}
-      </Zoom>
+      </>
     );
   }
 }
+
+export default withTooltip(ChoroplethMap);
