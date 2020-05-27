@@ -6,4 +6,5 @@ import { ObservableVisualProps } from './chart/Observable';
 export type ObservableFormData = QueryFormData &
   ObservableVisualProps & {
     series: string;
+    observableUrl: string;
   };

@@ -30,49 +30,43 @@ export default {
       label: t('Options'),
       expanded: true,
       controlSetRows: [
+        // [
+        //   {
+        //     name: 'size_from',
+        //     config: {
+        //       type: 'TextControl',
+        //       isInt: true,
+        //       label: t('Minimum Font Size'),
+        //       renderTrigger: true,
+        //       default: 10,
+        //       description: t('Font size for the smallest value in the list'),
+        //     },
+        //   },
+        //   {
+        //     name: 'size_to',
+        //     config: {
+        //       type: 'TextControl',
+        //       isInt: true,
+        //       label: t('Maximum Font Size'),
+        //       renderTrigger: true,
+        //       default: 70,
+        //       description: t('Font size for the biggest value in the list'),
+        //     },
+        //   },
+        // ],
         [
           {
-            name: 'size_from',
+            name: 'observableUrl',
             config: {
               type: 'TextControl',
-              isInt: true,
-              label: t('Minimum Font Size'),
+              label: t('Observable URL'),
+              description: t('URL of the Observable HQ workbook you wish to add in'),
               renderTrigger: true,
-              default: 10,
-              description: t('Font size for the smallest value in the list'),
-            },
-          },
-          {
-            name: 'size_to',
-            config: {
-              type: 'TextControl',
-              isInt: true,
-              label: t('Maximum Font Size'),
-              renderTrigger: true,
-              default: 70,
-              description: t('Font size for the biggest value in the list'),
+              clearable: true,
             },
           },
         ],
-        [
-          {
-            name: 'rotation',
-            config: {
-              type: 'SelectControl',
-              label: t('Word Rotation'),
-              choices: [
-                ['random', 'random'],
-                ['flat', 'flat'],
-                ['square', 'square'],
-              ],
-              renderTrigger: true,
-              default: 'square',
-              clearable: false,
-              description: t('Rotation to apply to words in the cloud'),
-            },
-          },
-        ],
-        ['color_scheme', 'label_colors'],
+        // ['color_scheme', 'label_colors'],
       ],
     },
   ],
@@ -80,9 +74,6 @@ export default {
     series: {
       validators: [validateNonEmpty],
       clearable: false,
-    },
-    row_limit: {
-      default: 100,
     },
   },
 };

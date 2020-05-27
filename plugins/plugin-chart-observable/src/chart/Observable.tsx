@@ -6,7 +6,7 @@ import { SupersetThemeProps } from '@superset-ui/style';
  * These props should be stored when saving the chart.
  */
 export interface ObservableVisualProps {
-  rotation?: string;
+  observableUrl?: string;
 }
 
 export interface ObservableProps extends ObservableVisualProps {
@@ -17,10 +17,14 @@ export interface ObservableProps extends ObservableVisualProps {
 
 class Observable extends React.PureComponent<ObservableProps & SupersetThemeProps> {
   render() {
-    const { width, height, data } = this.props;
+    const { width, height, data, observableUrl } = this.props;
+
+    console.warn('props', this.props);
 
     return (
       <>
+        <h2>Observable URL</h2>
+        <div>{observableUrl || 'none set'}</div>
         <h2>Width / Height</h2>
         <div>
           {width} / {height}
