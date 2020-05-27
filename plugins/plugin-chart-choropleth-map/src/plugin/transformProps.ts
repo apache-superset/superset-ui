@@ -20,13 +20,14 @@ import { ChartProps } from '@superset-ui/chart';
  */
 export default function transformProps(chartProps: ChartProps) {
   const { width, height, formData, queryData } = chartProps;
-  const { map } = formData;
+  const { map, encoding } = formData;
   const { data } = queryData;
 
   return {
     width,
     height,
     map,
+    encoding,
     data,
   };
 }
