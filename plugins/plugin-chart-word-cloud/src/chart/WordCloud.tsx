@@ -131,9 +131,8 @@ class WordCloud extends React.PureComponent<
   }
 
   render() {
-    const { width, height, encoding, theme } = this.props;
+    const { width, height, encoding } = this.props;
     const { words } = this.state;
-    console.warn('theme!!!!!', theme, this.context);
 
     const encoder = this.createEncoder(encoding);
     encoder.channels.color.setDomainFromDataset(words);
