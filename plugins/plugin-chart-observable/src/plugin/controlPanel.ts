@@ -72,6 +72,18 @@ export default {
             },
           },
         ],
+        [
+          {
+            name: 'show_debug',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Debug'),
+              renderTrigger: true,
+              default: true,
+              description: t('Show the data used to render your Observable'),
+            },
+          },
+        ],
       ],
     },
   ],

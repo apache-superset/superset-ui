@@ -4,7 +4,7 @@ import { ObservableFormData } from '../types';
 
 export default function transformProps(chartProps: ChartProps): ObservableProps {
   const { width, height, formData, queryData } = chartProps;
-  const { observableUrl, displayedCells } = formData as ObservableFormData;
+  const { observableUrl, displayedCells, showDebug } = formData as ObservableFormData;
 
   // console.warn('formData!!!!!!!!!!!', formData);
 
@@ -12,7 +12,8 @@ export default function transformProps(chartProps: ChartProps): ObservableProps 
     data: queryData.data,
     height,
     observableUrl: observableUrl || 'nada',
-    displayedCells,
+    displayedCells: [],
+    showDebug: showDebug || false,
     width,
   };
 }
