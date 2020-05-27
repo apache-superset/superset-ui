@@ -19,8 +19,6 @@ class Observable extends React.PureComponent<ObservableProps & SupersetThemeProp
   render() {
     const { width, height, data, observableUrl } = this.props;
 
-    console.warn('props', this.props);
-
     return (
       <>
         <h2>Observable URL</h2>

@@ -6,8 +6,6 @@ export default function transformProps(chartProps: ChartProps): ObservableProps 
   const { width, height, formData, queryData } = chartProps;
   const { observableUrl } = formData as ObservableFormData;
 
-  console.warn('formData!!!!!!!!!!!', formData);
-
   return {
     data: queryData.data,
     height,
