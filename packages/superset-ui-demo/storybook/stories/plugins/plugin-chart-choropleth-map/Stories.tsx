@@ -90,9 +90,6 @@ export const categoricalColor = () => (
         formData={{
           map: 'usa',
           encoding: {
-            key: {
-              field: 'key',
-            },
             fill: {
               type: 'nominal',
               field: 'favoriteFruit',

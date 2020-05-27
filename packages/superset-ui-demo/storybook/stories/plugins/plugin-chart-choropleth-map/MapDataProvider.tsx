@@ -6,9 +6,9 @@ export default function MapDataProvider({
   children: Children,
 }: {
   map: string;
-  children: React.ComponentType<{ data: any }>;
+  children: React.ComponentType<{ data: Record<string, unknown>[] }>;
 }) {
-  const [data, setData] = useState<Record<string, any>[]>([]);
+  const [data, setData] = useState<Record<string, unknown>[]>([]);
   useEffect(() => {
     generateMapData(map).then(mapData => {
       setData(mapData);
