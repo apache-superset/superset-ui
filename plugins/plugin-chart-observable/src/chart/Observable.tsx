@@ -1,34 +1,12 @@
 import React from 'react';
-import cloudLayout, { Word } from 'd3-cloud';
-import { PlainObject, createEncoderFactory, DeriveEncoding } from 'encodable';
+import { PlainObject } from 'encodable';
 import { SupersetThemeProps } from '@superset-ui/style';
-import { withTheme } from 'emotion-theming';
-
-export const ROTATION = {
-  flat: () => 0,
-  // this calculates a random rotation between -90 and 90 degrees.
-  random: () => Math.floor(Math.random() * 6 - 3) * 30,
-  square: () => Math.floor(Math.random() * 2) * 90,
-};
-
-export type RotationType = keyof typeof ROTATION;
-
-export type ObservableEncoding = DeriveEncoding<ObservableEncodingConfig>;
-
-type ObservableEncodingConfig = {
-  color: ['Color', string];
-  fontFamily: ['Category', string];
-  fontSize: ['Numeric', number];
-  fontWeight: ['Category', string | number];
-  text: ['Text', string];
-};
 
 /**
  * These props should be stored when saving the chart.
  */
 export interface ObservableVisualProps {
-  encoding?: Partial<ObservableEncoding>;
-  rotation?: RotationType;
+  rotation?: string;
 }
 
 export interface ObservableProps extends ObservableVisualProps {
@@ -37,126 +15,21 @@ export interface ObservableProps extends ObservableVisualProps {
   width: number;
 }
 
-interface State {
-  words: Word[];
-}
-
-const defaultProps = {
-  encoding: {},
-  rotation: 'flat',
-};
-
-class Observable extends React.PureComponent<
-  ObservableProps & typeof defaultProps & SupersetThemeProps,
-  State
-> {
-  // Cannot name it isMounted because of conflict
-  // with React's component function name
-  isComponentMounted: boolean = false;
-
-  state: State = {
-    words: [],
-  };
-
-  observableEncoderFactory = createEncoderFactory<ObservableEncodingConfig>({
-    channelTypes: {
-      color: 'Color',
-      fontFamily: 'Category',
-      fontSize: 'Numeric',
-      fontWeight: 'Category',
-      text: 'Text',
-    },
-    defaultEncoding: {
-      color: { value: 'black' },
-      fontFamily: { value: this.props.theme.typography.families.sansSerif },
-      fontSize: { value: 20 },
-      fontWeight: { value: 'bold' },
-      text: { value: '' },
-    },
-  });
-
-  createEncoder = this.observableEncoderFactory.createSelector();
-
-  static defaultProps = defaultProps;
-
-  componentDidMount() {
-    this.isComponentMounted = true;
-    this.update();
-  }
-
-  componentDidUpdate(prevProps: ObservableProps) {
-    const { data, encoding, width, height, rotation } = this.props;
-
-    if (
-      prevProps.data !== data ||
-      prevProps.encoding !== encoding ||
-      prevProps.width !== width ||
-      prevProps.height !== height ||
-      prevProps.rotation !== rotation
-    ) {
-      this.update();
-    }
-  }
-
-  componentWillUnmount() {
-    this.isComponentMounted = false;
-  }
-
-  setWords = (words: Word[]) => {
-    if (this.isComponentMounted) {
-      this.setState({ words });
-    }
-  };
-
-  update() {
-    const { data, width, height, rotation, encoding } = this.props;
-
-    const encoder = this.createEncoder(encoding);
-    encoder.setDomainFromDataset(data);
-
-    cloudLayout()
-      .size([width, height])
-      // clone the data because cloudLayout mutates input
-      .words(data.map(d => ({ ...d })))
-      .padding(5)
-      .rotate(ROTATION[rotation] || ROTATION.flat)
-      .text(d => encoder.channels.text.getValueFromDatum(d))
-      .font(d =>
-        encoder.channels.fontFamily.encodeDatum(d, this.props.theme.typography.families.sansSerif),
-      )
-      .fontWeight(d => encoder.channels.fontWeight.encodeDatum(d, 'normal'))
-      .fontSize(d => encoder.channels.fontSize.encodeDatum(d, 0))
-      .on('end', this.setWords)
-      .start();
-  }
-
+class Observable extends React.PureComponent<ObservableProps & SupersetThemeProps> {
   render() {
-    const { width, height, encoding } = this.props;
-    const { words } = this.state;
-
-    const encoder = this.createEncoder(encoding);
-    encoder.channels.color.setDomainFromDataset(words);
+    const { width, height, data } = this.props;
 
     return (
-      <svg width={width} height={height}>
-        <g transform={`translate(${width / 2},${height / 2})`}>
-          {words.map(w => (
-            <text
-              key={w.text}
-              fontSize={`${w.size}px`}
-              fontWeight={w.weight}
-              fontFamily={w.font}
-              fill={encoder.channels.color.encodeDatum(w, '')}
-              textAnchor="middle"
-              transform={`translate(${w.x}, ${w.y}) rotate(${w.rotate})`}
-            >
-              {w.text}
-            </text>
-          ))}
-        </g>
-      </svg>
+      <>
+        <h2>Width / Height</h2>
+        <div>
+          {width} / {height}
+        </div>
+        <h2>Data</h2>
+        <pre>{JSON.stringify(data, undefined, 2)}</pre>
+      </>
     );
   }
 }
 
-export default withTheme(Observable);
+export default Observable;

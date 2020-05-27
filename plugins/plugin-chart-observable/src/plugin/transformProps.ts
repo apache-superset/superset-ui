@@ -4,11 +4,10 @@ import { ObservableFormData } from '../types';
 
 export default function transformProps(chartProps: ChartProps): ObservableProps {
   const { width, height, formData, queryData } = chartProps;
-  const { encoding, rotation } = formData as ObservableFormData;
+  const { rotation } = formData as ObservableFormData;
 
   return {
     data: queryData.data,
-    encoding,
     height,
     rotation,
     width,
