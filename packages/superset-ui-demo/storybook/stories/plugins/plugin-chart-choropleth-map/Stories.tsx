@@ -38,7 +38,7 @@ export const worldMap = () => {
               },
               fill: {
                 type: 'quantitative',
-                field: 'count',
+                field: 'numStudents',
                 scale: {
                   range: ['#cecee5', '#3f007d'],
                 },
@@ -67,9 +67,38 @@ export const usa = () => (
             },
             fill: {
               type: 'quantitative',
-              field: 'count',
+              field: 'numStudents',
               scale: {
                 range: ['#fdc28c', '#7f2704'],
+              },
+            },
+          },
+        }}
+      />
+    )}
+  </MapDataProvider>
+);
+
+export const categoricalColor = () => (
+  <MapDataProvider map="usa">
+    {({ data }) => (
+      <SuperChart
+        chartType="choropleth-map"
+        width={800}
+        height={450}
+        queryData={{ data }}
+        formData={{
+          map: 'usa',
+          encoding: {
+            key: {
+              field: 'key',
+            },
+            fill: {
+              type: 'nominal',
+              field: 'favoriteFruit',
+              scale: {
+                domain: ['apple', 'banana', 'grape'],
+                range: ['#e74c3c', '#f1c40f', '#9b59b6'],
               },
             },
           },
