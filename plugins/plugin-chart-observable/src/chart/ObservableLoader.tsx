@@ -14,9 +14,10 @@ interface Props {
 interface State {
   cellNames: string[];
 }
-export default class ObservableWrapper extends Component<Props, State> {
+
+export default class ObservableLoader extends Component<Props, State> {
   state = { cellNames: [] };
-  notebookWrapperRef = React.createRef();
+  notebookWrapperRef = React.createRef<HTMLDivElement>();
   displayRefs: { [key: string]: HTMLDivElement | null } = {};
   notebook = null;
   dataCell = {

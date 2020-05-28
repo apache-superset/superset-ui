@@ -1,7 +1,7 @@
 import React from 'react';
 import { PlainObject } from 'encodable';
 import { SupersetThemeProps } from '@superset-ui/style';
-import ObservableWrapper from './ObservableWrapper';
+import ObservableLoader from './ObservableLoader';
 
 /**
  * These props should be stored when saving the chart.
@@ -33,7 +33,7 @@ class Observable extends React.PureComponent<ObservableProps & SupersetThemeProp
 
     return (
       <div>
-        <ObservableWrapper
+        <ObservableLoader
           observableUrl={observableUrl}
           data={data}
           displayedCells={displayedCells}
@@ -57,7 +57,7 @@ class Observable extends React.PureComponent<ObservableProps & SupersetThemeProp
               <pre>{JSON.stringify(data, undefined, 2)}</pre>
             </div>
           )}
-        </ObservableWrapper>
+        </ObservableLoader>
       </div>
     );
   }
