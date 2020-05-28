@@ -33,6 +33,7 @@ export const worldMap = () => {
         encoding: {
           key: {
             field: 'key',
+            title: 'Location',
           },
           fill: {
             type: 'quantitative',
@@ -58,14 +59,22 @@ export const usa = () => (
       encoding: {
         key: {
           field: 'key',
+          title: 'State',
         },
         fill: {
           type: 'quantitative',
           field: 'numStudents',
+          title: 'No. of students',
           scale: {
             range: ['#fdc28c', '#7f2704'],
           },
         },
+        tooltip: [
+          {
+            field: 'favoriteFruit',
+            title: 'Fruit',
+          },
+        ],
       },
     }}
   />
@@ -80,6 +89,10 @@ export const categoricalColor = () => (
     formData={{
       map: 'usa',
       encoding: {
+        key: {
+          field: 'key',
+          title: 'State',
+        },
         fill: {
           type: 'nominal',
           field: 'favoriteFruit',
