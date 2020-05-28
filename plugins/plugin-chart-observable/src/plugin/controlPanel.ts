@@ -65,8 +65,8 @@ export default {
               //     options: state.datasource ? state.datasource.columns : [],
               //   };
               // },
-              options: [{ name: 'observable' }, { name: 'rawData' }, { name: 'control' }], // commaChoosesOption: false,
-              // freeForm: true,
+              options: [{ name: 'observable' }, { name: 'rawData' }], // commaChoosesOption: false,
+              freeForm: true,
               renderTrigger: true,
             },
           },
