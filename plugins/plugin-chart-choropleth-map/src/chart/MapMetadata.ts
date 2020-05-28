@@ -25,7 +25,7 @@ export default class MapMetadata {
   }
 
   createProjection() {
-    const { projection = 'Albers', rotate } = this.config;
+    const { projection = 'Mercator', rotate } = this.config;
     const projectionFn = Projection[projection]();
     if (rotate) {
       projectionFn.rotate(rotate);
