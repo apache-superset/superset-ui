@@ -1,20 +1,6 @@
 import { scaleLinear } from 'd3-scale';
-import { interpolateHcl } from 'd3-interpolate';
+import { interpolateHcl, interpolateNumber, piecewise, quantize } from 'd3-interpolate';
 import ColorScheme, { ColorSchemeConfig } from './ColorScheme';
-
-function range(count: number) {
-  const values: number[] = [];
-  for (let i = 0; i < count; i += 1) {
-    values.push(i);
-  }
-
-  return values;
-}
-
-function rangeZeroToOne(steps: number) {
-  const denominator = steps - 1;
-  return range(steps).map(i => i / denominator);
-}
 
 export interface SequentialSchemeConfig extends ColorSchemeConfig {
   isDiverging?: boolean;
@@ -30,23 +16,6 @@ export default class SequentialScheme extends ColorScheme {
   }
 
   /**
-   * Create a linear scale using the colors in this scheme as a range
-   * and interpolate domain [0, 1]
-   * to match the number of elements in the range
-   * e.g.
-   * If the range is ['red', 'white', 'blue']
-   * the domain of this scale will be
-   * [0, 0.5, 1]
-   */
-  private createZeroToOnePiecewiseScale() {
-    return scaleLinear<string>()
-      .domain(rangeZeroToOne(this.colors.length))
-      .range(this.colors)
-      .interpolate(interpolateHcl)
-      .clamp(true);
-  }
-
-  /**
    * Return a linear scale with a new domain interpolated from the input domain
    * to match the number of elements in the color scheme
    * because D3 continuous scale uses piecewise mapping between domain and range.
@@ -58,21 +27,13 @@ export default class SequentialScheme extends ColorScheme {
    * want to interpolate range to have the same number of elements with domain instead.
    */
   createLinearScale(domain: number[] = [0, 1], modifyRange = false) {
-    if (modifyRange || domain.length === this.colors.length) {
-      return scaleLinear<string>()
-        .interpolate(interpolateHcl)
-        .domain(domain)
-        .range(this.getColors(domain.length));
-    }
+    const scale = scaleLinear<string>().interpolate(interpolateHcl).clamp(true);
 
-    const piecewiseScale = this.createZeroToOnePiecewiseScale();
-    const adjustDomain = scaleLinear()
-      .domain(rangeZeroToOne(domain.length))
-      .range(domain)
-      .clamp(true);
-    const newDomain = piecewiseScale.domain().map(d => adjustDomain(d));
-
-    return piecewiseScale.domain(newDomain);
+    return modifyRange || domain.length === this.colors.length
+      ? scale.domain(domain).range(this.getColors(domain.length))
+      : scale
+          .domain(quantize(piecewise(interpolateNumber, domain), this.colors.length))
+          .range(this.colors);
   }
 
   /**
@@ -88,9 +49,9 @@ export default class SequentialScheme extends ColorScheme {
       return this.colors;
     }
 
-    const piecewiseScale = this.createZeroToOnePiecewiseScale();
+    const piecewiseScale: (t: number) => string = piecewise(interpolateHcl, this.colors);
     const adjustExtent = scaleLinear().range(extent).clamp(true);
 
-    return rangeZeroToOne(numColors).map(x => piecewiseScale(adjustExtent(x)));
+    return quantize<string>(t => piecewiseScale(adjustExtent(t)), numColors);
   }
 }
