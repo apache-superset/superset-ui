@@ -48,7 +48,7 @@ export default class ObservableLoader extends Component<Props, State> {
       }
       module_.redefine(this.props.dataInjectionCell, [], this.props.data);
       module_.redefine('width', [], this.props.width);
-      module_.redefine('width', [], this.props.height);
+      module_.redefine('height', [], this.props.height);
       this.setState({ cellNames });
     });
   }
