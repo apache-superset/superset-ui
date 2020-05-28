@@ -65,12 +65,7 @@ export default {
               //     options: state.datasource ? state.datasource.columns : [],
               //   };
               // },
-              options: [
-                { name: 'some' },
-                { name: 'observable' },
-                { name: 'cells' },
-                { name: 'here' },
-              ], // commaChoosesOption: false,
+              options: [{ name: 'observable' }, { name: 'rawData' }, { name: 'control' }], // commaChoosesOption: false,
               // freeForm: true,
               renderTrigger: true,
             },
@@ -96,12 +91,7 @@ export default {
               //     options: state.datasource ? state.datasource.columns : [],
               //   };
               // },
-              options: [
-                { name: 'some' },
-                { name: 'observable' },
-                { name: 'cells' },
-                { name: 'here' },
-              ],
+              options: [{ name: 'observable' }, { name: 'rawData' }, { name: 'control' }],
               // commaChoosesOption: false,
               // freeForm: true,
               renderTrigger: true,
