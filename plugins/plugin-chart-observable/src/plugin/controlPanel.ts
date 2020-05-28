@@ -57,7 +57,7 @@ export default {
               ),
               // optionRenderer: c => <ColumnOption showType column={c} />,
               // valueRenderer: c => <ColumnOption column={c} />,
-              // valueKey: 'column_name',
+              valueKey: 'name',
               // allowAll: true,
               // mapStateToProps: (state: State) => {
               //   console.warn('state!!!!!!!!!!!', state);
@@ -65,7 +65,43 @@ export default {
               //     options: state.datasource ? state.datasource.columns : [],
               //   };
               // },
-              options: ['some', 'observable', 'cells', 'here'],
+              options: [
+                { name: 'some' },
+                { name: 'observable' },
+                { name: 'cells' },
+                { name: 'here' },
+              ], // commaChoosesOption: false,
+              // freeForm: true,
+              renderTrigger: true,
+            },
+          },
+        ],
+        [
+          {
+            name: 'data_injection_cell',
+            config: {
+              type: 'SelectControl',
+              label: t('Data Injection Cell'),
+              default: [],
+              description: t(
+                'Select the cell from your Observable notebook into which you wish to insert your data',
+              ),
+              // optionRenderer: c => <ColumnOption showType column={c} />,
+              // valueRenderer: c => <ColumnOption column={c} />,
+              valueKey: 'name',
+              // allowAll: true,
+              // mapStateToProps: (state: State) => {
+              //   console.warn('state!!!!!!!!!!!', state);
+              //   return {
+              //     options: state.datasource ? state.datasource.columns : [],
+              //   };
+              // },
+              options: [
+                { name: 'some' },
+                { name: 'observable' },
+                { name: 'cells' },
+                { name: 'here' },
+              ],
               // commaChoosesOption: false,
               // freeForm: true,
               renderTrigger: true,

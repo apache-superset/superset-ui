@@ -7,8 +7,9 @@ import ObservableWrapper from './ObservableWrapper';
  * These props should be stored when saving the chart.
  */
 export interface ObservableVisualProps {
-  observableUrl?: string;
+  observableUrl: string;
   displayedCells: string[];
+  dataInjectionCell: string[];
   showDebug: boolean;
 }
 
@@ -20,7 +21,15 @@ export interface ObservableProps extends ObservableVisualProps {
 
 class Observable extends React.PureComponent<ObservableProps & SupersetThemeProps> {
   render() {
-    const { width, height, data, observableUrl = '', displayedCells, showDebug } = this.props;
+    const {
+      width,
+      height,
+      data,
+      observableUrl,
+      displayedCells,
+      dataInjectionCell,
+      showDebug,
+    } = this.props;
 
     return (
       <div>
@@ -28,6 +37,7 @@ class Observable extends React.PureComponent<ObservableProps & SupersetThemeProp
           observableUrl={observableUrl}
           data={data}
           displayedCells={displayedCells}
+          dataInjectionCell={dataInjectionCell}
           width={width}
           height={height}
         >
@@ -41,6 +51,8 @@ class Observable extends React.PureComponent<ObservableProps & SupersetThemeProp
               </div>
               <h2>Displayed Cells</h2>
               <pre>{JSON.stringify(displayedCells, undefined, 2)}</pre>
+              <h2>Data Injection Cell</h2>
+              <pre>{JSON.stringify(dataInjectionCell, undefined, 2)}</pre>
               <h2>Data</h2>
               <pre>{JSON.stringify(data, undefined, 2)}</pre>
             </div>

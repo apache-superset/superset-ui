@@ -6,6 +6,7 @@ interface Props {
   observableUrl: string;
   data: any;
   displayedCells: string[];
+  dataInjectionCell: string[];
   width: number;
   height: number;
 }
