@@ -55,6 +55,7 @@ class Observable extends React.PureComponent<ObservableProps & SupersetThemeProp
               <pre>{JSON.stringify(dataInjectionCell, undefined, 2)}</pre>
               <h2>Data</h2>
               <pre>{JSON.stringify(data, undefined, 2)}</pre>
+              <h2>Notebook:</h2>
             </div>
           )}
         </ObservableLoader>
