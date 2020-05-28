@@ -91,6 +91,10 @@ export default {
     series: {
       validators: [validateNonEmpty],
       clearable: false,
+      multi: true,
+    },
+    metric: {
+      multi: true,
     },
   },
 };
