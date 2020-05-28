@@ -2789,6 +2789,29 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
+"@observablehq/inspector@^3.2.0":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@observablehq/inspector/-/inspector-3.2.1.tgz#c953fd95f1b90fac6f39e41965a72cc079d3e465"
+  integrity sha512-U8EASUAUYCQmCprOF9HafRMnU4yyD0IXjRuDwAjBMjVpm36KXPzXWxHcdzlt/3CbIEu8GOhKQqHBAX9pv6OyUQ==
+  dependencies:
+    esm "^3.2.25"
+
+"@observablehq/runtime@^4.7.0":
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/@observablehq/runtime/-/runtime-4.7.0.tgz#159435347151440f1ff612a719486f04bfcc7a43"
+  integrity sha512-cfjcIxseRxs1kA3U507V4F/C1PxW/Bo3bUzQBp5QdgJ+QgcMr+rPDYoj8zCs0EmiXL47/SVpFcyz4N9y3DZymg==
+  dependencies:
+    "@observablehq/inspector" "^3.2.0"
+    "@observablehq/stdlib" "^3.2.0"
+    esm "^3.0.84"
+
+"@observablehq/stdlib@^3.2.0":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@observablehq/stdlib/-/stdlib-3.3.1.tgz#f65c3d319276dd4c0bec2a10975c309d68e0956a"
+  integrity sha512-KVjHdSFWPtE6FeqMVhgNBZUvLBdoqpkgglGo38LAFrKYgFtWgPDOGSw21V2NhG5D0/LfqcHqmqWP0Dr+zShKaw==
+  dependencies:
+    d3-require "^1.2.4"
+
 "@octokit/auth-token@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@octokit/auth-token/-/auth-token-2.4.0.tgz#b64178975218b99e4dfe948253f0673cbbb59d9f"
@@ -7694,6 +7717,11 @@ d3-queue@2:
   resolved "https://registry.yarnpkg.com/d3-queue/-/d3-queue-2.0.3.tgz#07fbda3acae5358a9c5299aaf880adf0953ed2c2"
   integrity sha1-B/vaOsrlNYqcUpmq+ICt8JU+0sI=
 
+d3-require@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/d3-require/-/d3-require-1.2.4.tgz#59afc591d5089f99fecd8c45ef7539e1fee112b3"
+  integrity sha512-8UseEGCkBkBxIMouLMPONUBmU8DUPC1q12LARV1Lk/2Jwa32SVgmRfX8GdIeR06ZP+CG85YD3N13K2s14qCNyA==
+
 d3-sankey-diagram@^0.7.3:
   version "0.7.3"
   resolved "https://registry.yarnpkg.com/d3-sankey-diagram/-/d3-sankey-diagram-0.7.3.tgz#1616be0362ac6950665aa5cefea723aef832b53c"
@@ -9035,7 +9063,7 @@ eslint@^6.8.0:
     text-table "^0.2.0"
     v8-compile-cache "^2.0.3"
 
-esm@^3.0.84:
+esm@^3.0.84, esm@^3.2.25:
   version "3.2.25"
   resolved "https://registry.yarnpkg.com/esm/-/esm-3.2.25.tgz#342c18c29d56157688ba5ce31f8431fbb795cc10"
   integrity sha512-U1suiZ2oDVWv4zPO56S0NcR5QriEahGtdN2OR6FiOG4WJvcjBVFB0qI4+eKoWFH483PKGuLuu6V8Z4T5g63UVA==

@@ -59,7 +59,6 @@ export default class ObservableLoader extends Component<Props, State> {
     };
     return (
       <div style={wrapperStyles}>
-        {this.props.children}
         <div className="notebook-wrapper" ref={this.notebookWrapperRef}>
           {this.props.displayedCells.map(name => (
             <div
@@ -71,6 +70,7 @@ export default class ObservableLoader extends Component<Props, State> {
             />
           ))}
         </div>
+        {this.props.children}
       </div>
     );
   }
