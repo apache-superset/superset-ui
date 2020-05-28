@@ -18,7 +18,7 @@ export default function transformProps(chartProps: ChartProps): ObservableProps 
     height,
     observableUrl: observableUrl || 'no workbook url selected',
     displayedCells: displayedCells || [],
-    dataInjectionCell: dataInjectionCell || [],
+    dataInjectionCell: dataInjectionCell || '',
     showDebug: showDebug || false,
     width,
   };

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { Runtime, Inspector } from '@observablehq/runtime';
+import { Runtime, Inspector, Library } from '@observablehq/runtime';
 
 interface Props {
   observableUrl: string;
@@ -34,33 +34,21 @@ export default class ObservableLoader extends Component<Props, State> {
       this.notebook = module.default;
       const runtime = new Runtime();
       let cellNames: string[] = [];
+      let module_ = null;
       if (!this.props.displayedCells.length) {
-        runtime.module(this.notebook, Inspector.into(this.notebookWrapperRef.current));
+        module_ = runtime.module(this.notebook, Inspector.into(this.notebookWrapperRef.current));
       } else {
-        runtime.module(this.notebook, (name: string) => {
+        module_ = runtime.module(this.notebook, (name: string) => {
           if (name) cellNames.push(name);
 
           if (this.props.displayedCells.includes(name) && this.displayRefs[name] !== null) {
-            console.log(this.refs);
             return new Inspector(this.displayRefs[name]);
-          }
-          if (name === 'mutable data') {
-            return {
-              fulfilled: (value: any) => {
-                this.dataCell = value;
-              },
-            };
           }
         });
       }
+      module_.redefine(this.props.dataInjectionCell, [], this.props.data);
       this.setState({ cellNames });
     });
-  }
-
-  componentDidUpdate(nextProps: Props, nextState: State) {
-    if (nextProps.data !== this.props.data) {
-      this.dataCell.value = nextProps.data;
-    }
   }
 
   render() {

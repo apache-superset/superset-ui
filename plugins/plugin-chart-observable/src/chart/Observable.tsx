@@ -9,7 +9,7 @@ import ObservableLoader from './ObservableLoader';
 export interface ObservableVisualProps {
   observableUrl: string;
   displayedCells: string[];
-  dataInjectionCell: string[];
+  dataInjectionCell: string;
   showDebug: boolean;
 }
 
