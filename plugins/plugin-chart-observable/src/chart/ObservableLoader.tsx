@@ -11,12 +11,7 @@ interface Props {
   height: number;
 }
 
-interface State {
-  cellNames: string[];
-}
-
-export default class ObservableLoader extends Component<Props, State> {
-  state = { cellNames: [] };
+export default class ObservableLoader extends Component<Props> {
   notebookWrapperRef = React.createRef<HTMLDivElement>();
   displayRefs: { [key: string]: HTMLDivElement | null } = {};
   notebook = null;
@@ -32,15 +27,24 @@ export default class ObservableLoader extends Component<Props, State> {
   componentDidMount() {
     import(/* webpackIgnore: true */ this.notebookURL).then(module => {
       this.notebook = module.default;
+
+      // just get the damned names.
+      const refRuntime = new Runtime();
+      let fullModule = refRuntime.module(this.notebook);
+      let cellNames = Array.from(fullModule._scope).map(item => item[0]);
+      // ok, now broadcast the names...
+
+      const cellNameUpdate = new Event('cellNameUpdate', cellNames);
+      window.cellNames = cellNames;
+      window.dispatchEvent(cellNameUpdate);
+
       const runtime = new Runtime();
-      let cellNames: string[] = [];
       let module_ = null;
+
       if (!this.props.displayedCells.length) {
         module_ = runtime.module(this.notebook, Inspector.into(this.notebookWrapperRef.current));
       } else {
         module_ = runtime.module(this.notebook, (name: string) => {
-          if (name) cellNames.push(name);
-
           if (this.props.displayedCells.includes(name) && this.displayRefs[name] !== null) {
             return new Inspector(this.displayRefs[name]);
           }
@@ -49,7 +53,6 @@ export default class ObservableLoader extends Component<Props, State> {
       module_.redefine(this.props.dataInjectionCell, [], this.props.data);
       module_.redefine('width', [], this.props.width);
       module_.redefine('height', [], this.props.height);
-      this.setState({ cellNames });
     });
   }
 
