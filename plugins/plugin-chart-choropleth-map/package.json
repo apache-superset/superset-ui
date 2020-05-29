@@ -36,7 +36,7 @@
     "@vx/pattern": "^0.0.196",
     "@vx/tooltip": "^0.0.196",
     "@vx/zoom": "^0.0.196",
-    "encodable": "^0.3.5",
+    "encodable": "^0.3.6",
     "geojson": "^0.5.0",
     "lodash": "^4.17.15",
     "topojson-client": "^3.1.0",

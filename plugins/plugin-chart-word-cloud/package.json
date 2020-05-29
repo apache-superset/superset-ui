@@ -34,7 +34,7 @@
     "d3-cloud": "^1.2.5",
     "d3-scale": "^3.0.1",
     "emotion-theming": "^10.0.27",
-    "encodable": "^0.3.5"
+    "encodable": "^0.3.6"
   },
   "peerDependencies": {
     "@superset-ui/chart": "^0.13.0",
