@@ -55,8 +55,7 @@ export default class ChartClient {
           endpoint: `/api/v1/form_data/?slice_id=${input.sliceId}`,
           ...options,
         } as RequestConfig)
-        .then(response => response.json as Json)
-        .then(json => json.form_data as QueryFormData);
+        .then(response => response.json as QueryFormData);
 
       /*
        * If formData is also specified, override API result

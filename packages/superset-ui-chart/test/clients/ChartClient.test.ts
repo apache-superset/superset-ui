@@ -208,13 +208,11 @@ describe('ChartClient', () => {
   describe('.loadChartData({ sliceId, formData })', () => {
     const sliceId = 10120;
     it('loadAllDataNecessaryForAChart', () => {
-      fetchMock.get(`glob:*/api/v1/formData/?slice_id=${sliceId}`, {
-        form_data: {
-          granularity: 'minute',
-          viz_type: 'line',
-          datasource: '1__table',
-          color: 'living-coral',
-        },
+      fetchMock.get(`glob:*/api/v1/form_data/?slice_id=${sliceId}`, {
+        granularity: 'minute',
+        viz_type: 'line',
+        datasource: '1__table',
+        color: 'living-coral',
       });
 
       fetchMock.get('glob:*/superset/fetch_datasource_metadata?datasourceKey=1__table', {
