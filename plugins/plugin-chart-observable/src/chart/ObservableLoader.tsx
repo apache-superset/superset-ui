@@ -42,9 +42,11 @@ export default class ObservableLoader extends Component<Props> {
       const refRuntime = new Runtime();
       const fullModule = refRuntime.module(this.notebook);
       // eslint-disable-next-line no-underscore-dangle
+      // @ts-ignore
       const cellNames = Array.from(fullModule._scope).map(item => item[0]);
       // ok, now broadcast the names...
 
+      // @ts-ignore
       const cellNameUpdate = new Event('cellNameUpdate', cellNames);
       // @ts-ignore
       window.cellNames = cellNames;
