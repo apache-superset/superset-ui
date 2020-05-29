@@ -1,9 +1,16 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable unicorn/explicit-length-check */
+/* eslint-disable no-negated-condition */
 import React, { Component } from 'react';
 // @ts-ignore
 import { Runtime, Inspector, Library } from '@observablehq/runtime';
 
 interface Props {
   observableUrl: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
   displayedCells: string[];
   dataInjectionCell: string;
@@ -13,8 +20,11 @@ interface Props {
 
 export default class ObservableLoader extends Component<Props> {
   notebookWrapperRef = React.createRef<HTMLDivElement>();
+
   displayRefs: { [key: string]: HTMLDivElement | null } = {};
+
   notebook = null;
+
   dataCell = {
     value: null,
   };
@@ -30,11 +40,13 @@ export default class ObservableLoader extends Component<Props> {
 
       // just get the damned names.
       const refRuntime = new Runtime();
-      let fullModule = refRuntime.module(this.notebook);
-      let cellNames = Array.from(fullModule._scope).map(item => item[0]);
+      const fullModule = refRuntime.module(this.notebook);
+      // eslint-disable-next-line no-underscore-dangle
+      const cellNames = Array.from(fullModule._scope).map(item => item[0]);
       // ok, now broadcast the names...
 
       const cellNameUpdate = new Event('cellNameUpdate', cellNames);
+      // @ts-ignore
       window.cellNames = cellNames;
       window.dispatchEvent(cellNameUpdate);
 
@@ -67,11 +79,11 @@ export default class ObservableLoader extends Component<Props> {
         <div className="notebook-wrapper" ref={this.notebookWrapperRef}>
           {this.props.displayedCells.map(name => (
             <div
-              key={name}
-              id={`cell-${name}`}
               ref={ref => {
                 this.displayRefs[name] = ref;
               }}
+              key={name}
+              id={`cell-${name}`}
             />
           ))}
         </div>
