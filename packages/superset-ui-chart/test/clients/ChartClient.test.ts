@@ -92,7 +92,7 @@ describe('ChartClient', () => {
       getChartBuildQueryRegistry().registerValue('word_cloud', (formData: QueryFormData) =>
         buildQueryContext(formData),
       );
-      fetchMock.post('glob:*/api/v1/query/', {
+      fetchMock.post('glob:*/api/v1/chart/data/', {
         field1: 'abc',
         field2: 'def',
       });
@@ -128,7 +128,7 @@ describe('ChartClient', () => {
         }),
       );
 
-      fetchMock.post('glob:*/api/v1/query/', () =>
+      fetchMock.post('glob:*/api/v1/chart/data/', () =>
         Promise.reject(new Error('Unexpected all to v1 API')),
       );
 
@@ -222,7 +222,7 @@ describe('ChartClient', () => {
         schema: 'staging',
       });
 
-      fetchMock.post('glob:*/api/v1/query/', {
+      fetchMock.post('glob:*/api/v1/chart/data/', {
         lorem: 'ipsum',
         dolor: 'sit',
         amet: true,
