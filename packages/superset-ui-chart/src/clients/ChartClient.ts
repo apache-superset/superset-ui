@@ -85,7 +85,7 @@ export default class ChartClient {
       const buildQuery = (await buildQueryRegistry.get(visType)) ?? (() => formData);
 
       if (useLegacyApi) {
-        this.client
+        return this.client
           .post({
             ...options,
             endpoint: '/superset/explore_json/',

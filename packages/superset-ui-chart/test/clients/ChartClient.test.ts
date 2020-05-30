@@ -93,8 +93,12 @@ describe('ChartClient', () => {
         buildQueryContext(formData),
       );
       fetchMock.post('glob:*/api/v1/chart/data', {
-        field1: 'abc',
-        field2: 'def',
+        result: [
+          {
+            field1: 'abc',
+            field2: 'def',
+          },
+        ],
       });
 
       return expect(
@@ -129,7 +133,7 @@ describe('ChartClient', () => {
       );
 
       fetchMock.post('glob:*/api/v1/chart/data', () =>
-        Promise.reject(new Error('Unexpected all to v1 API')),
+        Promise.reject(new Error('Unexpected call to v1 API')),
       );
 
       fetchMock.post('glob:*/superset/explore_json/', {
@@ -221,9 +225,13 @@ describe('ChartClient', () => {
       });
 
       fetchMock.post('glob:*/api/v1/chart/data', {
-        lorem: 'ipsum',
-        dolor: 'sit',
-        amet: true,
+        result: [
+          {
+            lorem: 'ipsum',
+            dolor: 'sit',
+            amet: true,
+          },
+        ],
       });
 
       getChartMetadataRegistry().registerValue(
