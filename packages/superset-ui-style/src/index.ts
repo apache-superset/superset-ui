@@ -67,3 +67,5 @@ export const supersetTheme = defaultTheme;
 export interface SupersetThemeProps {
   theme: typeof defaultTheme;
 }
+
+export { useTheme, ThemeProvider, withTheme } from 'emotion-theming';
