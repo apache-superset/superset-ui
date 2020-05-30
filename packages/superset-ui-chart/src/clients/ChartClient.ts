@@ -84,19 +84,34 @@ export default class ChartClient {
       const { useLegacyApi } = metaDataRegistry.get(visType)!;
       const buildQuery = (await buildQueryRegistry.get(visType)) ?? (() => formData);
 
-      return this.client
-        .post({
-          headers: { 'Content-Type': 'application/json' },
-          endpoint: useLegacyApi ? '/superset/explore_json/' : '/api/v1/chart/data',
-          postPayload: {
-            [useLegacyApi ? 'form_data' : 'query_context']: buildQuery(formData),
-          },
-          ...options,
-        } as RequestConfig)
-        .then(response => {
-          // let's assume response.json always has the shape of QueryData
-          return response.json as QueryData;
-        });
+      if (useLegacyApi) {
+        this.client
+          .post({
+            ...options,
+            endpoint: '/superset/explore_json/',
+            postPayload: {
+              form_data: buildQuery(formData),
+            },
+          } as RequestConfig)
+          .then(({ json }) => json as QueryData);
+      }
+
+      return (
+        this.client
+          .post({
+            ...options,
+            endpoint: '/api/v1/chart/data',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(buildQuery(formData)),
+          } as RequestConfig)
+          .then(({ json }) => json as QueryData)
+          // new API returns an object with an array of results
+          // problem: json holds a list of results, when before we were just getting one result.
+          // `queryResponse` state is used all over the place.
+          // How to make the entire app compatible with multiple results?
+          // For now just use the first result.
+          .then(({ result }) => (result as unknown[])[0] as QueryData)
+      );
     }
 
     return Promise.reject(new Error(`Unknown chart type: ${visType}`));
