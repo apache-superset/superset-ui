@@ -24,5 +24,8 @@
   "homepage": "https://github.com/apache-superset/superset-ui#readme",
   "publishConfig": {
     "access": "public"
+  },
+  "peerDependencies": {
+    "@superset-ui/connection": "^0.13.25"
   }
 }
