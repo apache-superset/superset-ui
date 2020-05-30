@@ -3,7 +3,6 @@ import {
   SupersetClient,
   SupersetClientInterface,
   RequestConfig,
-  Json,
   SupersetClientClass,
 } from '@superset-ui/connection';
 import { QueryFormData, Datasource } from '@superset-ui/query';
