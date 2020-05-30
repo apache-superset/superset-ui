@@ -1,21 +1,18 @@
 import { SupersetClientInterface, SupersetClient, RequestConfig } from '@superset-ui/connection';
-import { QueryContext } from '../types/Query';
+import { QueryContext } from '../../types/Query';
+import { V1ChartDataResponse } from './types';
 
-export interface PostApiV1ChartDataParams {
+export interface Params {
   client?: SupersetClientInterface;
   requestConfig?: RequestConfig;
   queryContext: QueryContext;
 }
 
-export interface PostApiV1ChartDataResponse {
-  result: QueryResponse[];
-}
-
-export default function postApiV1ChartData({
+export default function postChartData({
   client = SupersetClient,
   requestConfig,
   queryContext,
-}: PostApiV1ChartDataParams) {
+}: Params) {
   return client
     .post({
       ...requestConfig,
@@ -23,5 +20,5 @@ export default function postApiV1ChartData({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(queryContext),
     } as RequestConfig)
-    .then(({ json }) => json as PostApiV1ChartDataResponse);
+    .then(({ json }) => json as V1ChartDataResponse);
 }
