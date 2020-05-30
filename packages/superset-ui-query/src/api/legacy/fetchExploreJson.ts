@@ -10,7 +10,7 @@ export interface Params {
   formData: QueryFormData;
 }
 
-export default function postChartData({
+export default function fetchExploreJson({
   client = SupersetClient,
   method = 'POST',
   requestConfig,
