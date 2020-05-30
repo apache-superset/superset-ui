@@ -5,7 +5,7 @@ import { LegacyChartDataResponse } from './types';
 export interface Params {
   client?: SupersetClientInterface;
   method?: 'GET' | 'POST';
-  requestConfig?: RequestConfig;
+  requestConfig?: Partial<RequestConfig>;
   url: string;
   formData: QueryFormData;
 }

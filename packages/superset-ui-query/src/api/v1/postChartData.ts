@@ -4,7 +4,7 @@ import { V1ChartDataResponse } from './types';
 
 export interface Params {
   client?: SupersetClientInterface;
-  requestConfig?: RequestConfig;
+  requestConfig?: Partial<RequestConfig>;
   queryContext: QueryContext;
 }
 
