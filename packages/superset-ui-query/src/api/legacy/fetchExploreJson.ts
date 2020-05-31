@@ -6,7 +6,7 @@ export interface Params {
   client?: SupersetClientInterface;
   method?: 'GET' | 'POST';
   requestConfig?: Partial<RequestConfig>;
-  url: string;
+  url?: string;
   formData: QueryFormData;
 }
 
