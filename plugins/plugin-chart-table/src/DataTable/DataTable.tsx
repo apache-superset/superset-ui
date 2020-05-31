@@ -18,8 +18,14 @@
  * under the License.
  */
 import React from 'react';
+import { t } from '@superset-ui/translation';
 import { useTable, usePagination, useSortBy, useGlobalFilter, PluginHook } from 'react-table';
 import { Form, Row, Col } from 'react-bootstrap';
+import {
+  FaSort,
+  FaSortUp, // asc
+  FaSortDown, // desc
+} from 'react-icons/fa';
 import {
   DataTableProps,
   DataTableCellProps,
@@ -30,12 +36,13 @@ import {
 import GlobalFilter from './components/GlobalFilter';
 import SelectPageSize from './components/SelectPageSize';
 import SimplePagination from './components/Pagination';
+import Styles from './Styles';
 
 function renderSortIcon<D extends object>(column: DataTableColumnInstance<D>) {
   if (column.isSorted) {
-    return column.isSortedDesc ? ' 🔽' : ' 🔼';
+    return column.isSortedDesc ? <FaSortDown /> : <FaSortUp />;
   }
-  return '';
+  return <FaSort />;
 }
 
 // Be sure to pass our updateMyData and the skipReset option
@@ -82,9 +89,11 @@ export default function DataTable<D extends object>({
     ...tableHooks,
   ) as DataTableInstance<D>;
 
+  const pageRows = page || rows;
+
   // Render the UI for your table
   return (
-    <>
+    <Styles>
       {pageSize || showSearchInput ? (
         <Form inline>
           <Row>
@@ -114,7 +123,12 @@ export default function DataTable<D extends object>({
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()} {...column.getSortByToggleProps()}>
+                <th
+                  {...column.getHeaderProps()}
+                  {...column.getSortByToggleProps({
+                    className: column.isSorted ? 'is-sorted' : undefined,
+                  })}
+                >
                   {column.render('Header')}
                   {renderSortIcon<D>(column)}
                 </th>
@@ -123,31 +137,39 @@ export default function DataTable<D extends object>({
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {(page || rows).map(row => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  const cellProps: DataTableCellProps = cell.getCellProps();
-                  if (cell.column.cellProps) {
-                    Object.assign(cellProps, cell.column.cellProps(cell) || {});
-                  }
-                  const { textContent, ...restProps } = cellProps;
-                  if (cellProps.dangerouslySetInnerHTML) {
-                    return <td {...restProps} />;
-                  }
-                  // If cellProps renderes textContent already, then we don't have to
-                  // render `Cell`. This saves some time for large tables.
-                  return <td {...restProps}>{textContent || cell.render('Cell')}</td>;
-                })}
-              </tr>
-            );
-          })}
+          {pageRows && pageRows.length > 0 ? (
+            pageRows.map(row => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map(cell => {
+                    const cellProps: DataTableCellProps = cell.getCellProps();
+                    if (cell.column.cellProps) {
+                      Object.assign(cellProps, cell.column.cellProps(cell) || {});
+                    }
+                    const { textContent, ...restProps } = cellProps;
+                    if (cellProps.dangerouslySetInnerHTML) {
+                      return <td {...restProps} />;
+                    }
+                    // If cellProps renderes textContent already, then we don't have to
+                    // render `Cell`. This saves some time for large tables.
+                    return <td {...restProps}>{textContent || cell.render('Cell')}</td>;
+                  })}
+                </tr>
+              );
+            })
+          ) : (
+            <tr>
+              <td className="dt-no-results" colSpan={columns.length}>
+                {t(globalFilter ? 'No matching records found' : 'No records found')}
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
       {pageSize ? (
         <SimplePagination pageCount={pageCount} currentPage={pageIndex} gotoPage={gotoPage} />
       ) : null}
-    </>
+    </Styles>
   );
 }

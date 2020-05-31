@@ -36,6 +36,7 @@
     "@emotion/core": "^10.0.28",
     "react-bootstrap": "^0.33.1",
     "react-table": "^7.1.0",
+    "react-icons": "^3.10.0",
     "match-sorter": "^4.1.0",
     "datatables.net-bs": "^1.10.20",
     "xss": "^1.0.6"

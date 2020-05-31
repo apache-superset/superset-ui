@@ -37,6 +37,7 @@ export default function SelectPageSize({
       <FormControl
         bsSize="small"
         componentClass="select"
+        value={currentSize}
         style={{
           display: 'inline-block',
           width: 'auto',
@@ -46,7 +47,7 @@ export default function SelectPageSize({
         }}
       >
         {sizeOptions.map(size => (
-          <option key={size} value={size} selected={size === currentSize}>
+          <option key={size} value={size}>
             {size}
           </option>
         ))}

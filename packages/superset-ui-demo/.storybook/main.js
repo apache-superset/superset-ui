@@ -1,4 +1,5 @@
 const path = require('path');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { lstatSync, readdirSync } = require('fs');
 
 // find @superset-ui packages
@@ -40,9 +41,14 @@ module.exports = {
       use: [
         {
           loader: require.resolve('ts-loader'),
+          options: {
+            transpileOnly: true
+          }
         },
       ],
     });
+
+    config.plugins.push(new ForkTsCheckerWebpackPlugin())
 
     config.resolve.extensions.push('.ts', '.tsx');
 

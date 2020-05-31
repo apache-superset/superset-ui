@@ -20,6 +20,7 @@ import { QueryFormDataMetric } from '@superset-ui/query';
 import { ChartProps, DataRecord, DataRecordFilters } from '@superset-ui/chart';
 import { TimeFormatter, TimeGranularity } from '@superset-ui/time-format';
 import { NumberFormatter } from '@superset-ui/number-format';
+import { DataType } from './DataTable/types';
 
 export interface DataColumnMeta {
   // `key` is what is called `label` in the input props
@@ -30,6 +31,7 @@ export interface DataColumnMeta {
   isMetric?: boolean;
   isPercentMetric?: boolean;
   formatter?: TimeFormatter | NumberFormatter;
+  dataType: DataType;
 }
 
 export interface TableChartData {

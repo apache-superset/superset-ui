@@ -93,7 +93,6 @@ export default function Pagination({
               </a>
             </li>
           ) : (
-            // placeholder text
             <li key={item} className="dt-pagination-ellipsis">
               <span>…</span>
             </li>

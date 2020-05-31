@@ -18,26 +18,26 @@
  */
 import React from 'react';
 import { mount, CommonWrapper } from 'enzyme';
-import ReactDataTable from '../src/ReactDataTable';
+import TableChart from '../src/TableChart';
 import transformProps from '../src/transformProps';
 import testData from './testData';
 
-describe('legacy-table', () => {
+describe('plugin-chart-table', () => {
   // Can test more prop transformation here. Not needed for now.
   describe('transformProps', () => {
-    it('should parse pageLength', () => {
-      expect(transformProps(testData.basic).pageLength).toBe(20);
+    it('should parse pageLength to pageSize', () => {
+      expect(transformProps(testData.basic).pageSize).toBe(20);
       expect(
         transformProps({
           ...testData.basic,
           formData: { ...testData.basic.formData, pageLength: '20' },
-        }).pageLength,
+        }).pageSize,
       ).toBe(20);
       expect(
         transformProps({
           ...testData.basic,
           formData: { ...testData.basic.formData, pageLength: '' },
-        }).pageLength,
+        }).pageSize,
       ).toBe(0);
     });
   });
@@ -46,17 +46,15 @@ describe('legacy-table', () => {
     let wrap: CommonWrapper; // the ReactDataTable wraper
 
     it('render basic data', () => {
-      wrap = mount(<ReactDataTable {...transformProps(testData.basic)} />);
+      wrap = mount(<TableChart {...transformProps(testData.basic)} />);
       const tree = wrap.render(); // returns a CheerioWrapper with jQuery-like API
       const cells = tree.find('td');
-      expect(tree.hasClass('superset-legacy-chart-table')).toEqual(true);
       expect(cells).toHaveLength(6);
       expect(cells.eq(0).text()).toEqual('2020-01-01 12:34:56');
       expect(cells.eq(1).text()).toEqual('Michael');
       // number is not in `metrics` list, so it should output raw value
       // (in real world Superset, this would mean the column is used in GROUP BY)
       expect(cells.eq(5).text()).toEqual('2467');
-      expect(cells.eq(5).attr('data-sort')).toEqual('2467');
     });
 
     it('render advanced data', () => {
@@ -67,7 +65,6 @@ describe('legacy-table', () => {
       expect(tree.find('th').eq(1).text()).toEqual('Sum of Num');
       expect(cells.eq(2).text()).toEqual('12.346%');
       expect(cells.eq(4).text()).toEqual('2.47k');
-      expect(cells.eq(4).attr('data-sort')).toEqual('2467');
     });
 
     it('render empty data', () => {

@@ -16,44 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import styled from '@superset-ui/style';
 import React, { useState } from 'react';
 import { DataRecordValue, DataRecord } from '@superset-ui/chart';
 import { filterXSS } from 'xss';
-import { TimeFormatter } from '@superset-ui/time-format';
 import { TableChartTransformedProps, DataColumnMeta } from './types';
 import Table, { DataTableOptions, DataTableColumnCellProps } from './DataTable';
-
-const Styles = styled.div`
-  margin: 0 auto;
-  table {
-    width: 100%;
-  }
-  .dt-metric {
-    text-align: right;
-  }
-  td.dt-is-filter {
-    cursor: pointer;
-  }
-  td.dt-is-filter:hover {
-    background-color: linen;
-  }
-  td.dt-is-active-filter,
-  td.dt-is-active-filter:hover {
-    background-color: lightcyan;
-  }
-  .dt-global-filter {
-    float: right;
-  }
-  .dt-pagination {
-    text-align: right;
-    margin-top: 0.5em;
-  }
-  .pagination > li > span.dt-pagination-ellipsis:focus,
-  .pagination > li > span.dt-pagination-ellipsis:hover {
-    background: #fff;
-  }
-`;
 
 function isProbablyHTML(text: string) {
   return /<[^>]+>/.test(text);
@@ -62,22 +29,9 @@ function isProbablyHTML(text: string) {
 /**
  * Format text for cell value
  */
-function formatValue(
-  { isTime, formatter }: DataColumnMeta,
-  value: DataRecordValue,
-): [boolean, string] {
+function formatValue({ formatter }: DataColumnMeta, value: DataRecordValue): [boolean, string] {
   if (value === null) {
     return [false, 'N/A'];
-  }
-  if (isTime) {
-    let time = value;
-    if (typeof time === 'string') {
-      // force UTC time zone if is an ISO timestamp without timezone
-      // e.g. "2020-10-12T00:00:00"
-      time = time.match(/T(\d{2}:){2}\d{2}$/) ? `${time}Z` : time;
-      time = new Date(time);
-    }
-    return [false, (formatter as TimeFormatter)(time as Date | number | null) as string];
   }
   if (formatter) {
     // in case percent metric can specify percent format in the future
@@ -170,18 +124,19 @@ export default function TableChart(props: TableChartTransformedProps) {
   }
 
   const columns: DataTableOptions<DataRecord>['columns'] = columnsMeta.map((column, i) => {
-    const { key, label, isMetric, isPercentMetric } = column;
+    const { key, label, isMetric, isPercentMetric, dataType } = column;
     const valueRange = showCellBars && getValueRange(key);
     return {
       id: String(i), // to allow duplicate column keys
       accessor: key,
       Header: label,
+      dataType,
       sortDescFirst: sortDesc,
       cellProps: (({ value }) => {
         let className = '';
-        if (isMetric) {
+        if (isMetric || isPercentMetric) {
           className += ' dt-metric';
-        } else if (!isMetric && !isPercentMetric && emitFilter) {
+        } else if (emitFilter) {
           className += ' dt-is-filter';
           if (isActiveFilterValue(key, value)) {
             className += ' dt-is-active-filter';
@@ -204,15 +159,13 @@ export default function TableChart(props: TableChartTransformedProps) {
   });
 
   return (
-    <Styles>
-      <Table
-        className="table table-striped"
-        columns={columns}
-        height={height}
-        data={data}
-        showSearchInput={includeSearch}
-        pageSize={pageSize}
-      />
-    </Styles>
+    <Table
+      className="table table-striped"
+      columns={columns}
+      height={height}
+      data={data}
+      showSearchInput={includeSearch}
+      pageSize={pageSize}
+    />
   );
 }

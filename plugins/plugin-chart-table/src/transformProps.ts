@@ -22,6 +22,7 @@ import { getNumberFormatter, NumberFormats } from '@superset-ui/number-format';
 import { getTimeFormatter } from '@superset-ui/time-format';
 
 import { TableChartProps, TableChartTransformedProps } from './types';
+import { DataType } from './DataTable';
 
 const { PERCENT_3_POINT } = NumberFormats;
 
@@ -64,6 +65,8 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
   } = formData;
   const { columnFormats, verboseMap } = datasource;
   const { records, columns: columns_ } = queryData.data || { records: [], columns: [] };
+
+  // convert `metrics` and `percentMetrics` to the key names in `data.records`
   const metrics = (metrics_ ?? []).map(consolidateMetricShape);
   const percentMetrics = (percentMetrics_ ?? [])
     .map(consolidateMetricShape)
@@ -71,6 +74,7 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
     .map((x: string) => `%${x}`);
   const metricsSet = new Set(metrics);
   const percentMetricsSet = new Set(percentMetrics);
+  let data = records;
 
   const columns = columns_.map((key: string) => {
     let label = verboseMap?.[key] || key;
@@ -83,17 +87,33 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
     const isTime = isTimeColumn(key, records);
     const isMetric = metricsSet.has(key);
     const isPercentMetric = percentMetricsSet.has(key);
+    let dataType = DataType.Number; // TODO: get this from data source
     let formatter;
     if (isTime) {
+      // convert timestamp column to `Date` obejct
+      data = data.map(x => {
+        const time = x[key];
+        return {
+          ...x,
+          [key]:
+            typeof time === 'string'
+              ? new Date(time.match(/T(\d{2}:){2}\d{2}$/) ? `${time}Z` : time)
+              : time,
+        };
+      });
       formatter = getTimeFormatter(format || tableTimestampFormat, granularity);
+      dataType = DataType.DateTime;
     } else if (isMetric) {
       formatter = getNumberFormatter(format);
     } else if (isPercentMetric) {
       formatter = getNumberFormatter(format || PERCENT_3_POINT);
+    } else {
+      dataType = DataType.String;
     }
     return {
       key,
       label,
+      dataType,
       isMetric,
       isPercentMetric,
       isTime,
@@ -103,7 +123,7 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
 
   return {
     height,
-    data: records,
+    data,
     columns,
     metrics,
     percentMetrics,

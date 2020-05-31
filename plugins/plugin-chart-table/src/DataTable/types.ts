@@ -79,8 +79,15 @@ export type DataTableColumnCellProps<D extends object, v = unknown> = (
   cell: DataTableCell<D, v>,
 ) => HTMLProps<HTMLTableDataCellElement> | undefined;
 
+export enum DataType {
+  Number = 'number',
+  String = 'string',
+  DateTime = 'datetime',
+}
+
 export interface DataTableColumnOption<D extends object, v = unknown> {
   cellProps?: DataTableColumnCellProps<D, v>;
+  dataType?: DataType;
 }
 
 export interface DataTableColumnInstance<D extends object>
