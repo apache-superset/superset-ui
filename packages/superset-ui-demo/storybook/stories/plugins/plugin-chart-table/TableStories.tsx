@@ -1,24 +1,27 @@
 import React, { useState } from 'react';
 import { SuperChart } from '@superset-ui/chart';
-import { Props as SuperChartProps } from '@superset-ui/chart/src/components/SuperChart';
 import TableChartPlugin from '@superset-ui/legacy-plugin-chart-table';
 import { SupersetBody } from '../../../shared/components/ResizableChartDemo';
+import TableChartPlugin, { TableChartProps } from '@superset-ui/plugin-chart-table';
 import data, { birthNames } from './data';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 new TableChartPlugin().configure({ key: 'table' }).register();
 
-function paginated(props_: SuperChartProps, pageSize = 50) {
-  const props = { ...props_ };
+function paginated(props_: TableChartProps, pageSize = 50) {
+  const props: TableChartProps = { ...props_ };
   if (props.formData) {
     props.formData = {
       ...props.formData,
+      pageLength: pageSize,
       page_length: pageSize,
     };
   }
+  // eslint-disable-next-line camelcase
   if (props.queryData?.form_data) {
     props.queryData.form_data = {
       ...props.queryData.form_data,
+      pageLength: pageSize,
       page_length: pageSize,
     };
   }
@@ -27,10 +30,10 @@ function paginated(props_: SuperChartProps, pageSize = 50) {
   };
 }
 
-function adjustNumCols(props: SuperChartProps, numCols = 7) {
+function adjustNumCols(props: TableChartProps, numCols = 7) {
   const newProps = { ...props };
-  if (props.queryData) {
-    const { columns } = props.queryData.data;
+  if (props?.queryData.data) {
+    const { columns, records } = props.queryData.data;
     const curSize = columns.length;
     const newColumns = [...new Array(numCols)].map((_, i) => {
       return columns[i % curSize];
@@ -38,7 +41,7 @@ function adjustNumCols(props: SuperChartProps, numCols = 7) {
     newProps.queryData = {
       ...props.queryData,
       data: {
-        ...props.queryData.data,
+        records,
         columns: newColumns,
       },
     };
@@ -52,24 +55,24 @@ function adjustNumCols(props: SuperChartProps, numCols = 7) {
  * @param pageSize number of records perpage
  * @param targetSize the target total number of records
  */
-function loadData(props: SuperChartProps, pageSize = 50, targetSize = 2042) {
+function loadData(props: TableChartProps, pageSize = 50, targetSize = 10042) {
   if (!props.queryData) return props;
-  const data = props.queryData && props.queryData.data;
-  if (data.records.length > 0) {
-    while (data.records.length < targetSize) {
-      const records = data.records;
-      data.records = records.concat(records).slice(0, targetSize);
+  const dat = props.queryData?.data;
+  if (dat && dat.records.length > 0) {
+    while (dat.records.length < targetSize) {
+      const { records } = dat;
+      dat.records = records.concat(records);
     }
+    dat.records = dat.records.slice(0, targetSize);
   }
-  props.height = window.innerHeight - 130;
-  return paginated(props, pageSize);
+  return paginated({ ...props, height: window.innerHeight - 130 }, pageSize);
 }
 
 export default {
   title: 'Legacy Chart Plugins|legacy-plugin-chart-table',
 };
 
-export const basic = () => (
+export const Basic = () => (
   <SuperChart
     chartType="table"
     width={400}
@@ -98,7 +101,7 @@ export const basic = () => (
   />
 );
 
-export const bigTable = () => {
+export const BigTable = () => {
   const initialProps = loadData(birthNames);
   const [chartProps, setChartProps] = useState(initialProps);
 

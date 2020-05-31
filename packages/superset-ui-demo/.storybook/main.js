@@ -57,7 +57,8 @@ module.exports = {
       ),
     });
 
-    config.stats = 'errors-warnings';
+    config.stats = 'minimal';
+    config.devtool = 'eval-cheap-module-source-map';
 
     return config;
   },
