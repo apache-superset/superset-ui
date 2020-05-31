@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { withKnobs, number } from '@storybook/addon-knobs';
 import { SuperChart } from '@superset-ui/chart';
 import TableChartPlugin from '@superset-ui/legacy-plugin-chart-table';
 import { SupersetBody } from '../../../shared/components/ResizableChartDemo';
@@ -8,12 +9,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 new TableChartPlugin().configure({ key: 'table' }).register();
 
-function paginated(props_: TableChartProps, pageSize = 50) {
+function paginated(props_: TableChartProps, pageSize = 50): TableChartProps {
   const props: TableChartProps = { ...props_ };
   if (props.formData) {
     props.formData = {
       ...props.formData,
-      pageLength: pageSize,
       page_length: pageSize,
     };
   }
@@ -21,16 +21,13 @@ function paginated(props_: TableChartProps, pageSize = 50) {
   if (props.queryData?.form_data) {
     props.queryData.form_data = {
       ...props.queryData.form_data,
-      pageLength: pageSize,
       page_length: pageSize,
     };
   }
-  return {
-    ...props,
-  };
+  return props;
 }
 
-function adjustNumCols(props: TableChartProps, numCols = 7) {
+function adjustNumCols(props: TableChartProps, numCols = 7): TableChartProps {
   const newProps = { ...props };
   if (props?.queryData.data) {
     const { columns, records } = props.queryData.data;
@@ -55,7 +52,7 @@ function adjustNumCols(props: TableChartProps, numCols = 7) {
  * @param pageSize number of records perpage
  * @param targetSize the target total number of records
  */
-function loadData(props: TableChartProps, pageSize = 50, targetSize = 10042) {
+function loadData(props: TableChartProps, pageSize = 50, targetSize = 1042): TableChartProps {
   if (!props.queryData) return props;
   const dat = props.queryData?.data;
   if (dat && dat.records.length > 0) {
@@ -70,6 +67,7 @@ function loadData(props: TableChartProps, pageSize = 50, targetSize = 10042) {
 
 export default {
   title: 'Legacy Chart Plugins|legacy-plugin-chart-table',
+  decorators: [withKnobs],
 };
 
 export const Basic = () => (
@@ -79,10 +77,6 @@ export const Basic = () => (
     height={400}
     datasource={{
       columnFormats: {},
-      verboseMap: {
-        name: 'name',
-        sum__num: 'sum__num',
-      },
     }}
     queryData={{ data }}
     formData={{
@@ -103,54 +97,13 @@ export const Basic = () => (
 
 export const BigTable = () => {
   const initialProps = loadData(birthNames);
-  const [chartProps, setChartProps] = useState(initialProps);
-
-  const updatePageSize = (size: number) => {
-    setChartProps(paginated(initialProps, size));
-  };
-  const updateNumCols = (numCols: number) => {
-    setChartProps(adjustNumCols(initialProps, numCols));
-  };
+  const numCols = number('Num columns', 5, { range: true, min: 1, max: 11 });
+  const pageSize = number('Page size', 10, { range: true, min: 0, max: 100 });
+  const chartProps = adjustNumCols(paginated(initialProps, pageSize), numCols);
 
   return (
     <SupersetBody>
       <div className="panel">
-        <div className="panel-heading form-inline">
-          <div className="form-group">
-            Initial page size:{' '}
-            <div className="btn-group btn-group-sm">
-              {[10, 25, 40, 50, 100, -1].map(pageSize => {
-                return (
-                  <button
-                    key={pageSize}
-                    type="button"
-                    className="btn btn-default"
-                    onClick={() => updatePageSize(pageSize)}
-                  >
-                    {pageSize > 0 ? pageSize : 'All'}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          <div className="form-group" style={{ marginLeft: 20 }}>
-            Number of columns:{' '}
-            <div className="btn-group btn-group-sm">
-              {[1, 3, 5, 7, 9].map(numCols => {
-                return (
-                  <button
-                    key={numCols}
-                    type="button"
-                    className="btn btn-default"
-                    onClick={() => updateNumCols(numCols)}
-                  >
-                    {numCols}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
         <div className="panel-body">
           <SuperChart {...chartProps} chartType="table" />
         </div>

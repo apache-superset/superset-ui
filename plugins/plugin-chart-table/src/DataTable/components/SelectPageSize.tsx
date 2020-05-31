@@ -31,6 +31,14 @@ export default function SelectPageSize({
   onChange,
 }: SelectPageSizeProps) {
   const currentSize = currentSize_ || sizeOptions[0];
+  // insert current size to list
+  if (!sizeOptions.includes(currentSize)) {
+    sizeOptions.splice(
+      sizeOptions.findIndex(x => x > currentSize),
+      0,
+      currentSize,
+    );
+  }
   return (
     <span className="dt-select-page-size">
       Show{' '}

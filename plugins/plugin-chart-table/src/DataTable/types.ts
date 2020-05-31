@@ -57,7 +57,6 @@ export interface DataTableProps<D extends object>
   className?: string;
   height?: number; // max height for whole data table including controls
   showSearchInput?: boolean;
-  pageSize?: number; // initial page size
   pageSizeOptions?: number[]; // available page size options
   hooks?: PluginHook<D>[]; // any additional hooks
 }
@@ -108,6 +107,7 @@ export interface DataTableInstance<D extends object>
     UseGlobalFiltersInstanceProps<D>,
     UseSortByInstanceProps<D>,
     UsePaginationInstanceProps<D> {
+  rows: DataTableRow<D>[];
   page: DataTableRow<D>[];
   state: Partial<DataTableState<D>>;
   headerGroups: DataTableHeaderGroup<D>[];

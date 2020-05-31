@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { t } from '@superset-ui/translation';
 import { useTable, usePagination, useSortBy, useGlobalFilter, PluginHook } from 'react-table';
 import { Form, Row, Col } from 'react-bootstrap';
@@ -52,20 +52,15 @@ export default function DataTable<D extends object>({
   columns,
   data,
   initialState: initialState_ = {},
-  pageSize: initialPageSize = 0,
   pageSizeOptions = [10, 25, 40, 50, 75, 100, 150, 200],
   showSearchInput,
   hooks,
 }: DataTableProps<D>) {
-  const tableHooks: PluginHook<D>[] = [useGlobalFilter, useSortBy];
-  const initialState: Partial<DataTableState<D>> = { ...initialState_ };
-  if (initialPageSize > 0) {
-    initialState.pageSize = initialPageSize;
-    tableHooks.push(usePagination);
-  }
-  // any additional custom hooks
-  if (hooks) {
-    tableHooks.push(...hooks);
+  const tableHooks: PluginHook<D>[] = [useGlobalFilter, useSortBy, usePagination, ...(hooks || [])];
+  const initialState = { pageSize: 0, ...initialState_ };
+  const hasPagination = initialState.pageSize > 0;
+  if (!hasPagination) {
+    initialState.pageSize = data.length;
   }
   const {
     getTableProps,
@@ -73,7 +68,6 @@ export default function DataTable<D extends object>({
     prepareRow,
     headerGroups,
     page,
-    rows,
     pageCount,
     gotoPage,
     setPageSize,
@@ -89,23 +83,28 @@ export default function DataTable<D extends object>({
     ...tableHooks,
   ) as DataTableInstance<D>;
 
-  const pageRows = page || rows;
+  // force upate the pageSize when it's been update from the initial state
+  useEffect(() => {
+    if (setPageSize) {
+      setPageSize(initialState.pageSize);
+    }
+  }, [initialState.pageSize, setPageSize]);
 
   // Render the UI for your table
   return (
     <Styles>
-      {pageSize || showSearchInput ? (
+      {hasPagination || showSearchInput ? (
         <Form inline>
           <Row>
-            {pageSize ? (
-              <Col sm={6}>
+            <Col sm={6}>
+              {hasPagination ? (
                 <SelectPageSize
                   sizeOptions={pageSizeOptions}
                   currentSize={pageSize}
                   onChange={setPageSize}
                 />
-              </Col>
-            ) : null}
+              ) : null}
+            </Col>
             {showSearchInput ? (
               <Col sm={6}>
                 <GlobalFilter<D>
@@ -137,8 +136,8 @@ export default function DataTable<D extends object>({
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {pageRows && pageRows.length > 0 ? (
-            pageRows.map(row => {
+          {page && page.length > 0 ? (
+            page.map(row => {
               prepareRow(row);
               return (
                 <tr {...row.getRowProps()}>
@@ -167,7 +166,7 @@ export default function DataTable<D extends object>({
           )}
         </tbody>
       </table>
-      {pageSize ? (
+      {hasPagination ? (
         <SimplePagination pageCount={pageCount} currentPage={pageIndex} gotoPage={gotoPage} />
       ) : null}
     </Styles>

@@ -165,7 +165,7 @@ export default function TableChart(props: TableChartTransformedProps) {
       height={height}
       data={data}
       showSearchInput={includeSearch}
-      pageSize={pageSize}
+      initialState={{ pageSize }}
     />
   );
 }
