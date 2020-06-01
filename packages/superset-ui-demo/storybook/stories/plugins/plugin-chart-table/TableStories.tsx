@@ -1,11 +1,14 @@
 import React from 'react';
 import { withKnobs, number } from '@storybook/addon-knobs';
 import { SuperChart } from '@superset-ui/chart';
-import TableChartPlugin from '@superset-ui/legacy-plugin-chart-table';
-import { SupersetBody } from '../../../shared/components/ResizableChartDemo';
 import TableChartPlugin, { TableChartProps } from '@superset-ui/plugin-chart-table';
 import data, { birthNames } from './data';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { withResizableChartDemo } from '../../../shared/components/ResizableChartDemo';
+
+export default {
+  title: 'Legacy Chart Plugins|legacy-plugin-chart-table',
+  decorators: [withKnobs, withResizableChartDemo],
+};
 
 new TableChartPlugin().configure({ key: 'table' }).register();
 
@@ -65,19 +68,14 @@ function loadData(props: TableChartProps, pageSize = 50, targetSize = 1042): Tab
   return paginated({ ...props, height: window.innerHeight - 130 }, pageSize);
 }
 
-export default {
-  title: 'Legacy Chart Plugins|legacy-plugin-chart-table',
-  decorators: [withKnobs],
-};
-
-export const Basic = () => (
+export const basic = ({ width, height }) => (
   <SuperChart
     chartType="table"
-    width={400}
-    height={400}
     datasource={{
       columnFormats: {},
     }}
+    width={width}
+    height={height}
     queryData={{ data }}
     formData={{
       alignPn: false,
@@ -94,20 +92,28 @@ export const Basic = () => (
     }}
   />
 );
+basic.story = {
+  parameters: {
+    initialSize: {
+      width: 680,
+      height: 420,
+    },
+  },
+};
 
-export const BigTable = () => {
+export const bigTable = ({ width, height }) => {
   const initialProps = loadData(birthNames);
   const numCols = number('Num columns', 5, { range: true, min: 1, max: 11 });
   const pageSize = number('Page size', 10, { range: true, min: 0, max: 100 });
   const chartProps = adjustNumCols(paginated(initialProps, pageSize), numCols);
 
-  return (
-    <SupersetBody>
-      <div className="panel">
-        <div className="panel-body">
-          <SuperChart {...chartProps} chartType="table" />
-        </div>
-      </div>
-    </SupersetBody>
-  );
+  return <SuperChart chartType="table" width={width} height={height} {...chartProps} />;
+};
+bigTable.story = {
+  parameters: {
+    initialSize: {
+      width: 680,
+      height: 420,
+    },
+  },
 };
