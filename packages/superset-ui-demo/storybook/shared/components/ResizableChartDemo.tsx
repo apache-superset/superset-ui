@@ -1,32 +1,45 @@
+import styled from '@superset-ui/style';
 import React, { useState, ReactNode } from 'react';
 import { DecoratorFunction } from '@storybook/addons';
 import ResizablePanel, { Size } from './ResizablePanel';
 
+export const SupersetBody = styled.div`
+  background: #f5f5f5;
+  padding: 16px;
+  min-height: 100%;
+
+  .panel {
+    margin-bottom: 0;
+  }
+`;
+
 export default function ResizableChartDemo({
   children,
+  panelPadding = 30,
   initialSize = { width: 500, height: 300 },
 }: {
-  children: (size: Size) => ReactNode;
+  children: (innerSize: Size) => ReactNode;
+  panelPadding?: number;
   initialSize?: Size;
 }) {
   // size are all inner size
   const [size, setSize] = useState(initialSize);
   return (
-    <div className="superset-body">
+    <SupersetBody>
       <ResizablePanel initialSize={initialSize} onResize={(e, data) => setSize(data.size)}>
-        {children(size)}
+        {children({ width: size.width - panelPadding, height: size.height - panelPadding })}
       </ResizablePanel>
-    </div>
+    </SupersetBody>
   );
 }
 
 export const withResizableChartDemo: DecoratorFunction<ReactNode> = (storyFn, context) => {
   const {
-    parameters: { initialSize },
+    parameters: { initialSize, panelPadding },
   } = context;
   return (
-    <ResizableChartDemo initialSize={initialSize as Size | undefined}>
-      {size => storyFn({ ...context, ...size })}
+    <ResizableChartDemo initialSize={initialSize as Size | undefined} panelPadding={panelPadding}>
+      {innerSize => storyFn({ ...context, ...innerSize })}
     </ResizableChartDemo>
   );
 };

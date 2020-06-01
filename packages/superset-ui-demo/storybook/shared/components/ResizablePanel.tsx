@@ -10,29 +10,24 @@ export default function ResizablePanel({
   heading = undefined,
   initialSize = { width: 500, height: 300 },
   minConstraints = [100, 100] as [number, number],
-  panelPadding = 30,
   onResize,
   ...props
 }: PropsWithChildren<Omit<ResizableBoxProps, 'width' | 'height'>> & {
   heading?: ReactNode;
-  panelPadding?: number;
   initialSize?: Size;
 }) {
   const { width, height } = initialSize;
   return (
     <ResizableBox
       className="panel"
-      width={width + panelPadding}
-      height={height + panelPadding}
+      width={width}
+      height={height}
       minConstraints={minConstraints}
       onResize={
         onResize
           ? (e, data) => {
               const { size } = data;
-              onResize(e, {
-                ...data,
-                size: { width: size.width - panelPadding, height: size.height - panelPadding },
-              });
+              onResize(e, { ...data, size });
             }
           : undefined
       }
