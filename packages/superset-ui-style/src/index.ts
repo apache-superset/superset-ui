@@ -66,7 +66,7 @@ export interface SupersetThemeProps {
   theme: typeof defaultTheme;
 }
 
-export const styled = emotionStyled as CreateStyled<typeof defaultTheme>;
+export const styled: CreateStyled<typeof defaultTheme> = emotionStyled;
 export const supersetTheme = defaultTheme;
 
 export default styled;
