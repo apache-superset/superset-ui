@@ -23,7 +23,6 @@ import transformProps from '../src/transformProps';
 import testData from './testData';
 
 describe('plugin-chart-table', () => {
-  // Can test more prop transformation here. Not needed for now.
   describe('transformProps', () => {
     it('should parse pageLength to pageSize', () => {
       expect(transformProps(testData.basic).pageSize).toBe(20);
@@ -42,7 +41,7 @@ describe('plugin-chart-table', () => {
     });
   });
 
-  describe('ReactDataTable', () => {
+  describe('TableChart', () => {
     let wrap: CommonWrapper; // the ReactDataTable wraper
 
     it('render basic data', () => {
@@ -70,7 +69,7 @@ describe('plugin-chart-table', () => {
     it('render empty data', () => {
       wrap.setProps(transformProps(testData.empty));
       const tree = wrap.render();
-      expect(tree.text()).toContain('No data available in table');
+      expect(tree.text()).toContain('No records found');
     });
   });
 });
