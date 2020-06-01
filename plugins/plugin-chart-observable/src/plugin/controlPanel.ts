@@ -59,13 +59,13 @@ export default {
               // valueRenderer: c => <ColumnOption column={c} />,
               valueKey: 'name',
               allowAll: true,
-              // mapStateToProps: (state: State) => {
-              //   console.warn('state!!!!!!!!!!!', state);
-              //   return {
-              //     options: state.datasource ? state.datasource.columns : [],
-              //   };
-              // },
-              options: [{ name: 'observable' }, { name: 'rawData' }], // commaChoosesOption: false,
+              mapStateToProps: (explore: unknown) => {
+                return {
+                  options: explore.selectControlOptions
+                    ? explore.selectControlOptions.map((option: string) => ({ name: option }))
+                    : [],
+                };
+              },
               freeForm: true,
               renderTrigger: true,
             },
@@ -85,12 +85,13 @@ export default {
               // valueRenderer: c => <ColumnOption column={c} />,
               valueKey: 'name',
               // allowAll: true,
-              // mapStateToProps: (state: State) => {
-              //   console.warn('state!!!!!!!!!!!', state);
-              //   return {
-              //     options: state.datasource ? state.datasource.columns : [],
-              //   };
-              // },
+              mapStateToProps: (explore: unknown) => {
+                return {
+                  options: explore.selectControlOptions
+                    ? explore.selectControlOptions.map((option: string) => ({ name: option }))
+                    : [],
+                };
+              },
               options: [{ name: 'observable' }, { name: 'rawData' }, { name: 'control' }],
               // commaChoosesOption: false,
               // freeForm: true,

@@ -5,6 +5,7 @@
 /* eslint-disable unicorn/explicit-length-check */
 /* eslint-disable no-negated-condition */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 // @ts-ignore
 import { Runtime, Inspector, Library } from '@observablehq/runtime';
 
@@ -14,11 +15,12 @@ interface Props {
   data: any;
   displayedCells: string[];
   dataInjectionCell: string;
+  broadcastCells: Function;
   width: number;
   height: number;
 }
 
-export default class ObservableLoader extends Component<Props> {
+class ObservableLoader extends Component<Props> {
   notebookWrapperRef = React.createRef<HTMLDivElement>();
 
   displayRefs: { [key: string]: HTMLDivElement | null } = {};
@@ -46,11 +48,7 @@ export default class ObservableLoader extends Component<Props> {
       const cellNames = Array.from(fullModule._scope).map(item => item[0]);
       // ok, now broadcast the names...
 
-      // @ts-ignore
-      const cellNameUpdate = new Event('cellNameUpdate', cellNames);
-      // @ts-ignore
-      window.cellNames = cellNames;
-      window.dispatchEvent(cellNameUpdate);
+      this.props.broadcastCells(cellNames);
 
       const runtime = new Runtime();
       let module_ = null;
@@ -94,3 +92,14 @@ export default class ObservableLoader extends Component<Props> {
     );
   }
 }
+
+function overwriteSelectControlOptions(selectControlOptions: string[]) {
+  return { type: 'OVERWRITE_SELECT_CONTROL_OPTIONS', selectControlOptions };
+}
+
+function mapDispatchToProps(dispatch: Function) {
+  return {
+    broadcastCells: (cellList: string[]) => dispatch(overwriteSelectControlOptions(cellList)),
+  };
+}
+export default connect(null, mapDispatchToProps)(ObservableLoader);
