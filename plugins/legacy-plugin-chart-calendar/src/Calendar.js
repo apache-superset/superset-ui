@@ -22,7 +22,6 @@ import { select as d3Select } from 'd3-selection';
 import { getSequentialSchemeRegistry } from '@superset-ui/color';
 import { getNumberFormatter } from '@superset-ui/number-format';
 import { getTimeFormatter } from '@superset-ui/time-format';
-import styled from '@superset-ui/style';
 import CalHeatMap from './vendor/cal-heatmap';
 import './vendor/cal-heatmap.css';
 // import './Calendar.css';
@@ -161,22 +160,3 @@ Calendar.displayName = 'Calendar';
 Calendar.propTypes = propTypes;
 
 export default Calendar;
-/*const StylComponent = styled(Calendar)`
-  superset-legacy-chart-calendar {
-    padding: 10px;
-    position: static !important;
-    overflow: auto !important;
-  }
-
-  .superset-legacy-chart-calendar .ch-tooltip {
-    margin-left: 20px;
-    margin-top: 5px;
-  }
-`;
-
-
-const CalComponent = () => {
-  return <StylComponent />;
-}
-
-export default CalComponent;*/

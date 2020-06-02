@@ -16,14 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import React from 'react';
+import { reactify } from '@superset-ui/chart';
+import styled from '@superset-ui/style';
+import Component from './Calendar';
 
-.superset-legacy-chart-calendar {
-  padding: 10px;
-  position: static !important;
-  overflow: auto !important;
-}
+const ReactComponent = reactify(Component);
 
-.superset-legacy-chart-calendar .ch-tooltip {
-  margin-left: 20px;
-  margin-top: 5px;
-}
+const Calender = ({ className, ...otherProps }) => {
+  return (
+    <div className={className}>
+      <ReactComponent {...otherProps} />
+    </div>
+  );
+};
+
+const NewComponent = styled(Calender)`
+  .superset-legacy-chart-calendar {
+    padding: 10px;
+    position: static !important;
+    overflow: auto !important;
+  }
+
+  .superset-legacy-chart-calendar .ch-tooltip {
+    margin-left: 20px;
+    margin-top: 5px;
+  }
+`;
+
+export default NewComponent;
