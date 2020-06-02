@@ -101,15 +101,18 @@ basic.story = {
   },
 };
 
-export const bigTable = ({ width, height }) => {
-  const initialProps = loadData(birthNames);
+export const BigTable = ({ width, height }) => {
+  // memoimize the data so resize do not trigger rerenders of the pagination.
+  const initialProps = React.useMemo(() => loadData(birthNames), []);
   const numCols = number('Num columns', 5, { range: true, min: 1, max: 11 });
   const pageSize = number('Page size', 10, { range: true, min: 0, max: 100 });
-  const chartProps = adjustNumCols(paginated(initialProps, pageSize), numCols);
-
+  const chartProps = React.useMemo(
+    () => adjustNumCols(paginated(initialProps, pageSize), numCols),
+    [initialProps, pageSize, numCols],
+  );
   return <SuperChart chartType="table" {...chartProps} width={width} height={height} />;
 };
-bigTable.story = {
+BigTable.story = {
   parameters: {
     initialSize: {
       width: 680,
