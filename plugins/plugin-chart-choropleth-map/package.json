@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Superset Chart - Choropleth Map",
   "sideEffects": false,
+  "private": true,
   "main": "lib/index.js",
   "module": "esm/index.js",
   "files": [
