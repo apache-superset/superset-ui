@@ -28,6 +28,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@superset-ui/style": "^0.13.21",
     "d3-array": "^2.0.3",
     "d3-selection": "^1.4.0",
     "d3-tip": "^0.9.1",
