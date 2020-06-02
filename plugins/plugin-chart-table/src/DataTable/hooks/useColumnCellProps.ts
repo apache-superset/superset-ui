@@ -16,6 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export * from './hooks/useColumnCellProps';
-export * from './hooks/useSticky';
-export { default } from './DataTable';
+import { HTMLProps } from 'react';
+import { Hooks, Cell, TableCellProps, ColumnInstance } from 'react-table';
+
+export interface UseColumnCellPropsColumnOption<D extends object, V = unknown> {
+  cellProps?: (
+    cell: Cell<D, V>,
+    props: Partial<TableCellProps>,
+  ) => Partial<HTMLProps<HTMLTableDataCellElement>> | undefined;
+}
+
+/**
+ * Configure `cellProps` in column options.
+ */
+export default function useColumnCellProps<D extends object>(hooks: Hooks<D>) {
+  hooks.getCellProps.push((props, { cell }) => {
+    const column = cell.column as ColumnInstance<D>;
+    return (column.cellProps && column.cellProps(cell, props)) || [];
+  });
+}
+useColumnCellProps.pluginName = 'useColumnCellProps';

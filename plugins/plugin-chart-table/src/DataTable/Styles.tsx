@@ -3,12 +3,14 @@ import styled from '@superset-ui/style';
 export default styled.div`
   margin: 0 auto;
   table {
-    width: 100%;
+    min-width: 100%;
+    margin: 0;
   }
 
   thead > tr > th {
     padding-right: 1.4em;
     position: relative;
+    background: #fff;
   }
   th svg {
     color: #ccc;
@@ -41,6 +43,9 @@ export default styled.div`
   .dt-pagination {
     text-align: right;
     margin-top: 0.5em;
+  }
+  .dt-pagination .pagination {
+    margin: 0;
   }
 
   .pagination > li > span.dt-pagination-ellipsis:focus,

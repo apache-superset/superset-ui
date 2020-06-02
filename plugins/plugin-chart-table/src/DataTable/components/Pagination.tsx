@@ -67,15 +67,13 @@ function generatePageItems(pageCount: number, currentPage: number, maxPageItemCo
   return pageItems;
 }
 
-export default function Pagination({
-  pageCount,
-  currentPage = 0,
-  maxPageItemCount = 9,
-  gotoPage,
-}: PaginationProps) {
+export default React.forwardRef(function Pagination(
+  { pageCount, currentPage = 0, maxPageItemCount = 9, gotoPage }: PaginationProps,
+  ref: React.Ref<HTMLDivElement>,
+) {
   const pageItems = generatePageItems(pageCount, currentPage, maxPageItemCount);
   return (
-    <div className="dt-pagination">
+    <div ref={ref} className="dt-pagination">
       <ul className="pagination pagination-sm">
         {pageItems.map((item, i) =>
           typeof item === 'number' ? (
@@ -101,4 +99,4 @@ export default function Pagination({
       </ul>
     </div>
   );
-}
+});

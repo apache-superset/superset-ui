@@ -48,7 +48,7 @@ module.exports = {
       ],
     });
 
-    config.plugins.push(new ForkTsCheckerWebpackPlugin())
+    config.plugins.unshift(new ForkTsCheckerWebpackPlugin())
 
     config.resolve.extensions.push('.ts', '.tsx');
 

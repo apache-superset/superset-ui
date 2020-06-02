@@ -21,8 +21,7 @@ import { QueryFormDataMetric } from '@superset-ui/query';
 import { getNumberFormatter, NumberFormats } from '@superset-ui/number-format';
 import { getTimeFormatter } from '@superset-ui/time-format';
 
-import { TableChartProps, TableChartTransformedProps } from './types';
-import { DataType } from './DataTable';
+import { TableChartProps, TableChartTransformedProps, DataType } from './types';
 
 const { PERCENT_3_POINT } = NumberFormats;
 
@@ -44,12 +43,14 @@ function isTimeColumn(key: string, data: DataRecord[] = []) {
 export default function transformProps(chartProps: TableChartProps): TableChartTransformedProps {
   const {
     height,
+    width,
     datasource,
     formData,
     queryData,
     initialValues: filters = {},
     hooks: { onAddFilter: onChangeFilter = () => {} },
   } = chartProps;
+
   const {
     alignPn: alignPositiveNegative = true,
     colorPn: colorPositiveNegative = true,
@@ -123,6 +124,7 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
 
   return {
     height,
+    width,
     data,
     columns,
     metrics,

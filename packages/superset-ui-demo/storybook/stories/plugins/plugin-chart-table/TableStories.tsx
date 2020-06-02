@@ -107,7 +107,7 @@ export const bigTable = ({ width, height }) => {
   const pageSize = number('Page size', 10, { range: true, min: 0, max: 100 });
   const chartProps = adjustNumCols(paginated(initialProps, pageSize), numCols);
 
-  return <SuperChart chartType="table" width={width} height={height} {...chartProps} />;
+  return <SuperChart chartType="table" {...chartProps} width={width} height={height} />;
 };
 bigTable.story = {
   parameters: {

@@ -20,7 +20,12 @@ import { QueryFormDataMetric } from '@superset-ui/query';
 import { ChartProps, DataRecord, DataRecordFilters } from '@superset-ui/chart';
 import { TimeFormatter, TimeGranularity } from '@superset-ui/time-format';
 import { NumberFormatter } from '@superset-ui/number-format';
-import { DataType } from './DataTable/types';
+
+export enum DataType {
+  Number = 'number',
+  String = 'string',
+  DateTime = 'datetime',
+}
 
 export interface DataColumnMeta {
   // `key` is what is called `label` in the input props
@@ -62,6 +67,7 @@ export type TableChartProps = ChartProps & {
 
 export interface TableChartTransformedProps {
   height: number;
+  width: number;
   data: DataRecord[];
   columns: DataColumnMeta[];
   metrics?: string[];

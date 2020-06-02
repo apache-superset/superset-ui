@@ -20,7 +20,7 @@ import React, { useState } from 'react';
 import { DataRecordValue, DataRecord } from '@superset-ui/chart';
 import { filterXSS } from 'xss';
 import { TableChartTransformedProps, DataColumnMeta } from './types';
-import Table, { DataTableOptions, DataTableColumnCellProps } from './DataTable';
+import Table, { UseColumnCellPropsColumnOption } from './DataTable';
 
 function isProbablyHTML(text: string) {
   return /<[^>]+>/.test(text);
@@ -47,6 +47,7 @@ function formatValue({ formatter }: DataColumnMeta, value: DataRecordValue): [bo
 export default function TableChart(props: TableChartTransformedProps) {
   const {
     height,
+    width,
     data,
     columns: columnsMeta,
     alignPositiveNegative = false,
@@ -123,7 +124,7 @@ export default function TableChart(props: TableChartTransformedProps) {
     onChangeFilter(updatedFilters);
   }
 
-  const columns: DataTableOptions<DataRecord>['columns'] = columnsMeta.map((column, i) => {
+  const columns = columnsMeta.map((column, i) => {
     const { key, label, isMetric, isPercentMetric, dataType } = column;
     const valueRange = showCellBars && getValueRange(key);
     return {
@@ -132,8 +133,9 @@ export default function TableChart(props: TableChartTransformedProps) {
       Header: label,
       dataType,
       sortDescFirst: sortDesc,
-      cellProps: (({ value }) => {
+      cellProps: (({ value: value_ }, cellProps) => {
         let className = '';
+        const value = value_ as DataRecordValue;
         if (isMetric || isPercentMetric) {
           className += ' dt-metric';
         } else if (emitFilter) {
@@ -147,25 +149,29 @@ export default function TableChart(props: TableChartTransformedProps) {
           // show raw number in title in case of numeric values
           title: typeof value === 'number' ? String(value) : undefined,
           dangerouslySetInnerHTML: isHtml ? { __html: text } : undefined,
-          textContent: text,
+          cellContent: text,
           onClick: valueRange ? undefined : () => toggleFilter(key, value),
           className,
           style: {
-            background: valueRange ? cellBar(value, valueRange) : undefined,
+            ...cellProps.style,
+            background: valueRange ? cellBar(value as number, valueRange) : undefined,
           },
         };
-      }) as DataTableColumnCellProps<DataRecord, number>,
+      }) as UseColumnCellPropsColumnOption<DataRecord>['cellProps'],
     };
   });
 
   return (
-    <Table
+    <Table<DataRecord>
       className="table table-striped"
       columns={columns}
-      height={height}
       data={data}
       showSearchInput={includeSearch}
-      initialState={{ pageSize }}
+      // make `width` and `height` state so when resizing the chart
+      // does not rerender
+      pageSize={pageSize}
+      width={width}
+      height={height}
     />
   );
 }
