@@ -17,6 +17,7 @@
  * under the License.
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { reactify } from '@superset-ui/chart';
 import styled from '@superset-ui/style';
 import Component from './Calendar';
@@ -29,6 +30,15 @@ const Calender = ({ className, ...otherProps }) => {
       <ReactComponent {...otherProps} />
     </div>
   );
+};
+
+Calender.defaultProps = {
+  otherProps: {},
+};
+
+Calender.propTypes = {
+  className: PropTypes.string.isRequired,
+  otherProps: PropTypes.objectOf(PropTypes.any),
 };
 
 const NewComponent = styled(Calender)`
