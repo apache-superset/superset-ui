@@ -28,20 +28,20 @@
     "access": "public"
   },
   "dependencies": {
-    "@superset-ui/style": "^0.13.21",
     "d3-array": "^2.0.3",
     "d3-selection": "^1.4.0",
     "d3-tip": "^0.9.1",
-    "prop-types": "^15.6.2",
-    "react": "^16.13.1"
+    "prop-types": "^15.6.2"
   },
   "peerDependencies": {
+    "react": "^16.13.1",
     "@superset-ui/chart": "^0.13.0",
     "@superset-ui/color": "^0.13.0",
     "@superset-ui/control-utils": "^0.13.3",
     "@superset-ui/number-format": "^0.13.0",
     "@superset-ui/time-format": "^0.13.0",
     "@superset-ui/translation": "^0.13.0",
+    "@superset-ui/style": "^0.13.21",
     "@superset-ui/validator": "^0.13.3"
   }
 }
