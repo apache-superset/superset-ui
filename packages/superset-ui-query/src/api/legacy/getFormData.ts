@@ -3,8 +3,8 @@ import { BaseParams } from '../types';
 import { QueryFormData } from '../../types/QueryFormData';
 
 export interface Params extends BaseParams {
-  sliceId: string;
-  overrideFormData: Partial<QueryFormData>;
+  sliceId: number;
+  overrideFormData?: Partial<QueryFormData>;
 }
 
 export default function getFormData({
