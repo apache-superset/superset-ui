@@ -18,15 +18,17 @@ const run = cmd => {
   }
 };
 
+const BABEL_CONFIG = '--config-file=../../babel.config.js';
+
 if (glob) {
   // lint is slow, so not turning it on by default
   if (extraArgs.includes('--lint')) {
     run(`nimbus eslint {packages,plugins}/${glob}/{src,test}`);
   }
-  run(`nimbus babel --clean --workspaces="@superset-ui/${glob}"`);
-  run(`nimbus babel --clean --workspaces="@superset-ui/${glob}" --esm`);
+  run(`nimbus babel --clean --workspaces="@superset-ui/${glob}" ${BABEL_CONFIG}`);
+  run(`nimbus babel --clean --workspaces="@superset-ui/${glob}" --esm ${BABEL_CONFIG}`);
   run(`nimbus typescript --build --workspaces="@superset-ui/${glob}"`);
   require('./buildAssets');
 } else {
-  run('yarn build');
+  run('yarn babel && yarn type && yarn build:assets');
 }
