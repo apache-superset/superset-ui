@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build": "node ./scripts/build.js",
-    "build:assets": "node ./scripts/buildAssets.js",
+    "build:assets": "node ./scripts/copyAssets.js",
     "babel": "yarn babel:cjs && yarn babel:esm",
     "babel:cjs": "nimbus babel --clean --workspaces=\"@superset-ui/!(demo|generator-superset)\" --config-file=../../babel.config.js",
     "babel:esm": "nimbus babel --clean --workspaces=\"@superset-ui/!(demo|generator-superset)\" --esm --config-file=../../babel.config.js",

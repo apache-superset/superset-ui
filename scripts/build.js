@@ -1,5 +1,7 @@
+#!/bin/env node
+/* eslint-disable no-console */
 /**
- * Build only plugins specified by globs
+ * Build plugins specified by globs
  */
 const { spawnSync } = require('child_process');
 
@@ -28,7 +30,10 @@ if (glob) {
   run(`nimbus babel --clean --workspaces="@superset-ui/${glob}" ${BABEL_CONFIG}`);
   run(`nimbus babel --clean --workspaces="@superset-ui/${glob}" --esm ${BABEL_CONFIG}`);
   run(`nimbus typescript --build --workspaces="@superset-ui/${glob}"`);
-  require('./buildAssets');
+  // eslint-disable-next-line global-require
+  require('./copyAssets');
 } else {
-  run('yarn babel && yarn type && yarn build:assets');
+  run('yarn babel');
+  run('yarn type');
+  run('yarn build:assets');
 }
