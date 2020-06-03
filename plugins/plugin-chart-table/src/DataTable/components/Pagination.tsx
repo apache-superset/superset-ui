@@ -27,48 +27,38 @@ interface PaginationProps {
 }
 
 // first, ..., prev, current, next, ..., last
-const DEFAULT_MAX_PAGE_ITEM_COUNT = 7;
+const MINIMAL_PAGE_ITEM_COUNT = 7;
 
 /**
  * Generate numeric page items around current page.
  *   - Always include first and last page
  *   - Add ellipsis if needed
  */
-function generatePageItems(pageCount: number, currentPage: number, maxPageItemCount: number) {
-  let pageItems: (string | number)[] = [currentPage];
-  if (maxPageItemCount < DEFAULT_MAX_PAGE_ITEM_COUNT) {
-    throw new Error(`Must allow at least ${DEFAULT_MAX_PAGE_ITEM_COUNT} page items`);
+function generatePageItems(total: number, current: number, width: number) {
+  if (width < MINIMAL_PAGE_ITEM_COUNT) {
+    throw new Error(`Must allow at least ${MINIMAL_PAGE_ITEM_COUNT} page items`);
   }
-  if (pageCount > maxPageItemCount) {
-    let left = currentPage - 1;
-    let right = currentPage + 1;
-    while (pageItems.length < maxPageItemCount && (left > -1 || right < pageCount)) {
-      if (left > -1) {
-        pageItems.unshift(left);
-        left -= 1;
-      }
-      if (right < pageCount) {
-        pageItems.push(right);
-        right += 1;
-      }
-    }
-    // replace non-ending items with placeholders
-    if (pageItems[0] > 0) {
-      pageItems[0] = 0;
-      if (pageItems[1] > 1) {
-        pageItems[1] = 'prev-more';
-      }
-    }
-    if (pageItems[pageItems.length - 1] < pageCount - 1) {
-      pageItems[pageItems.length - 1] = pageCount - 1;
-      if (pageItems[pageItems.length - 2] < pageCount - 2) {
-        pageItems[pageItems.length - 2] = 'next-more';
-      }
-    }
-  } else {
-    pageItems = [...new Array(pageCount).keys()];
+  if (width % 2 === 0) {
+    throw new Error(`Must allow odd number of page items`);
   }
-  return pageItems;
+  if (total < width) {
+    return [...new Array(total).keys()];
+  }
+  const left = Math.max(0, Math.min(total - width, current - Math.floor(width / 2)));
+  const items: (string | number)[] = new Array(width);
+  for (let i = 0; i < width; i += 1) {
+    items[i] = i + left;
+  }
+  // replace non-ending items with placeholders
+  if (items[0] > 0) {
+    items[0] = 0;
+    items[1] = 'prev-more';
+  }
+  if (items[items.length - 1] < total - 1) {
+    items[items.length - 1] = total - 1;
+    items[items.length - 2] = 'next-more';
+  }
+  return items;
 }
 
 export default React.forwardRef(function Pagination(
