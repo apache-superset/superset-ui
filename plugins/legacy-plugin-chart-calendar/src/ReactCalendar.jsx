@@ -41,7 +41,7 @@ Calender.propTypes = {
   otherProps: PropTypes.objectOf(PropTypes.any),
 };
 
-const NewComponent = styled(Calender)`
+export default styled(Calender)`
   .superset-legacy-chart-calendar {
     padding: 10px;
     position: static !important;
@@ -53,5 +53,3 @@ const NewComponent = styled(Calender)`
     margin-top: 5px;
   }
 `;
-
-export default NewComponent;
