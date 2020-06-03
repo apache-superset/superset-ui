@@ -28,6 +28,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@superset-ui/style": "^0.13.26",
     "prop-types": "^15.6.2"
   },
   "peerDependencies": {
