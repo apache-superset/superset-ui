@@ -32,11 +32,8 @@ export interface DataColumnMeta {
   key: string;
   // `label` is verbose column name used for rendering
   label: string;
-  isTime?: boolean;
-  isMetric?: boolean;
-  isPercentMetric?: boolean;
-  formatter?: TimeFormatter | NumberFormatter;
   dataType: DataType;
+  formatter?: TimeFormatter | NumberFormatter;
 }
 
 export interface TableChartData {
