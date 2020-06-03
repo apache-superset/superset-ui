@@ -65,6 +65,10 @@ module.exports = {
 
     config.stats = 'minimal';
     config.devtool = 'eval-cheap-module-source-map';
+    config.devServer = {
+      ...config.devServer,
+      stats: 'minimal',
+    }
 
     return config;
   },

@@ -40,16 +40,12 @@ export default function SelectPageSize({
     );
   }
   return (
-    <span className="dt-select-page-size">
+    <span className="dt-select-page-size form-inline">
       Show{' '}
       <FormControl
         bsSize="small"
         componentClass="select"
         value={currentSize}
-        style={{
-          display: 'inline-block',
-          width: 'auto',
-        }}
         onChange={e => {
           onChange(Number((e.target as HTMLSelectElement).value));
         }}

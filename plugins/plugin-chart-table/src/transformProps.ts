@@ -28,7 +28,7 @@ const { PERCENT_3_POINT } = NumberFormats;
 /**
  * Consolidate list of metrics to string, identified by its unique identifier
  */
-function consolidateMetricShape(metric: QueryFormDataMetric) {
+function getMetricIdentifier(metric: QueryFormDataMetric) {
   if (typeof metric === 'string') return metric;
   // even thought `metric.optionName` is more unique, it's not used
   // anywhere else in `queryData` and cannot be used to access `data.records`.
@@ -68,9 +68,9 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
   const { records, columns: columns_ } = queryData.data || { records: [], columns: [] };
 
   // convert `metrics` and `percentMetrics` to the key names in `data.records`
-  const metrics = (metrics_ ?? []).map(consolidateMetricShape);
+  const metrics = (metrics_ ?? []).map(getMetricIdentifier);
   const percentMetrics = (percentMetrics_ ?? [])
-    .map(consolidateMetricShape)
+    .map(getMetricIdentifier)
     // column names for percent metrics always starts with a '%' sign.
     .map((x: string) => `%${x}`);
   const metricsSet = new Set(metrics);
@@ -115,9 +115,6 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
       key,
       label,
       dataType,
-      isMetric,
-      isPercentMetric,
-      isTime,
       formatter,
     };
   });

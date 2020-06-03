@@ -23,17 +23,21 @@ interface PaginationProps {
   currentPage?: number; // index of current page, zero-based
   maxPageItemCount?: number;
   ellipsis?: string; // content for ellipsis item
-  gotoPage: (page: number) => void; // `page` is zero-based
+  onPageChange: (page: number) => void; // `page` is zero-based
 }
 
+// first, ..., prev, current, next, ..., last
+const DEFAULT_MAX_PAGE_ITEM_COUNT = 7;
+
 /**
- * Generate numeric page items in the form of
- *  first, ..., prev, current, next, ..., last
+ * Generate numeric page items around current page.
+ *   - Always include first and last page
+ *   - Add ellipsis if needed
  */
 function generatePageItems(pageCount: number, currentPage: number, maxPageItemCount: number) {
   let pageItems: (string | number)[] = [currentPage];
-  if (maxPageItemCount < 7) {
-    throw new Error('Must allow at least 5 page items');
+  if (maxPageItemCount < DEFAULT_MAX_PAGE_ITEM_COUNT) {
+    throw new Error(`Must allow at least ${DEFAULT_MAX_PAGE_ITEM_COUNT} page items`);
   }
   if (pageCount > maxPageItemCount) {
     let left = currentPage - 1;
@@ -68,7 +72,7 @@ function generatePageItems(pageCount: number, currentPage: number, maxPageItemCo
 }
 
 export default React.forwardRef(function Pagination(
-  { pageCount, currentPage = 0, maxPageItemCount = 9, gotoPage }: PaginationProps,
+  { pageCount, currentPage = 0, maxPageItemCount = 9, onPageChange }: PaginationProps,
   ref: React.Ref<HTMLDivElement>,
 ) {
   const pageItems = generatePageItems(pageCount, currentPage, maxPageItemCount);
@@ -84,7 +88,7 @@ export default React.forwardRef(function Pagination(
                 role="button"
                 onClick={e => {
                   e.preventDefault();
-                  gotoPage(item);
+                  onPageChange(item);
                 }}
               >
                 {item + 1}

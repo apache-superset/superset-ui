@@ -19,7 +19,7 @@
 import React, { useState } from 'react';
 import { DataRecordValue, DataRecord } from '@superset-ui/chart';
 import { filterXSS } from 'xss';
-import { TableChartTransformedProps, DataColumnMeta } from './types';
+import { TableChartTransformedProps, DataColumnMeta, DataType } from './types';
 import Table, { UseColumnCellPropsColumnOption } from './DataTable';
 
 function isProbablyHTML(text: string) {
@@ -125,7 +125,7 @@ export default function TableChart(props: TableChartTransformedProps) {
   }
 
   const columns = columnsMeta.map((column, i) => {
-    const { key, label, isMetric, isPercentMetric, dataType } = column;
+    const { key, label, dataType } = column;
     const valueRange = showCellBars && getValueRange(key);
     return {
       id: String(i), // to allow duplicate column keys
@@ -136,7 +136,7 @@ export default function TableChart(props: TableChartTransformedProps) {
       cellProps: (({ value: value_ }, cellProps) => {
         let className = '';
         const value = value_ as DataRecordValue;
-        if (isMetric || isPercentMetric) {
+        if (dataType === DataType.Number) {
           className += ' dt-metric';
         } else if (emitFilter) {
           className += ' dt-is-filter';

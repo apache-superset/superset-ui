@@ -1,3 +1,8 @@
+/**
+ * Merge typing interfaces for UseTable hooks.
+ *
+ * Ref: https://gist.github.com/ggascoigne/646e14c9d54258e40588a13aabf0102d
+ */
 import {
   UseGlobalFiltersState,
   UseGlobalFiltersOptions,
@@ -20,8 +25,6 @@ import { UseColumnCellPropsColumnOption } from '../hooks/useColumnCellProps';
 import { UseStickyState, UseStickyTableOptions, UseStickyInstanceProps } from '../hooks/useSticky';
 
 declare module 'react-table' {
-  // take this file as-is, or comment out the sections that don't apply to your plugin configuration
-
   export interface TableOptions<D extends object>
     extends UseExpandedOptions<D>,
       UseGlobalFiltersOptions<D>,
@@ -54,7 +57,7 @@ declare module 'react-table' {
       UseSortByColumnOptions<D>,
       UseColumnCellPropsColumnOption<D> {}
 
-  // Tye typing from @types/react-table is incomplete
+  // Typing from @types/react-table is incomplete
   interface TableSortByToggleProps {
     style?: React.CSSProperties;
     title?: string;

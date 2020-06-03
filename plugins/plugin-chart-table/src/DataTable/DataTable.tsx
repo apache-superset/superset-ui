@@ -238,7 +238,7 @@ export default function DataTable<D extends object>({
           maxPageItemCount={(tableWidth || initialWidth) > 300 ? 9 : 7}
           pageCount={pageCount}
           currentPage={pageIndex}
-          gotoPage={gotoPage}
+          onPageChange={gotoPage}
         />
       ) : null}
     </Styles>
