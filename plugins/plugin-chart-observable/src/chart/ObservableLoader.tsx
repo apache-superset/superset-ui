@@ -7,7 +7,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 // @ts-ignore
-import { Runtime, Inspector, Library } from '@observablehq/runtime';
+import { Runtime, Inspector } from '@observablehq/runtime';
 
 interface Props {
   observableUrl: string;
