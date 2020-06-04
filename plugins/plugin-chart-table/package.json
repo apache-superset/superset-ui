@@ -26,7 +26,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@types/datatables.net": "^1.10.18",
     "@types/react-dom": "^16.9.8",
     "@types/react-table": "^7.0.18",
     "@types/match-sorter": "^4.0.0",
@@ -36,7 +35,6 @@
     "react-table": "^7.1.0",
     "react-icons": "^3.10.0",
     "match-sorter": "^4.1.0",
-    "datatables.net-bs": "^1.10.20",
     "xss": "^1.0.6"
   },
   "peerDependencies": {

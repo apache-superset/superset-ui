@@ -2,7 +2,7 @@ import React from 'react';
 import { withKnobs, number } from '@storybook/addon-knobs';
 import { SuperChart } from '@superset-ui/chart';
 import TableChartPlugin, { TableChartProps } from '@superset-ui/plugin-chart-table';
-import data, { birthNames } from './data';
+import { basicData, birthNames } from './testData';
 import { withResizableChartDemo } from '../../../shared/components/ResizableChartDemo';
 
 export default {
@@ -57,13 +57,13 @@ function adjustNumCols(props: TableChartProps, numCols = 7): TableChartProps {
  */
 function loadData(props: TableChartProps, pageSize = 50, targetSize = 1042): TableChartProps {
   if (!props.queryData) return props;
-  const dat = props.queryData?.data;
-  if (dat && dat.records.length > 0) {
-    while (dat.records.length < targetSize) {
-      const { records } = dat;
-      dat.records = records.concat(records);
+  const data = props.queryData?.data;
+  if (data && data.records.length > 0) {
+    while (data.records.length < targetSize) {
+      const { records } = data;
+      data.records = records.concat(records);
     }
-    dat.records = dat.records.slice(0, targetSize);
+    data.records = data.records.slice(0, targetSize);
   }
   return paginated({ ...props, height: window.innerHeight - 130 }, pageSize);
 }
@@ -76,7 +76,7 @@ export const basic = ({ width, height }) => (
     }}
     width={width}
     height={height}
-    queryData={{ data }}
+    queryData={{ data: basicData }}
     formData={{
       alignPn: false,
       colorPn: false,
