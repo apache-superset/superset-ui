@@ -1,4 +1,5 @@
 const path = require('path');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { lstatSync, readdirSync } = require('fs');
 
 // find @superset-ui packages
@@ -40,9 +41,14 @@ module.exports = {
       use: [
         {
           loader: require.resolve('ts-loader'),
+          options: {
+            transpileOnly: true
+          }
         },
       ],
     });
+
+    config.plugins.unshift(new ForkTsCheckerWebpackPlugin())
 
     config.resolve.extensions.push('.ts', '.tsx');
 
@@ -57,7 +63,12 @@ module.exports = {
       ),
     });
 
-    config.stats = 'errors-warnings';
+    config.stats = 'minimal';
+    config.devtool = 'eval-cheap-module-source-map';
+    config.devServer = {
+      ...config.devServer,
+      stats: 'minimal',
+    }
 
     return config;
   },

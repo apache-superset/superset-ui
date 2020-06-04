@@ -1,7 +1,7 @@
 /* eslint-disable sort-keys */
 export { default as birthNames } from './birthNames.json';
 
-export default {
+export const basicData = {
   columns: ['name', 'sum__num'],
   records: [
     {

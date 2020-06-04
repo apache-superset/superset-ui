@@ -3,8 +3,6 @@
   "id": "chart-id-60",
   "className": "superset-chart-table",
   "chartType": "table",
-  "width": 932,
-  "height": 1135,
   "datasource": {
     "id": 3,
     "column_formats": {},
