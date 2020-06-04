@@ -39,16 +39,19 @@ const defaultProps = {
 interface MetricOptionProps {
   metric: {
     // eslint-disable-next-line camelcase
-    verbose_name: unknown;
+    verbose_name: string;
     // eslint-disable-next-line camelcase
     metric_name: string;
     label: string;
-    description: unknown;
+    description: string;
+    // eslint-disable-next-line camelcase
+    warning_text: string;
+    expression: string;
   };
-  openInNewWindow: unknown;
-  showFormula: unknown;
-  showType: unknown;
-  url: unknown;
+  openInNewWindow: boolean;
+  showFormula: boolean;
+  showType: boolean;
+  url: string;
 }
 
 export default function MetricOption({
@@ -60,7 +63,7 @@ export default function MetricOption({
 }: MetricOptionProps) {
   const verbose = metric.verbose_name || metric.metric_name || metric.label;
   const link = url ? (
-    <a href={url} target={openInNewWindow ? '_blank' : null}>
+    <a href={url} target={openInNewWindow ? '_blank' : ''}>
       {verbose}
     </a>
   ) : (
