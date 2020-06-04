@@ -26,7 +26,6 @@ import { scaleOrdinal } from '@vx/scale';
 import styled from '@superset-ui/style';
 import { CategoricalColorNamespace } from '@superset-ui/color';
 import WithLegend from './WithLegend';
-import './Histogram.css';
 
 const propTypes = {
   className: PropTypes.string,
