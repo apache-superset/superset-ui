@@ -1,5 +1,4 @@
 #!/bin/env node
-/* eslint-disable no-console */
 /**
  * Build plugins specified by globs
  */
@@ -11,6 +10,7 @@ const extraArgs = process.argv.slice(2);
 process.env.PATH = `./node_modules/.bin:${process.env.PATH}`;
 
 const run = cmd => {
+  // eslint-disable-next-line no-console
   console.log(`>> ${cmd}`);
   const [p, ...args] = cmd.split(' ');
   const runner = spawnSync;
