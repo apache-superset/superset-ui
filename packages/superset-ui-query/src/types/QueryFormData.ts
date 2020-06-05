@@ -47,6 +47,8 @@ export type BaseFormData = {
   timeseries_limit_metric?: QueryFormResidualDataValue;
   /** Force refresh */
   force?: boolean;
+  result_format?: 'csv' | 'json';
+  result_type?: 'full' | 'query' | 'results' | 'samples';
   queryFields?: QueryFields;
 } & TimeRange &
   QueryFormResidualData;
