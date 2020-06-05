@@ -24,9 +24,8 @@ import { Table, Thead, Th, Tr, Td } from 'reactable-arc';
 import { formatNumber } from '@superset-ui/number-format';
 import { formatTime } from '@superset-ui/time-format';
 import moment from 'moment';
-import { InfoTooltipWithTrigger } from '@superset-ui/control-utils';
+import { InfoTooltipWithTrigger, MetricOption } from '@superset-ui/control-utils';
 
-import MetricOption from '../../components/MetricOption';
 import FormattedNumber from './FormattedNumber';
 import SparklineCell from './SparklineCell';
 import './TimeTable.less';
@@ -56,7 +55,6 @@ const propTypes = {
   height: PropTypes.number,
   // Example
   // {'2018-04-14 00:00:00': { 'SUM(metric_value)': 80031779.40047 }}
-  data: PropTypes.objectOf(PropTypes.objectOf(PropTypes.number)).isRequired,
   columnConfigs: PropTypes.arrayOf(
     PropTypes.shape({
       colType: PropTypes.string,
@@ -67,6 +65,7 @@ const propTypes = {
       timeLag: PropTypes.number,
     }),
   ).isRequired,
+  data: PropTypes.objectOf(PropTypes.objectOf(PropTypes.number)).isRequired,
   rows: PropTypes.arrayOf(
     PropTypes.oneOfType([
       PropTypes.shape({
