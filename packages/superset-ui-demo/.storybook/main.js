@@ -21,11 +21,8 @@ module.exports = {
     'storybook-addon-jsx/register',
     '@storybook/addon-links/register',
   ],
-  stories: [
-    '../storybook/stories/**/*Stories.[tj]sx',
-  ],
+  stories: ['../storybook/stories/**/*Stories.[tj]sx'],
   webpackFinal: config => {
-
     // Make sure babel is applied to the package src
     // These are excluded by the default rule
     // because they reside in node_modules
@@ -42,13 +39,13 @@ module.exports = {
         {
           loader: require.resolve('ts-loader'),
           options: {
-            transpileOnly: true
-          }
+            transpileOnly: true,
+          },
         },
       ],
     });
 
-    config.plugins.unshift(new ForkTsCheckerWebpackPlugin())
+    config.plugins.unshift(new ForkTsCheckerWebpackPlugin());
 
     config.resolve.extensions.push('.ts', '.tsx');
 
@@ -68,7 +65,7 @@ module.exports = {
     config.devServer = {
       ...config.devServer,
       stats: 'minimal',
-    }
+    };
 
     return config;
   },

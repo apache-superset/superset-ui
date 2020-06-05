@@ -19,17 +19,18 @@
 import { t } from '@superset-ui/translation';
 import React from 'react';
 import { Row, FilterValue, useAsyncDebounce } from 'react-table';
-import { FormControl } from 'react-bootstrap';
 
 interface GlobalFilterProps<D extends object> {
   preGlobalFilteredRows: Row<D>[];
-  globalFilter?: string;
+  // filter value cannot be `undefined` otherwise React will report component
+  // control type undefined error
+  globalFilter: string;
   setGlobalFilter: (filterValue: FilterValue) => void;
 }
 
-export default function GlobalFilter<D extends object>({
+export default (React.memo as <T>(fn: T) => T)(function GlobalFilter<D extends object>({
   preGlobalFilteredRows,
-  globalFilter,
+  globalFilter = '',
   setGlobalFilter,
 }: GlobalFilterProps<D>) {
   const count = preGlobalFilteredRows.length;
@@ -41,10 +42,10 @@ export default function GlobalFilter<D extends object>({
   return (
     <span className="dt-global-filter">
       {t('Search')}{' '}
-      <FormControl
-        bsSize="small"
-        value={value}
+      <input
+        className="form-control input-sm"
         placeholder={`${count} records...`}
+        value={value}
         onChange={e => {
           const target = e.target as HTMLInputElement;
           e.preventDefault();
@@ -54,4 +55,4 @@ export default function GlobalFilter<D extends object>({
       />
     </span>
   );
-}
+});

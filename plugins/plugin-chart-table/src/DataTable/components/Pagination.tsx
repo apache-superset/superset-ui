@@ -61,36 +61,38 @@ function generatePageItems(total: number, current: number, width: number) {
   return items;
 }
 
-export default React.forwardRef(function Pagination(
-  { pageCount, currentPage = 0, maxPageItemCount = 9, onPageChange }: PaginationProps,
-  ref: React.Ref<HTMLDivElement>,
-) {
-  const pageItems = generatePageItems(pageCount, currentPage, maxPageItemCount);
-  return (
-    <div ref={ref} className="dt-pagination">
-      <ul className="pagination pagination-sm">
-        {pageItems.map((item, i) =>
-          typeof item === 'number' ? (
-            // actual page number
-            <li key={item} className={currentPage === item ? 'active' : undefined}>
-              <a
-                href={`#page-${item}`}
-                role="button"
-                onClick={e => {
-                  e.preventDefault();
-                  onPageChange(item);
-                }}
-              >
-                {item + 1}
-              </a>
-            </li>
-          ) : (
-            <li key={item} className="dt-pagination-ellipsis">
-              <span>…</span>
-            </li>
-          ),
-        )}
-      </ul>
-    </div>
-  );
-});
+export default React.memo(
+  React.forwardRef(function Pagination(
+    { pageCount, currentPage = 0, maxPageItemCount = 9, onPageChange }: PaginationProps,
+    ref: React.Ref<HTMLDivElement>,
+  ) {
+    const pageItems = generatePageItems(pageCount, currentPage, maxPageItemCount);
+    return (
+      <div ref={ref} className="dt-pagination">
+        <ul className="pagination pagination-sm">
+          {pageItems.map((item, i) =>
+            typeof item === 'number' ? (
+              // actual page number
+              <li key={item} className={currentPage === item ? 'active' : undefined}>
+                <a
+                  href={`#page-${item}`}
+                  role="button"
+                  onClick={e => {
+                    e.preventDefault();
+                    onPageChange(item);
+                  }}
+                >
+                  {item + 1}
+                </a>
+              </li>
+            ) : (
+              <li key={item} className="dt-pagination-ellipsis">
+                <span>…</span>
+              </li>
+            ),
+          )}
+        </ul>
+      </div>
+    );
+  }),
+);

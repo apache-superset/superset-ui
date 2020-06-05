@@ -30,10 +30,10 @@ const { PERCENT_3_POINT } = NumberFormats;
  */
 function getMetricIdentifier(metric: QueryFormDataMetric) {
   if (typeof metric === 'string') return metric;
-  // even thought `metric.optionName` is more unique, it's not used
+  // even though `metric.optionName` is more unique, it's not used
   // anywhere else in `queryData` and cannot be used to access `data.records`.
   // The records are still keyed by `metric.label`.
-  return metric.label || 'NOT_LABLED';
+  return metric.label || 'NOT_LABELED';
 }
 
 function isTimeColumn(key: string, data: DataRecord[] = []) {
