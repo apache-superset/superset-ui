@@ -49,7 +49,7 @@ export interface DataTableProps<D extends object> extends Omit<TableOptions<D>, 
   width?: string | number;
   height?: string | number;
   pageSize?: number;
-  noResults?: string | ((filterString: string) => ReactNode);
+  noResultsText?: string | ((filterString: string) => ReactNode);
 }
 
 export interface RenderHTMLCellProps extends HTMLProps<HTMLTableCellElement> {
@@ -68,7 +68,7 @@ export default function DataTable<D extends object>({
   pageSizeOptions = [10, 25, 40, 50, 75, 100, 150, 200],
   maxPageItemCount = 9,
   showSearchInput,
-  noResults = 'No data found',
+  noResultsText = 'No data found',
   hooks,
 }: DataTableProps<D>) {
   const tableHooks: PluginHook<D>[] = [
@@ -184,14 +184,15 @@ export default function DataTable<D extends object>({
               return (
                 <tr key={headerGroupKey || headerGroup.id} {...headerGroupProps}>
                   {headerGroup.headers.map(column => {
-                    const { key: headerKey, ...props } = column.getHeaderProps(
+                    const { key: headerKey, className, ...props } = column.getHeaderProps(
                       column.getSortByToggleProps(),
                     );
-                    props.className = column.isSorted
-                      ? `${props.className} is-sorted`
-                      : props.className;
                     return (
-                      <th key={headerKey || column.id} {...props}>
+                      <th
+                        key={headerKey || column.id}
+                        className={column.isSorted ? `${className || ''} is-sorted` : className}
+                        {...props}
+                      >
                         {column.render('Header')}
                         {column.render('SortIcon')}
                       </th>
@@ -229,7 +230,9 @@ export default function DataTable<D extends object>({
             ) : (
               <tr>
                 <td className="dt-no-results" colSpan={columns.length}>
-                  {typeof noResults === 'function' ? noResults(globalFilter as string) : noResults}
+                  {typeof noResultsText === 'function'
+                    ? noResultsText(globalFilter as string)
+                    : noResultsText}
                 </td>
               </tr>
             )}

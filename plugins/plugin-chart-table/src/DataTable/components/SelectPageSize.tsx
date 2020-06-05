@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { ReactText } from 'react';
+import React from 'react';
 import { FormControl } from 'react-bootstrap';
 
-export type SizeOption = number | [number, ReactText];
+export type SizeOption = number | [number, string];
 
 export interface SelectPageSizeProps {
   sizeOptions: SizeOption[];

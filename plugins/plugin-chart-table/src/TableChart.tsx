@@ -18,12 +18,7 @@
  */
 import React, { useState } from 'react';
 import { ColumnInstance, Column } from 'react-table';
-import {
-  FaSort,
-  FaSortUp, // asc
-  FaSortDown, // desc
-} from 'react-icons/fa';
-
+import { FaSort, FaSortUp as FaSortAsc, FaSortDown as FaSortDesc } from 'react-icons/fa';
 import { t } from '@superset-ui/translation';
 import { DataRecordValue, DataRecord } from '@superset-ui/chart';
 
@@ -31,13 +26,17 @@ import { TableChartTransformedProps, DataType } from './types';
 import DataTable from './DataTable';
 import Styles from './Styles';
 import formatValue from './utils/formatValue';
+import extent from './utils/extent';
+
 import { PAGE_SIZE_OPTIONS } from './controlPanel';
+
+type ValueRange = [number, number];
 
 function SortIcon({ column }: { column: ColumnInstance }) {
   const { isSorted, isSortedDesc } = column;
   let sortIcon = <FaSort />;
   if (isSorted) {
-    sortIcon = isSortedDesc ? <FaSortDown /> : <FaSortUp />;
+    sortIcon = isSortedDesc ? <FaSortDesc /> : <FaSortAsc />;
   }
   return sortIcon;
 }
@@ -52,7 +51,7 @@ function cellBar({
   alignPositiveNegative,
 }: {
   value: number;
-  valueRange: number[];
+  valueRange: ValueRange;
   colorPositiveNegative: boolean;
   alignPositiveNegative: boolean;
 }) {
@@ -108,13 +107,14 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     if (typeof data?.[0]?.[key] === 'number') {
       const nums = data.map(row => row[key]) as number[];
       if (alignPositiveNegative) {
-        maxValue = Math.max(...nums.map(Math.abs));
+        // Math.max(...) fails on very large arrays (~10^6), use a custom extent
+        // function borrowed from d3-array instead.
+        [minValue, maxValue] = extent(nums.map(Math.abs));
         minValue = 0;
       } else {
-        maxValue = Math.max(...nums);
-        minValue = Math.min(...nums);
+        [minValue, maxValue] = extent(nums);
       }
-      return [minValue, maxValue];
+      return [minValue, maxValue] as ValueRange;
     }
     return null;
   }
@@ -195,7 +195,9 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         height={height}
         // 9 page items in > 340px works well even for 100+ pages
         maxPageItemCount={width > 340 ? 9 : 7}
-        noResults={(filter: string) => t(filter ? 'No matching records found' : 'No records found')}
+        noResultsText={(filter: string) =>
+          t(filter ? 'No matching records found' : 'No records found')
+        }
       />
     </Styles>
   );

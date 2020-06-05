@@ -26,22 +26,22 @@ import React, {
   CSSProperties,
   UIEventHandler,
 } from 'react';
-import { TableInstance, Hooks, ensurePluginOrder } from 'react-table';
+import { TableInstance, Hooks } from 'react-table';
 
 type ReactElementWithChildren<
   T extends keyof JSX.IntrinsicElements,
   C extends ReactNode = ReactNode
 > = ReactElement<ComponentPropsWithRef<T> & { children: C }, T>;
 
-type th = ReactElementWithChildren<'th'>;
-type td = ReactElementWithChildren<'td'>;
-type trWithTh = ReactElementWithChildren<'tr', th>;
-type trWithTd = ReactElementWithChildren<'tr', td>;
-type thead = ReactElementWithChildren<'thead', trWithTh>;
-type tbody = ReactElementWithChildren<'tbody', trWithTd>;
-type col = ReactElementWithChildren<'col', null>;
-type colgroup = ReactElementWithChildren<'colgroup', col>;
-type table = ReactElementWithChildren<'table', (thead | tbody | colgroup)[]>;
+type Th = ReactElementWithChildren<'th'>;
+type Td = ReactElementWithChildren<'td'>;
+type TrWithTh = ReactElementWithChildren<'tr', Th>;
+type TrWithTd = ReactElementWithChildren<'tr', Td>;
+type Thead = ReactElementWithChildren<'thead', TrWithTh>;
+type Tbody = ReactElementWithChildren<'tbody', TrWithTd>;
+type Col = ReactElementWithChildren<'col', null>;
+type ColGroup = ReactElementWithChildren<'colgroup', Col>;
+type Table = ReactElementWithChildren<'table', (Thead | Tbody | ColGroup)[]>;
 
 export interface StickyElementSize {
   width?: number; // full table width
@@ -57,7 +57,7 @@ export interface UseStickyTableOptions {
 
 export interface UseStickyInstanceProps {
   // HOC for manipulating DOMs in <table> to make the header sticky
-  StickyWrap: React.FunctionComponent<{ children: table }>;
+  StickyWrap: React.FunctionComponent<{ children: Table }>;
   // update or recompute the sticky table size
   setStickyElementSize: (size?: StickyElementSize) => void;
 }
@@ -71,9 +71,7 @@ export enum ReducerActions {
   setStickyElementSize = 'setStickyElementSize',
 }
 
-export type ReduceAction<T extends string, P extends Record<string, unknown>> = {
-  [K in keyof P]: P[K];
-} & { type: T };
+export type ReducerAction<T extends string, P extends Record<string, unknown>> = P & { type: T };
 
 const DEFAULT_THEAD_HEIGHT = 38; // when all th has only 1 line of text
 
@@ -94,18 +92,18 @@ function StickyWrap({
   sticky = {},
   setStickyElementSize,
 }: {
-  children: table;
+  children: Table;
   setStickyElementSize: UseStickyInstanceProps['setStickyElementSize'];
   sticky?: StickyElementSize; // current sticky element sizes
 }) {
-  const table: table = children;
+  const table: Table = children;
   if (!table || table.type !== 'table') {
     throw new Error('<StickyWrap> must have only one <table> element as child');
   }
 
-  let thead: thead | undefined;
-  let tbody: tbody | undefined;
-  let colgroup: colgroup | undefined;
+  let thead: Thead | undefined;
+  let tbody: Tbody | undefined;
+  let colgroup: ColGroup | undefined;
   React.Children.forEach(table.props.children, node => {
     if (node.type === 'thead') {
       thead = node;
@@ -147,7 +145,7 @@ function StickyWrap({
   if (!columnWidths) {
     const theadWithRef = React.cloneElement(thead, { ref: theadRef });
     const bodyTable = React.cloneElement(table, {}, colgroup, theadWithRef, tbody);
-    return <div style={{ height, overflow: 'hidden' }}>{bodyTable}</div>;
+    return <div style={{ height, overflow: 'auto' }}>{bodyTable}</div>;
   }
 
   // if users didn't specify <colgroup>, use computed width
@@ -164,7 +162,7 @@ function StickyWrap({
   const totalWidth = columnWidths.reduce((a, b) => a + b);
   const needHorizontalScroll = width && width < totalWidth;
 
-  const tableStyle: CSSProperties = { tableLayout: 'fixed', width: totalWidth };
+  const tableStyle: CSSProperties = { tableLayout: 'fixed' };
   const wrapperStyle: CSSProperties = {
     width,
     height,
@@ -172,7 +170,7 @@ function StickyWrap({
   };
   const bodyStyle: CSSProperties = {
     height: fallbackBodyHeight,
-    overflow: 'scroll',
+    overflow: 'auto',
   };
   const headerStyle: CSSProperties = {
     overflow: 'hidden',
@@ -202,8 +200,6 @@ function StickyWrap({
 }
 
 function useInstance<D extends object>(instance: TableInstance<D>) {
-  ensurePluginOrder(instance.plugins, ['useGlobalFilters', 'usePagination'], 'useSticky');
-
   const {
     dispatch,
     state: { sticky },
@@ -228,7 +224,7 @@ function useInstance<D extends object>(instance: TableInstance<D>) {
     [dispatch, getTableSize],
   );
 
-  function LocalStickyWrap({ children }: { children: table }) {
+  function LocalStickyWrap({ children }: { children: Table }) {
     return (
       <StickyWrap sticky={sticky} setStickyElementSize={setStickyElementSize}>
         {children}
@@ -245,7 +241,7 @@ function useInstance<D extends object>(instance: TableInstance<D>) {
 export default function useSticky<D extends object>(hooks: Hooks<D>) {
   hooks.useInstance.push(useInstance);
   hooks.stateReducers.push((newState, action_) => {
-    const action = action_ as ReduceAction<ReducerActions, { size: StickyElementSize }>;
+    const action = action_ as ReducerAction<ReducerActions, { size: StickyElementSize }>;
     if (action.type === ReducerActions.init) {
       return {
         ...newState,
