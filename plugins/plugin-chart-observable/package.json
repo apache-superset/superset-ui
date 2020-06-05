@@ -36,8 +36,7 @@
     "d3-cloud": "^1.2.5",
     "d3-scale": "^3.0.1",
     "emotion-theming": "^10.0.27",
-    "encodable": "^0.3.3",
-    "react-redux": "^7.2.0"
+    "encodable": "^0.3.3"
   },
   "peerDependencies": {
     "@superset-ui/chart": "^0.13.0",
@@ -46,6 +45,7 @@
     "@superset-ui/style": "^0.13.11",
     "@superset-ui/translation": "^0.13.0",
     "@superset-ui/validator": "^0.13.0",
-    "react": "^16.3.0"
+    "react": "^16.3.0",
+    "react-redux": "^5.0.2"
   }
 }
