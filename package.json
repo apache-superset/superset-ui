@@ -94,10 +94,7 @@
   ],
   "nimbus": {
     "drivers": [
-      {
-        "driver": "babel",
-        "strategy": "none"
-      },
+      { "driver": "babel", "strategy": "none" },
       "eslint",
       "jest",
       "prettier",
