@@ -17,14 +17,14 @@ function paginated(props_: TableChartProps, pageSize = 50): TableChartProps {
   if (props.formData) {
     props.formData = {
       ...props.formData,
-      page_length: pageSize,
+      pageLength: pageSize,
     };
   }
   // eslint-disable-next-line camelcase
   if (props.queryData?.form_data) {
     props.queryData.form_data = {
       ...props.queryData.form_data,
-      page_length: pageSize,
+      pageLength: pageSize,
     };
   }
   return props;
