@@ -44,16 +44,6 @@ class Observable extends React.PureComponent<ObservableProps & SupersetThemeProp
         >
           {showDebug && (
             <div>
-              <h2>Observable URL</h2>
-              <div>{observableUrl || 'none set'}</div>
-              <h2>Width / Height</h2>
-              <div>
-                {width} / {height}
-              </div>
-              <h2>Displayed Cells</h2>
-              <pre>{JSON.stringify(displayedCells, undefined, 2)}</pre>
-              <h2>Data Injection Cell</h2>
-              <pre>{JSON.stringify(dataInjectionCell, undefined, 2)}</pre>
               <h2>Data</h2>
               <pre>{JSON.stringify(data, undefined, 2)}</pre>
             </div>
