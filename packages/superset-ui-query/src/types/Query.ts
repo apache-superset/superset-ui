@@ -91,9 +91,9 @@ export interface QueryContext {
   /** Force refresh of all queries */
   force: boolean;
   /** Type of result to return for queries */
-  result_type: 'full' | 'query' | 'results' | 'samples';
+  result_type: string;
   /** Response format */
-  result_format: 'csv' | 'json';
+  result_format: string;
   queries: QueryObject[];
 }
 
