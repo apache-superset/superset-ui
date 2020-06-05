@@ -27,7 +27,7 @@ export interface UseColumnCellPropsColumnOption<D extends object, V = unknown> {
 }
 
 /**
- * Configure `cellProps` in column options.
+ * Configure cell props in column options.
  */
 export default function useColumnCellProps<D extends object>(hooks: Hooks<D>) {
   hooks.getCellProps.push((props, { cell }) => {

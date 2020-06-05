@@ -19,6 +19,7 @@ import {
   UseSortByHooks,
   TableInstance,
   ColumnInstance,
+  Column,
 } from 'react-table';
 
 import { UseColumnCellPropsColumnOption } from '../hooks/useColumnCellProps';
@@ -55,7 +56,9 @@ declare module 'react-table' {
   export interface ColumnInterface<D extends object>
     extends UseGlobalFiltersColumnOptions<D>,
       UseSortByColumnOptions<D>,
-      UseColumnCellPropsColumnOption<D> {}
+      UseColumnCellPropsColumnOption<D> {
+    SortIcon: Column['Header'];
+  }
 
   // Typing from @types/react-table is incomplete
   interface TableSortByToggleProps {

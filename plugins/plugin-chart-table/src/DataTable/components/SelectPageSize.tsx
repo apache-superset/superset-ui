@@ -16,25 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from 'react';
+import React, { ReactText } from 'react';
 import { FormControl } from 'react-bootstrap';
 
-interface SelectPageSizeProps {
-  sizeOptions: number[];
+export type SizeOption = number | [number, ReactText];
+
+export interface SelectPageSizeProps {
+  sizeOptions: SizeOption[];
   currentSize?: number;
+  total?: number;
   onChange: (pageSize: number) => void;
 }
 
-export default function SelectPageSize({
+function getOptionValue(x: SizeOption) {
+  return Array.isArray(x) ? x[0] : x;
+}
+
+export default React.memo(function SelectPageSize({
+  total,
   sizeOptions,
   currentSize: currentSize_,
   onChange,
 }: SelectPageSizeProps) {
-  const currentSize = currentSize_ || sizeOptions[0];
+  const sizeOptionValues = sizeOptions.map(getOptionValue);
+  const currentSize = currentSize_ === undefined ? sizeOptionValues[0] : currentSize_;
+  let options = sizeOptions;
   // insert current size to list
-  if (!sizeOptions.includes(currentSize)) {
-    sizeOptions.splice(
-      sizeOptions.findIndex(x => x > currentSize),
+  if (!sizeOptionValues.includes(currentSize)) {
+    options = [...sizeOptions];
+    options.splice(
+      sizeOptionValues.findIndex(x => x > currentSize),
       0,
       currentSize,
     );
@@ -50,13 +61,16 @@ export default function SelectPageSize({
           onChange(Number((e.target as HTMLSelectElement).value));
         }}
       >
-        {sizeOptions.map(size => (
-          <option key={size} value={size}>
-            {size}
-          </option>
-        ))}
+        {options.map(option => {
+          const [size, text] = Array.isArray(option) ? option : [option, option];
+          return (
+            <option key={size} value={size || total}>
+              {text}
+            </option>
+          );
+        })}
       </FormControl>{' '}
       entries
     </span>
   );
-}
+});

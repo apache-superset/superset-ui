@@ -17,34 +17,73 @@
  * under the License.
  */
 import React, { useState } from 'react';
-import { DataRecordValue, DataRecord } from '@superset-ui/chart';
-import { filterXSS } from 'xss';
-import { TableChartTransformedProps, DataColumnMeta, DataType } from './types';
-import Table, { UseColumnCellPropsColumnOption } from './DataTable';
+import { ColumnInstance, Column } from 'react-table';
+import {
+  FaSort,
+  FaSortUp, // asc
+  FaSortDown, // desc
+} from 'react-icons/fa';
 
-function isProbablyHTML(text: string) {
-  return /<[^>]+>/.test(text);
+import { t } from '@superset-ui/translation';
+import { DataRecordValue, DataRecord } from '@superset-ui/chart';
+
+import { TableChartTransformedProps, DataType } from './types';
+import DataTable from './DataTable';
+import Styles from './Styles';
+import formatValue from './utils/formatValue';
+import { PAGE_SIZE_OPTIONS } from './controlPanel';
+
+function SortIcon({ column }: { column: ColumnInstance }) {
+  const { isSorted, isSortedDesc } = column;
+  let sortIcon = <FaSort />;
+  if (isSorted) {
+    sortIcon = isSortedDesc ? <FaSortDown /> : <FaSortUp />;
+  }
+  return sortIcon;
 }
 
 /**
- * Format text for cell value
+ * Cell background to render columns as horizontal bar chart
  */
-function formatValue({ formatter }: DataColumnMeta, value: DataRecordValue): [boolean, string] {
-  if (value === null) {
-    return [false, 'N/A'];
+function cellBar({
+  value,
+  valueRange,
+  colorPositiveNegative = false,
+  alignPositiveNegative,
+}: {
+  value: number;
+  valueRange: number[];
+  colorPositiveNegative: boolean;
+  alignPositiveNegative: boolean;
+}) {
+  const [minValue, maxValue] = valueRange;
+  const r = colorPositiveNegative && value < 0 ? 150 : 0;
+  if (alignPositiveNegative) {
+    const perc = Math.abs(Math.round((value / maxValue) * 100));
+    // The 0.01 to 0.001 is a workaround for what appears to be a
+    // CSS rendering bug on flat, transparent colors
+    return (
+      `linear-gradient(to right, rgba(${r},0,0,0.2), rgba(${r},0,0,0.2) ${perc}%, ` +
+      `rgba(0,0,0,0.01) ${perc}%, rgba(0,0,0,0.001) 100%)`
+    );
   }
-  if (formatter) {
-    // in case percent metric can specify percent format in the future
-    return [false, formatter(value as number)];
-  }
-  if (typeof value === 'string') {
-    const htmlText = filterXSS(value, { stripIgnoreTag: true });
-    return isProbablyHTML(htmlText) ? [true, htmlText] : [false, value];
-  }
-  return [false, value.toString()];
+  const posExtent = Math.abs(Math.max(maxValue, 0));
+  const negExtent = Math.abs(Math.min(minValue, 0));
+  const tot = posExtent + negExtent;
+  const perc1 = Math.round((Math.min(negExtent + value, negExtent) / tot) * 100);
+  const perc2 = Math.round((Math.abs(value) / tot) * 100);
+  // The 0.01 to 0.001 is a workaround for what appears to be a
+  // CSS rendering bug on flat, transparent colors
+  return (
+    `linear-gradient(to right, rgba(0,0,0,0.01), rgba(0,0,0,0.001) ${perc1}%, ` +
+    `rgba(${r},0,0,0.2) ${perc1}%, rgba(${r},0,0,0.2) ${perc1 + perc2}%, ` +
+    `rgba(0,0,0,0.01) ${perc1 + perc2}%, rgba(0,0,0,0.001) 100%)`
+  );
 }
 
-export default function TableChart(props: TableChartTransformedProps) {
+export default function TableChart<D extends DataRecord = DataRecord>(
+  props: TableChartTransformedProps<D>,
+) {
   const {
     height,
     width,
@@ -80,35 +119,6 @@ export default function TableChart(props: TableChartTransformedProps) {
     return null;
   }
 
-  /**
-   * Cell background to render columns as horizontal bar chart
-   */
-  function cellBar(val: number, valueRange: number[]) {
-    const [minValue, maxValue] = valueRange;
-    const r = colorPositiveNegative && val < 0 ? 150 : 0;
-    if (alignPositiveNegative) {
-      const perc = Math.abs(Math.round((val / maxValue) * 100));
-      // The 0.01 to 0.001 is a workaround for what appears to be a
-      // CSS rendering bug on flat, transparent colors
-      return (
-        `linear-gradient(to right, rgba(${r},0,0,0.2), rgba(${r},0,0,0.2) ${perc}%, ` +
-        `rgba(0,0,0,0.01) ${perc}%, rgba(0,0,0,0.001) 100%)`
-      );
-    }
-    const posExtent = Math.abs(Math.max(maxValue, 0));
-    const negExtent = Math.abs(Math.min(minValue, 0));
-    const tot = posExtent + negExtent;
-    const perc1 = Math.round((Math.min(negExtent + val, negExtent) / tot) * 100);
-    const perc2 = Math.round((Math.abs(val) / tot) * 100);
-    // The 0.01 to 0.001 is a workaround for what appears to be a
-    // CSS rendering bug on flat, transparent colors
-    return (
-      `linear-gradient(to right, rgba(0,0,0,0.01), rgba(0,0,0,0.001) ${perc1}%, ` +
-      `rgba(${r},0,0,0.2) ${perc1}%, rgba(${r},0,0,0.2) ${perc1 + perc2}%, ` +
-      `rgba(0,0,0,0.01) ${perc1 + perc2}%, rgba(0,0,0,0.001) 100%)`
-    );
-  }
-
   function isActiveFilterValue(key: string, val: DataRecordValue) {
     return filters[key]?.includes(val);
   }
@@ -124,54 +134,69 @@ export default function TableChart(props: TableChartTransformedProps) {
     onChangeFilter(updatedFilters);
   }
 
-  const columns = columnsMeta.map((column, i) => {
-    const { key, label, dataType } = column;
-    const valueRange = showCellBars && getValueRange(key);
-    return {
-      id: String(i), // to allow duplicate column keys
-      accessor: key,
-      Header: label,
-      dataType,
-      sortDescFirst: sortDesc,
-      cellProps: (({ value: value_ }, cellProps) => {
-        let className = '';
-        const value = value_ as DataRecordValue;
-        if (dataType === DataType.Number) {
-          className += ' dt-metric';
-        } else if (emitFilter) {
-          className += ' dt-is-filter';
-          if (isActiveFilterValue(key, value)) {
-            className += ' dt-is-active-filter';
+  const columns = columnsMeta.map(
+    (column, i): Column<D> => {
+      const { key, label, dataType } = column;
+      const valueRange = showCellBars && getValueRange(key);
+      return {
+        id: String(i), // to allow duplicate column keys
+        accessor: key,
+        Header: label,
+        SortIcon,
+        sortDescFirst: sortDesc,
+        cellProps: ({ value: value_ }, cellProps) => {
+          let className = '';
+          const value = value_ as DataRecordValue;
+          if (dataType === DataType.Number) {
+            className += ' dt-metric';
+          } else if (emitFilter) {
+            className += ' dt-is-filter';
+            if (isActiveFilterValue(key, value)) {
+              className += ' dt-is-active-filter';
+            }
           }
-        }
-        const [isHtml, text] = formatValue(column, value);
-        return {
-          // show raw number in title in case of numeric values
-          title: typeof value === 'number' ? String(value) : undefined,
-          dangerouslySetInnerHTML: isHtml ? { __html: text } : undefined,
-          cellContent: text,
-          onClick: valueRange ? undefined : () => toggleFilter(key, value),
-          className,
-          style: {
-            ...cellProps.style,
-            background: valueRange ? cellBar(value as number, valueRange) : undefined,
-          },
-        };
-      }) as UseColumnCellPropsColumnOption<DataRecord>['cellProps'],
-    };
-  });
+          const [isHtml, text] = formatValue(column, value);
+          return {
+            // show raw number in title in case of numeric values
+            title: typeof value === 'number' ? String(value) : undefined,
+            dangerouslySetInnerHTML: isHtml ? { __html: text } : undefined,
+            cellContent: text,
+            onClick: valueRange ? undefined : () => toggleFilter(key, value),
+            className,
+            style: {
+              ...cellProps.style,
+              background: valueRange
+                ? cellBar({
+                    value: value as number,
+                    valueRange,
+                    alignPositiveNegative,
+                    colorPositiveNegative,
+                  })
+                : undefined,
+            },
+          };
+        },
+      };
+    },
+  );
 
   return (
-    <Table<DataRecord>
-      className="table table-striped"
-      columns={columns}
-      data={data}
-      showSearchInput={includeSearch}
-      // make `width` and `height` state so when resizing the chart
-      // does not rerender
-      pageSize={pageSize}
-      width={width}
-      height={height}
-    />
+    <Styles>
+      <DataTable<D>
+        columns={columns}
+        data={data}
+        tableClassName="table table-striped table-condensed"
+        showSearchInput={includeSearch}
+        // make `width` and `height` state so when resizing the chart
+        // does not rerender
+        pageSize={pageSize}
+        pageSizeOptions={PAGE_SIZE_OPTIONS}
+        width={width}
+        height={height}
+        // 9 page items in > 340px works well even for 100+ pages
+        maxPageItemCount={width > 340 ? 9 : 7}
+        noResults={(filter: string) => t(filter ? 'No matching records found' : 'No records found')}
+      />
+    </Styles>
   );
 }

@@ -27,15 +27,14 @@
   },
   "dependencies": {
     "@types/react-dom": "^16.9.8",
-    "@types/react-table": "^7.0.18",
-    "@types/match-sorter": "^4.0.0",
+    "@types/react-table": "^7.0.19",
     "@types/react-bootstrap": "^0.32.21",
     "@emotion/core": "^10.0.28",
+    "xss": "^1.0.6",
+    "regenerator-runtime": "^0.13.5",
     "react-bootstrap": "^0.33.1",
     "react-table": "^7.1.0",
-    "react-icons": "^3.10.0",
-    "match-sorter": "^4.1.0",
-    "xss": "^1.0.6"
+    "react-icons": "^3.10.0"
   },
   "peerDependencies": {
     "@superset-ui/chart": "^0.14.0",

@@ -22,8 +22,20 @@ import {
   formatSelectOptions,
   D3_TIME_FORMAT_OPTIONS,
   ColumnOption,
-} from '@superset-ui/control-utils';
+} from '@superset-ui/chart-controls';
 import { validateNonEmpty } from '@superset-ui/validator';
+
+export const PAGE_SIZE_OPTIONS = formatSelectOptions<number>([
+  [0, t('All')],
+  10,
+  25,
+  40,
+  50,
+  75,
+  100,
+  150,
+  200,
+]);
 
 export default {
   controlPanelSections: [
@@ -160,7 +172,7 @@ export default {
               renderTrigger: true,
               label: t('Page Length'),
               default: 0,
-              choices: formatSelectOptions([0, 10, 25, 40, 50, 75, 100, 150, 200]),
+              choices: PAGE_SIZE_OPTIONS,
               description: t('Rows per page, 0 means no pagination'),
             },
           },

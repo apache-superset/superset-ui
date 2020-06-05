@@ -450,7 +450,7 @@
           "%pct_boys": 0.0007479431563201197
         },
         {
-          "name": "David",
+          "name": "<span style=\"color: red; font-weight: bold;\">Styled Text</span>",
           "state": "other",
           "gender": "boy",
           "total": 673992,
