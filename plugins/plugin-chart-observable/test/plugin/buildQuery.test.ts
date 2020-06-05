@@ -11,6 +11,7 @@ describe('Observable buildQuery', () => {
   };
 
   it('should build groupby with series in form data', () => {
+    // @ts-ignore
     const queryContext = buildQuery(formData);
     const [query] = queryContext.queries;
     expect(query.groupby).toEqual(['foo']);
