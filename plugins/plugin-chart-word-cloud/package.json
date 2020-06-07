@@ -43,6 +43,6 @@
     "@superset-ui/style": "^0.13.11",
     "@superset-ui/translation": "^0.13.0",
     "@superset-ui/validator": "^0.13.0",
-    "react": "^16.3.0"
+    "react": "^16.13.1"
   }
 }

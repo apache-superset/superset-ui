@@ -26,6 +26,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@types/react": "^16.9.35",
     "@types/react-table": "^7.0.19",
     "@types/react-bootstrap": "^0.32.21",
     "@emotion/core": "^10.0.28",
