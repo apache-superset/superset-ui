@@ -24,6 +24,7 @@ import {
   ColumnOption,
 } from '@superset-ui/chart-controls';
 import { validateNonEmpty } from '@superset-ui/validator';
+import { smartDateFormatter } from '@superset-ui/time-format';
 
 export const PAGE_SIZE_OPTIONS = formatSelectOptions<number>([
   [0, t('All')],
@@ -154,7 +155,7 @@ export default {
               type: 'SelectControl',
               freeForm: true,
               label: t('Table Timestamp Format'),
-              default: '%Y-%m-%d %H:%M:%S',
+              default: smartDateFormatter.id,
               renderTrigger: true,
               validators: [validateNonEmpty],
               clearable: false,

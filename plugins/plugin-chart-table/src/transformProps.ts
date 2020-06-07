@@ -19,7 +19,11 @@
 import { DataRecord } from '@superset-ui/chart';
 import { QueryFormDataMetric } from '@superset-ui/query';
 import { getNumberFormatter, NumberFormats } from '@superset-ui/number-format';
-import { getTimeFormatter } from '@superset-ui/time-format';
+import {
+  getTimeFormatter,
+  smartDateFormatter,
+  getTimeFormatterForGranularity,
+} from '@superset-ui/time-format';
 
 import { TableChartProps, TableChartTransformedProps, DataType } from './types';
 
@@ -36,8 +40,13 @@ function getMetricIdentifier(metric: QueryFormDataMetric) {
   return metric.label || 'NOT_LABELED';
 }
 
-function isTimeColumn(key: string, data: DataRecord[] = []) {
-  return key === '__timestamp' || data.some(x => x[key] instanceof Date);
+function isTimeColumn(key: string) {
+  return key === '__timestamp';
+}
+
+const REGEXP_TIMESTAMP_NO_TIMEZONE = /T(\d{2}:){2}\d{2}$/;
+function isTimeType(key: string, data: DataRecord[] = []) {
+  return isTimeColumn(key) || data.some(x => x[key] instanceof Date);
 }
 
 export default function transformProps(chartProps: TableChartProps): TableChartTransformedProps {
@@ -85,7 +94,7 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
     }
     // percent metrics have a default format
     const format = columnFormats?.[key];
-    const isTime = isTimeColumn(key, records);
+    const isTime = isTimeType(key, records);
     const isMetric = metricsSet.has(key);
     const isPercentMetric = percentMetricsSet.has(key);
     let dataType = DataType.Number; // TODO: get this from data source
@@ -98,11 +107,21 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
           ...x,
           [key]:
             typeof time === 'string'
-              ? new Date(time.match(/T(\d{2}:){2}\d{2}$/) ? `${time}Z` : time)
+              ? new Date(
+                  time.match(REGEXP_TIMESTAMP_NO_TIMEZONE)
+                    ? // force UTC time for timestamps without a timezone
+                      `${time}Z`
+                    : time,
+                )
               : time,
         };
       });
-      formatter = getTimeFormatter(format || tableTimestampFormat, granularity);
+      // Use ganularity for "Adaptive Formatting" (smart_date)
+      const timeFormat = format || tableTimestampFormat;
+      formatter =
+        timeFormat === smartDateFormatter.id && isTimeColumn(key)
+          ? getTimeFormatterForGranularity(granularity)
+          : getTimeFormatter(timeFormat);
       dataType = DataType.DateTime;
     } else if (isMetric) {
       formatter = getNumberFormatter(format);
