@@ -12,7 +12,7 @@ export default {
 
 new TableChartPlugin().configure({ key: 'table' }).register();
 
-function expandArray<T>(input: T[], targetSize = 7) {
+function expandArray<T>(input: T[], targetSize: number) {
   if (!input || input.length === 0) {
     throw new Error('Cannot expand an empty array');
   }
@@ -31,7 +31,7 @@ function expandArray<T>(input: T[], targetSize = 7) {
  */
 function loadData(
   props: TableChartProps,
-  { pageLength = 50, rows = 1042, cols = 7, alignPn = false },
+  { pageLength = 50, rows = 1042, cols = 8, alignPn = false },
 ): TableChartProps {
   if (!props.queryData) return props;
   const records = [...(props.queryData?.data?.records || [])];
@@ -88,8 +88,8 @@ basic.story = {
 };
 
 export const BigTable = ({ width, height }) => {
-  const rows = number('Records', 1024, { range: true, min: 0, max: 50000 });
-  const cols = number('Columns', 7, { range: true, min: 1, max: 11 });
+  const rows = number('Records', 2046, { range: true, min: 0, max: 500000 });
+  const cols = number('Columns', 8, { range: true, min: 1, max: 20 });
   const pageLength = number('Page size', 50, { range: true, min: 0, max: 100 });
   const alignPn = boolean('Algin PosNeg', false);
   const chartProps = React.useMemo(

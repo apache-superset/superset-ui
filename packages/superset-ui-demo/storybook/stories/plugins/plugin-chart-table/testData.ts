@@ -16,8 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export { default as birthNames } from './birthNames.json';
+import { TableChartProps } from '@superset-ui/plugin-chart-table';
+// @ts-ignore
+import birthNamesJson from './birthNames.json';
 
+export const birthNames = (birthNamesJson as unknown) as TableChartProps;
 export const basicData = {
   columns: ['name', 'sum__num'],
   records: [

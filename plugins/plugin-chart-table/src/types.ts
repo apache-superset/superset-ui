@@ -27,7 +27,7 @@ export enum DataType {
   DateTime = 'datetime',
 }
 
-export interface DataColumnMeta<D extends DataRecord = DataRecord> {
+export interface DataColumnMeta {
   // `key` is what is called `label` in the input props
   key: string;
   // `label` is verbose column name used for rendering
@@ -66,7 +66,7 @@ export interface TableChartTransformedProps<D extends DataRecord = DataRecord> {
   height: number;
   width: number;
   data: D[];
-  columns: DataColumnMeta<D>[];
+  columns: DataColumnMeta[];
   metrics?: (keyof D)[];
   percentMetrics?: (keyof D)[];
   pageSize?: number;

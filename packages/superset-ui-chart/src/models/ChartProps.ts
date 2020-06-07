@@ -58,17 +58,17 @@ const DEFAULT_HEIGHT = 600;
 export default class ChartProps {
   static createSelector: () => ChartPropsSelector;
 
-  annotationData: AnnotationData;
+  annotationData?: AnnotationData;
 
   datasource: Datasource;
 
-  rawDatasource: SnakeCaseDatasource;
+  rawDatasource?: SnakeCaseDatasource;
 
   initialValues: DataRecordFilters;
 
   formData: CamelCaseFormData;
 
-  rawFormData: RawFormData;
+  rawFormData?: RawFormData;
 
   height: number;
 
