@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { PlainObject } from 'encodable';
 import { SupersetThemeProps } from '@superset-ui/style';

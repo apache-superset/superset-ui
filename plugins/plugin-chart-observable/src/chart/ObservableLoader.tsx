@@ -1,9 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable unicorn/explicit-length-check */
-/* eslint-disable no-negated-condition */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 // @ts-ignore
@@ -11,13 +5,14 @@ import { Runtime, Inspector } from '@observablehq/runtime';
 
 interface Props {
   observableUrl: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
   displayedCells: string[];
   dataInjectionCell: string;
   broadcastCells: Function;
+  selectControlOptions: string[];
   width: number;
   height: number;
+  children: React.ReactNode;
 }
 
 class ObservableLoader extends Component<Props> {
@@ -40,31 +35,36 @@ class ObservableLoader extends Component<Props> {
     import(/* webpackIgnore: true */ this.notebookURL).then(module => {
       this.notebook = module.default;
 
-      // just get the damned names.
-      const refRuntime = new Runtime();
-      const fullModule = refRuntime.module(this.notebook);
-      // eslint-disable-next-line no-underscore-dangle
-      // @ts-ignore
-      const cellNames = Array.from(fullModule._scope).map(item => item[0]);
-      // ok, now broadcast the names...
-
-      this.props.broadcastCells(cellNames);
-
       const runtime = new Runtime();
-      let module_ = null;
+      let notebookModule = null;
 
       if (!this.props.displayedCells.length) {
-        module_ = runtime.module(this.notebook, Inspector.into(this.notebookWrapperRef.current));
+        // render the entrire notebook if no displayedCells selected
+        notebookModule = runtime.module(
+          this.notebook,
+          Inspector.into(this.notebookWrapperRef.current),
+        );
       } else {
-        module_ = runtime.module(this.notebook, (name: string) => {
+        notebookModule = runtime.module(this.notebook, (name: string) => {
+          // render selected cells
           if (this.props.displayedCells.includes(name) && this.displayRefs[name] !== null) {
             return new Inspector(this.displayRefs[name]);
           }
         });
       }
-      module_.redefine(this.props.dataInjectionCell, [], this.props.data);
-      module_.redefine('width', [], this.props.width);
-      module_.redefine('height', [], this.props.height);
+
+      // gather cell names
+      const cellNames = Array.from<any[]>(notebookModule._scope).map((item: any[]) => item[0]);
+      if (!this.props.selectControlOptions) {
+        this.props.broadcastCells(cellNames);
+      }
+
+      // inject the data
+      if (this.props.dataInjectionCell.length) {
+        notebookModule.redefine(this.props.dataInjectionCell, [], this.props.data);
+      }
+      // define height
+      notebookModule.redefine('width', [], this.props.width);
     });
   }
 
@@ -97,9 +97,15 @@ function overwriteSelectControlOptions(selectControlOptions: string[]) {
   return { type: 'OVERWRITE_SELECT_CONTROL_OPTIONS', selectControlOptions };
 }
 
+function mapSateToProps(state: any) {
+  return {
+    selectControlOptions: state.explore.selectControlOptions,
+  };
+}
+
 function mapDispatchToProps(dispatch: Function) {
   return {
     broadcastCells: (cellList: string[]) => dispatch(overwriteSelectControlOptions(cellList)),
   };
 }
-export default connect(null, mapDispatchToProps)(ObservableLoader);
+export default connect(mapSateToProps, mapDispatchToProps)(ObservableLoader);
