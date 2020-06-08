@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import buildQuery from '../../src/plugin/buildQuery';
+import buildQuery from '../../src/buildQuery';
 
 describe('Observable buildQuery', () => {
   const formData = {
