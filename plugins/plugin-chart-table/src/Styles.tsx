@@ -2,7 +2,9 @@ import styled from '@superset-ui/style';
 
 export default styled.div`
   table {
-    min-width: 100%;
+    width: 100%;
+    min-width: auto;
+    max-width: none;
     margin: 0;
   }
 
@@ -30,6 +32,9 @@ export default styled.div`
     border-top: 0;
   }
 
+  .dt-controls {
+    padding-bottom: 0.65em;
+  }
   .dt-metric {
     text-align: right;
   }

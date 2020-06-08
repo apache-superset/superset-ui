@@ -5,6 +5,7 @@
   "private": true,
   "main": "lib/index.js",
   "module": "esm/index.js",
+  "sideEffects": false,
   "files": [
     "esm",
     "lib"

@@ -88,7 +88,7 @@ basic.story = {
 };
 
 export const BigTable = ({ width, height }) => {
-  const rows = number('Records', 2046, { range: true, min: 0, max: 500000 });
+  const rows = number('Records', 2046, { range: true, min: 0, max: 50000 });
   const cols = number('Columns', 8, { range: true, min: 1, max: 20 });
   const pageLength = number('Page size', 50, { range: true, min: 0, max: 100 });
   const alignPn = boolean('Algin PosNeg', false);
@@ -101,7 +101,7 @@ export const BigTable = ({ width, height }) => {
 BigTable.story = {
   parameters: {
     initialSize: {
-      width: 800,
+      width: 620,
       height: 420,
     },
   },
