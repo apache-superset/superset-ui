@@ -102,7 +102,7 @@ BigTable.story = {
   parameters: {
     initialSize: {
       width: 620,
-      height: 420,
+      height: 440,
     },
   },
 };
