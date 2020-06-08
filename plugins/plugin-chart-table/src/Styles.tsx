@@ -21,7 +21,7 @@ export default styled.div`
   th svg {
     color: #ccc;
     position: absolute;
-    bottom: 0.7em;
+    bottom: 0.6em;
     right: 0.2em;
   }
   th.is-sorted svg {

@@ -513,7 +513,7 @@
           "state": "other",
           "gender": "boy",
           "name": "Michael",
-          "total": 35253,
+          "total": -35253,
           "boys": 35253,
           "SUM(num_california)": 0,
           "%pct_boys": 0.0007645259938837921
@@ -532,8 +532,8 @@
           "__timestamp": "1965-01-01T00:00:00",
           "state": "other",
           "gender": "boy",
-          "name": "Michael",
-          "total": 33998,
+          "name": "MichaelWhoHasALongName",
+          "total": -33998,
           "boys": 33998,
           "SUM(num_california)": 0,
           "%pct_boys": 0.0007645259938837921

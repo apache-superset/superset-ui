@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import memoizeOne from 'memoize-one';
 import { DataRecord } from '@superset-ui/chart';
 import { QueryFormDataMetric } from '@superset-ui/query';
 import { getNumberFormatter, NumberFormats } from '@superset-ui/number-format';
@@ -28,6 +29,7 @@ import {
 import { TableChartProps, TableChartTransformedProps, DataType } from './types';
 
 const { PERCENT_3_POINT } = NumberFormats;
+const TIME_COLUMN = '__timestamp';
 
 /**
  * Consolidate list of metrics to string, identified by its unique identifier
@@ -41,13 +43,30 @@ function getMetricIdentifier(metric: QueryFormDataMetric) {
 }
 
 function isTimeColumn(key: string) {
-  return key === '__timestamp';
+  return key === TIME_COLUMN;
 }
 
 const REGEXP_TIMESTAMP_NO_TIMEZONE = /T(\d{2}:){2}\d{2}$/;
 function isTimeType(key: string, data: DataRecord[] = []) {
   return isTimeColumn(key) || data.some(x => x[key] instanceof Date);
 }
+
+const processDataRecords = memoizeOne(function processDataRecords(data: DataRecord[]) {
+  if (!data || !data[0] || !(TIME_COLUMN in data[0])) {
+    return data;
+  }
+  return data.map(x => {
+    const time = x[TIME_COLUMN];
+    return {
+      ...x,
+      [TIME_COLUMN]:
+        typeof time === 'string' && time.match(REGEXP_TIMESTAMP_NO_TIMEZONE)
+          ? // force UTC time for timestamps without a timezone
+            `${time}Z`
+          : time,
+    };
+  });
+});
 
 export default function transformProps(chartProps: TableChartProps): TableChartTransformedProps {
   const {
@@ -74,7 +93,7 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
     orderDesc: sortDesc = false,
   } = formData;
   const { columnFormats, verboseMap } = datasource;
-  const { records, columns: columns_ } = queryData.data || { records: [], columns: [] };
+  const { records = [], columns: columns_ = [] } = queryData.data || { records: [], columns: [] };
 
   // convert `metrics` and `percentMetrics` to the key names in `data.records`
   const metrics = (metrics_ ?? []).map(getMetricIdentifier);
@@ -84,7 +103,7 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
     .map((x: string) => `%${x}`);
   const metricsSet = new Set(metrics);
   const percentMetricsSet = new Set(percentMetrics);
-  let data = records;
+  const data = processDataRecords(records);
 
   const columns = columns_.map((key: string) => {
     let label = verboseMap?.[key] || key;
@@ -100,22 +119,6 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
     let dataType = DataType.Number; // TODO: get this from data source
     let formatter;
     if (isTime) {
-      // convert timestamp column to `Date` obejct
-      data = data.map(x => {
-        const time = x[key];
-        return {
-          ...x,
-          [key]:
-            typeof time === 'string'
-              ? new Date(
-                  time.match(REGEXP_TIMESTAMP_NO_TIMEZONE)
-                    ? // force UTC time for timestamps without a timezone
-                      `${time}Z`
-                    : time,
-                )
-              : time,
-        };
-      });
       // Use ganularity for "Adaptive Formatting" (smart_date)
       const timeFormat = format || tableTimestampFormat;
       formatter =

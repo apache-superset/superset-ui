@@ -50,8 +50,7 @@ export default function formatValue(
     return [false, formatter(value as number)];
   }
   if (typeof value === 'string') {
-    const htmlText = xss.process(value);
-    return isProbablyHTML(htmlText) ? [true, htmlText] : [false, value];
+    return isProbablyHTML(value) ? [true, xss.process(value)] : [false, value];
   }
   return [false, value.toString()];
 }

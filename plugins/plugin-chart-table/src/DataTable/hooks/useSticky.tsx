@@ -18,6 +18,7 @@
  */
 import React, {
   useRef,
+  useMemo,
   useLayoutEffect,
   useCallback,
   ReactNode,
@@ -26,7 +27,7 @@ import React, {
   CSSProperties,
   UIEventHandler,
 } from 'react';
-import { TableInstance, Hooks, useGetLatest } from 'react-table';
+import { TableInstance, Hooks } from 'react-table';
 import getScrollBarSize from '../utils/getScrollBarSize';
 
 type ReactElementWithChildren<
@@ -36,13 +37,17 @@ type ReactElementWithChildren<
 
 type Th = ReactElementWithChildren<'th'>;
 type Td = ReactElementWithChildren<'td'>;
-type TrWithTh = ReactElementWithChildren<'tr', Th>;
-type TrWithTd = ReactElementWithChildren<'tr', Td>;
+type TrWithTh = ReactElementWithChildren<'tr', Th[]>;
+type TrWithTd = ReactElementWithChildren<'tr', Td[]>;
 type Thead = ReactElementWithChildren<'thead', TrWithTh>;
 type Tbody = ReactElementWithChildren<'tbody', TrWithTd>;
 type Col = ReactElementWithChildren<'col', null>;
 type ColGroup = ReactElementWithChildren<'colgroup', Col>;
 type Table = ReactElementWithChildren<'table', (Thead | Tbody | ColGroup)[]>;
+
+type TableRenderer = () => Table;
+type GetTableSize = () => Partial<StickyElementSize> | undefined;
+type SetStickyElementSize = (size?: StickyElementSize) => void;
 
 export enum ReducerActions {
   init = 'init', // this is from global reducer
@@ -51,65 +56,65 @@ export enum ReducerActions {
 
 export type ReducerAction<T extends string, P extends Record<string, unknown>> = P & { type: T };
 
-export interface ScrollPosition {
-  top: number;
-  left: number;
-}
+export type ColumnWidths = number[];
 
 export interface StickyElementSize {
-  width?: number; // full table width
-  height?: number; // full table height
-  bodyWidth?: number; // scrollable area width
+  width?: number; // maximum full table width
+  height?: number; // maximum full table height
+  realHeight?: number; // actual table viewport height (header + scrollable area)
   bodyHeight?: number; // scrollable area height
-  columnWidths?: number[];
-  scroll?: ScrollPosition | null;
+  tableHeight?: number; // the full table height
+  setStickyElementSize?: SetStickyElementSize;
+  columnWidths?: ColumnWidths;
 }
 
 export interface UseStickyTableOptions {
-  getTableSize?: () => Partial<StickyElementSize> | undefined;
+  getTableSize?: GetTableSize;
 }
 
 export interface UseStickyInstanceProps {
-  // HOC for manipulating DOMs in <table> to make the header sticky
-  StickyWrap: React.FunctionComponent<{ children: Table }>;
+  // manipulate DOMs in <table> to make the header sticky
+  wrapStickyTable: (renderer: TableRenderer) => ReactNode;
   // update or recompute the sticky table size
-  setStickyElementSize: (size?: StickyElementSize) => void;
+  setStickyElementSize: SetStickyElementSize;
 }
 
 export type UseStickyState = {
   sticky: StickyElementSize;
 };
 
-const DEFAULT_THEAD_HEIGHT = 38; // when all th has only 1 line of text
-
-function mergeStyleProp(node: ReactElement<{ style?: CSSProperties }>, style: CSSProperties) {
-  return {
-    style: {
-      ...node.props.style,
-      ...style,
-    },
-  };
-}
+const sum = (a: number, b: number) => a + b;
+const mergeStyleProp = (node: ReactElement<{ style?: CSSProperties }>, style: CSSProperties) => ({
+  style: {
+    ...node.props.style,
+    ...style,
+  },
+});
+const needHorizontalScroll = (width: number, scrollBarSize: number, columnWidths: number[]) =>
+  width - scrollBarSize < columnWidths.reduce(sum);
 
 /**
  * An HOC for generating sticky header and fixed-height scrollable area
  */
 function StickyWrap({
-  children,
   sticky = {},
+  width: maxWidth,
+  height: maxHeight,
+  renderTable,
   setStickyElementSize,
-  getScrollPosition,
 }: {
-  children: Table;
-  setStickyElementSize: UseStickyInstanceProps['setStickyElementSize'];
+  width: number;
+  height: number;
+  renderTable: TableRenderer;
+  setStickyElementSize: SetStickyElementSize;
   sticky?: StickyElementSize; // current sticky element sizes
-  getScrollPosition: () => ScrollPosition;
 }) {
-  const table: Table = children;
+  const table: Table = useMemo(() => {
+    return renderTable();
+  }, [renderTable]);
   if (!table || table.type !== 'table') {
     throw new Error('<StickyWrap> must have only one <table> element as child');
   }
-
   let thead: Thead | undefined;
   let tbody: Tbody | undefined;
   let colgroup: ColGroup | undefined;
@@ -125,174 +130,201 @@ function StickyWrap({
   if (!thead || !tbody) {
     throw new Error('<table> in <StickyWrap> must contain both thead and tbody.');
   }
+  const columnCount = useMemo(() => {
+    const headerRows = React.Children.toArray(thead?.props.children).pop() as TrWithTh;
+    return headerRows.props.children.length;
+  }, [thead]);
 
   const theadRef = useRef<HTMLTableSectionElement>(null); // original thead for layout computation
   const scrollHeaderRef = useRef<HTMLDivElement>(null); // fixed header
   const scrollBodyRef = useRef<HTMLDivElement>(null); // main body
-  const { width, height, bodyHeight, columnWidths } = sticky;
+  const { bodyHeight, columnWidths } = sticky;
+  const needSizer =
+    !columnWidths ||
+    sticky.width !== maxWidth ||
+    sticky.height !== maxHeight ||
+    sticky.setStickyElementSize !== setStickyElementSize;
+  const scrollBarSize = getScrollBarSize();
 
   // update scrollable area and header column sizes when mounted
   useLayoutEffect(() => {
-    // save layout info from initial render
-    if (height && theadRef.current) {
+    if (theadRef.current) {
       const bodyThead = theadRef.current;
       const theadHeight = bodyThead.clientHeight;
       const tableHeight = (bodyThead.parentNode as HTMLTableElement).clientHeight;
       const ths = bodyThead.childNodes[0].childNodes as NodeListOf<HTMLTableHeaderCellElement>;
       const widths = Array.from(ths).map(th => th.clientWidth);
-      const maxHeight = Math.min(height, tableHeight);
-      const newSize = {
+      const height = Math.min(maxHeight, tableHeight + scrollBarSize);
+      setStickyElementSize({
+        setStickyElementSize,
+        width: maxWidth,
         height: maxHeight,
-        bodyHeight: maxHeight - theadHeight,
+        realHeight: height,
+        tableHeight,
+        bodyHeight: height - theadHeight,
         columnWidths: widths,
-      };
-      setStickyElementSize(newSize);
-    }
-  }, [height, setStickyElementSize]);
-
-  // save and restore scroll position
-  useLayoutEffect(() => {
-    const scrollBody = scrollBodyRef.current;
-    const scrollHeader = scrollHeaderRef.current;
-    const scroll = getScrollPosition();
-    if (!scrollBody || !scrollHeader || !scroll) {
-      return undefined;
-    }
-    // saving scrollTop in case we need it in the future, but only restore
-    // scroll left
-    if (scroll.left) {
-      scrollBody.scrollLeft = scroll.left;
-      scrollHeader.scrollLeft = scroll.left;
-    }
-    return () => {
-      Object.assign(getScrollPosition(), {
-        top: scrollBody.scrollTop,
-        left: scrollBody.scrollLeft,
       });
-    };
-  }, [getScrollPosition]);
+    }
+  }, [maxWidth, maxHeight, setStickyElementSize, scrollBarSize]);
 
-  if (!width || !columnWidths) {
+  let sizerTable: ReactElement | undefined;
+  let headerTable: ReactElement | undefined;
+  let bodyTable: ReactElement | undefined;
+  if (needSizer) {
     const theadWithRef = React.cloneElement(thead, { ref: theadRef });
-    const bodyTable = React.cloneElement(table, {}, colgroup, theadWithRef, tbody);
-    return <div style={{ height, overflow: 'auto' }}>{bodyTable}</div>;
+    sizerTable = (
+      <div
+        key="sizer"
+        style={{
+          height: maxHeight,
+          overflow: 'auto',
+          visibility: 'hidden',
+        }}
+      >
+        {React.cloneElement(table, {}, colgroup, theadWithRef, tbody)}
+      </div>
+    );
   }
 
-  const scrollBarSize = getScrollBarSize();
-  const fallbackBodyHeight = bodyHeight || (height && height - DEFAULT_THEAD_HEIGHT);
-  const totalWidth = columnWidths.reduce((a, b) => a + b);
-  const needHorizontalScroll = width && width < totalWidth;
-  const tableStyle: CSSProperties = { tableLayout: 'fixed' };
-  const wrapperStyle: CSSProperties = {
-    width,
-    height,
-    overflow: 'hidden',
-  };
-  const bodyStyle: CSSProperties = {
-    height: fallbackBodyHeight,
-    overflow: 'auto',
-  };
-  const headerStyle: CSSProperties = {
-    overflow: 'hidden',
-  };
+  // reuse column widths only when removing columns
+  const colWidths = columnWidths?.slice(0, columnCount);
+  if (colWidths) {
+    const tableStyle: CSSProperties = { tableLayout: 'fixed' };
+    const hasHorizontalScroll = needHorizontalScroll(maxWidth, scrollBarSize, colWidths);
+    const hasVerticalScroll = sticky.tableHeight && sticky.tableHeight >= maxHeight;
 
-  const bodyColgroup = (
-    <colgroup>
-      {columnWidths.map((w, i) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <col key={i} width={w} />
-      ))}
-    </colgroup>
-  );
-  const headerColgroup = scrollBarSize ? (
-    <colgroup>
-      {columnWidths.map((w, i) => (
-        // For header, use the last column to absorb scroll bar width,
-        // this is needed when there is a vertical scrollbar.
-        // eslint-disable-next-line react/no-array-index-key
-        <col key={i} width={i === columnWidths.length - 1 ? w + scrollBarSize : w} />
-      ))}
-    </colgroup>
-  ) : (
-    bodyColgroup
-  );
+    const bodyCols = colWidths.map((w, i) => (
+      // eslint-disable-next-line react/no-array-index-key
+      <col key={i} width={w} />
+    ));
+    const bodyColgroup = <colgroup>{bodyCols}</colgroup>;
 
-  const headerTable = React.cloneElement(
-    table,
-    mergeStyleProp(table, tableStyle),
-    headerColgroup,
-    thead,
-  );
-  const bodyTable = React.cloneElement(
-    table,
-    mergeStyleProp(table, tableStyle),
-    bodyColgroup,
-    tbody,
-  );
-  const onScroll: UIEventHandler<HTMLDivElement> = e => {
-    if (scrollHeaderRef.current) {
-      scrollHeaderRef.current.scrollLeft = e.currentTarget.scrollLeft;
-    }
-  };
+    // header columns do not have vertical scroll bars,
+    // use the last column to absorb scroll bar width
+    const headerColgroup =
+      hasVerticalScroll && scrollBarSize ? (
+        <colgroup>
+          {colWidths.map((x, i) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <col key={i} width={x + (i === colWidths.length - 1 ? scrollBarSize : 0)} />
+          ))}
+        </colgroup>
+      ) : (
+        bodyColgroup
+      );
 
-  return (
-    <div style={wrapperStyle}>
-      <div ref={scrollHeaderRef} style={headerStyle}>
+    headerTable = (
+      <div
+        key="header"
+        ref={scrollHeaderRef}
+        style={{
+          overflow: 'hidden',
+        }}
+      >
+        {React.cloneElement(table, mergeStyleProp(table, tableStyle), headerColgroup, thead)}
         {headerTable}
       </div>
+    );
+
+    const onScroll: UIEventHandler<HTMLDivElement> = e => {
+      if (scrollHeaderRef.current) {
+        scrollHeaderRef.current.scrollLeft = e.currentTarget.scrollLeft;
+      }
+    };
+    bodyTable = (
       <div
+        key="body"
         ref={scrollBodyRef}
-        style={bodyStyle}
-        onScroll={needHorizontalScroll ? onScroll : undefined}
+        style={{
+          height: bodyHeight,
+          overflow: 'auto',
+        }}
+        onScroll={hasHorizontalScroll ? onScroll : undefined}
       >
-        {bodyTable}
+        {React.cloneElement(table, mergeStyleProp(table, tableStyle), bodyColgroup, tbody)}
       </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        width: maxWidth,
+        height: sticky.realHeight || maxHeight,
+        overflow: 'hidden',
+      }}
+    >
+      {headerTable}
+      {bodyTable}
+      {sizerTable}
     </div>
   );
+}
+
+/**
+ * Execute a memoized callback only when mounted.
+ * Returns undefined if not mounted yet.
+ */
+function useMountedMemo<T>(factory: () => T, deps: unknown[] | undefined): T | undefined {
+  const mounted = useRef(false);
+  useLayoutEffect(() => {
+    mounted.current = true;
+  });
+  return useMemo(() => {
+    if (mounted.current) {
+      return factory();
+    }
+    return undefined;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [factory, mounted.current, ...(deps || [])]);
 }
 
 function useInstance<D extends object>(instance: TableInstance<D>) {
   const {
     dispatch,
     state: { sticky },
+    page,
+    rows,
     getTableSize = () => undefined,
   } = instance;
 
-  const getScrollPosition = useGetLatest({ top: 0, left: 0 });
-
   const setStickyElementSize = useCallback(
-    (partialSize: Partial<StickyElementSize> | undefined = getTableSize()) => {
-      const size = partialSize;
-      if (size) {
-        // make sure size has empty `columnWidths` property when container size
-        // is updated so columnWidths can be reset and recomputed
-        if ((size.width || size.height) && !size.columnWidths) {
-          size.columnWidths = undefined;
-        }
-        dispatch({
-          type: ReducerActions.setStickyElementSize,
-          size,
-        });
-      }
+    (size?: Partial<StickyElementSize>) => {
+      dispatch({
+        type: ReducerActions.setStickyElementSize,
+        size,
+      });
     },
-    [dispatch, getTableSize],
+    // Note we don't have pagination, sorting, and filtering related options in
+    // dependencies as they don't have to update layout.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dispatch, getTableSize, page, rows],
   );
 
-  function LocalStickyWrap({ children }: { children: Table }) {
+  const useStickyWrap = (renderer: TableRenderer) => {
+    const { width, height } = useMountedMemo(getTableSize, [getTableSize]) || sticky;
+    // only change of data should trigger re-render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const renderTable = useMemo(() => renderer, [page, rows]);
+    if (!width || !height) {
+      return null;
+    }
     return (
       <StickyWrap
+        width={width}
+        height={height}
         sticky={sticky}
         setStickyElementSize={setStickyElementSize}
-        getScrollPosition={getScrollPosition}
-      >
-        {children}
-      </StickyWrap>
+        renderTable={renderTable}
+      />
     );
-  }
+  };
+
+  useLayoutEffect(setStickyElementSize, []);
 
   Object.assign(instance, {
     setStickyElementSize,
-    StickyWrap: LocalStickyWrap,
+    wrapStickyTable: useStickyWrap,
   });
 }
 
@@ -307,12 +339,16 @@ export default function useSticky<D extends object>(hooks: Hooks<D>) {
       };
     }
     if (action.type === ReducerActions.setStickyElementSize) {
-      if (!action.size) {
-        return newState;
+      const { size } = action;
+      if (!size) {
+        return { ...newState };
       }
       return {
         ...newState,
-        sticky: { ...newState.sticky, ...action.size },
+        sticky: {
+          ...newState.sticky,
+          ...action.size,
+        },
       };
     }
     return newState;

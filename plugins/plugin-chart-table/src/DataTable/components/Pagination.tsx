@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 interface PaginationProps {
   pageCount: number; // number of pages
@@ -24,6 +24,7 @@ interface PaginationProps {
   maxPageItemCount?: number;
   ellipsis?: string; // content for ellipsis item
   onPageChange: (page: number) => void; // `page` is zero-based
+  style?: CSSProperties;
 }
 
 // first, ..., prev, current, next, ..., last
@@ -63,12 +64,12 @@ function generatePageItems(total: number, current: number, width: number) {
 
 export default React.memo(
   React.forwardRef(function Pagination(
-    { pageCount, currentPage = 0, maxPageItemCount = 9, onPageChange }: PaginationProps,
+    { style, pageCount, currentPage = 0, maxPageItemCount = 9, onPageChange }: PaginationProps,
     ref: React.Ref<HTMLDivElement>,
   ) {
     const pageItems = generatePageItems(pageCount, currentPage, maxPageItemCount);
     return (
-      <div ref={ref} className="dt-pagination">
+      <div ref={ref} className="dt-pagination" style={style}>
         <ul className="pagination pagination-sm">
           {pageItems.map((item, i) =>
             typeof item === 'number' ? (

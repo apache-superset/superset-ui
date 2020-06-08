@@ -35,14 +35,17 @@ function getOptionValue(x: SizeOption) {
 export default React.memo(function SelectPageSize({
   total,
   sizeOptions,
-  currentSize: currentSize_,
+  currentSize,
   onChange,
 }: SelectPageSizeProps) {
   const sizeOptionValues = sizeOptions.map(getOptionValue);
-  const currentSize = currentSize_ === undefined ? sizeOptionValues[0] : currentSize_;
-  let options = sizeOptions;
+  let options = [...sizeOptions];
   // insert current size to list
-  if (!sizeOptionValues.includes(currentSize)) {
+  if (
+    currentSize !== undefined &&
+    (currentSize !== total || !sizeOptionValues.includes(0)) &&
+    !sizeOptionValues.includes(currentSize)
+  ) {
     options = [...sizeOptions];
     options.splice(
       sizeOptionValues.findIndex(x => x > currentSize),
@@ -50,13 +53,14 @@ export default React.memo(function SelectPageSize({
       currentSize,
     );
   }
+  const current = currentSize === undefined ? sizeOptionValues[0] : currentSize;
   return (
     <span className="dt-select-page-size form-inline">
       Show{' '}
       <FormControl
         bsSize="small"
         componentClass="select"
-        value={currentSize}
+        value={current}
         onChange={e => {
           onChange(Number((e.target as HTMLSelectElement).value));
         }}
@@ -64,7 +68,7 @@ export default React.memo(function SelectPageSize({
         {options.map(option => {
           const [size, text] = Array.isArray(option) ? option : [option, option];
           return (
-            <option key={size} value={size || total}>
+            <option key={size} value={size}>
               {text}
             </option>
           );

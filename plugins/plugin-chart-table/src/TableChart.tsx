@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ColumnInstance, Column } from 'react-table';
 import { FaSort, FaSortUp as FaSortAsc, FaSortDown as FaSortDesc } from 'react-icons/fa';
 import { t } from '@superset-ui/translation';
@@ -29,6 +29,7 @@ import formatValue from './utils/formatValue';
 import extent from './utils/extent';
 
 import { PAGE_SIZE_OPTIONS } from './controlPanel';
+import { DataTableProps } from './DataTable/DataTable';
 
 type ValueRange = [number, number];
 
@@ -81,7 +82,9 @@ function cellBar({
 }
 
 export default function TableChart<D extends DataRecord = DataRecord>(
-  props: TableChartTransformedProps<D>,
+  props: TableChartTransformedProps<D> & {
+    sticky?: DataTableProps<D>['sticky'];
+  },
 ) {
   const {
     height,
@@ -97,9 +100,15 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     sortDesc = false,
     onChangeFilter = () => {},
     filters: initialFilters = {},
+    sticky = true, // whether to use sticky header
   } = props;
 
   const [filters, setFilters] = useState(initialFilters);
+  // only take relevant page size options
+  const pageSizeOptions = useMemo(
+    () => PAGE_SIZE_OPTIONS.filter(([n, _]) => n <= 2 * data.length),
+    [data.length],
+  );
 
   function getValueRange(key: string) {
     let maxValue;
@@ -190,7 +199,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         // make `width` and `height` state so when resizing the chart
         // does not rerender
         pageSize={pageSize}
-        pageSizeOptions={PAGE_SIZE_OPTIONS}
+        pageSizeOptions={pageSizeOptions}
         width={width}
         height={height}
         // 9 page items in > 340px works well even for 100+ pages
@@ -198,6 +207,8 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         noResultsText={(filter: string) =>
           t(filter ? 'No matching records found' : 'No records found')
         }
+        // not in use in Superset, but needed for unit tests
+        sticky={sticky}
       />
     </Styles>
   );

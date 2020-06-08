@@ -16,14 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, {
-  useEffect,
-  useCallback,
-  useRef,
-  useLayoutEffect,
-  ReactNode,
-  HTMLProps,
-} from 'react';
+import React, { useState, useCallback, useRef, ReactNode, HTMLProps } from 'react';
 import {
   useTable,
   usePagination,
@@ -32,6 +25,7 @@ import {
   PluginHook,
   TableCellProps,
   TableOptions,
+  useMountedLayoutEffect,
 } from 'react-table';
 import { Row, Col } from 'react-bootstrap';
 import GlobalFilter from './components/GlobalFilter';
@@ -40,7 +34,7 @@ import SimplePagination from './components/Pagination';
 import useSticky from './hooks/useSticky';
 import useColumnCellProps from './hooks/useColumnCellProps';
 
-export interface DataTableProps<D extends object> extends Omit<TableOptions<D>, 'getTableSize'> {
+export interface DataTableProps<D extends object> extends TableOptions<D> {
   tableClassName?: string;
   showSearchInput?: boolean;
   pageSizeOptions?: SizeOption[]; // available page size options
@@ -50,6 +44,7 @@ export interface DataTableProps<D extends object> extends Omit<TableOptions<D>, 
   height?: string | number;
   pageSize?: number;
   noResultsText?: string | ((filterString: string) => ReactNode);
+  sticky?: boolean;
 }
 
 export interface RenderHTMLCellProps extends HTMLProps<HTMLTableCellElement> {
@@ -67,6 +62,8 @@ export default function DataTable<D extends object>({
   initialState: initialState_ = {},
   pageSizeOptions = [10, 25, 40, 50, 75, 100, 150, 200],
   maxPageItemCount = 9,
+  getTableSize,
+  sticky: doSticky,
   showSearchInput,
   noResultsText = 'No data found',
   hooks,
@@ -75,28 +72,37 @@ export default function DataTable<D extends object>({
     useGlobalFilter,
     useSortBy,
     usePagination,
-    useSticky,
     useColumnCellProps,
-    ...(hooks || []),
-  ];
-
+    doSticky ? useSticky : [],
+    hooks || [],
+  ].flat();
+  const [showAll, setShowAll] = useState(initialPageSize === 0);
+  const sortByRef = useRef([]);
   const hasPagination = initialPageSize > 0; // pageSize == 0 means no pagination
   const hasGlobalControl = hasPagination || showSearchInput;
   const initialState = {
     ...initialState_,
     // zero length means all pages, the `usePagination` plugin does not
     // understand pageSize = 0
+    sortBy: sortByRef.current,
     pageSize: hasPagination ? initialPageSize : data.length,
-    sticky: {
-      width: Number(initialWidth),
-      height: Number(initialHeight),
-    },
   };
 
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const tableRef = useRef<HTMLTableElement>(null);
   const globalControlRef = useRef<HTMLDivElement>(null);
   const paginationRef = useRef<HTMLDivElement>(null);
+
+  const defaultGetTableSize = useCallback(() => {
+    if (wrapperRef.current) {
+      const width = wrapperRef.current.clientWidth || Number(initialWidth);
+      const height =
+        (wrapperRef.current.clientHeight || Number(initialHeight)) -
+        (globalControlRef.current?.clientHeight || 0) -
+        (paginationRef.current?.clientHeight || 0);
+      return { width, height };
+    }
+    return undefined;
+  }, [initialHeight, initialWidth]);
 
   const {
     getTableProps,
@@ -109,42 +115,92 @@ export default function DataTable<D extends object>({
     preGlobalFilteredRows,
     setGlobalFilter,
     setPageSize,
-    setStickyElementSize,
-    StickyWrap,
-    state: { pageIndex, pageSize, globalFilter },
+    wrapStickyTable,
+    state: { pageIndex, pageSize, globalFilter, sticky = {} },
   } = useTable<D>(
     {
       columns,
       data,
       initialState,
-      getTableSize: useCallback(() => {
-        if (wrapperRef.current) {
-          const width = wrapperRef.current.clientWidth;
-          const height =
-            wrapperRef.current.clientHeight -
-            (globalControlRef.current?.clientHeight || 0) -
-            (paginationRef.current?.clientHeight || 0);
-          return { width, height };
-        }
-        return undefined;
-      }, []),
+      getTableSize: getTableSize || defaultGetTableSize,
     },
     ...tableHooks,
   );
 
-  // force upate the pageSize when it's been update from the initial state
-  useEffect(() => {
-    // initialPageSize maybe zero, which means all records in data
+  useMountedLayoutEffect(() => {
+    // force upate the pageSize when it's been update from the initial state
     setPageSize(initialState.pageSize);
-  }, [initialState.pageSize, setPageSize]);
+  }, [initialState.pageSize]);
 
-  // use layout effect so element sizes are updated immediately and
-  // there will not be a flash
-  useLayoutEffect(() => {
-    if (setStickyElementSize) {
-      setStickyElementSize();
+  useMountedLayoutEffect(() => {
+    if (showAll) {
+      setPageSize(data.length);
     }
-  }, [columns, pageSize, initialWidth, initialHeight, setStickyElementSize]);
+  }, [data.length]);
+
+  const renderTable = () => (
+    <table {...getTableProps({ className: tableClassName })}>
+      <thead>
+        {headerGroups.map(headerGroup => {
+          const { key: headerGroupKey, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
+          return (
+            <tr key={headerGroupKey || headerGroup.id} {...headerGroupProps}>
+              {headerGroup.headers.map(column => {
+                const { key: headerKey, className, ...props } = column.getHeaderProps(
+                  column.getSortByToggleProps(),
+                );
+                return (
+                  <th
+                    key={headerKey || column.id}
+                    className={column.isSorted ? `${className || ''} is-sorted` : className}
+                    {...props}
+                  >
+                    {column.render('Header')}
+                    {column.render('SortIcon')}
+                  </th>
+                );
+              })}
+            </tr>
+          );
+        })}
+      </thead>
+      <tbody {...getTableBodyProps()}>
+        {page && page.length > 0 ? (
+          page.map(row => {
+            prepareRow(row);
+            const { key: rowKey, ...rowProps } = row.getRowProps();
+            return (
+              <tr key={rowKey || row.id} {...rowProps}>
+                {row.cells.map(cell => {
+                  const cellProps = cell.getCellProps() as TableCellProps & RenderHTMLCellProps;
+                  const { key: cellKey, cellContent, ...restProps } = cellProps;
+                  const key = cellKey || cell.column.id;
+                  if (cellProps.dangerouslySetInnerHTML) {
+                    return <td key={key} {...restProps} />;
+                  }
+                  // If cellProps renderes textContent already, then we don't have to
+                  // render `Cell`. This saves some time for large tables.
+                  return (
+                    <td key={key} {...restProps}>
+                      {cellContent || cell.render('Cell')}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })
+        ) : (
+          <tr>
+            <td className="dt-no-results" colSpan={columns.length}>
+              {typeof noResultsText === 'function'
+                ? noResultsText(globalFilter as string)
+                : noResultsText}
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  );
 
   return (
     <div ref={wrapperRef} style={{ width: initialWidth, height: initialHeight }}>
@@ -157,7 +213,10 @@ export default function DataTable<D extends object>({
                   total={data.length}
                   sizeOptions={pageSizeOptions}
                   currentSize={pageSize}
-                  onChange={setPageSize}
+                  onChange={size => {
+                    setShowAll(size === 0);
+                    setPageSize(size === 0 ? data.length : size);
+                  }}
                 />
               ) : null}
             </Col>
@@ -173,75 +232,11 @@ export default function DataTable<D extends object>({
           </Row>
         </div>
       ) : null}
-      <StickyWrap>
-        <table ref={tableRef} {...getTableProps({ className: tableClassName })}>
-          <thead>
-            {headerGroups.map(headerGroup => {
-              const {
-                key: headerGroupKey,
-                ...headerGroupProps
-              } = headerGroup.getHeaderGroupProps();
-              return (
-                <tr key={headerGroupKey || headerGroup.id} {...headerGroupProps}>
-                  {headerGroup.headers.map(column => {
-                    const { key: headerKey, className, ...props } = column.getHeaderProps(
-                      column.getSortByToggleProps(),
-                    );
-                    return (
-                      <th
-                        key={headerKey || column.id}
-                        className={column.isSorted ? `${className || ''} is-sorted` : className}
-                        {...props}
-                      >
-                        {column.render('Header')}
-                        {column.render('SortIcon')}
-                      </th>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {page && page.length > 0 ? (
-              page.map(row => {
-                prepareRow(row);
-                const { key: rowKey, ...rowProps } = row.getRowProps();
-                return (
-                  <tr key={rowKey || row.id} {...rowProps}>
-                    {row.cells.map(cell => {
-                      const cellProps = cell.getCellProps() as TableCellProps & RenderHTMLCellProps;
-                      const { key: cellKey, cellContent, ...restProps } = cellProps;
-                      const key = cellKey || cell.column.id;
-                      if (cellProps.dangerouslySetInnerHTML) {
-                        return <td key={key} {...restProps} />;
-                      }
-                      // If cellProps renderes textContent already, then we don't have to
-                      // render `Cell`. This saves some time for large tables.
-                      return (
-                        <td key={key} {...restProps}>
-                          {cellContent || cell.render('Cell')}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td className="dt-no-results" colSpan={columns.length}>
-                  {typeof noResultsText === 'function'
-                    ? noResultsText(globalFilter as string)
-                    : noResultsText}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </StickyWrap>
+      {wrapStickyTable ? wrapStickyTable(renderTable) : renderTable()}
       {hasPagination ? (
         <SimplePagination
           ref={paginationRef}
+          style={sticky.height ? undefined : { visibility: 'hidden' }}
           maxPageItemCount={maxPageItemCount}
           pageCount={pageCount}
           currentPage={pageIndex}
