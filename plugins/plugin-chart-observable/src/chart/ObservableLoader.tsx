@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// eslint-disable-next-line import/no-unresolved
 import { connect } from 'react-redux';
 // @ts-ignore
 import { Runtime, Inspector } from '@observablehq/runtime';
@@ -38,7 +39,7 @@ class ObservableLoader extends Component<Props> {
       const runtime = new Runtime();
       let notebookModule = null;
 
-      if (!this.props.displayedCells.length) {
+      if (this.props.displayedCells.length === 0) {
         // render the entrire notebook if no displayedCells selected
         notebookModule = runtime.module(
           this.notebook,
@@ -50,17 +51,19 @@ class ObservableLoader extends Component<Props> {
           if (this.props.displayedCells.includes(name) && this.displayRefs[name] !== null) {
             return new Inspector(this.displayRefs[name]);
           }
+          return null;
         });
       }
 
       // gather cell names
+      // eslint-disable-next-line no-underscore-dangle
       const cellNames = Array.from<any[]>(notebookModule._scope).map((item: any[]) => item[0]);
       if (!this.props.selectControlOptions) {
         this.props.broadcastCells(cellNames);
       }
 
       // inject the data
-      if (this.props.dataInjectionCell.length) {
+      if (this.props.dataInjectionCell.length > 0) {
         notebookModule.redefine(this.props.dataInjectionCell, [], this.props.data);
       }
       // define height
@@ -76,7 +79,7 @@ class ObservableLoader extends Component<Props> {
     };
     return (
       <div style={wrapperStyles}>
-        <div className="notebook-wrapper" ref={this.notebookWrapperRef}>
+        <div ref={this.notebookWrapperRef} className="notebook-wrapper">
           {this.props.displayedCells.map(name => (
             <div
               ref={ref => {
