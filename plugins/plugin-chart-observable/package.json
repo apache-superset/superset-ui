@@ -36,7 +36,8 @@
     "d3-cloud": "^1.2.5",
     "d3-scale": "^3.0.1",
     "emotion-theming": "^10.0.27",
-    "encodable": "^0.3.3"
+    "encodable": "^0.3.3",
+    "redux-test-utils": "^1.0.0"
   },
   "peerDependencies": {
     "@superset-ui/chart": "^0.13.0",
