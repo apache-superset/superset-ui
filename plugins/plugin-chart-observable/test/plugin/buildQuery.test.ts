@@ -6,12 +6,15 @@ describe('Observable buildQuery', () => {
     datasource: '5__table',
     granularity_sqla: 'ds',
     series: 'foo',
+    displayedCells: ['a', 'b'],
+    dataInjectionCell: 'cell',
+    observableUrl: 'https://abc.qwerty.com',
+    showDebug: true,
     viz_type: 'observable',
     queryFields: { series: 'groupby' },
   };
 
   it('should build groupby with series in form data', () => {
-    // @ts-ignore
     const queryContext = buildQuery(formData);
     const [query] = queryContext.queries;
     expect(query.groupby).toEqual(['foo']);
