@@ -22,13 +22,13 @@ import ReactDOMServer from 'react-dom/server';
 import { formatNumber, NumberFormats } from '@superset-ui/number-format';
 import { DataRecordValue } from '@superset-ui/chart';
 import { getTimeFormatter } from '@superset-ui/time-format';
+import styled from '@superset-ui/style';
 import { filterXSS } from 'xss';
 
 // initialize datatables.net
 import $ from 'jquery';
 import dt from 'datatables.net-bs/js/dataTables.bootstrap';
 import 'datatables.net-bs/css/dataTables.bootstrap.css';
-import './Table.css';
 
 import { DataTableProps } from './transformProps';
 
@@ -48,7 +48,7 @@ function isTimeColumn(key: string) {
   return key === '__timestamp';
 }
 
-export default function ReactDataTable(props: DataTableProps) {
+function ReactDataTable(props: DataTableProps) {
   const {
     data,
     height,
@@ -317,3 +317,41 @@ export default function ReactDataTable(props: DataTableProps) {
     />
   );
 }
+
+export default styled(ReactDataTable)`
+  .superset-legacy-chart-table {
+    margin: 0px auto;
+  }
+  .superset-legacy-chart-table table {
+    width: 100%;
+  }
+  .superset-legacy-chart-table .dt-metric {
+    text-align: right;
+  }
+  .superset-legacy-chart-table td.dt-is-filter {
+    cursor: pointer;
+  }
+  .superset-legacy-chart-table td.dt-is-filter:hover {
+    background-color: linen;
+  }
+  .superset-legacy-chart-table td.dt-is-active-filter,
+  .superset-legacy-chart-table td.dt-is-active-filter:hover {
+    background-color: lightcyan;
+  }
+  .superset-legacy-chart-table div.dataTables_wrapper div.dataTables_paginate {
+    line-height: 0;
+  }
+  .superset-legacy-chart-table div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    margin-top: 0.5em;
+  }
+
+  .superset-legacy-chart-table table.table thead th.sorting:after,
+  .superset-legacy-chart-table table.table thead th.sorting_asc:after,
+  .superset-legacy-chart-table table.table thead th.sorting_desc:after {
+    top: auto;
+    bottom: 6px;
+  }
+  .superset-legacy-chart-table td {
+    white-space: pre-wrap;
+  }
+`;
