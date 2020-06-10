@@ -148,23 +148,25 @@ function StickyWrap({
 
   // update scrollable area and header column sizes when mounted
   useLayoutEffect(() => {
-    if (theadRef.current) {
-      const bodyThead = theadRef.current;
-      const theadHeight = bodyThead.clientHeight;
-      const tableHeight = (bodyThead.parentNode as HTMLTableElement).clientHeight;
-      const ths = bodyThead.childNodes[0].childNodes as NodeListOf<HTMLTableHeaderCellElement>;
-      const widths = Array.from(ths).map(th => th.clientWidth);
-      const height = Math.min(maxHeight, tableHeight + scrollBarSize);
-      setStickyElementSize({
-        setStickyElementSize,
-        width: maxWidth,
-        height: maxHeight,
-        realHeight: height,
-        tableHeight,
-        bodyHeight: height - theadHeight,
-        columnWidths: widths,
-      });
-    }
+    requestAnimationFrame(() => {
+      if (theadRef.current) {
+        const bodyThead = theadRef.current;
+        const theadHeight = bodyThead.clientHeight;
+        const tableHeight = (bodyThead.parentNode as HTMLTableElement).clientHeight;
+        const ths = bodyThead.childNodes[0].childNodes as NodeListOf<HTMLTableHeaderCellElement>;
+        const widths = Array.from(ths).map(th => th.clientWidth);
+        const height = Math.min(maxHeight, tableHeight + scrollBarSize);
+        setStickyElementSize({
+          setStickyElementSize,
+          width: maxWidth,
+          height: maxHeight,
+          realHeight: height,
+          tableHeight,
+          bodyHeight: height - theadHeight,
+          columnWidths: widths,
+        });
+      }
+    });
   }, [maxWidth, maxHeight, setStickyElementSize, scrollBarSize]);
 
   let sizerTable: ReactElement | undefined;
