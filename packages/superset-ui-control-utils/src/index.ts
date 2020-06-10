@@ -14,6 +14,6 @@ export {
   Props as ColumnOptionProps,
   Column as ColumnOptionColumn,
 } from './ColumnOption';
-export { ColumnTypeLabel, Props as ColumnTypeLabelProps } from './ColumnTypeLabel';
+export { default as ColumnTypeLabel } from './ColumnTypeLabel';
 export { mainMetric, Metric } from './mainMetric';
 export { default as MetricOption } from './MetricOption';

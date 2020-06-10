@@ -18,11 +18,11 @@
  */
 import React from 'react';
 
-export type Props = {
+interface Props {
   type: string;
-};
+}
 
-export function ColumnTypeLabel({ type }: Props) {
+export default function ColumnTypeLabel({ type }: Props) {
   let stringIcon = '';
   if (typeof type !== 'string') {
     stringIcon = '?';

@@ -20,7 +20,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import InfoTooltipWithTrigger from './InfoTooltipWithTrigger';
-import { ColumnTypeLabel } from './ColumnTypeLabel';
+import ColumnTypeLabel from './ColumnTypeLabel';
 
 const propTypes = {
   metric: PropTypes.object.isRequired,

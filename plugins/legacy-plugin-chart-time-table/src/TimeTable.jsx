@@ -31,7 +31,6 @@ import SparklineCell from './SparklineCell';
 import './TimeTable.less';
 
 const ACCESSIBLE_COLOR_BOUNDS = ['#ca0020', '#0571b0'];
-
 function colorFromBounds(value, bounds, colorBounds = ACCESSIBLE_COLOR_BOUNDS) {
   if (bounds) {
     const [min, max] = bounds;
@@ -41,6 +40,7 @@ function colorFromBounds(value, bounds, colorBounds = ACCESSIBLE_COLOR_BOUNDS) {
         .domain([min, (max + min) / 2, max])
         .range([minColor, 'grey', maxColor]);
       return colorScale(value);
+      // eslint-disable-next-line no-else-return
     } else if (min !== null) {
       return value >= min ? maxColor : minColor;
     } else if (max !== null) {
@@ -52,7 +52,6 @@ function colorFromBounds(value, bounds, colorBounds = ACCESSIBLE_COLOR_BOUNDS) {
 
 const propTypes = {
   className: PropTypes.string,
-  height: PropTypes.number,
   // Example
   // {'2018-04-14 00:00:00': { 'SUM(metric_value)': 80031779.40047 }}
   columnConfigs: PropTypes.arrayOf(
@@ -66,6 +65,7 @@ const propTypes = {
     }),
   ).isRequired,
   data: PropTypes.objectOf(PropTypes.objectOf(PropTypes.number)).isRequired,
+  height: PropTypes.number,
   rows: PropTypes.arrayOf(
     PropTypes.oneOfType([
       PropTypes.shape({
@@ -104,9 +104,11 @@ class TimeTable extends React.PureComponent {
     }
 
     const metric = row;
-    return <MetricOption metric={metric} url={fullUrl} showFormula={false} openInNewWindow />;
+
+    return <MetricOption openInNewWindow metric={metric} url={fullUrl} showFormula={false} />;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   renderSparklineCell(valueField, column, entries) {
     let sparkData;
     if (column.timeRatio) {
@@ -125,7 +127,7 @@ class TimeTable extends React.PureComponent {
     }
 
     return (
-      <Td column={column.key} key={column.key} value={sparkData[sparkData.length - 1]}>
+      <Td key={column.key} column={column.key} value={sparkData[sparkData.length - 1]}>
         <SparklineCell
           width={parseInt(column.width, 10) || 300}
           height={parseInt(column.height, 10) || 50}
@@ -145,6 +147,7 @@ class TimeTable extends React.PureComponent {
     );
   }
 
+  // eslint-disable-next-line class-methods-use-this
   renderValueCell(valueField, column, reversedEntries) {
     const recent = reversedEntries[0][valueField];
     let v;
@@ -171,6 +174,7 @@ class TimeTable extends React.PureComponent {
       v =
         recent /
         Object.keys(reversedEntries[0])
+          // eslint-disable-next-line no-negated-condition
           .map(k => (k !== 'time' ? reversedEntries[0][k] : null))
           .reduce((a, b) => a + b);
     } else if (column.colType === 'avg') {
@@ -185,8 +189,8 @@ class TimeTable extends React.PureComponent {
 
     return (
       <Td
-        column={column.key}
         key={column.key}
+        column={column.key}
         value={v}
         style={
           color && {
@@ -210,7 +214,6 @@ class TimeTable extends React.PureComponent {
     const { columnConfigs } = this.props;
     const valueField = row.label || row.metric_name;
     const leftCell = this.renderLeftCell(row);
-
     return (
       <Tr key={leftCell}>
         <Td column="metric" data={leftCell}>
@@ -231,10 +234,11 @@ class TimeTable extends React.PureComponent {
     const entries = Object.keys(data)
       .sort()
       .map(time => ({ ...data[time], time }));
+
     const reversedEntries = entries.concat().reverse();
 
     const defaultSort =
-      rowType === 'column' && columnConfigs.length
+      rowType === 'column' && columnConfigs.length > 0
         ? {
             column: columnConfigs[0].key,
             direction: 'desc',
