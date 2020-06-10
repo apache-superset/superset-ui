@@ -27,17 +27,17 @@ interface GlobalFilterProps<D extends object> {
   preGlobalFilteredRows: Row<D>[];
   // filter value cannot be `undefined` otherwise React will report component
   // control type undefined error
-  globalFilter: string;
+  filterValue: string;
   setGlobalFilter: (filterValue: FilterValue) => void;
 }
 
-export default (React.memo as <T>(fn: T) => T)(function GlobalFilter<D extends object>({
+export default function GlobalFilter<D extends object>({
   preGlobalFilteredRows,
-  globalFilter = '',
+  filterValue = '',
   setGlobalFilter,
 }: GlobalFilterProps<D>) {
   const count = preGlobalFilteredRows.length;
-  const [value, setValue] = React.useState(globalFilter);
+  const [value, setValue] = React.useState(filterValue);
   const onChange = useAsyncDebounce((newValue: string) => {
     setGlobalFilter(newValue || undefined);
   }, 200);
@@ -46,16 +46,16 @@ export default (React.memo as <T>(fn: T) => T)(function GlobalFilter<D extends o
     <span className="dt-global-filter">
       {t('Search')}{' '}
       <input
+        type="search"
         className="form-control input-sm"
         placeholder={`${count} records...`}
         value={value}
         onChange={e => {
           const target = e.target as HTMLInputElement;
-          e.preventDefault();
           setValue(target.value);
           onChange(target.value);
         }}
       />
     </span>
   );
-});
+}

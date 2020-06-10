@@ -26,11 +26,15 @@ import {
   TableCellProps,
   TableOptions,
   useMountedLayoutEffect,
+  FilterType,
+  IdType,
+  Row,
 } from 'react-table';
+import matchSorter from 'match-sorter';
 import GlobalFilter from './components/GlobalFilter';
 import SelectPageSize, { SizeOption } from './components/SelectPageSize';
 import SimplePagination from './components/Pagination';
-import useSticky, { GetTableSize } from './hooks/useSticky';
+import useSticky from './hooks/useSticky';
 import useColumnCellProps from './hooks/useColumnCellProps';
 
 export interface DataTableProps<D extends object> extends TableOptions<D> {
@@ -44,7 +48,6 @@ export interface DataTableProps<D extends object> extends TableOptions<D> {
   pageSize?: number;
   noResultsText?: string | ((filterString: string) => ReactNode);
   sticky?: boolean;
-  getTableSize?: GetTableSize;
 }
 
 export interface RenderHTMLCellProps extends HTMLProps<HTMLTableCellElement> {
@@ -62,11 +65,12 @@ export default function DataTable<D extends object>({
   initialState: initialState_ = {},
   pageSizeOptions = [10, 25, 40, 50, 75, 100, 150, 200],
   maxPageItemCount = 9,
-  getTableSize,
   sticky: doSticky,
   showSearchInput,
   noResultsText = 'No data found',
   hooks,
+  globalFilter: userGlobalFilterFn,
+  ...moreUseTableOptions
 }: DataTableProps<D>) {
   const tableHooks: PluginHook<D>[] = [
     useGlobalFilter,
@@ -104,6 +108,20 @@ export default function DataTable<D extends object>({
     return undefined;
   }, [initialHeight, initialWidth]);
 
+  const defaultGlobalFilter: FilterType<D> = useCallback(
+    (rows: Row<D>[], columnIds: IdType<D>[], filterValue: string) => {
+      // allow searching by "col1 col2"
+      const joinedString = (row: Row<D>) => {
+        return columnIds.map(x => row.values[x]).join(' ');
+      };
+      return matchSorter(rows, filterValue, {
+        keys: [...columnIds, joinedString],
+      }) as typeof rows;
+    },
+    [],
+  );
+  defaultGlobalFilter.autoRemove = val => !val;
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -116,13 +134,15 @@ export default function DataTable<D extends object>({
     setGlobalFilter,
     setPageSize,
     wrapStickyTable,
-    state: { pageIndex, pageSize, globalFilter, sticky = {} },
+    state: { pageIndex, pageSize, globalFilter: filterValue, sticky = {} },
   } = useTable<D>(
     {
       columns,
       data,
       initialState,
-      getTableSize: getTableSize || defaultGetTableSize,
+      getTableSize: defaultGetTableSize,
+      globalFilter: defaultGlobalFilter,
+      ...moreUseTableOptions,
     },
     ...tableHooks,
   );
@@ -193,7 +213,7 @@ export default function DataTable<D extends object>({
           <tr>
             <td className="dt-no-results" colSpan={columns.length}>
               {typeof noResultsText === 'function'
-                ? noResultsText(globalFilter as string)
+                ? noResultsText(filterValue as string)
                 : noResultsText}
             </td>
           </tr>
@@ -225,7 +245,7 @@ export default function DataTable<D extends object>({
                 <GlobalFilter<D>
                   preGlobalFilteredRows={preGlobalFilteredRows}
                   setGlobalFilter={setGlobalFilter}
-                  globalFilter={globalFilter}
+                  filterValue={filterValue}
                 />
               </div>
             ) : null}

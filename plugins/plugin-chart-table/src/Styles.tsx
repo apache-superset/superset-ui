@@ -68,5 +68,6 @@ export default styled.div`
 
   .dt-no-results {
     text-align: center;
+    padding: 1em 0.6em;
   }
 `;
