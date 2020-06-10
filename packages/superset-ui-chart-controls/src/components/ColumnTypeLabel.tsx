@@ -20,9 +20,9 @@ import React from 'react';
 
 export type ColumnTypeLabelProps = {
   type: string;
-};
+}
 
-export function ColumnTypeLabel({ type }: ColumnTypeLabelProps) {
+export default function ColumnTypeLabel({ type }: Props) {
   let stringIcon = '';
   if (typeof type !== 'string') {
     stringIcon = '?';

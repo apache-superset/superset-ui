@@ -18,7 +18,7 @@
  */
 import React from 'react';
 
-import { ColumnTypeLabel } from './ColumnTypeLabel';
+import ColumnTypeLabel from './ColumnTypeLabel';
 import InfoTooltipWithTrigger from './InfoTooltipWithTrigger';
 import { ColumnMeta } from '../types';
 
