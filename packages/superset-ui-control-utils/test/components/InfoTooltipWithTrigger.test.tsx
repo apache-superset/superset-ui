@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { OverlayTrigger } from 'react-bootstrap';
-import InfoTooltipWithTrigger from '../src/InfoTooltipWithTrigger';
+import InfoTooltipWithTrigger from '../../src/InfoTooltipWithTrigger';
 
 describe('InfoTooltipWithTrigger', () => {
   it('renders a tooltip', () => {

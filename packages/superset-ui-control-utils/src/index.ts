@@ -12,4 +12,4 @@ export * from './InfoTooltipWithTrigger';
 export * from './ColumnOption';
 export * from './ColumnTypeLabel';
 export * from './mainMetric';
-export { default as MetricOption } from './MetricOption';
+export * from './MetricOption';

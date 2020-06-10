@@ -39,15 +39,18 @@ const defaultProps = {
 export interface MetricOptionProps {
   metric: {
     // eslint-disable-next-line camelcase
-    verbose_name: unknown;
+    verbose_name: string;
     // eslint-disable-next-line camelcase
     metric_name: string;
     label: string;
-    description: unknown;
+    description: string;
+    // eslint-disable-next-line camelcase
+    warning_text: string;
+    expression: string;
   };
   openInNewWindow: boolean;
-  showFormula: unknown;
-  showType: unknown;
+  showFormula: boolean;
+  showType: boolean;
   url: string;
 }
 
