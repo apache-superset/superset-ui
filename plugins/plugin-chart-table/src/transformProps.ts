@@ -56,14 +56,17 @@ const processDataRecords = memoizeOne(function processDataRecords(data: DataReco
     return data;
   }
   return data.map(x => {
-    const time = x[TIME_COLUMN];
+    const time = x[TIME_COLUMN] as Date | number | string | null;
     return {
       ...x,
       [TIME_COLUMN]:
-        typeof time === 'string' && time.match(REGEXP_TIMESTAMP_NO_TIMEZONE)
-          ? // force UTC time for timestamps without a timezone
-            `${time}Z`
-          : time,
+        time &&
+        new Date(
+          typeof time === 'string' && time.match(REGEXP_TIMESTAMP_NO_TIMEZONE)
+            ? // force UTC time for timestamps without a timezone
+              `${time}Z`
+            : time,
+        ),
     };
   });
 });

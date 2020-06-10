@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useState, useMemo } from 'react';
-import { ColumnInstance, Column } from 'react-table';
+import { ColumnInstance, Column, DefaultSortTypes, SortByFn } from 'react-table';
 import { FaSort, FaSortUp as FaSortAsc, FaSortDown as FaSortDesc } from 'react-icons/fa';
 import { t } from '@superset-ui/translation';
 import { DataRecordValue, DataRecord } from '@superset-ui/chart';
@@ -32,6 +32,18 @@ import { PAGE_SIZE_OPTIONS } from './controlPanel';
 import { DataTableProps } from './DataTable/DataTable';
 
 type ValueRange = [number, number];
+
+function getSortTypeByDataType<D extends object>(
+  dataType: DataType,
+): DefaultSortTypes | SortByFn<D> {
+  if (dataType === DataType.DateTime) {
+    return 'datetime';
+  }
+  if (dataType === DataType.String) {
+    return 'alphanumeric';
+  }
+  return 'basic';
+}
 
 function SortIcon({ column }: { column: ColumnInstance }) {
   const { isSorted, isSortedDesc } = column;
@@ -153,6 +165,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         Header: label,
         SortIcon,
         sortDescFirst: sortDesc,
+        sortType: getSortTypeByDataType<D>(dataType),
         cellProps: ({ value: value_ }, cellProps) => {
           let className = '';
           const value = value_ as DataRecordValue;
