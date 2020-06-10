@@ -8,12 +8,8 @@ export const internalSharedControls = sharedControlsModule;
 export const sections = sectionModules;
 export { D3_FORMAT_DOCS, D3_FORMAT_OPTIONS, D3_TIME_FORMAT_OPTIONS } from './D3Formatting';
 export { formatSelectOptions, formatSelectOptionsForRange } from './selectOptions';
-export { default as InfoTooltipWithTrigger } from './InfoTooltipWithTrigger';
-export {
-  ColumnOption,
-  Props as ColumnOptionProps,
-  Column as ColumnOptionColumn,
-} from './ColumnOption';
-export { default as ColumnTypeLabel } from './ColumnTypeLabel';
-export { mainMetric, Metric } from './mainMetric';
 export { default as MetricOption } from './MetricOption';
+export * from './InfoTooltipWithTrigger';
+export * from './ColumnOption';
+export * from './ColumnTypeLabel';
+export * from './mainMetric';

@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
 
-import { ColumnOption, Props as ColumnOptionProps } from '../src/ColumnOption';
-import ColumnTypeLabel from '../src/ColumnTypeLabel';
+import { ColumnOption, ColumnOptionProps } from '../src/ColumnOption';
+import { ColumnTypeLabel } from '../src/ColumnTypeLabel';
 import InfoTooltipWithTrigger from '../src/InfoTooltipWithTrigger';
 
 describe('ColumnOption', () => {
