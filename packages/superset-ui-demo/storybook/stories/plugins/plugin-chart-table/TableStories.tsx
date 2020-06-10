@@ -33,7 +33,8 @@ const expandColumns = memoizeOne(expandArray);
  * Load sample data for testing
  * @param props the original props passed to SuperChart
  * @param pageLength number of records perpage
- * @param targetSize the target total number of records
+ * @param rows the target number of records
+ * @param cols the target number of columns
  */
 function loadData(
   props: TableChartProps,
