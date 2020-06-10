@@ -27,11 +27,10 @@ import {
   TableOptions,
   useMountedLayoutEffect,
 } from 'react-table';
-import { Row, Col } from 'react-bootstrap';
 import GlobalFilter from './components/GlobalFilter';
 import SelectPageSize, { SizeOption } from './components/SelectPageSize';
 import SimplePagination from './components/Pagination';
-import useSticky from './hooks/useSticky';
+import useSticky, { GetTableSize } from './hooks/useSticky';
 import useColumnCellProps from './hooks/useColumnCellProps';
 
 export interface DataTableProps<D extends object> extends TableOptions<D> {
@@ -45,6 +44,7 @@ export interface DataTableProps<D extends object> extends TableOptions<D> {
   pageSize?: number;
   noResultsText?: string | ((filterString: string) => ReactNode);
   sticky?: boolean;
+  getTableSize?: GetTableSize;
 }
 
 export interface RenderHTMLCellProps extends HTMLProps<HTMLTableCellElement> {
@@ -206,8 +206,8 @@ export default function DataTable<D extends object>({
     <div ref={wrapperRef} style={{ width: initialWidth, height: initialHeight }}>
       {hasGlobalControl ? (
         <div ref={globalControlRef} className="form-inline dt-controls">
-          <Row>
-            <Col sm={6}>
+          <div className="row">
+            <div className="col-sm-6">
               {hasPagination ? (
                 <SelectPageSize
                   total={data.length}
@@ -219,17 +219,17 @@ export default function DataTable<D extends object>({
                   }}
                 />
               ) : null}
-            </Col>
+            </div>
             {showSearchInput ? (
-              <Col sm={6}>
+              <div className="col-sm-6">
                 <GlobalFilter<D>
                   preGlobalFilteredRows={preGlobalFilteredRows}
                   setGlobalFilter={setGlobalFilter}
                   globalFilter={globalFilter}
                 />
-              </Col>
+              </div>
             ) : null}
-          </Row>
+          </div>
         </div>
       ) : null}
       {wrapStickyTable ? wrapStickyTable(renderTable) : renderTable()}

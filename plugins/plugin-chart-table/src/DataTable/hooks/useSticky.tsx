@@ -43,11 +43,11 @@ type Thead = ReactElementWithChildren<'thead', TrWithTh>;
 type Tbody = ReactElementWithChildren<'tbody', TrWithTd>;
 type Col = ReactElementWithChildren<'col', null>;
 type ColGroup = ReactElementWithChildren<'colgroup', Col>;
-type Table = ReactElementWithChildren<'table', (Thead | Tbody | ColGroup)[]>;
 
-type TableRenderer = () => Table;
-type GetTableSize = () => Partial<StickyElementSize> | undefined;
-type SetStickyElementSize = (size?: StickyElementSize) => void;
+export type Table = ReactElementWithChildren<'table', (Thead | Tbody | ColGroup)[]>;
+export type TableRenderer = () => Table;
+export type GetTableSize = () => Partial<StickyElementSize> | undefined;
+export type SetStickyElementSize = (size?: StickyElementSize) => void;
 
 export enum ReducerActions {
   init = 'init', // this is from global reducer

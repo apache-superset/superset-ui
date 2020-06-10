@@ -4010,13 +4010,6 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-bootstrap@^0.32.21":
-  version "0.32.22"
-  resolved "https://registry.yarnpkg.com/@types/react-bootstrap/-/react-bootstrap-0.32.22.tgz#26a1a5a95ce46759672c56168b46de9e759d89c6"
-  integrity sha512-pjUVcJzogMxns3lbvMqnnU+I8EOYxl3aI13tS2vvRm0RdAe1rs7Ds/VZA29GI6p8p3Un6NqKUpW3+dgwAjyzxg==
-  dependencies:
-    "@types/react" "*"
-
 "@types/react-color@^3.0.1":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@types/react-color/-/react-color-3.0.1.tgz#5433e2f503ea0e0831cbc6fd0c20f8157d93add0"

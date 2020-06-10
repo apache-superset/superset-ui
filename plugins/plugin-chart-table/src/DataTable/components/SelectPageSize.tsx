@@ -17,7 +17,6 @@
  * under the License.
  */
 import React from 'react';
-import { FormControl } from 'react-bootstrap';
 
 export type SizeOption = number | [number, string];
 
@@ -57,10 +56,10 @@ export default React.memo(function SelectPageSize({
   return (
     <span className="dt-select-page-size form-inline">
       Show{' '}
-      <FormControl
-        bsSize="small"
-        componentClass="select"
+      <select
+        className="form-control input-sm"
         value={current}
+        onBlur={() => {}}
         onChange={e => {
           onChange(Number((e.target as HTMLSelectElement).value));
         }}
@@ -73,7 +72,7 @@ export default React.memo(function SelectPageSize({
             </option>
           );
         })}
-      </FormControl>{' '}
+      </select>{' '}
       entries
     </span>
   );

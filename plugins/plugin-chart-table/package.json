@@ -29,13 +29,11 @@
   "dependencies": {
     "@types/react": "^16.9.35",
     "@types/react-table": "^7.0.19",
-    "@types/react-bootstrap": "^0.32.21",
     "@types/react-dom": "^16.9.8",
     "@emotion/core": "^10.0.28",
     "memoize-one": "^5.1.1",
     "xss": "^1.0.6",
     "regenerator-runtime": "^0.13.5",
-    "react-bootstrap": "^0.33.1",
     "react-table": "^7.1.0",
     "react-icons": "^3.10.0"
   },
