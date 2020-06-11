@@ -294,10 +294,10 @@ function StickyWrap({
 }
 
 /**
- * Execute a memoized callback only when mounted.
+ * Execute a memoized callback only when mounted. Execute again when factory updated.
  * Returns undefined if not mounted yet.
  */
-function useMountedMemo<T>(factory: () => T, deps: unknown[] | undefined): T | undefined {
+function useMountedMemo<T>(factory: () => T, deps?: unknown[]): T | undefined {
   const mounted = useRef<typeof factory>();
   useLayoutEffect(() => {
     mounted.current = factory;
