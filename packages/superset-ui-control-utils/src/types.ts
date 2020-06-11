@@ -17,7 +17,6 @@
  * under the License.
  */
 /* eslint-disable camelcase */
-
 import { ReactNode, ReactText } from 'react';
 
 export type AnyDict = Record<string, unknown>;
@@ -52,8 +51,25 @@ export interface ControlPanelState {
   };
 }
 
-export interface ControlPanelActions {
-  setDatasource: Function;
+export interface Action {
+  type: string;
+}
+
+export interface AnyAction extends Action, AnyDict {}
+
+/**
+ * The action dispather will call Redux `dispatch` internally and return what's
+ * returned from `dispatch`, which by default is the original or another action.
+ */
+export interface ActionDispatcher<ARGS extends unknown[], A extends Action = AnyAction> {
+  (...args: ARGS): A;
+}
+
+/**
+ * Mapping of action dispatchers
+ */
+export interface ControlPanelActionDispathers {
+  setDatasource: ActionDispatcher<[DatasourceMeta]>;
 }
 
 /**
@@ -70,7 +86,7 @@ export interface ControlStateMapping {
 
 // Ref: superset-frontend/src/explore/components/ControlPanelsContainer.jsx
 export interface ControlPanelsContainerProps extends AnyDict {
-  actions: ControlPanelActions;
+  actions: ControlPanelActionDispathers;
   controls: ControlStateMapping;
   exportState: AnyDict;
   form_data: AnyDict;
@@ -87,7 +103,7 @@ export interface ControlConfig {
   mapStateToProps?: (
     state: ControlPanelState,
     control: ControlConfig,
-    action: ControlPanelActions,
+    actions: ControlPanelActionDispathers,
   ) => ExtraControlProps;
   [key: string]: unknown;
   visibility?: (props: ControlPanelsContainerProps) => boolean;
