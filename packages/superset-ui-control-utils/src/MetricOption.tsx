@@ -17,24 +17,8 @@
  * under the License.
  */
 import React from 'react';
-import PropTypes from 'prop-types';
-
 import InfoTooltipWithTrigger from './InfoTooltipWithTrigger';
 import { ColumnTypeLabel } from './ColumnTypeLabel';
-
-const propTypes = {
-  metric: PropTypes.object.isRequired,
-  openInNewWindow: PropTypes.bool,
-  showFormula: PropTypes.bool,
-  showType: PropTypes.bool,
-  url: PropTypes.string,
-};
-const defaultProps = {
-  openInNewWindow: false,
-  showFormula: true,
-  showType: false,
-  url: '',
-};
 
 export interface MetricOptionProps {
   metric: {
@@ -56,10 +40,10 @@ export interface MetricOptionProps {
 
 export function MetricOption({
   metric,
-  openInNewWindow,
-  showFormula,
-  showType,
-  url,
+  openInNewWindow = false,
+  showFormula = true,
+  showType = false,
+  url = '',
 }: MetricOptionProps) {
   const verbose = metric.verbose_name || metric.metric_name || metric.label;
   const link = url ? (
