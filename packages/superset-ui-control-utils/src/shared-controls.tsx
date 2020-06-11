@@ -71,8 +71,16 @@ import { legacyValidateInteger, validateNonEmpty } from '@superset-ui/validator'
 
 import { formatSelectOptions } from './selectOptions';
 import { mainMetric, Metric } from './mainMetric';
-import { ColumnOption, ColumnOptionColumn } from './ColumnOption';
+import { ColumnOption } from './ColumnOption';
 import { TIME_FILTER_LABELS } from './constants';
+import {
+  ControlConfigMapping,
+  ControlConfig,
+  ColumnMeta,
+  DatasourceMeta,
+  ExtraControlProps,
+  SelectControlConfig,
+} from './types';
 
 const categoricalSchemeRegistry = getCategoricalSchemeRegistry();
 const sequentialSchemeRegistry = getSequentialSchemeRegistry();
@@ -118,31 +126,12 @@ const timeColumnOption = {
   description: t('A reference to the [Time] configuration, taking granularity into account'),
 };
 
-type StateDatasource = {
-  columns: ColumnOptionColumn[];
-  metrics: unknown[];
-  type: unknown;
-  main_dttm_col: unknown;
-  time_grain_sqla: unknown;
-};
-
-type State = {
-  form_data: { [key: string]: unknown };
-  datasource?: StateDatasource | null;
-  options?: ColumnOptionColumn[];
-  controls?: {
-    comparison_type?: {
-      value: string;
-    };
-  };
-};
-
 type Control = {
   savedMetrics?: Metric[] | null;
   default?: unknown;
 };
 
-const groupByControl = {
+const groupByControl: ControlConfig = {
   type: 'SelectControl',
   queryField: 'groupby',
   multi: true,
@@ -151,28 +140,29 @@ const groupByControl = {
   default: [],
   includeTime: false,
   description: t('One or many controls to group by'),
-  optionRenderer: (c: ColumnOptionColumn) => <ColumnOption showType column={c} />,
-  valueRenderer: (c: ColumnOptionColumn) => <ColumnOption column={c} />,
+  optionRenderer: (c: ColumnMeta) => <ColumnOption showType column={c} />,
+  valueRenderer: (c: ColumnMeta) => <ColumnOption column={c} />,
   valueKey: 'column_name',
   allowAll: true,
-  filterOption: (opt: ColumnOptionColumn, text: string) =>
+  filterOption: (opt: ColumnMeta, text: string) =>
     (opt.column_name && opt.column_name.toLowerCase().includes(text.toLowerCase())) ||
     (opt.verbose_name && opt.verbose_name.toLowerCase().includes(text.toLowerCase())),
   promptTextCreator: (label: unknown) => label,
-  mapStateToProps: (state: State, control?: { includeTime: boolean }) => {
-    const newState: State = {} as any;
+  mapStateToProps(state, { includeTime }) {
+    const newState: ExtraControlProps = {};
     if (state.datasource) {
-      newState.options = state.datasource.columns.filter(c => c.groupby);
-      if (control?.includeTime) {
-        newState.options.push(timeColumnOption);
+      const options = state.datasource.columns.filter(c => c.groupby);
+      if (includeTime) {
+        options.push(timeColumnOption);
       }
+      newState.options = options;
     }
     return newState;
   },
   commaChoosesOption: false,
 };
 
-const metrics = {
+const metrics: ControlConfig = {
   type: 'MetricsControl',
   queryField: 'metrics',
   multi: true,
@@ -182,7 +172,7 @@ const metrics = {
     const metric = mainMetric(c.savedMetrics);
     return metric ? [metric] : null;
   },
-  mapStateToProps: ({ datasource }: State) => {
+  mapStateToProps: ({ datasource }) => {
     return {
       columns: datasource ? datasource.columns : [],
       savedMetrics: datasource ? datasource.metrics : [],
@@ -191,7 +181,7 @@ const metrics = {
   },
   description: t('One or many metrics to display'),
 };
-const metric = {
+const metric: ControlConfig = {
   ...metrics,
   multi: false,
   label: t('Metric'),
@@ -199,7 +189,7 @@ const metric = {
   default: (c: Control) => mainMetric(c.savedMetrics),
 };
 
-export function columnChoices(datasource: StateDatasource) {
+export function columnChoices(datasource: DatasourceMeta) {
   if (datasource?.columns) {
     return datasource.columns
       .map(col => [col.column_name, col.verbose_name || col.column_name])
@@ -208,7 +198,7 @@ export function columnChoices(datasource: StateDatasource) {
   return [];
 }
 
-export const controls = {
+export const controls: ControlConfigMapping = {
   metrics,
 
   metric,
@@ -218,9 +208,9 @@ export const controls = {
     label: t('Datasource'),
     default: null,
     description: null,
-    mapStateToProps: (state: State, control: unknown, actions: { setDatasource: unknown }) => ({
+    mapStateToProps: (state, control, { setDatasource }) => ({
       datasource: state.datasource,
-      onDatasourceSave: actions ? actions.setDatasource : () => {},
+      onDatasourceSave: setDatasource,
     }),
   },
 
@@ -335,11 +325,11 @@ export const controls = {
     ),
     default: (c: Control) => c.default,
     clearable: false,
-    optionRenderer: (c: ColumnOptionColumn) => <ColumnOption showType column={c} />,
-    valueRenderer: (c: ColumnOptionColumn) => <ColumnOption column={c} />,
+    optionRenderer: (c: ColumnMeta) => <ColumnOption showType column={c} />,
+    valueRenderer: (c: ColumnMeta) => <ColumnOption column={c} />,
     valueKey: 'column_name',
-    mapStateToProps: (state: State) => {
-      const props: any = {};
+    mapStateToProps: state => {
+      const props: Partial<SelectControlConfig<ColumnMeta>> = {};
       if (state.datasource) {
         props.options = state.datasource.columns.filter(c => c.is_dttm);
         props.default = null;
@@ -364,8 +354,8 @@ export const controls = {
         'The options here are defined on a per database ' +
         'engine basis in the Superset source code.',
     ),
-    mapStateToProps: (state: State) => ({
-      choices: state.datasource ? state.datasource.time_grain_sqla : null,
+    mapStateToProps: ({ datasource }) => ({
+      choices: datasource?.time_grain_sqla || null,
     }),
   },
 
@@ -382,8 +372,8 @@ export const controls = {
         "using the engine's local timezone. Note one can explicitly set the timezone " +
         'per the ISO 8601 format if specifying either the start and/or end time.',
     ),
-    mapStateToProps: (state: State) => ({
-      endpoints: state.form_data ? state.form_data.time_range_endpoints : null,
+    mapStateToProps: ({ form_data }) => ({
+      endpoints: form_data?.time_range_endpoints || null,
     }),
   },
 
@@ -415,10 +405,10 @@ export const controls = {
     label: t('Sort By'),
     default: null,
     description: t('Metric used to define the top series'),
-    mapStateToProps: (state: State) => ({
-      columns: state.datasource ? state.datasource.columns : [],
-      savedMetrics: state.datasource ? state.datasource.metrics : [],
-      datasourceType: state.datasource && state.datasource.type,
+    mapStateToProps: ({ datasource }) => ({
+      columns: datasource?.columns || [],
+      savedMetrics: datasource?.metrics || [],
+      datasourceType: datasource?.type,
     }),
   },
 
@@ -471,7 +461,7 @@ export const controls = {
     default: 'SMART_NUMBER',
     choices: D3_FORMAT_OPTIONS,
     description: D3_FORMAT_DOCS,
-    mapStateToProps: (state: State) => {
+    mapStateToProps: state => {
       const showWarning = state.controls?.comparison_type?.value === 'percentage';
       return {
         warning: showWarning
@@ -490,10 +480,10 @@ export const controls = {
     label: t('Filters'),
     default: null,
     description: '',
-    mapStateToProps: (state: State) => ({
-      columns: state.datasource?.columns.filter(c => c.filterable) || [],
-      savedMetrics: state.datasource?.metrics || [],
-      datasource: state.datasource,
+    mapStateToProps: ({ datasource }) => ({
+      columns: datasource?.columns.filter(c => c.filterable) || [],
+      savedMetrics: datasource?.metrics || [],
+      datasource,
     }),
     provideFormDataToProps: true,
   },
@@ -513,9 +503,11 @@ export const controls = {
     label: t('Color Map'),
     default: {},
     renderTrigger: true,
-    mapStateToProps: (state: State) => ({
-      colorNamespace: state.form_data.color_namespace,
-      colorScheme: state.form_data.color_scheme,
+    mapStateToProps: ({
+      form_data: { color_namespace: colorNamespace, color_scheme: colorScheme },
+    }) => ({
+      colorNamespace,
+      colorScheme,
     }),
   },
 };
