@@ -52,7 +52,7 @@ function isTimeType(key: string, data: DataRecord[] = []) {
 }
 
 const processDataRecords = memoizeOne(function processDataRecords(data: DataRecord[] | undefined) {
-  if (!data || !data || !(TIME_COLUMN in data[0])) {
+  if (!data || !data[0] || !(TIME_COLUMN in data[0])) {
     return data || [];
   }
   return data.map(x => {

@@ -39,6 +39,17 @@ describe('plugin-chart-table', () => {
         }).pageSize,
       ).toBe(0);
     });
+    it('should memoize data records', () => {
+      expect(transformProps(testData.basic).data).toBe(transformProps(testData.basic).data);
+    });
+    it('should memoize columns meta', () => {
+      expect(transformProps(testData.basic).columns).toBe(
+        transformProps({
+          ...testData.basic,
+          formData: { ...testData.basic.formData, pageLength: null },
+        }).columns,
+      );
+    });
   });
 
   describe('TableChart', () => {

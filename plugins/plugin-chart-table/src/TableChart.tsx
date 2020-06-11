@@ -124,7 +124,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     emitFilter = false,
     sortDesc = false,
     onChangeFilter,
-    filters: initialFilters = {},
+    filters: initialFilters,
     sticky = true, // whether to use sticky header
   } = props;
 
@@ -156,15 +156,15 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     }
 
     function isActiveFilterValue(key: string, val: DataRecordValue) {
-      return filters[key]?.includes(val);
+      return !!filters && filters[key]?.includes(val);
     }
 
     function toggleFilter(key: string, val: DataRecordValue) {
-      const updatedFilters = { ...filters };
-      if (isActiveFilterValue(key, val)) {
+      const updatedFilters = { ...(filters || {}) };
+      if (filters && isActiveFilterValue(key, val)) {
         updatedFilters[key] = filters[key].filter((x: DataRecordValue) => x !== val);
       } else {
-        updatedFilters[key] = [...(filters[key] || []), val];
+        updatedFilters[key] = [...(filters?.[key] || []), val];
       }
       setFilters(updatedFilters);
       if (onChangeFilter) {
