@@ -22,7 +22,7 @@ import { FaSort, FaSortUp as FaSortAsc, FaSortDown as FaSortDesc } from 'react-i
 import { t } from '@superset-ui/translation';
 import { DataRecordValue, DataRecord } from '@superset-ui/chart';
 
-import { TableChartTransformedProps, DataType } from './types';
+import { TableChartTransformedProps, DataType, DataColumnMeta } from './types';
 import DataTable, { DataTableProps, SearchInputProps } from './DataTable';
 import Styles from './Styles';
 import formatValue from './utils/formatValue';
@@ -123,53 +123,56 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     showCellBars = true,
     emitFilter = false,
     sortDesc = false,
-    onChangeFilter = () => {},
+    onChangeFilter,
     filters: initialFilters = {},
     sticky = true, // whether to use sticky header
   } = props;
 
   const [filters, setFilters] = useState(initialFilters);
+
   // only take relevant page size options
   const pageSizeOptions = useMemo(
     () => PAGE_SIZE_OPTIONS.filter(([n, _]) => n <= 2 * data.length),
     [data.length],
   );
 
-  function getValueRange(key: string) {
-    let maxValue;
-    let minValue;
-    if (typeof data?.[0]?.[key] === 'number') {
-      const nums = data.map(row => row[key]) as number[];
-      if (alignPositiveNegative) {
-        // Math.max(...) fails on very large arrays (~10^6), use a custom extent
-        // function borrowed from d3-array instead.
-        [minValue, maxValue] = extent(nums.map(Math.abs));
-        minValue = 0;
-      } else {
-        [minValue, maxValue] = extent(nums);
+  const columns = useMemo(() => {
+    function getValueRange(key: string) {
+      let maxValue;
+      let minValue;
+      if (typeof data?.[0]?.[key] === 'number') {
+        const nums = data.map(row => row[key]) as number[];
+        if (alignPositiveNegative) {
+          // Math.max(...) fails on very large arrays (~10^6), use a custom extent
+          // function borrowed from d3-array instead.
+          [minValue, maxValue] = extent(nums.map(Math.abs));
+          minValue = 0;
+        } else {
+          [minValue, maxValue] = extent(nums);
+        }
+        return [minValue, maxValue] as ValueRange;
       }
-      return [minValue, maxValue] as ValueRange;
+      return null;
     }
-    return null;
-  }
 
-  function isActiveFilterValue(key: string, val: DataRecordValue) {
-    return filters[key]?.includes(val);
-  }
-
-  function toggleFilter(key: string, val: DataRecordValue) {
-    const updatedFilters = { ...filters };
-    if (isActiveFilterValue(key, val)) {
-      updatedFilters[key] = filters[key].filter((x: DataRecordValue) => x !== val);
-    } else {
-      updatedFilters[key] = [...(filters[key] || []), val];
+    function isActiveFilterValue(key: string, val: DataRecordValue) {
+      return filters[key]?.includes(val);
     }
-    setFilters(updatedFilters);
-    onChangeFilter(updatedFilters);
-  }
 
-  const columns = columnsMeta.map(
-    (column, i): Column<D> => {
+    function toggleFilter(key: string, val: DataRecordValue) {
+      const updatedFilters = { ...filters };
+      if (isActiveFilterValue(key, val)) {
+        updatedFilters[key] = filters[key].filter((x: DataRecordValue) => x !== val);
+      } else {
+        updatedFilters[key] = [...(filters[key] || []), val];
+      }
+      setFilters(updatedFilters);
+      if (onChangeFilter) {
+        onChangeFilter(updatedFilters);
+      }
+    }
+
+    const getColumnConfigs = (column: DataColumnMeta, i: number): Column<D> => {
       const { key, label, dataType } = column;
       const valueRange = showCellBars && getValueRange(key);
       return {
@@ -212,8 +215,19 @@ export default function TableChart<D extends DataRecord = DataRecord>(
           };
         },
       };
-    },
-  );
+    };
+    return columnsMeta.map(getColumnConfigs);
+  }, [
+    alignPositiveNegative,
+    colorPositiveNegative,
+    columnsMeta,
+    data,
+    emitFilter,
+    filters,
+    onChangeFilter,
+    showCellBars,
+    sortDesc,
+  ]);
 
   return (
     <Styles>

@@ -26,7 +26,7 @@ import {
   getTimeFormatterForGranularity,
 } from '@superset-ui/time-format';
 
-import { TableChartProps, TableChartTransformedProps, DataType } from './types';
+import { TableChartProps, TableChartTransformedProps, DataType, DataColumnMeta } from './types';
 
 const { PERCENT_3_POINT } = NumberFormats;
 const TIME_COLUMN = '__timestamp';
@@ -51,9 +51,9 @@ function isTimeType(key: string, data: DataRecord[] = []) {
   return isTimeColumn(key) || data.some(x => x[key] instanceof Date);
 }
 
-const processDataRecords = memoizeOne(function processDataRecords(data: DataRecord[]) {
-  if (!data || !data[0] || !(TIME_COLUMN in data[0])) {
-    return data;
+const processDataRecords = memoizeOne(function processDataRecords(data: DataRecord[] | undefined) {
+  if (!data || !data || !(TIME_COLUMN in data[0])) {
+    return data || [];
   }
   return data.map(x => {
     const time = x[TIME_COLUMN];
@@ -68,33 +68,38 @@ const processDataRecords = memoizeOne(function processDataRecords(data: DataReco
   });
 });
 
-export default function transformProps(chartProps: TableChartProps): TableChartTransformedProps {
-  const {
-    height,
-    width,
-    datasource,
-    formData,
-    queryData,
-    initialValues: filters = {},
-    hooks: { onAddFilter: onChangeFilter = () => {} },
-  } = chartProps;
+const isEqualArray = <T extends unknown[] | undefined | null>(arrA: T, arrB: T) => {
+  return (
+    arrA === arrB ||
+    (!arrA && !arrB) ||
+    (arrA && arrB && arrA.length === arrB.length && arrA.every((x, i) => x === arrB[i]))
+  );
+};
 
-  const {
-    alignPn: alignPositiveNegative = true,
-    colorPn: colorPositiveNegative = true,
-    showCellBars = true,
-    includeSearch = false,
-    pageLength: pageSize = 0,
-    metrics: metrics_ = [],
-    percentMetrics: percentMetrics_ = [],
-    tableTimestampFormat,
-    tableFilter,
-    timeGrainSqla: granularity,
-    orderDesc: sortDesc = false,
-  } = formData;
-  const { columnFormats, verboseMap } = datasource;
-  const { records = [], columns: columns_ = [] } = queryData.data || { records: [], columns: [] };
+const isEqualColumns = <T extends TableChartProps[]>(propsA: T, propsB: T) => {
+  const a = propsA[0];
+  const b = propsB[0];
+  return (
+    a.datasource.columnFormats === b.datasource.columnFormats &&
+    a.datasource.verboseMap === b.datasource.verboseMap &&
+    a.formData.tableTimestampFormat === b.formData.tableTimestampFormat &&
+    a.formData.timeGrainSqla === b.formData.timeGrainSqla &&
+    isEqualArray(a.formData.metrics, b.formData.metrics) &&
+    isEqualArray(a.queryData?.data?.columns, b.queryData?.data?.columns)
+  );
+};
 
+const processColumns = memoizeOne(function processColumns(props: TableChartProps) {
+  const {
+    datasource: { columnFormats, verboseMap },
+    formData: {
+      tableTimestampFormat,
+      timeGrainSqla: granularity,
+      metrics: metrics_,
+      percentMetrics: percentMetrics_,
+    },
+    queryData: { data: { records, columns: columns_ } = {} } = {},
+  } = props;
   // convert `metrics` and `percentMetrics` to the key names in `data.records`
   const metrics = (metrics_ ?? []).map(getMetricIdentifier);
   const percentMetrics = (percentMetrics_ ?? [])
@@ -103,9 +108,8 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
     .map((x: string) => `%${x}`);
   const metricsSet = new Set(metrics);
   const percentMetricsSet = new Set(percentMetrics);
-  const data = processDataRecords(records);
 
-  const columns = columns_.map((key: string) => {
+  const columns: DataColumnMeta[] = (columns_ || []).map((key: string) => {
     let label = verboseMap?.[key] || key;
     if (label[0] === '%' && label[1] !== ' ') {
       // add a " " after "%" for percent metric labels
@@ -140,6 +144,50 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
       formatter,
     };
   });
+  return [
+    metrics,
+    percentMetrics,
+    columns,
+  ] as [typeof metrics, typeof percentMetrics, typeof columns];
+}, isEqualColumns);
+
+const getDefaultPageSize = (
+  pageSize: number | string | null | undefined,
+  numRecords: number,
+  numColumns: number,
+) => {
+  if (typeof pageSize === 'number') {
+    return pageSize || 0;
+  }
+  if (typeof pageSize === 'string') {
+    return Number(pageSize) || 0;
+  }
+  // when pageSize not set, automatically add pagination if too many records
+  return numRecords * numColumns > 10000 ? 200 : 0;
+};
+
+export default function transformProps(chartProps: TableChartProps): TableChartTransformedProps {
+  const {
+    height,
+    width,
+    formData,
+    queryData,
+    initialValues: filters = {},
+    hooks: { onAddFilter: onChangeFilter },
+  } = chartProps;
+
+  const {
+    alignPn: alignPositiveNegative = true,
+    colorPn: colorPositiveNegative = true,
+    showCellBars = true,
+    includeSearch = false,
+    pageLength: pageSize = 0,
+    tableFilter,
+    orderDesc: sortDesc = false,
+  } = formData;
+
+  const data = processDataRecords(queryData?.data?.records);
+  const [metrics, percentMetrics, columns] = processColumns(chartProps);
 
   return {
     height,
@@ -153,7 +201,7 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
     showCellBars,
     sortDesc,
     includeSearch,
-    pageSize: typeof pageSize === 'string' ? Number(pageSize) || 0 : pageSize,
+    pageSize: getDefaultPageSize(pageSize, data.length, columns.length),
     filters,
     emitFilter: tableFilter === true,
     onChangeFilter,

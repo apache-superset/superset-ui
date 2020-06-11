@@ -45,7 +45,7 @@ export interface TableChartFormData {
   alignPn?: boolean;
   colorPn?: boolean;
   includeSearch?: boolean;
-  pageLength?: string | number;
+  pageLength?: string | number | null; // null means auto-paginate
   metrics?: QueryFormDataMetric[] | null;
   percentMetrics?: QueryFormDataMetric[] | null;
   orderDesc?: boolean;

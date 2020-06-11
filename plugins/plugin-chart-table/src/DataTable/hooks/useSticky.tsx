@@ -46,28 +46,29 @@ type ColGroup = ReactElementWithChildren<'colgroup', Col>;
 
 export type Table = ReactElementWithChildren<'table', (Thead | Tbody | ColGroup)[]>;
 export type TableRenderer = () => Table;
-export type GetTableSize = () => Partial<StickyElementSize> | undefined;
-export type SetStickyElementSize = (size?: StickyElementSize) => void;
+export type GetTableSize = () => Partial<StickyState> | undefined;
+export type SetStickyState = (size?: StickyState) => void;
 
 export enum ReducerActions {
   init = 'init', // this is from global reducer
-  setStickyElementSize = 'setStickyElementSize',
+  setStickyState = 'setStickyState',
 }
 
 export type ReducerAction<T extends string, P extends Record<string, unknown>> = P & { type: T };
 
 export type ColumnWidths = number[];
 
-export interface StickyElementSize {
+export interface StickyState {
   width?: number; // maximum full table width
   height?: number; // maximum full table height
   realHeight?: number; // actual table viewport height (header + scrollable area)
   bodyHeight?: number; // scrollable area height
   tableHeight?: number; // the full table height
-  setStickyElementSize?: SetStickyElementSize;
   columnWidths?: ColumnWidths;
   hasHorizontalScroll?: boolean;
   hasVerticalScroll?: boolean;
+  rendering?: boolean;
+  setStickyState?: SetStickyState;
 }
 
 export interface UseStickyTableOptions {
@@ -78,11 +79,11 @@ export interface UseStickyInstanceProps {
   // manipulate DOMs in <table> to make the header sticky
   wrapStickyTable: (renderer: TableRenderer) => ReactNode;
   // update or recompute the sticky table size
-  setStickyElementSize: SetStickyElementSize;
+  setStickyState: SetStickyState;
 }
 
 export type UseStickyState = {
-  sticky: StickyElementSize;
+  sticky: StickyState;
 };
 
 const sum = (a: number, b: number) => a + b;
@@ -121,18 +122,15 @@ function StickyWrap({
   sticky = {},
   width: maxWidth,
   height: maxHeight,
-  renderTable,
-  setStickyElementSize,
+  children: table,
+  setStickyState,
 }: {
   width: number;
   height: number;
-  renderTable: TableRenderer;
-  setStickyElementSize: SetStickyElementSize;
-  sticky?: StickyElementSize; // current sticky element sizes
+  setStickyState: SetStickyState;
+  children: Table;
+  sticky?: StickyState; // current sticky element sizes
 }) {
-  const table: Table = useMemo(() => {
-    return renderTable();
-  }, [renderTable]);
   if (!table || table.type !== 'table') {
     throw new Error('<StickyWrap> must have only one <table> element as child');
   }
@@ -159,12 +157,13 @@ function StickyWrap({
   const theadRef = useRef<HTMLTableSectionElement>(null); // original thead for layout computation
   const scrollHeaderRef = useRef<HTMLDivElement>(null); // fixed header
   const scrollBodyRef = useRef<HTMLDivElement>(null); // main body
+
   const { bodyHeight, columnWidths } = sticky;
   const needSizer =
     !columnWidths ||
     sticky.width !== maxWidth ||
     sticky.height !== maxHeight ||
-    sticky.setStickyElementSize !== setStickyElementSize;
+    sticky.setStickyState !== setStickyState;
   const scrollBarSize = getScrollBarSize();
 
   // update scrollable area and header column sizes when mounted
@@ -188,10 +187,10 @@ function StickyWrap({
         maxHeight,
         hasHorizontalScroll ? fullTableHeight + scrollBarSize : fullTableHeight,
       );
-      setStickyElementSize({
+      setStickyState({
         hasVerticalScroll,
         hasHorizontalScroll,
-        setStickyElementSize,
+        setStickyState,
         width: maxWidth,
         height: maxHeight,
         realHeight,
@@ -200,7 +199,7 @@ function StickyWrap({
         columnWidths: widths,
       });
     }
-  }, [maxWidth, maxHeight, setStickyElementSize, scrollBarSize]);
+  }, [maxWidth, maxHeight, setStickyState, scrollBarSize]);
 
   let sizerTable: ReactElement | undefined;
   let headerTable: ReactElement | undefined;
@@ -316,15 +315,16 @@ function useInstance<D extends object>(instance: TableInstance<D>) {
   const {
     dispatch,
     state: { sticky },
+    data,
     page,
     rows,
     getTableSize = () => undefined,
   } = instance;
 
-  const setStickyElementSize = useCallback(
-    (size?: Partial<StickyElementSize>) => {
+  const setStickyState = useCallback(
+    (size?: Partial<StickyState>) => {
       dispatch({
-        type: ReducerActions.setStickyElementSize,
+        type: ReducerActions.setStickyState,
         size,
       });
     },
@@ -336,25 +336,29 @@ function useInstance<D extends object>(instance: TableInstance<D>) {
   const useStickyWrap = (renderer: TableRenderer) => {
     const { width, height } = useMountedMemo(getTableSize, [getTableSize]) || sticky;
     // only change of data should trigger re-render
-    const renderTable = useCallback(renderer, [page, rows]);
+    const table = useMemo(renderer, [page, rows]);
+
+    useLayoutEffect(() => {
+      if (!width || !height) {
+        setStickyState();
+      }
+    }, [width, height]);
+
     if (!width || !height) {
       return null;
     }
+    if (data.length === 0) {
+      return table;
+    }
     return (
-      <StickyWrap
-        width={width}
-        height={height}
-        sticky={sticky}
-        setStickyElementSize={setStickyElementSize}
-        renderTable={renderTable}
-      />
+      <StickyWrap width={width} height={height} sticky={sticky} setStickyState={setStickyState}>
+        {table}
+      </StickyWrap>
     );
   };
 
-  useLayoutEffect(setStickyElementSize, []);
-
   Object.assign(instance, {
-    setStickyElementSize,
+    setStickyState,
     wrapStickyTable: useStickyWrap,
   });
 }
@@ -362,14 +366,14 @@ function useInstance<D extends object>(instance: TableInstance<D>) {
 export default function useSticky<D extends object>(hooks: Hooks<D>) {
   hooks.useInstance.push(useInstance);
   hooks.stateReducers.push((newState, action_, previousState, instance) => {
-    const action = action_ as ReducerAction<ReducerActions, { size: StickyElementSize }>;
+    const action = action_ as ReducerAction<ReducerActions, { size: StickyState }>;
     if (action.type === ReducerActions.init) {
       return {
         ...newState,
         sticky: newState.sticky || {},
       };
     }
-    if (action.type === ReducerActions.setStickyElementSize) {
+    if (action.type === ReducerActions.setStickyState) {
       const { size } = action;
       if (!size) {
         return { ...newState };

@@ -63,7 +63,7 @@ export default function DataTable<D extends object>({
   height: initialHeight = 300,
   pageSize: initialPageSize = 0,
   initialState: initialState_ = {},
-  pageSizeOptions = [10, 25, 40, 50, 75, 100, 150, 200],
+  pageSizeOptions = [10, 25, 50, 100, 200],
   maxPageItemCount = 9,
   sticky: doSticky,
   searchInput = true,
@@ -80,7 +80,8 @@ export default function DataTable<D extends object>({
     doSticky ? useSticky : [],
     hooks || [],
   ].flat();
-  const sortByRef = useRef([]);
+  const sortByRef = useRef([]); // cache initial `sortby` so sorting doesn't trigger page reset
+  const pageSizeRef = useRef([initialPageSize, data.length]);
   const hasPagination = initialPageSize > 0 && data.length > 0; // pageSize == 0 means no pagination
   const hasGlobalControl = hasPagination || !!searchInput;
   const initialState = {
@@ -90,7 +91,6 @@ export default function DataTable<D extends object>({
     sortBy: sortByRef.current,
     pageSize: initialPageSize > 0 ? initialPageSize : data.length || 10,
   };
-  const initialPageSizeRef = useRef(initialState.pageSize);
 
   const defaultWrapperRef = useRef<HTMLDivElement>(null);
   const globalControlRef = useRef<HTMLDivElement>(null);
@@ -152,7 +152,10 @@ export default function DataTable<D extends object>({
   );
   // make setPageSize accept 0
   const setPageSize = (size: number) => {
-    setPageSize_(size === 0 ? data.length || 10 : size);
+    // keep the original size if data is empty
+    if (size || data.length !== 0) {
+      setPageSize_(size === 0 ? data.length : size);
+    }
   };
 
   const renderTable = () => (
@@ -220,8 +223,13 @@ export default function DataTable<D extends object>({
   );
 
   // force upate the pageSize when it's been update from the initial state
-  if (initialPageSizeRef.current !== initialPageSize) {
-    initialPageSizeRef.current = initialPageSize;
+  if (
+    pageSizeRef.current[0] !== initialPageSize ||
+    // when initialPageSize stays as zero, but total number of records changed,
+    // we'd also need to update page size
+    (initialPageSize === 0 && pageSizeRef.current[1] !== data.length)
+  ) {
+    pageSizeRef.current = [initialPageSize, data.length];
     setPageSize(initialPageSize);
   }
 

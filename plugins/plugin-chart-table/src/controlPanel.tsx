@@ -26,17 +26,7 @@ import {
 import { validateNonEmpty } from '@superset-ui/validator';
 import { smartDateFormatter } from '@superset-ui/time-format';
 
-export const PAGE_SIZE_OPTIONS = formatSelectOptions<number>([
-  [0, t('All')],
-  10,
-  25,
-  40,
-  50,
-  75,
-  100,
-  150,
-  200,
-]);
+export const PAGE_SIZE_OPTIONS = formatSelectOptions<number>([[0, t('All')], 10, 20, 50, 100, 200]);
 
 export default {
   controlPanelSections: [
@@ -172,9 +162,11 @@ export default {
               freeForm: true,
               renderTrigger: true,
               label: t('Page Length'),
-              default: 0,
+              default: null,
               choices: PAGE_SIZE_OPTIONS,
-              description: t('Rows per page, 0 means no pagination'),
+              description: t(
+                'Rows per page, 0 means no pagination. Leave empty to automatically add pagination for large tables.',
+              ),
             },
           },
           null,
