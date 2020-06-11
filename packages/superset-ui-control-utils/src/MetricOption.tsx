@@ -84,5 +84,3 @@ export function MetricOption({
     </div>
   );
 }
-MetricOption.propTypes = propTypes;
-MetricOption.defaultProps = defaultProps;
