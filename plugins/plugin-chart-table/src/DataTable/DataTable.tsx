@@ -16,14 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, {
-  useState,
-  useCallback,
-  useRef,
-  ReactNode,
-  HTMLProps,
-  MutableRefObject,
-} from 'react';
+import React, { useCallback, useRef, ReactNode, HTMLProps, MutableRefObject } from 'react';
 import {
   useTable,
   usePagination,
@@ -32,13 +25,12 @@ import {
   PluginHook,
   TableCellProps,
   TableOptions,
-  useMountedLayoutEffect,
   FilterType,
   IdType,
   Row,
 } from 'react-table';
 import matchSorter from 'match-sorter';
-import GlobalFilter from './components/GlobalFilter';
+import GlobalFilter, { GlobalFilterProps } from './components/GlobalFilter';
 import SelectPageSize, { SizeOption } from './components/SelectPageSize';
 import SimplePagination from './components/Pagination';
 import useSticky from './hooks/useSticky';
@@ -46,7 +38,7 @@ import useColumnCellProps from './hooks/useColumnCellProps';
 
 export interface DataTableProps<D extends object> extends TableOptions<D> {
   tableClassName?: string;
-  showSearchInput?: boolean;
+  searchInput?: boolean | GlobalFilterProps<D>['searchInput'];
   pageSizeOptions?: SizeOption[]; // available page size options
   maxPageItemCount?: number;
   hooks?: PluginHook<D>[]; // any additional hooks
@@ -74,7 +66,7 @@ export default function DataTable<D extends object>({
   pageSizeOptions = [10, 25, 40, 50, 75, 100, 150, 200],
   maxPageItemCount = 9,
   sticky: doSticky,
-  showSearchInput,
+  searchInput = true,
   noResultsText = 'No data found',
   hooks,
   wrapperRef: userWrapperRef,
@@ -88,17 +80,17 @@ export default function DataTable<D extends object>({
     doSticky ? useSticky : [],
     hooks || [],
   ].flat();
-  const [showAll, setShowAll] = useState(initialPageSize === 0);
   const sortByRef = useRef([]);
-  const hasPagination = initialPageSize > 0; // pageSize == 0 means no pagination
-  const hasGlobalControl = hasPagination || showSearchInput;
+  const hasPagination = initialPageSize > 0 && data.length > 0; // pageSize == 0 means no pagination
+  const hasGlobalControl = hasPagination || !!searchInput;
   const initialState = {
     ...initialState_,
     // zero length means all pages, the `usePagination` plugin does not
     // understand pageSize = 0
     sortBy: sortByRef.current,
-    pageSize: hasPagination ? initialPageSize : data.length,
+    pageSize: initialPageSize > 0 ? initialPageSize : data.length || 10,
   };
+  const initialPageSizeRef = useRef(initialState.pageSize);
 
   const defaultWrapperRef = useRef<HTMLDivElement>(null);
   const globalControlRef = useRef<HTMLDivElement>(null);
@@ -128,11 +120,11 @@ export default function DataTable<D extends object>({
       };
       return matchSorter(rows, filterValue, {
         keys: [...columnIds, joinedString],
+        threshold: matchSorter.rankings.ACRONYM,
       }) as typeof rows;
     },
     [],
   );
-  defaultGlobalFilter.autoRemove = val => !val;
 
   const {
     getTableProps,
@@ -144,7 +136,7 @@ export default function DataTable<D extends object>({
     gotoPage,
     preGlobalFilteredRows,
     setGlobalFilter,
-    setPageSize,
+    setPageSize: setPageSize_,
     wrapStickyTable,
     state: { pageIndex, pageSize, globalFilter: filterValue, sticky = {} },
   } = useTable<D>(
@@ -158,17 +150,10 @@ export default function DataTable<D extends object>({
     },
     ...tableHooks,
   );
-
-  useMountedLayoutEffect(() => {
-    // force upate the pageSize when it's been update from the initial state
-    setPageSize(initialState.pageSize);
-  }, [initialState.pageSize]);
-
-  useMountedLayoutEffect(() => {
-    if (showAll) {
-      setPageSize(data.length);
-    }
-  }, [data.length]);
+  // make setPageSize accept 0
+  const setPageSize = (size: number) => {
+    setPageSize_(size === 0 ? data.length || 10 : size);
+  };
 
   const renderTable = () => (
     <table {...getTableProps({ className: tableClassName })}>
@@ -234,6 +219,12 @@ export default function DataTable<D extends object>({
     </table>
   );
 
+  // force upate the pageSize when it's been update from the initial state
+  if (initialPageSizeRef.current !== initialPageSize) {
+    initialPageSizeRef.current = initialPageSize;
+    setPageSize(initialPageSize);
+  }
+
   return (
     <div ref={wrapperRef} style={{ width: initialWidth, height: initialHeight }}>
       {hasGlobalControl ? (
@@ -245,16 +236,14 @@ export default function DataTable<D extends object>({
                   total={data.length}
                   sizeOptions={pageSizeOptions}
                   currentSize={pageSize}
-                  onChange={size => {
-                    setShowAll(size === 0);
-                    setPageSize(size === 0 ? data.length : size);
-                  }}
+                  onChange={setPageSize}
                 />
               ) : null}
             </div>
-            {showSearchInput ? (
+            {searchInput ? (
               <div className="col-sm-6">
                 <GlobalFilter<D>
+                  searchInput={typeof searchInput === 'boolean' ? undefined : searchInput}
                   preGlobalFilteredRows={preGlobalFilteredRows}
                   setGlobalFilter={setGlobalFilter}
                   filterValue={filterValue}

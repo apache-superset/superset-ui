@@ -221,7 +221,7 @@ function StickyWrap({
     );
   }
 
-  // reuse column widths only when removing columns
+  // reuse previously column widths, will be updated by `useLayoutEffect` above
   const colWidths = columnWidths?.slice(0, columnCount);
   if (colWidths && bodyHeight) {
     const tableStyle: CSSProperties = { tableLayout: 'fixed' };
@@ -233,7 +233,7 @@ function StickyWrap({
     const bodyColgroup = <colgroup>{bodyCols}</colgroup>;
 
     // header columns do not have vertical scroll bars,
-    // use the last column to absorb scroll bar width
+    // so we add scroll bar size to the last column
     const headerColgroup =
       sticky.hasVerticalScroll && scrollBarSize ? (
         <colgroup>
@@ -336,8 +336,7 @@ function useInstance<D extends object>(instance: TableInstance<D>) {
   const useStickyWrap = (renderer: TableRenderer) => {
     const { width, height } = useMountedMemo(getTableSize, [getTableSize]) || sticky;
     // only change of data should trigger re-render
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const renderTable = useMemo(() => renderer, [page, rows]);
+    const renderTable = useCallback(renderer, [page, rows]);
     if (!width || !height) {
       return null;
     }

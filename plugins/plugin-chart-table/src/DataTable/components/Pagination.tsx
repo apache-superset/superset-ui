@@ -18,7 +18,7 @@
  */
 import React, { CSSProperties } from 'react';
 
-interface PaginationProps {
+export interface PaginationProps {
   pageCount: number; // number of pages
   currentPage?: number; // index of current page, zero-based
   maxPageItemCount?: number;
@@ -35,7 +35,7 @@ const MINIMAL_PAGE_ITEM_COUNT = 7;
  *   - Always include first and last page
  *   - Add ellipsis if needed
  */
-function generatePageItems(total: number, current: number, width: number) {
+export function generatePageItems(total: number, current: number, width: number) {
   if (width < MINIMAL_PAGE_ITEM_COUNT) {
     throw new Error(`Must allow at least ${MINIMAL_PAGE_ITEM_COUNT} page items`);
   }

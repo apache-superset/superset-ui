@@ -23,13 +23,11 @@ import { t } from '@superset-ui/translation';
 import { DataRecordValue, DataRecord } from '@superset-ui/chart';
 
 import { TableChartTransformedProps, DataType } from './types';
-import DataTable from './DataTable';
+import DataTable, { DataTableProps, SearchInputProps } from './DataTable';
 import Styles from './Styles';
 import formatValue from './utils/formatValue';
 import extent from './utils/extent';
-
 import { PAGE_SIZE_OPTIONS } from './controlPanel';
-import { DataTableProps } from './DataTable/DataTable';
 
 type ValueRange = [number, number];
 
@@ -44,15 +42,6 @@ function getSortTypeByDataType(dataType: DataType): DefaultSortTypes {
     return 'alphanumeric';
   }
   return 'basic';
-}
-
-function SortIcon({ column }: { column: ColumnInstance }) {
-  const { isSorted, isSortedDesc } = column;
-  let sortIcon = <FaSort />;
-  if (isSorted) {
-    sortIcon = isSortedDesc ? <FaSortDesc /> : <FaSortAsc />;
-  }
-  return sortIcon;
 }
 
 /**
@@ -91,6 +80,29 @@ function cellBar({
     `linear-gradient(to right, rgba(0,0,0,0.01), rgba(0,0,0,0.001) ${perc1}%, ` +
     `rgba(${r},0,0,0.2) ${perc1}%, rgba(${r},0,0,0.2) ${perc1 + perc2}%, ` +
     `rgba(0,0,0,0.01) ${perc1 + perc2}%, rgba(0,0,0,0.001) 100%)`
+  );
+}
+
+function SortIcon({ column }: { column: ColumnInstance }) {
+  const { isSorted, isSortedDesc } = column;
+  let sortIcon = <FaSort />;
+  if (isSorted) {
+    sortIcon = isSortedDesc ? <FaSortDesc /> : <FaSortAsc />;
+  }
+  return sortIcon;
+}
+
+function SearchInput({ count, value, onChange }: SearchInputProps) {
+  return (
+    <span className="dt-global-filter">
+      {t('Search')}{' '}
+      <input
+        className="form-control input-sm"
+        placeholder={t('%s records...', count)}
+        value={value}
+        onChange={onChange}
+      />
+    </span>
   );
 }
 
@@ -209,7 +221,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         columns={columns}
         data={data}
         tableClassName="table table-striped table-condensed"
-        showSearchInput={includeSearch}
+        searchInput={includeSearch && SearchInput}
         pageSize={pageSize}
         pageSizeOptions={pageSizeOptions}
         width={width}
