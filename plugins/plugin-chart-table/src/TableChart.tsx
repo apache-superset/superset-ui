@@ -184,7 +184,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
             title: typeof value === 'number' ? String(value) : undefined,
             dangerouslySetInnerHTML: isHtml ? { __html: text } : undefined,
             cellContent: text,
-            onClick: valueRange ? undefined : () => toggleFilter(key, value),
+            onClick: emitFilter && !valueRange ? () => toggleFilter(key, value) : undefined,
             className,
             style: {
               ...cellProps.style,
@@ -210,8 +210,6 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         data={data}
         tableClassName="table table-striped table-condensed"
         showSearchInput={includeSearch}
-        // make `width` and `height` state so when resizing the chart
-        // does not rerender
         pageSize={pageSize}
         pageSizeOptions={pageSizeOptions}
         width={width}

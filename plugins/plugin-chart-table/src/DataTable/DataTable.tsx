@@ -16,7 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState, useCallback, useRef, ReactNode, HTMLProps } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  ReactNode,
+  HTMLProps,
+  MutableRefObject,
+} from 'react';
 import {
   useTable,
   usePagination,
@@ -48,6 +55,7 @@ export interface DataTableProps<D extends object> extends TableOptions<D> {
   pageSize?: number;
   noResultsText?: string | ((filterString: string) => ReactNode);
   sticky?: boolean;
+  wrapperRef?: MutableRefObject<HTMLDivElement>;
 }
 
 export interface RenderHTMLCellProps extends HTMLProps<HTMLTableCellElement> {
@@ -69,7 +77,7 @@ export default function DataTable<D extends object>({
   showSearchInput,
   noResultsText = 'No data found',
   hooks,
-  globalFilter: userGlobalFilterFn,
+  wrapperRef: userWrapperRef,
   ...moreUseTableOptions
 }: DataTableProps<D>) {
   const tableHooks: PluginHook<D>[] = [
@@ -92,21 +100,25 @@ export default function DataTable<D extends object>({
     pageSize: hasPagination ? initialPageSize : data.length,
   };
 
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const defaultWrapperRef = useRef<HTMLDivElement>(null);
   const globalControlRef = useRef<HTMLDivElement>(null);
   const paginationRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = userWrapperRef || defaultWrapperRef;
 
   const defaultGetTableSize = useCallback(() => {
     if (wrapperRef.current) {
-      const width = wrapperRef.current.clientWidth || Number(initialWidth);
+      // `initialWidth` and `initialHeight` could be also parameters like `100%`
+      // `Number` reaturns `NaN` on them, then we fallback to computed size
+      const width = Number(initialWidth) || wrapperRef.current.clientWidth;
       const height =
-        (wrapperRef.current.clientHeight || Number(initialHeight)) -
+        (Number(initialHeight) || wrapperRef.current.clientHeight) -
         (globalControlRef.current?.clientHeight || 0) -
         (paginationRef.current?.clientHeight || 0);
       return { width, height };
     }
     return undefined;
-  }, [initialHeight, initialWidth]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialHeight, initialWidth, wrapperRef, hasPagination, hasGlobalControl]);
 
   const defaultGlobalFilter: FilterType<D> = useCallback(
     (rows: Row<D>[], columnIds: IdType<D>[], filterValue: string) => {
