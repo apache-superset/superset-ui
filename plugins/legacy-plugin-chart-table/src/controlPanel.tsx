@@ -22,10 +22,11 @@ import {
   formatSelectOptions,
   D3_TIME_FORMAT_OPTIONS,
   ColumnOption,
+  ControlPanelConfig,
 } from '@superset-ui/control-utils';
 import { validateNonEmpty } from '@superset-ui/validator';
 
-export default {
+const config: ControlPanelConfig = {
   controlPanelSections: [
     {
       label: t('GROUP BY'),
@@ -240,3 +241,5 @@ export default {
     },
   },
 };
+
+export default config;

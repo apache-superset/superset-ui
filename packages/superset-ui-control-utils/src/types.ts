@@ -17,10 +17,18 @@
  * under the License.
  */
 /* eslint-disable camelcase */
-import { ReactNode, ReactText } from 'react';
+import React, { ReactNode, ReactText } from 'react';
+import sharedControls from './shared-controls';
 
-export type AnyDict = Record<string, unknown>;
+type AnyDict = Record<string, unknown>;
+interface Action {
+  type: string;
+}
+interface AnyAction extends Action, AnyDict {}
 
+/** ----------------------------------------------
+ * Input data/props while rendering
+ * ---------------------------------------------*/
 export interface ColumnMeta extends AnyDict {
   column_name: string;
   groupby?: string;
@@ -38,6 +46,7 @@ export interface DatasourceMeta {
   type: unknown;
   main_dttm_col: unknown;
   time_grain_sqla: unknown;
+  order_by_choices?: [] | null;
 }
 
 export interface ControlPanelState {
@@ -50,12 +59,6 @@ export interface ControlPanelState {
     };
   };
 }
-
-export interface Action {
-  type: string;
-}
-
-export interface AnyAction extends Action, AnyDict {}
 
 /**
  * The action dispather will call Redux `dispatch` internally and return what's
@@ -92,13 +95,43 @@ export interface ControlPanelsContainerProps extends AnyDict {
   form_data: AnyDict;
 }
 
-/**
- * Meta data for a formData control
- */
+/** ----------------------------------------------
+ * Config for a chart Control
+ * ---------------------------------------------*/
+
+// Ref: superset-frontend/src/explore/components/controls/index.js
+export type InternalControlType =
+  | 'AnnotationLayerControl'
+  | 'BoundsControl'
+  | 'CheckboxControl'
+  | 'CollectionControl'
+  | 'ColorMapControl'
+  | 'ColorPickerControl'
+  | 'ColorSchemeControl'
+  | 'DatasourceControl'
+  | 'DateFilterControl'
+  | 'FixedOrMetricControl'
+  | 'HiddenControl'
+  | 'SelectAsyncControl'
+  | 'SelectControl'
+  | 'SliderControl'
+  | 'SpatialControl'
+  | 'TextAreaControl'
+  | 'TextControl'
+  | 'TimeSeriesColumnControl'
+  | 'ViewportControl'
+  | 'VizTypeControl'
+  | 'MetricsControl'
+  | 'AdhocFilterControl'
+  | 'FilterBoxItemControl'
+  | 'MetricsControlVerifiedOptions'
+  | 'SelectControlVerifiedOptions'
+  | 'AdhocFilterControlVerifiedOptions';
+
 export interface ControlConfig {
-  type: string;
-  label?: string | null;
-  description?: string | null;
+  type: InternalControlType | React.ComponentType;
+  label?: ReactNode;
+  description?: ReactNode;
   // override control panel state props
   mapStateToProps?: (
     state: ControlPanelState,
@@ -110,6 +143,9 @@ export interface ControlConfig {
   queryField?: string;
 }
 
+/** --------------------------------------------
+ * Additional Config for specific control Types
+ * --------------------------------------------- */
 type SelectOption = AnyDict | string | [ReactText, ReactNode];
 
 export interface SelectControlConfig<T extends SelectOption = AnyDict> extends ControlConfig {
@@ -119,3 +155,50 @@ export interface SelectControlConfig<T extends SelectOption = AnyDict> extends C
 export interface ControlConfigMapping {
   [key: string]: ControlConfig;
 }
+
+export type SharedControlAlias = keyof typeof sharedControls;
+
+export type SharedSectionAlias =
+  | 'annotations'
+  | 'colorScheme'
+  | 'datasourceAndVizType'
+  | 'druidTimeSeries'
+  | 'sqlaTimeSeries'
+  | 'NVD3TimeSeries';
+
+export interface ControlItem {
+  name: SharedControlAlias;
+  config: Partial<ControlConfig>;
+}
+
+export interface CustomControlItem {
+  name: string;
+  config: ControlConfig;
+}
+
+export type ControlSetItem = SharedControlAlias | ControlItem | CustomControlItem | null;
+export type ControlSetRow = ControlSetItem[];
+
+// Ref:
+//  - superset-frontend/src/explore/components/ControlPanelsContainer.jsx
+//  - superset-frontend/src/explore/components/ControlPanelSection.jsx
+export interface ControlPanelSectionConfig {
+  label: ReactNode;
+  description?: ReactNode;
+  expanded?: boolean;
+  controlSetRows: ControlSetRow[];
+}
+
+export interface ControlPanelConfig {
+  controlPanelSections: ControlPanelSectionConfig[];
+  controlOverrides?: ControlOverrides;
+  sectionOverrides?: SectionOverrides;
+}
+
+export type ControlOverrides = {
+  [P in SharedControlAlias]?: Partial<ControlConfig>;
+};
+
+export type SectionOverrides = {
+  [P in SharedSectionAlias]?: Partial<ControlPanelSectionConfig>;
+};
