@@ -1,3 +1,5 @@
+/* eslint-disable react/forbid-prop-types */
+/* eslint-disable class-methods-use-this */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -30,27 +32,27 @@ import { formatNumber } from '@superset-ui/number-format';
 import { getTextDimension } from '@superset-ui/dimension';
 
 const propTypes = {
-  className: PropTypes.string,
-  width: PropTypes.number,
-  height: PropTypes.number,
-  data: PropTypes.array.isRequired,
   ariaLabel: PropTypes.string,
+  className: PropTypes.string,
+  data: PropTypes.array.isRequired,
+  height: PropTypes.number,
   numberFormat: PropTypes.string,
-  yAxisBounds: PropTypes.array,
-  showYAxis: PropTypes.bool,
   renderTooltip: PropTypes.func,
+  showYAxis: PropTypes.bool,
+  width: PropTypes.number,
+  yAxisBounds: PropTypes.array,
 };
 const defaultProps = {
-  className: '',
-  width: 300,
-  height: 50,
   ariaLabel: '',
+  className: '',
+  height: 50,
   numberFormat: undefined,
-  yAxisBounds: [null, null],
-  showYAxis: false,
   renderTooltip() {
     return <div />;
   },
+  showYAxis: false,
+  width: 300,
+  yAxisBounds: [null, null],
 };
 
 const MARGIN = {
