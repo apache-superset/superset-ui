@@ -11,6 +11,9 @@ import { SliceIdAndOrFormData } from '../../src/clients/ChartClient';
 import { LOGIN_GLOB } from '../fixtures/constants';
 import { sankeyFormData } from '../fixtures/formData';
 
+const V1_URL = 'glob:*/api/v1/chart/data';
+const LEGACY_URL = 'glob:*/superset/explore_json/';
+
 describe('ChartClient', () => {
   let chartClient: ChartClient;
 
@@ -92,7 +95,7 @@ describe('ChartClient', () => {
       getChartBuildQueryRegistry().registerValue('word_cloud', (formData: QueryFormData) =>
         buildQueryContext(formData),
       );
-      fetchMock.post('glob:*/api/v1/chart/data', {
+      fetchMock.post(V1_URL, {
         field1: 'abc',
         field2: 'def',
       });
@@ -108,6 +111,30 @@ describe('ChartClient', () => {
         field2: 'def',
       });
     });
+
+    it('returns a promise of query data for known chart type without defined buildQuery', () => {
+      getChartMetadataRegistry().registerValue(
+        'default_viz',
+        new ChartMetadata({ name: 'Default viz', thumbnail: '' }),
+      );
+
+      fetchMock.post(V1_URL, {
+        field1: 'abc',
+        field2: 'def',
+      });
+
+      expect(
+        chartClient.loadQueryData({
+          granularity: 'minute',
+          viz_type: 'default_viz',
+          datasource: '1__table',
+        }),
+      ).resolves.toEqual({
+        field1: 'abc',
+        field2: 'def',
+      });
+    });
+
     it('returns a promise that rejects for unknown chart type', () =>
       expect(
         chartClient.loadQueryData({
@@ -128,25 +155,22 @@ describe('ChartClient', () => {
         }),
       );
 
-      fetchMock.post('glob:*/api/v1/chart/data', () =>
-        Promise.reject(new Error('Unexpected all to v1 API')),
-      );
+      fetchMock.post(V1_URL, () => Promise.reject(new Error('Unexpected call to v1 API')));
 
-      fetchMock.post('glob:*/superset/explore_json/', {
+      const mockResponse = {
         field1: 'abc',
         field2: 'def',
-      });
+      };
 
-      return expect(
+      fetchMock.post(LEGACY_URL, mockResponse);
+
+      expect(
         chartClient.loadQueryData({
           granularity: 'minute',
           viz_type: 'word_cloud_legacy',
           datasource: '1__table',
         }),
-      ).resolves.toEqual({
-        field1: 'abc',
-        field2: 'def',
-      });
+      ).resolves.toEqual(mockResponse);
     });
   });
 
@@ -220,7 +244,7 @@ describe('ChartClient', () => {
         schema: 'staging',
       });
 
-      fetchMock.post('glob:*/api/v1/chart/data', {
+      fetchMock.post(V1_URL, {
         lorem: 'ipsum',
         dolor: 'sit',
         amet: true,

@@ -5,7 +5,7 @@ import {
   RequestConfig,
   SupersetClientClass,
 } from '@superset-ui/connection';
-import { QueryFormData, Datasource } from '@superset-ui/query';
+import { buildQueryContext, QueryFormData, Datasource } from '@superset-ui/query';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
 import getChartMetadataRegistry from '../registries/ChartMetadataRegistrySingleton';
 import { QueryData } from '../types/QueryResponse';
@@ -82,15 +82,33 @@ export default class ChartClient {
 
     if (metaDataRegistry.has(visType)) {
       const { useLegacyApi } = metaDataRegistry.get(visType)!;
-      const buildQuery = (await buildQueryRegistry.get(visType)) ?? (() => formData);
+      let buildQuery = await buildQueryRegistry.get(visType);
+
+      let postPayload;
+      if (useLegacyApi)
+        postPayload = {
+          // legacy endpoint doesn't support buildQuery
+          form_data: formData,
+        };
+      else
+        postPayload = {
+          // default to calling buildQueryContext with default callback
+          query_context:
+            buildQuery ??
+            (formData => {
+              buildQueryContext(formData, baseQueryObject => [
+                {
+                  ...baseQueryObject,
+                },
+              ]);
+            }),
+        };
 
       return this.client
         .post({
           headers: { 'Content-Type': 'application/json' },
           endpoint: useLegacyApi ? '/superset/explore_json/' : '/api/v1/chart/data',
-          postPayload: {
-            [useLegacyApi ? 'form_data' : 'query_context']: buildQuery(formData),
-          },
+          postPayload,
           ...options,
         } as RequestConfig)
         .then(response => {
