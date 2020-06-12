@@ -18,6 +18,7 @@
  * under the License.
  */
 import React, { ReactNode, ReactText } from 'react';
+import { QueryFormData } from '@superset-ui/query';
 import sharedControls from './shared-controls';
 
 type AnyDict = Record<string, unknown>;
@@ -50,7 +51,7 @@ export interface DatasourceMeta {
 }
 
 export interface ControlPanelState {
-  form_data: { [key: string]: unknown };
+  form_data: QueryFormData;
   datasource?: DatasourceMeta | null;
   options?: ColumnMeta[];
   controls?: {
@@ -93,7 +94,7 @@ export interface ControlPanelsContainerProps extends AnyDict {
   actions: ControlPanelActionDispathers;
   controls: ControlStateMapping;
   exportState: AnyDict;
-  form_data: AnyDict;
+  form_data: QueryFormData;
 }
 
 /** ----------------------------------------------
@@ -132,6 +133,8 @@ export type InternalControlType =
 export interface Validator {
   (value: unknown): boolean | string;
 }
+
+export type TabOverride = 'data' | boolean;
 
 /**
  * Control config specifying how chart controls appear in the control panel, all
@@ -175,7 +178,7 @@ export interface GeneralControlConfig {
     control: ControlConfig,
     actions: ControlPanelActionDispathers,
   ) => ExtraControlProps;
-  tabOverride?: 'data' | boolean;
+  tabOverride?: TabOverride;
   visibility?: (props: ControlPanelsContainerProps) => boolean;
   [key: string]: unknown;
 }
@@ -235,7 +238,7 @@ export interface CustomControlItem {
   config: ControlConfig;
 }
 
-export type ControlSetItem = SharedControlAlias | ControlItem | CustomControlItem | null;
+export type ControlSetItem = SharedControlAlias | ControlItem | CustomControlItem | ReactNode;
 export type ControlSetRow = ControlSetItem[];
 
 // Ref:
@@ -243,9 +246,10 @@ export type ControlSetRow = ControlSetItem[];
 //  - superset-frontend/src/explore/components/ControlPanelSection.jsx
 export interface ControlPanelSectionConfig {
   label: ReactNode;
+  controlSetRows: ControlSetRow[];
   description?: ReactNode;
   expanded?: boolean;
-  controlSetRows: ControlSetRow[];
+  tabOverride?: TabOverride;
 }
 
 export interface ControlPanelConfig {
