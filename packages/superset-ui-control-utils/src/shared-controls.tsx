@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,8 +18,6 @@
  * under the License.
  */
 
-/* eslint-disable camelcase */
-
 /**
  * This file exports all controls available for use in chart plugins internal to Superset.
  * It is not recommended to use the controls here for any third-party plugins.
@@ -32,33 +31,7 @@
  *
  * While the keys defined in the control itself get passed to the controlType as props,
  * here's a list of the keys that are common to all controls, and as a result define the
- * control interface:
- *
- * - type: the control type, referencing a React component of the same name
- * - label: the label as shown in the control's header
- * - description: shown in the info tooltip of the control's header
- * - default: the default value when opening a new chart, or changing visualization type
- * - renderTrigger: a bool that defines whether the visualization should be re-rendered
-     when changed. This should `true` for controls that only affect the rendering (client side)
-     and don't affect the query or backend data processing as those require to re run a query
-     and fetch the data
- * - validators: an array of functions that will receive the value of the component and
-     should return error messages when the value is not valid. The error message gets
-     bubbled up to the control header, section header and query panel header.
- * - warning: text shown as a tooltip on a warning icon in the control's header
- * - error: text shown as a tooltip on a error icon in the control's header
- * - mapStateToProps: a function that receives the App's state and return an object of k/v
-     to overwrite configuration at runtime. This is useful to alter a component based on
-     anything external to it, like another control's value. For instance it's possible to
-     show a warning based on the value of another component. It's also possible to bind
-     arbitrary data from the redux store to the component this way.
- * - tabOverride: set to 'data' if you want to force a renderTrigger to show up on the `Data`
-     tab, otherwise `renderTrigger: true` components will show up on the `Style` tab.
- *
- * Note that the keys defined in controls in this file that are not listed above represent
- * props specific for the React component defined as `type`. Also note that this module work
- * in tandem with `controlPanels/index.js` that defines how controls are composed into sections for
- * each and every visualization type.
+ * control interface.
  */
 import React from 'react';
 import { t } from '@superset-ui/translation';

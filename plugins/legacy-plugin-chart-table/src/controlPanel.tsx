@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -41,13 +42,11 @@ const config: ControlPanelConfig = {
             config: {
               type: 'MetricsControl',
               multi: true,
-              mapStateToProps: (state: never) => {
-                const { datasource } = state;
-                const { columns, metrics, type } = datasource;
+              mapStateToProps: ({ datasource }) => {
                 return {
-                  columns: datasource ? columns : [],
-                  savedMetrics: datasource ? metrics : [],
-                  datasourceType: datasource && type,
+                  columns: datasource?.columns || [],
+                  savedMetrics: datasource?.metrics || [],
+                  datasourceType: datasource?.type,
                 };
               },
               default: [],
@@ -100,8 +99,8 @@ const config: ControlPanelConfig = {
               valueRenderer: (c: never) => <ColumnOption column={c} />,
               valueKey: 'column_name',
               allowAll: true,
-              mapStateToProps: (state: { datasource: { columns: unknown } }) => ({
-                options: state.datasource ? state.datasource.columns : [],
+              mapStateToProps: ({ datasource }) => ({
+                options: datasource?.columns || [],
               }),
               commaChoosesOption: false,
               freeForm: true,
@@ -117,9 +116,8 @@ const config: ControlPanelConfig = {
               label: t('Ordering'),
               default: [],
               description: t('One or many metrics to display'),
-              // eslint-disable-next-line camelcase
-              mapStateToProps: (state: { datasource: { order_by_choices: never } }) => ({
-                choices: state.datasource ? state.datasource.order_by_choices : [],
+              mapStateToProps: ({ datasource }) => ({
+                choices: datasource?.order_by_choices || [],
               }),
             },
           },

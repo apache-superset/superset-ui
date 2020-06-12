@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,7 +17,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-/* eslint-disable camelcase */
 import React, { ReactNode, ReactText } from 'react';
 import sharedControls from './shared-controls';
 
@@ -81,7 +81,8 @@ export interface ControlPanelActionDispathers {
 export type ExtraControlProps = AnyDict;
 
 // Ref:superset-frontend/src/explore/store.js
-export interface ControlState extends ControlConfig, ExtraControlProps {}
+export type ControlState<T extends SelectOption = SelectOption> = ControlConfig<T> &
+  ExtraControlProps;
 
 export interface ControlStateMapping {
   [key: string]: ControlState;
@@ -128,34 +129,92 @@ export type InternalControlType =
   | 'SelectControlVerifiedOptions'
   | 'AdhocFilterControlVerifiedOptions';
 
-export interface ControlConfig {
+export interface Validator {
+  (value: unknown): boolean | string;
+}
+
+/**
+ * Control config specifying how chart controls appear in the control panel, all
+ * these configs will be passed to the UI component for control as props.
+ *
+ * - type: the control type, referencing a React component of the same name
+ * - label: the label as shown in the control's header
+ * - description: shown in the info tooltip of the control's header
+ * - default: the default value when opening a new chart, or changing visualization type
+ * - renderTrigger: a bool that defines whether the visualization should be re-rendered
+ *    when changed. This should `true` for controls that only affect the rendering (client side)
+ *    and don't affect the query or backend data processing as those require to re run a query
+ *    and fetch the data
+ * - validators: an array of functions that will receive the value of the component and
+ *    should return error messages when the value is not valid. The error message gets
+ *    bubbled up to the control header, section header and query panel header.
+ * - warning: text shown as a tooltip on a warning icon in the control's header
+ * - error: text shown as a tooltip on a error icon in the control's header
+ * - mapStateToProps: a function that receives the App's state and return an object of k/v
+ *    to overwrite configuration at runtime. This is useful to alter a component based on
+ *    anything external to it, like another control's value. For instance it's possible to
+ *    show a warning based on the value of another component. It's also possible to bind
+ *    arbitrary data from the redux store to the component this way.
+ * - tabOverride: set to 'data' if you want to force a renderTrigger to show up on the `Data`
+ *    tab, otherwise `renderTrigger: true` components will show up on the `Style` tab.
+ * - visibility: a function that uses control panel props to check whether a control should
+ *    be visibile.
+ */
+export interface GeneralControlConfig {
   type: InternalControlType | React.ComponentType;
   label?: ReactNode;
   description?: ReactNode;
+  default?: unknown;
+  renderTrigger?: boolean;
+  validators?: Validator[];
+  warning?: ReactNode;
+  error?: ReactNode;
   // override control panel state props
   mapStateToProps?: (
     state: ControlPanelState,
     control: ControlConfig,
     actions: ControlPanelActionDispathers,
   ) => ExtraControlProps;
-  [key: string]: unknown;
+  tabOverride?: 'data' | boolean;
   visibility?: (props: ControlPanelsContainerProps) => boolean;
-  queryField?: string;
+  [key: string]: unknown;
 }
-
 /** --------------------------------------------
  * Additional Config for specific control Types
  * --------------------------------------------- */
 type SelectOption = AnyDict | string | [ReactText, ReactNode];
+type SelectControlType =
+  | 'SelectControl'
+  | 'SelectAsyncControl'
+  | 'SelectControl'
+  | 'MetricsControl'
+  | 'FixedOrMetricControl'
+  | 'AdhocFilterControl'
+  | 'FilterBoxItemControl'
+  | 'MetricsControlVerifiedOptions'
+  | 'SelectControlVerifiedOptions'
+  | 'AdhocFilterControlVerifiedOptions';
 
-export interface SelectControlConfig<T extends SelectOption = AnyDict> extends ControlConfig {
+export interface SelectControlConfig<T extends SelectOption = SelectOption>
+  extends GeneralControlConfig {
+  type: SelectControlType;
   options?: T[];
+  clearable?: boolean;
+  freeForm?: boolean;
+  multi?: boolean;
+  optionRenderer?: (option: T) => ReactNode;
+  valueRenderer?: (option: T) => ReactNode;
+  valueKey?: string;
+  labelKey?: string;
 }
 
-export interface ControlConfigMapping {
-  [key: string]: ControlConfig;
-}
+export type ControlConfig<T extends SelectOption = SelectOption> =
+  | GeneralControlConfig
+  | SelectControlConfig<T>;
 
+/** --------------------------------------------
+ * Chart plugin control panel config
+ * --------------------------------------------- */
 export type SharedControlAlias = keyof typeof sharedControls;
 
 export type SharedSectionAlias =
