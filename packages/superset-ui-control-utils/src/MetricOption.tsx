@@ -17,26 +17,10 @@
  * under the License.
  */
 import React from 'react';
-import PropTypes from 'prop-types';
-
 import InfoTooltipWithTrigger from './InfoTooltipWithTrigger';
-import ColumnTypeLabel from './ColumnTypeLabel';
+import { ColumnTypeLabel } from './ColumnTypeLabel';
 
-const propTypes = {
-  metric: PropTypes.object.isRequired,
-  openInNewWindow: PropTypes.bool,
-  showFormula: PropTypes.bool,
-  showType: PropTypes.bool,
-  url: PropTypes.string,
-};
-const defaultProps = {
-  openInNewWindow: false,
-  showFormula: true,
-  showType: false,
-  url: '',
-};
-
-interface MetricOptionProps {
+export interface MetricOptionProps {
   metric: {
     // eslint-disable-next-line camelcase
     verbose_name: string;
@@ -54,12 +38,12 @@ interface MetricOptionProps {
   url: string;
 }
 
-export default function MetricOption({
+export function MetricOption({
   metric,
-  openInNewWindow,
-  showFormula,
-  showType,
-  url,
+  openInNewWindow = false,
+  showFormula = true,
+  showType = false,
+  url = '',
 }: MetricOptionProps) {
   const verbose = metric.verbose_name || metric.metric_name || metric.label;
   const link = url ? (
@@ -100,5 +84,3 @@ export default function MetricOption({
     </div>
   );
 }
-MetricOption.propTypes = propTypes;
-MetricOption.defaultProps = defaultProps;
