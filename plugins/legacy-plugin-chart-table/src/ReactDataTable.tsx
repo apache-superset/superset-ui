@@ -316,15 +316,18 @@ export default function ReactDataTable(props: DataTableProps) {
     .dt-metric {
       text-align: right;
     }
-    td.dt-is-filter {
-      cursor: pointer;
-    }
-    td.dt-is-filter:hover {
-      background-color: linen;
-    }
-    td.dt-is-active-filter,
-    td.dt-is-active-filter:hover {
-      background-color: lightcyan;
+    td {
+      white-space: pre-wrap;
+      &.dt-is-filter {
+        cursor: pointer;
+      }
+      &.dt-is-filter:hover {
+        background-color: linen;
+      }
+      &.dt-is-active-filter,
+      .dt-is-active-filter:hover {
+        background-color: lightcyan;
+      }
     }
     div.dataTables_wrapper div.dataTables_paginate {
       line-height: 0;
@@ -332,15 +335,13 @@ export default function ReactDataTable(props: DataTableProps) {
         margin-top: 0.5em;
       }
     }
-
-    table.table thead th.sorting:after,
-    table.table thead th.sorting_asc:after,
-    table.table thead th.sorting_desc:after {
-      top: auto;
-      bottom: 6px;
-    }
-    td {
-      white-space: pre-wrap;
+    table.table thead th {
+      &.sorting:after,
+      &.sorting_asc:after,
+      &.sorting_desc:after {
+        top: auto;
+        bottom: 6px;
+      }
     }
   `;
 
