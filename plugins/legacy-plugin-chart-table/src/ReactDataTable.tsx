@@ -347,9 +347,9 @@ export default function ReactDataTable(props: DataTableProps) {
 
   return (
     <StyledTableWrapper
+      ref={rootElem}
       // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: ReactDOMServer.renderToStaticMarkup(tableElement) }}
-      ref={rootElem}
       className="superset-legacy-chart-table"
     />
   );
