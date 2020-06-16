@@ -44,7 +44,6 @@ import { legacyValidateInteger, validateNonEmpty } from '@superset-ui/validator'
 
 import { formatSelectOptions } from './selectOptions';
 import { mainMetric, Metric } from './mainMetric';
-import { ColumnOption } from './ColumnOption';
 import { TIME_FILTER_LABELS } from './constants';
 import {
   ControlConfig,
@@ -53,6 +52,7 @@ import {
   ExtraControlProps,
   SelectControlConfig,
 } from './types';
+import { ColumnOption } from './components/ColumnOption';
 
 const categoricalSchemeRegistry = getCategoricalSchemeRegistry();
 const sequentialSchemeRegistry = getSequentialSchemeRegistry();
