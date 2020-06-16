@@ -28,6 +28,7 @@
   "peerDependencies": {
     "@superset-ui/chart": "latest",
     "@superset-ui/translation": "latest",
-    "@superset-ui/query": "latest"
+    "@superset-ui/query": "latest",
+    "react": "^16.13.1"
   }
 }

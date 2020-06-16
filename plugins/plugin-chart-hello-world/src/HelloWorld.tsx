@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from 'react';
+import { PureComponent } from 'react';
 
 export type HelloWorldProps = {
   height: number;
@@ -24,7 +24,7 @@ export type HelloWorldProps = {
   data: { x: number; y: number }[];
 };
 
-export default class HelloWorld extends React.PureComponent<HelloWorldProps> {
+export default class HelloWorld extends PureComponent<HelloWorldProps> {
   render() {
     const { data, height, width } = this.props;
 

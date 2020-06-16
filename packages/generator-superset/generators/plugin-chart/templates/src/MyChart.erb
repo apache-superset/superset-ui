@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from 'react';
+import { PureComponent } from 'react';
 
 export type <%= packageLabel %>Props = {
   height: number;
@@ -24,10 +24,13 @@ export type <%= packageLabel %>Props = {
   data: { x: number; y: number }[];
 };
 
-export default class <%= packageLabel %> extends React.PureComponent<<%= packageLabel %>Props> {
+export default class <%= packageLabel %> extends PureComponent<<%= packageLabel %>Props> {
   render() {
     const { data, height, width } = this.props;
 
+    // TODO: Add emotion wrapper
+    // TODO: explain how this DOM element can be used.
+    // TODO: how do you access the id?
     return (
       <div style={{ backgroundColor: '#ffe459', padding: 16, borderRadius: 8, height, width }}>
         <h3>Hello!</h3>

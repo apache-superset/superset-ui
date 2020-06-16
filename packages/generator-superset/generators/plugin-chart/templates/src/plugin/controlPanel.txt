@@ -17,24 +17,35 @@
  * under the License.
  */
 import { t } from '@superset-ui/translation';
-import { ChartMetadata, ChartPlugin } from '@superset-ui/chart';
-import transformProps from './transformProps';
-import controlPanel from './controlPanel';
-import thumbnail from '../images/thumbnail.png';
+import { validateNonEmpty } from '@superset-ui/validator';
 
-const metadata = new ChartMetadata({
-  description: 'Hello World',
-  name: t('HelloWorld'),
-  thumbnail,
-});
-
-export default class HelloWorldChartPlugin extends ChartPlugin {
-  constructor() {
-    super({
-      loadChart: () => import('../HelloWorld'),
-      metadata,
-      transformProps,
-      controlPanel,
-    });
-  }
-}
+export default {
+  // TODO: one example for every predefined control + an example of a custom control
+  // TODO: example of map state to props
+  // TODO: validators
+  // TODO: explanation of queryField
+  // TODO: explain controlPanelSections
+  // TODO: controlOverrides
+  // TODO: Control sections - what's supported now (Query - Other)
+  controlPanelSections: [
+    {
+      label: t('Query'),
+      expanded: true,
+      controlSetRows: [
+        ['groupby'],
+        ['metrics'],
+        ['adhoc_filters'],
+        ['row_limit', null]
+      ],
+    },
+  ],
+  controlOverrides: {
+    series: {
+      validators: [validateNonEmpty],
+      clearable: false,
+    },
+    row_limit: {
+      default: 100,
+    },
+  },
+};
