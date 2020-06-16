@@ -23,40 +23,161 @@ import {
   formatSelectOptions,
   D3_TIME_FORMAT_OPTIONS,
   ColumnOption,
+  ControlStateMapping,
   ControlPanelConfig,
+  ControlPanelsContainerProps,
+  CustomComponentControlConfig,
 } from '@superset-ui/chart-controls';
 import { validateNonEmpty } from '@superset-ui/validator';
+
+import RadioButtonControl, { RadioButtonControlProps } from './RadioButtonControl';
+
+export enum QueryMode {
+  agg = 'agg',
+  raw = 'raw',
+}
+
+const QueryModeLabel = {
+  [QueryMode.agg]: t('Aggregate'),
+  [QueryMode.raw]: t('Raw Records'),
+};
+
+function getQueryMode(controls: ControlStateMapping): QueryMode {
+  const mode = controls?.query_mode?.value;
+  if (mode === QueryMode.agg || mode === QueryMode.raw) {
+    return mode as QueryMode;
+  }
+  const groupby = controls?.groupby?.value;
+  const hasGroupBy = groupby && (groupby as string[])?.length > 0;
+  return hasGroupBy ? QueryMode.agg : QueryMode.raw;
+}
+
+/**
+ * Visibility check
+ */
+function isQueryMode(mode: QueryMode) {
+  return ({ controls }: ControlPanelsContainerProps) => {
+    return getQueryMode(controls) === mode;
+  };
+}
+
+const isAggMode = isQueryMode(QueryMode.agg);
+const isRawMode = isQueryMode(QueryMode.raw);
+
+const queryMode: CustomComponentControlConfig<RadioButtonControlProps> = {
+  type: RadioButtonControl,
+  label: t('Query Mode'),
+  default: QueryMode.agg,
+  options: [
+    {
+      label: QueryModeLabel[QueryMode.agg],
+      value: QueryMode.agg,
+    },
+    {
+      label: QueryModeLabel[QueryMode.raw],
+      value: QueryMode.raw,
+    },
+  ],
+  mapStateToProps: ({ controls }) => {
+    return { value: getQueryMode(controls as ControlStateMapping) };
+  },
+};
+
+const queryModeControl = {
+  name: 'query_mode',
+  config: queryMode,
+};
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
     {
-      label: t('GROUP BY'),
-      description: t('Use this section if you want a query that aggregates'),
+      label: t('Query'),
       expanded: true,
       controlSetRows: [
-        ['groupby'],
-        ['metrics'],
+        [queryModeControl],
+        [
+          {
+            name: 'groupby',
+            override: {
+              visibility: isAggMode,
+            },
+          },
+        ],
+        [
+          {
+            name: 'metrics',
+            override: {
+              validators: [],
+              visibility: isAggMode,
+            },
+          },
+          {
+            name: 'all_columns',
+            config: {
+              type: 'SelectControl',
+              label: t('Columns'),
+              description: t('Columns to display'),
+              multi: true,
+              freeForm: true,
+              allowAll: true,
+              commaChoosesOption: false,
+              default: [],
+              optionRenderer: (c: never) => <ColumnOption showType column={c} />,
+              valueRenderer: (c: never) => <ColumnOption column={c} />,
+              valueKey: 'column_name',
+              mapStateToProps: ({ datasource, controls }) => ({
+                options: datasource?.columns || [],
+                queryMode: getQueryMode(controls),
+              }),
+              visibility: isRawMode,
+            },
+          },
+        ],
         [
           {
             name: 'percent_metrics',
             config: {
               type: 'MetricsControl',
+              label: t('Percentage Metrics'),
+              description: t('Metrics for which percentage of total are to be displayed'),
               multi: true,
-              mapStateToProps: ({ datasource }) => {
+              visibility: isAggMode,
+              mapStateToProps: ({ datasource, controls }) => {
                 return {
                   columns: datasource?.columns || [],
                   savedMetrics: datasource?.metrics || [],
                   datasourceType: datasource?.type,
+                  queryMode: getQueryMode(controls),
                 };
               },
               default: [],
-              label: t('Percentage Metrics'),
               validators: [],
-              description: t('Metrics for which percentage of total are to be displayed'),
             },
           },
         ],
-        ['timeseries_limit_metric', 'row_limit'],
+        [
+          {
+            name: 'timeseries_limit_metric',
+            override: {
+              visibility: isAggMode,
+            },
+          },
+          {
+            name: 'order_by_cols',
+            config: {
+              type: 'SelectControl',
+              label: t('Ordering'),
+              description: t('One or many metrics to display'),
+              multi: true,
+              default: [],
+              mapStateToProps: ({ datasource }) => ({
+                choices: datasource?.order_by_choices || [],
+              }),
+              visibility: isRawMode,
+            },
+          },
+        ],
+        ['row_limit'],
         [
           {
             name: 'include_time',
@@ -67,6 +188,7 @@ const config: ControlPanelConfig = {
                 'Whether to include the time granularity as defined in the time section',
               ),
               default: false,
+              visibility: isAggMode,
             },
           },
           {
@@ -76,59 +198,12 @@ const config: ControlPanelConfig = {
               label: t('Sort Descending'),
               default: true,
               description: t('Whether to sort descending or ascending'),
+              visibility: isAggMode,
             },
           },
         ],
+        ['adhoc_filters'],
       ],
-    },
-    {
-      label: t('NOT GROUPED BY'),
-      description: t('Use this section if you want to query atomic rows'),
-      expanded: true,
-      controlSetRows: [
-        [
-          {
-            name: 'all_columns',
-            config: {
-              type: 'SelectControl',
-              multi: true,
-              label: t('Columns'),
-              default: [],
-              description: t('Columns to display'),
-              optionRenderer: (c: never) => <ColumnOption showType column={c} />,
-              valueRenderer: (c: never) => <ColumnOption column={c} />,
-              valueKey: 'column_name',
-              allowAll: true,
-              mapStateToProps: ({ datasource }) => ({
-                options: datasource?.columns || [],
-              }),
-              commaChoosesOption: false,
-              freeForm: true,
-            },
-          },
-        ],
-        [
-          {
-            name: 'order_by_cols',
-            config: {
-              type: 'SelectControl',
-              multi: true,
-              label: t('Ordering'),
-              default: [],
-              description: t('One or many metrics to display'),
-              mapStateToProps: ({ datasource }) => ({
-                choices: datasource?.order_by_choices || [],
-              }),
-            },
-          },
-        ],
-        ['row_limit', null],
-      ],
-    },
-    {
-      label: t('Query'),
-      expanded: true,
-      controlSetRows: [['adhoc_filters']],
     },
     {
       label: t('Options'),
@@ -225,11 +300,6 @@ const config: ControlPanelConfig = {
       ],
     },
   ],
-  controlOverrides: {
-    metrics: {
-      validators: [],
-    },
-  },
   sectionOverrides: {
     druidTimeSeries: {
       controlSetRows: [['granularity', 'druid_time_origin'], ['time_range']],
