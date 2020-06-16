@@ -174,9 +174,9 @@ const datasourceControl: ControlConfig = {
   label: t('Datasource'),
   default: null,
   description: null,
-  mapStateToProps: (state, control, { setDatasource }) => ({
+  mapStateToProps: (state, control, actions) => ({
     datasource: state.datasource,
-    onDatasourceSave: setDatasource,
+    onDatasourceSave: actions?.setDatasource,
   }),
 };
 

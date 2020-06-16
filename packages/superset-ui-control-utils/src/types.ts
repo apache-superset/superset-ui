@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { ReactNode, ReactText } from 'react';
+import React, { ReactNode, ReactText, ReactElement } from 'react';
 import { QueryFormData } from '@superset-ui/query';
 import sharedControls from './shared-controls';
 
@@ -52,13 +52,8 @@ export interface DatasourceMeta {
 
 export interface ControlPanelState {
   form_data: QueryFormData;
-  datasource?: DatasourceMeta | null;
-  options?: ColumnMeta[];
-  controls?: {
-    comparison_type?: {
-      value: string;
-    };
-  };
+  datasource: DatasourceMeta | null;
+  controls: ControlStateMapping;
 }
 
 /**
@@ -82,7 +77,7 @@ export interface ControlPanelActionDispathers {
 export type ExtraControlProps = AnyDict;
 
 // Ref:superset-frontend/src/explore/store.js
-export type ControlState<T extends SelectOption = SelectOption> = ControlConfig<T> &
+export type ControlState<O extends SelectOption = SelectOption> = ControlConfig<O> &
   ExtraControlProps;
 
 export interface ControlStateMapping {
@@ -130,8 +125,8 @@ export type InternalControlType =
   | 'SelectControlVerifiedOptions'
   | 'AdhocFilterControlVerifiedOptions';
 
-export interface Validator {
-  (value: unknown): boolean | string;
+export interface ControlValueValidator<T = unknown, O extends SelectOption = SelectOption> {
+  (value: T, state: ControlState<O>): boolean | string;
 }
 
 export type TabOverride = 'data' | boolean;
@@ -164,24 +159,33 @@ export type TabOverride = 'data' | boolean;
  *    be visibile.
  */
 export interface GeneralControlConfig {
-  type: InternalControlType | React.ComponentType;
+  type: unknown;
   label?: ReactNode;
   description?: ReactNode;
   default?: unknown;
   renderTrigger?: boolean;
-  validators?: Validator[];
+  validators?: ControlValueValidator[];
   warning?: ReactNode;
   error?: ReactNode;
   // override control panel state props
   mapStateToProps?: (
     state: ControlPanelState,
     control: ControlConfig,
-    actions: ControlPanelActionDispathers,
+    actions?: ControlPanelActionDispathers,
   ) => ExtraControlProps;
   tabOverride?: TabOverride;
   visibility?: (props: ControlPanelsContainerProps) => boolean;
   [key: string]: unknown;
 }
+
+export interface SharedControlConfig extends GeneralControlConfig {
+  type: InternalControlType;
+}
+
+export type CustomComponentControlConfig<P = unknown> = GeneralControlConfig & {
+  type: InternalControlType | React.ComponentType<P>;
+} & Omit<P, 'onChange' | 'hovered'>; // two run-time properties from superset-frontend/src/explore/components/Control.jsx
+
 /** --------------------------------------------
  * Additional Config for specific control Types
  * --------------------------------------------- */
@@ -201,18 +205,19 @@ type SelectControlType =
 export interface SelectControlConfig<T extends SelectOption = SelectOption>
   extends GeneralControlConfig {
   type: SelectControlType;
-  options?: T[];
   clearable?: boolean;
   freeForm?: boolean;
   multi?: boolean;
-  optionRenderer?: (option: T) => ReactNode;
-  valueRenderer?: (option: T) => ReactNode;
   valueKey?: string;
   labelKey?: string;
+  options?: T[];
+  optionRenderer?: (option: T) => ReactNode;
+  valueRenderer?: (option: T) => ReactNode;
 }
 
 export type ControlConfig<T extends SelectOption = SelectOption> =
   | GeneralControlConfig
+  | CustomComponentControlConfig
   | SelectControlConfig<T>;
 
 /** --------------------------------------------
@@ -228,17 +233,24 @@ export type SharedSectionAlias =
   | 'sqlaTimeSeries'
   | 'NVD3TimeSeries';
 
-export interface ControlItem {
+export interface OverrideSharedControlItem {
   name: SharedControlAlias;
-  config: Partial<ControlConfig>;
+  override: Partial<SharedControlConfig>;
 }
 
-export interface CustomControlItem {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface CustomControlItem<P = any> {
   name: string;
-  config: ControlConfig;
+  config: CustomComponentControlConfig<P>;
 }
 
-export type ControlSetItem = SharedControlAlias | ControlItem | CustomControlItem | ReactNode;
+export type ControlSetItem =
+  | SharedControlAlias
+  | OverrideSharedControlItem
+  | CustomControlItem
+  | ReactElement
+  | null;
+
 export type ControlSetRow = ControlSetItem[];
 
 // Ref:
@@ -246,16 +258,17 @@ export type ControlSetRow = ControlSetItem[];
 //  - superset-frontend/src/explore/components/ControlPanelSection.jsx
 export interface ControlPanelSectionConfig {
   label: ReactNode;
-  controlSetRows: ControlSetRow[];
   description?: ReactNode;
   expanded?: boolean;
   tabOverride?: TabOverride;
+  controlSetRows: ControlSetRow[];
 }
 
 export interface ControlPanelConfig {
   controlPanelSections: ControlPanelSectionConfig[];
   controlOverrides?: ControlOverrides;
   sectionOverrides?: SectionOverrides;
+  onInit?: (state: ControlStateMapping) => void;
 }
 
 export type ControlOverrides = {
