@@ -1,9 +1,11 @@
 import { QueryFormData } from '@superset-ui/query';
 import { <%= packageLabel %>Props } from './<%= packageLabel %>';
 
-// FormData contains both common properties of all form data
-// and properties specific to <%= packageLabel %> visualization
-// TODO: add links to TypeScript SIP, TS docs, handy @ts-ignore comments
+/**
+ * FormData contains both common properties of all form data
+ * and properties specific to <%= packageLabel %> visualization
+ * TODO: add links to TypeScript SIP, TS docs, handy @ts-ignore comments
+ */
 export type <%= packageLabel %>FormData = QueryFormData &
   <%= packageLabel %>Props & {
     series: string;

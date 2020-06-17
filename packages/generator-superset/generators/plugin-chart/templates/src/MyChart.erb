@@ -26,16 +26,18 @@ export type <%= packageLabel %>Props = {
   data: { x: number; y: number }[];
 };
 
-// ********** WHAT YOU CAN BUILD HERE (2 OPTIONS!) **********
-// In essence, a chart is given a few key ingredients to work with:
-// Data: provided via `props.data`
-// A DOM element: You can add your chart in two methods:
-// 1) return a block of JSX to drop right into the dashboard
-// 2) "reactify" a component, which gives you access to the actual
-//    DOM element of your rendered chart (including its ID), which
-//    allows you to manipulate the DOM element directly
-
-// EXAMPLE OF OPTION 1
+/**
+* ********** WHAT YOU CAN BUILD HERE (2 OPTIONS!) **********
+*  In essence, a chart is given a few key ingredients to work with:
+*  Data: provided via `props.data`
+*  A DOM element: You can add your chart in two methods:
+*  1) return a block of JSX to drop right into the dashboard
+*  2) "reactify" a component, which gives you access to the actual
+*     DOM element of your rendered chart (including its ID), which
+*     allows you to manipulate the DOM element directly
+*
+* EXAMPLE OF OPTION 1
+*/
 export default class <%= packageLabel %> extends PureComponent<<%= packageLabel %>Props> {
   render() {
     // height and width are the height and width of the DOM element as it exists in the dashboard.

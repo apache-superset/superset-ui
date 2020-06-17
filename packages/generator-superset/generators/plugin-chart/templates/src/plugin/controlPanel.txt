@@ -20,14 +20,78 @@ import { t } from '@superset-ui/translation';
 import { validateNonEmpty } from '@superset-ui/validator';
 
 export default {
-  // TODO: one example for every predefined control + an example of a custom control
-  // TODO: example of map state to props
-  // TODO: validators
-  // TODO: explanation of queryField
-  // TODO: explain controlPanelSections
-  // TODO: controlOverrides
-  // TODO: Control sections - what's supported now (Query - Other)
-  controlPanelSections: [
+  /**
+   * The control panel is split into two tabs: "Query" and 
+   * "Chart Options". The controls that define the inputs to 
+   * the chart data request, such as columns and metrics, usually
+   * reside within "Query", while controls that affect the visual
+   * appearance or functionality of the chart are under the 
+   * "Chart Options" section.
+   *
+   * There are several predefined controls that can be used.
+   * Some examples:
+   * - groupby: columns to group by (tranlated to GROUP BY statement)
+   * - series: same as groupby, but single selection.
+   * - metrics: multiple metrics (translated to aggregate expression)
+   * - metric: sane as metrics, but single selection
+   * - adhoc_filters: filters (translated to WHERE or HAVING
+   *   depending on filter type)
+   * - row_limit: maximum number of rows (translated to LIMIT statement)
+   *
+   * If a control panel has both a `series` and `groupby` control, and
+   * the user has chosen `col1` as the value for the `series` control, 
+   * and `col2` and `col3` as values for the `groupby` control,
+   * the resulting query will contain three groupby columns. This is due 
+   * to the `series` control having the property `queryField` set to
+   * `groupby`, which automatically appends the values from the 
+   * `series` control to the `groupby` control when the query is generated.
+   *
+   * It is also possible to define custom controls by importing the 
+   * necessary dependencies and overriding the default parameters, which
+   * can then be placed in the `controlSetRows` section
+   * of the `Query` section instead of a predefined control.
+   *
+   * import { validateNonEmpty } from '@superset-ui/validator';
+   * import { internalSharedControls } from '@superset-ui/control-utils';
+   *
+   * const myControl = {
+   *   name: 'secondary_entity',
+   *   config: {
+   *     ...internalSharedControls.controls.entity,
+   *     type: 'SelectControl',
+   *     label: t('Secondary Entity'),
+   *     mapStateToProps: state => ({
+   *       internalSharedControls.columnChoices(state.datasource)
+   *       .columns.filter(c => c.groupby)
+   *     })
+   *     validators: [validateNonEmpty],
+   *   },
+   * }
+   *
+   * This would create a new control called `secondary_entity`, which is 
+   * based on the standard `entity` control and only offers columns that are 
+   * defined as groupable in the table metadata,
+   * and requires the control to not be empty prior to execution.
+   *
+   * In addition to the basic drop down control, there are several predefined
+   * control types (can be set via the `type` property) that can be used. Some 
+   * commonly used examples:
+   * - SelectControl: Dropdown to select single or multiple values,
+       usually columns
+   * - MetricsControl: Dropdown to select metrics, triggering a modal
+       to define Metric details
+   * - AdhocFilterControl: Control to choose filters
+   * - CheckboxControl: A checkbox for choosing true/false values
+   * - SliderControl: A slider with min/max values
+   * - TextControl: Control for text data
+   *
+   * To ensure all controls have been filled out correctly, the following
+   * validators are provided
+   * by the `@superset-ui/validator` package:
+   * - validateNonEmpty: must have at least one value
+   * - validateInteger: must be an integer value
+   * - validateNumber: must be an intger or decimal value
+   */  controlPanelSections: [
     {
       label: t('Query'),
       expanded: true,
