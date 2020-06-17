@@ -26,10 +26,15 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@superset-ui/chart": "latest",
-    "@superset-ui/translation": "latest",
-    "@superset-ui/query": "latest",
+    "@superset-ui/chart": "^0.13.27",
+    "@superset-ui/query": "^0.13.27",
+    "@superset-ui/translation": "^0.13.27",
+    "@superset-ui/validator": "^0.13.27",
     "@superset-ui/style": "^0.13.30",
     "react": "^16.13.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.0",
+    "jest": "^26.0.1"
   }
 }

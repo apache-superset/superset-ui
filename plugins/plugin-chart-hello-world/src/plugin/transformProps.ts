@@ -19,14 +19,17 @@ import { ChartProps } from '@superset-ui/chart';
  * under the License.
  */
 export default function transformProps(chartProps: ChartProps) {
+  // TODO: add context around data (features + limitations)
+  // TODO: examples
+  // TODO: width, height
+  // TODO: what are formData, queryData, what's in data
+  // TODO: what are we supposed to return
   const { width, height, formData, queryData } = chartProps;
-  const { color } = formData;
   const { data } = queryData;
 
   return {
     width,
     height,
-    color,
     data,
   };
 }

@@ -18,8 +18,9 @@
  */
 import { t } from '@superset-ui/translation';
 import { ChartMetadata, ChartPlugin } from '@superset-ui/chart';
-import transformProps from './transformProps';
+import buildQuery from './buildQuery';
 import controlPanel from './controlPanel';
+import transformProps from './transformProps';
 import thumbnail from '../images/thumbnail.png';
 
 const metadata = new ChartMetadata({
@@ -29,12 +30,14 @@ const metadata = new ChartMetadata({
 });
 
 export default class HelloWorldChartPlugin extends ChartPlugin {
+  // what do these things do, what's mandatory, what's optional
   constructor() {
     super({
+      buildQuery,
+      controlPanel,
       loadChart: () => import('../HelloWorld'),
       metadata,
       transformProps,
-      controlPanel,
     });
   }
 }

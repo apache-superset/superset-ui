@@ -20,60 +20,18 @@ import { t } from '@superset-ui/translation';
 import { validateNonEmpty } from '@superset-ui/validator';
 
 export default {
+  // TODO: one example for every predefined control + an example of a custom control
+  // TODO: example of map state to props
+  // TODO: validators
+  // TODO: explanation of queryField
+  // TODO: explain controlPanelSections
+  // TODO: controlOverrides
+  // TODO: Control sections - what's supported now (Query - Other)
   controlPanelSections: [
     {
       label: t('Query'),
       expanded: true,
-      controlSetRows: [['series'], ['metric'], ['adhoc_filters'], ['row_limit', null]],
-    },
-    {
-      label: t('Options'),
-      expanded: true,
-      controlSetRows: [
-        // [
-        //   {
-        //     name: 'size_from',
-        //     config: {
-        //       type: 'TextControl',
-        //       isInt: true,
-        //       label: t('Minimum Font Size'),
-        //       renderTrigger: true,
-        //       default: 10,
-        //       description: t('Font size for the smallest value in the list'),
-        //     },
-        //   },
-        //   {
-        //     name: 'size_to',
-        //     config: {
-        //       type: 'TextControl',
-        //       isInt: true,
-        //       label: t('Maximum Font Size'),
-        //       renderTrigger: true,
-        //       default: 70,
-        //       description: t('Font size for the biggest value in the list'),
-        //     },
-        //   },
-        // ],
-        // [
-        //   {
-        //     name: 'rotation',
-        //     config: {
-        //       type: 'SelectControl',
-        //       label: t('Word Rotation'),
-        //       choices: [
-        //         ['random', 'random'],
-        //         ['flat', 'flat'],
-        //         ['square', 'square'],
-        //       ],
-        //       renderTrigger: true,
-        //       default: 'square',
-        //       clearable: false,
-        //       description: t('Rotation to apply to words in the cloud'),
-        //     },
-        //   },
-        // ],
-        // ['color_scheme', 'label_colors'],
-      ],
+      controlSetRows: [['groupby'], ['metrics'], ['adhoc_filters'], ['row_limit', null]],
     },
   ],
   controlOverrides: {

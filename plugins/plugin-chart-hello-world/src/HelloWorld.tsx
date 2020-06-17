@@ -26,11 +26,21 @@ export type HelloWorldProps = {
   data: { x: number; y: number }[];
 };
 
+// ********** WHAT YOU CAN BUILD HERE (2 OPTIONS!) **********
+// In essence, a chart is given a few key ingredients to work with:
+// Data: provided via `props.data`
+// A DOM element: You can add your chart in two methods:
+// 1) return a block of JSX to drop right into the dashboard
+// 2) "reactify" a component, which gives you access to the actual
+//    DOM element of your rendered chart (including its ID), which
+//    allows you to manipulate the DOM element directly
+
+// EXAMPLE OF OPTION 1
 // export default class HelloWorld extends PureComponent<HelloWorldProps> {
 //   render() {
 //     // height and width are the height and width of the DOM element as it exists in the dashboard.
 //     // There is also a `data` prop, which is, of course, your DATA 🎉
-//     const { height, width, data } = this.props;
+//     const { data, height, width } = this.props;
 
 //     // The following Wrapper is a <div> element, which has been styled using Emotion
 //     // For docs, visit https://emotion.sh/docs/styled
@@ -49,14 +59,18 @@ export type HelloWorldProps = {
 
 //     return (
 //       <Wrapper>
-//         <h3>Hello, World!</h3>
-//         <pre>{JSON.stringify(data, null, 2)}</pre>
+//         <h3>Hello, World! (option 1)</h3>
+//         <pre>
+//           {JSON.stringify(data, null, 2)}
+//         </pre>
 //       </Wrapper>
 //     );
 //   }
 // }
 
-const HelloWorld = reactify((elem, props) => {
+// EXAMPLE OF OPTION 2
+
+const HelloWorld = reactify((elem: unknwown, props: unknwown) => {
   // `elem` is the *actual* dom element being used by this plugin, to do whatever you'd like with
   const { width, height, data, theme } = props; // additional controls appear as props here
   elem.style.width = width;
@@ -64,7 +78,7 @@ const HelloWorld = reactify((elem, props) => {
   elem.style.padding = theme.gridUnit * 4 + 'px';
   elem.style.backgroundColor = theme.colors.secondary.light2;
   elem.style.borderRadius = theme.gridUnit * 2 + 'px';
-  elem.innerHTML = `<h3>Hello, World!</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+  elem.innerHTML = `<h3>Hello, World! (option 2)</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
 });
 
 export default withTheme(HelloWorld);
