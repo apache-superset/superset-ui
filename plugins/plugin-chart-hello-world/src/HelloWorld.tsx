@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { PureComponent } from 'react';
+import React, { PureComponent } from 'react';
+import styled from '@superset-ui/style';
 
 export type HelloWorldProps = {
   height: number;
@@ -28,12 +29,26 @@ export default class HelloWorld extends PureComponent<HelloWorldProps> {
   render() {
     const { data, height, width } = this.props;
 
+    // The following Wrapper is a <div> element, which has been styled using Emotion
+    // For docs, visit https://emotion.sh/docs/styled
+
+    // Theming variables are provided for your use via a ThemeProvider
+    // imported from @superset-ui/style. For variables available, please visit
+    // https://github.com/apache-superset/superset-ui/blob/master/packages/superset-ui-style/src/index.ts
+
+    const Wrapper = styled.div`
+      background-color: ${({ theme }) => theme.colors.secondary.light2};
+      padding: ${({ theme }) => theme.gridUnit * 4}px;
+      border-radius: ${({ theme }) => theme.gridUnit * 2}px;
+      height: ${height};
+      width: ${width};
+    `;
+
     return (
-      <div style={{ backgroundColor: '#ffe459', padding: 16, borderRadius: 8, height, width }}>
-        <h3>Hello!</h3>
+      <Wrapper>
+        <h3>Hello, World!</h3>
         <pre>{JSON.stringify(this.props, null, 2)}</pre>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-      </div>
+      </Wrapper>
     );
   }
 }
