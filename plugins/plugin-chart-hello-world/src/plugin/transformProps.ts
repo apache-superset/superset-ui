@@ -19,11 +19,29 @@ import { ChartProps } from '@superset-ui/chart';
  * under the License.
  */
 export default function transformProps(chartProps: ChartProps) {
-  // TODO: add context around data (features + limitations)
-  // TODO: examples
-  // TODO: width, height
-  // TODO: what are formData, queryData, what's in data
-  // TODO: what are we supposed to return
+  /**
+   * This function is called after a successful response has been
+   * received from the chart data endpoint, and is used to transform
+   * the incoming data prior to being sent to the Visualization.
+   *
+   * A description of properties in `chartProps`:
+   * - `height`, `width`: the height/width of the DOM element in which
+   *   the chart is located
+   * - `formData`: the chart data request payload that was sent to the
+   *   backend.
+   * - `queryData`: the chart data response payload that was received
+   *   from the backend. Some notable properties of `queryData`:
+   *   - `data`: an array with data, each row with an object mapping
+   *     the column/alias to its value. Example:
+   *     `[{ col1: 'abc', metric1: 10 }, { col1: 'xyz', metric1: 20 }]`
+   *   - `rowcount`: the number of rows in `data`
+   *   - `query`: the query that was issued.
+   *
+   * Please note: the transformProps function gets cached when the
+   * application loads. When making changes to the `transformProps`
+   * function during development with hot reloading, changes won't
+   * be seen until restarting the development server.
+   */
   const { width, height, formData, queryData } = chartProps;
   const { data } = queryData;
 
