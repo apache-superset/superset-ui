@@ -104,10 +104,11 @@ type Control = {
 
 const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
   type: 'SelectControl',
+  label: t('Group by'),
   queryField: 'groupby',
   multi: true,
   freeForm: true,
-  label: t('Group by'),
+  clearable: true,
   default: [],
   includeTime: false,
   description: t('One or many controls to group by'),
@@ -115,9 +116,10 @@ const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
   valueRenderer: c => <ColumnOption column={c} />,
   valueKey: 'column_name',
   allowAll: true,
-  filterOption: (opt: ColumnMeta, text: string) =>
+  filterOption: ({ label, value, data: opt }, text: string) =>
     (opt.column_name && opt.column_name.toLowerCase().includes(text.toLowerCase())) ||
-    (opt.verbose_name && opt.verbose_name.toLowerCase().includes(text.toLowerCase())),
+    (opt.verbose_name && opt.verbose_name.toLowerCase().includes(text.toLowerCase())) ||
+    false,
   promptTextCreator: (label: unknown) => label,
   mapStateToProps(state, { includeTime }) {
     const newState: ExtraControlProps = {};

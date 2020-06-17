@@ -193,6 +193,14 @@ type SelectControlType =
   | 'SelectControlVerifiedOptions'
   | 'AdhocFilterControlVerifiedOptions';
 
+// via react-select/src/filters
+interface FilterOption<T extends SelectOption> {
+  label: string;
+  value: string;
+  data: T;
+}
+
+// Ref: superset-frontend/src/components/Select/SupersetStyledSelect.tsx
 export interface SelectControlConfig<T extends SelectOption = SelectOption>
   extends BaseControlConfig {
   type: SelectControlType;
@@ -204,6 +212,7 @@ export interface SelectControlConfig<T extends SelectOption = SelectOption>
   options?: T[];
   optionRenderer?: (option: T) => ReactNode;
   valueRenderer?: (option: T) => ReactNode;
+  filterOption?: ((option: FilterOption<T>, rawInput: string) => Boolean) | null;
 }
 
 export type SharedControlConfig<
