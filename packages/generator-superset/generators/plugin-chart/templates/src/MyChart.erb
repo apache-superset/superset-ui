@@ -68,17 +68,21 @@ export default class <%= packageLabel %> extends PureComponent<<%= packageLabel 
   }
 }
 
-// EXAMPLE OF OPTION 2
+/**
+* EXAMPLE OF OPTION 2
+* Note: this export is not being consumed anywhere. 
+* The viz plugin only uses the default export. If you want to build a plugin with 
+* multiple chart exports, you will need to adjust index.ts (see comments there)
+*/
+const <%= packageLabel %>Alt = reactify((elem, props) => {
+// `elem` is the *actual* dom element being used by this plugin, to do whatever you'd like with
+  const { width, height, data, theme } = props; // additional controls appear as props here
+  elem.style.width = width;
+  elem.style.height = height;
+  elem.style.padding = theme.gridUnit * 4 + 'px';
+  elem.style.backgroundColor = theme.colors.secondary.light2;
+  elem.style.borderRadius = theme.gridUnit * 2 + 'px';
+  elem.innerHTML = `<h3>Hello, World! (option 2)</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+});
 
-// const <%= packageLabel %> = reactify((elem: unknwown, props: unknwown) => {
-// // `elem` is the *actual* dom element being used by this plugin, to do whatever you'd like with
-//   const { width, height, data, theme } = props; // additional controls appear as props here
-//   elem.style.width = width;
-//   elem.style.height = height;
-//   elem.style.padding = theme.gridUnit * 4 + 'px';
-//   elem.style.backgroundColor = theme.colors.secondary.light2;
-//   elem.style.borderRadius = theme.gridUnit * 2 + 'px';
-//   elem.innerHTML = `<h3>Hello, World! (option 2)</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
-// });
-// 
-// export default withTheme(<%= packageLabel %>)
+export const Styled<%= packageLabel %>Alt = withTheme(<%= packageLabel %>Alt);
