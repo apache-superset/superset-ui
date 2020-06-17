@@ -36,49 +36,47 @@ export type HelloWorldProps = {
 //    allows you to manipulate the DOM element directly
 
 // EXAMPLE OF OPTION 1
-// export default class HelloWorld extends PureComponent<HelloWorldProps> {
-//   render() {
-//     // height and width are the height and width of the DOM element as it exists in the dashboard.
-//     // There is also a `data` prop, which is, of course, your DATA 🎉
-//     const { data, height, width } = this.props;
+export default class HelloWorld extends PureComponent<HelloWorldProps> {
+  render() {
+    // height and width are the height and width of the DOM element as it exists in the dashboard.
+    // There is also a `data` prop, which is, of course, your DATA 🎉
+    const { data, height, width } = this.props;
 
-//     // The following Wrapper is a <div> element, which has been styled using Emotion
-//     // For docs, visit https://emotion.sh/docs/styled
+    // The following Wrapper is a <div> element, which has been styled using Emotion
+    // For docs, visit https://emotion.sh/docs/styled
 
-//     // Theming variables are provided for your use via a ThemeProvider
-//     // imported from @superset-ui/style. For variables available, please visit
-//     // https://github.com/apache-superset/superset-ui/blob/master/packages/superset-ui-style/src/index.ts
+    // Theming variables are provided for your use via a ThemeProvider
+    // imported from @superset-ui/style. For variables available, please visit
+    // https://github.com/apache-superset/superset-ui/blob/master/packages/superset-ui-style/src/index.ts
 
-//     const Wrapper = styled.div`
-//       background-color: ${({ theme }) => theme.colors.secondary.light2};
-//       padding: ${({ theme }) => theme.gridUnit * 4}px;
-//       border-radius: ${({ theme }) => theme.gridUnit * 2}px;
-//       height: ${height};
-//       width: ${width};
-//     `;
+    const Wrapper = styled.div`
+      background-color: ${({ theme }) => theme.colors.secondary.light2};
+      padding: ${({ theme }) => theme.gridUnit * 4}px;
+      border-radius: ${({ theme }) => theme.gridUnit * 2}px;
+      height: ${height};
+      width: ${width};
+    `;
 
-//     return (
-//       <Wrapper>
-//         <h3>Hello, World! (option 1)</h3>
-//         <pre>
-//           {JSON.stringify(data, null, 2)}
-//         </pre>
-//       </Wrapper>
-//     );
-//   }
-// }
+    return (
+      <Wrapper>
+        <h3>Hello, World! (option 1)</h3>
+        <pre>{JSON.stringify(data, null, 2)}</pre>
+      </Wrapper>
+    );
+  }
+}
 
 // EXAMPLE OF OPTION 2
 
-const HelloWorld = reactify((elem: unknwown, props: unknwown) => {
-  // `elem` is the *actual* dom element being used by this plugin, to do whatever you'd like with
-  const { width, height, data, theme } = props; // additional controls appear as props here
-  elem.style.width = width;
-  elem.style.height = height;
-  elem.style.padding = theme.gridUnit * 4 + 'px';
-  elem.style.backgroundColor = theme.colors.secondary.light2;
-  elem.style.borderRadius = theme.gridUnit * 2 + 'px';
-  elem.innerHTML = `<h3>Hello, World! (option 2)</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
-});
-
-export default withTheme(HelloWorld);
+// const HelloWorld = reactify((elem: unknwown, props: unknwown) => {
+// // `elem` is the *actual* dom element being used by this plugin, to do whatever you'd like with
+//   const { width, height, data, theme } = props; // additional controls appear as props here
+//   elem.style.width = width;
+//   elem.style.height = height;
+//   elem.style.padding = theme.gridUnit * 4 + 'px';
+//   elem.style.backgroundColor = theme.colors.secondary.light2;
+//   elem.style.borderRadius = theme.gridUnit * 2 + 'px';
+//   elem.innerHTML = `<h3>Hello, World! (option 2)</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+// });
+//
+// export default withTheme(HelloWorld)

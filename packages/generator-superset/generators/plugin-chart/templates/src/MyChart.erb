@@ -18,7 +18,7 @@
  */
 import React, { PureComponent } from 'react';
 import styled, { withTheme } from '@superset-ui/style';
-import { reactify } from '@superset-ui/chart'; 
+import { reactify } from '@superset-ui/chart';
 
 export type <%= packageLabel %>Props = {
   height: number;
@@ -31,8 +31,8 @@ export type <%= packageLabel %>Props = {
 // Data: provided via `props.data`
 // A DOM element: You can add your chart in two methods:
 // 1) return a block of JSX to drop right into the dashboard
-// 2) "reactify" a component, which gives you access to the actual 
-//    DOM element of your rendered chart (including its ID), which 
+// 2) "reactify" a component, which gives you access to the actual
+//    DOM element of your rendered chart (including its ID), which
 //    allows you to manipulate the DOM element directly
 
 // EXAMPLE OF OPTION 1
@@ -60,9 +60,7 @@ export default class <%= packageLabel %> extends PureComponent<<%= packageLabel 
     return (
       <Wrapper>
         <h3>Hello, World! (option 1)</h3>
-        <pre>
-          {JSON.stringify(data, null, 2)}
-        </pre>
+        <pre>{JSON.stringify(data, null, 2)}</pre>
       </Wrapper>
     );
   }
