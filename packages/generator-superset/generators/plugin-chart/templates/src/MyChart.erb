@@ -17,7 +17,8 @@
  * under the License.
  */
 import { PureComponent } from 'react';
-import { styled } from '@superset-ui/style';
+import styled, { withTheme } from '@superset-ui/style';
+import { reactify } from '@superset-ui/chart'; 
 
 export type <%= packageLabel %>Props = {
   height: number;
@@ -25,8 +26,20 @@ export type <%= packageLabel %>Props = {
   data: { x: number; y: number }[];
 };
 
+/************** WHAT YOU CAN BUILD HERE (2 OPTIONS!) **************/
+// In essence, a chart is given a few key ingredients to work with:
+// Data: provided via `props.data`
+// A DOM element: You can add your chart in two methods:
+// 1) return a block of JSX to drop right into the dashboard
+// 2) "reactify" a component, which gives you access to the actual 
+//    DOM element of your rendered chart (including its ID), which 
+//    allows you to manipulate the DOM element directly
+
+// EXAMPLE OF OPTION 1
 export default class <%= packageLabel %> extends PureComponent<<%= packageLabel %>Props> {
   render() {
+    // height and width are the height and width of the DOM element as it exists in the dashboard.
+    // There is also a `data` prop, which is, of course, your DATA 🎉
     const { data, height, width } = this.props;
 
     // The following Wrapper is a <div> element, which has been styled using Emotion
@@ -44,15 +57,28 @@ export default class <%= packageLabel %> extends PureComponent<<%= packageLabel 
       width: ${width};
     `;
 
-    // TODO: explain how this DOM element can be used.
-    // TODO: demonstrate how to use the reactify() approach to access the DOM element
     return (
       <Wrapper>
         <h3>Hello, World!</h3>
         <pre>
-          {JSON.stringify(this.props, null, 2)}
+          {JSON.stringify(data, null, 2)}
         </pre>
       </Wrapper>
     );
   }
 }
+
+// EXAMPLE OF OPTION 2
+
+// const <%= packageLabel %> = reactify((elem, props) => {
+// `elem` is the *actual* dom element being used by this plugin, to do whatever you'd like with
+//   const { width, height, data, theme } = props; // additional controls appear as props here
+//   elem.style.width = width;
+//   elem.style.height = height;
+//   elem.style.padding = theme.gridUnit * 4 + 'px';
+//   elem.style.backgroundColor = theme.colors.secondary.light2;
+//   elem.style.borderRadius = theme.gridUnit * 2 + 'px';
+//   elem.innerHTML = `<h3>Hello, World!</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+// });
+// 
+// export default withTheme(<%= packageLabel %>)
