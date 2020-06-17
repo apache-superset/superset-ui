@@ -15,8 +15,6 @@ function getMetricLabel(metric: LegacyWordCloudFormData['metric']): string | und
 
 export default function transformProps(chartProps: ChartProps): WordCloudProps {
   const { width, height, formData, queryData } = chartProps;
-  console.log('!!!formData', formData);
-  console.log('!!!queryData', queryData);
   const {
     colorScheme,
     metric,
