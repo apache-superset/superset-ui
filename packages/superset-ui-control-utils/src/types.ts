@@ -204,24 +204,25 @@ interface FilterOption<T extends SelectOption> {
 }
 
 // Ref: superset-frontend/src/components/Select/SupersetStyledSelect.tsx
-export interface SelectControlConfig<T extends SelectOption = SelectOption>
-  extends BaseControlConfig {
-  type: SelectControlType;
+export interface SelectControlConfig<
+  O extends SelectOption = SelectOption,
+  T extends SelectControlType = SelectControlType
+> extends BaseControlConfig<T> {
   clearable?: boolean;
   freeForm?: boolean;
   multi?: boolean;
   valueKey?: string;
   labelKey?: string;
-  options?: T[];
-  optionRenderer?: (option: T) => ReactNode;
-  valueRenderer?: (option: T) => ReactNode;
-  filterOption?: ((option: FilterOption<T>, rawInput: string) => Boolean) | null;
+  options?: O[];
+  optionRenderer?: (option: O) => ReactNode;
+  valueRenderer?: (option: O) => ReactNode;
+  filterOption?: ((option: FilterOption<O>, rawInput: string) => Boolean) | null;
 }
 
 export type SharedControlConfig<
   T extends InternalControlType = InternalControlType,
   O extends SelectOption = SelectOption
-> = T extends SelectControlType ? SelectControlConfig<O> : BaseControlConfig<T>;
+> = T extends SelectControlType ? SelectControlConfig<O, T> : BaseControlConfig<T>;
 
 /** --------------------------------------------
  * Custom controls
