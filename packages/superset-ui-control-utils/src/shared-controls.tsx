@@ -116,7 +116,7 @@ const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
   valueRenderer: c => <ColumnOption column={c} />,
   valueKey: 'column_name',
   allowAll: true,
-  filterOption: ({ label, value, data: opt }, text: string) =>
+  filterOption: ({ data: opt }, text: string) =>
     (opt.column_name && opt.column_name.toLowerCase().includes(text.toLowerCase())) ||
     (opt.verbose_name && opt.verbose_name.toLowerCase().includes(text.toLowerCase())) ||
     false,
