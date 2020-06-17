@@ -77,8 +77,10 @@ export interface ControlPanelActionDispatchers {
 export type ExtraControlProps = AnyDict;
 
 // Ref:superset-frontend/src/explore/store.js
-export type ControlState<O extends SelectOption = SelectOption> = ControlConfig<O> &
-  ExtraControlProps;
+export type ControlState<
+  T extends InternalControlType | unknown = InternalControlType,
+  O extends SelectOption = SelectOption
+> = ControlConfig<T, O> & ExtraControlProps;
 
 export interface ControlStateMapping {
   [key: string]: ControlState;
@@ -158,7 +160,8 @@ export type TabOverride = 'data' | boolean;
  * - visibility: a function that uses control panel props to check whether a control should
  *    be visibile.
  */
-interface BaseControlConfig {
+export interface BaseControlConfig<T = unknown> {
+  type: T;
   label?: ReactNode;
   description?: ReactNode;
   default?: unknown;
@@ -169,7 +172,7 @@ interface BaseControlConfig {
   // override control panel state props
   mapStateToProps?: (
     state: ControlPanelState,
-    control: ControlConfig,
+    control: this,
     actions?: ControlPanelActionDispatchers,
   ) => ExtraControlProps;
   tabOverride?: TabOverride;
@@ -218,20 +221,23 @@ export interface SelectControlConfig<T extends SelectOption = SelectOption>
 export type SharedControlConfig<
   T extends InternalControlType = InternalControlType,
   O extends SelectOption = SelectOption
-> = T extends SelectControlType ? SelectControlConfig<O> : BaseControlConfig & { type: T };
+> = T extends SelectControlType ? SelectControlConfig<O> : BaseControlConfig<T>;
 
 /** --------------------------------------------
  * Custom controls
  * --------------------------------------------- */
-export type CustomComponentControlConfig<P = unknown> = BaseControlConfig & {
-  type: InternalControlType | React.ComponentType<P>;
-} & Omit<P, 'onChange' | 'hovered'>; // two run-time properties from superset-frontend/src/explore/components/Control.jsx
+export type CustomComponentControlConfig<P = unknown> = BaseControlConfig<
+  InternalControlType | React.ComponentType<P>
+> &
+  Omit<P, 'onChange' | 'hovered'>; // two run-time properties from superset-frontend/src/explore/components/Control.jsx
 
 // Catch-all ControlConfig
-export type ControlConfig<T extends SelectOption = SelectOption> =
-  | BaseControlConfig
-  | CustomComponentControlConfig
-  | SelectControlConfig<T>;
+//  - if T == known control types, return SharedControlConfig,
+//  - otherwise assume it's a custom component control
+export type ControlConfig<
+  T extends InternalControlType | unknown = InternalControlType,
+  O extends SelectOption = SelectOption
+> = T extends InternalControlType ? SharedControlConfig<T, O> : CustomComponentControlConfig<T>;
 
 /** --------------------------------------------
  * Chart plugin control panel config
@@ -261,8 +267,8 @@ export type ControlSetItem =
   | SharedControlAlias
   | OverrideSharedControlItem
   | CustomControlItem
-  // using ReactElement instead of ReactNode as string, number, etc. may
-  // interfere with other control config types
+  // use ReactElement instead of ReactNode because `string`, `number`, etc. may
+  // interfere with other ControlSetItem types
   | ReactElement
   | null;
 
