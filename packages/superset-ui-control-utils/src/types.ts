@@ -158,7 +158,7 @@ export type TabOverride = 'data' | boolean;
  * - visibility: a function that uses control panel props to check whether a control should
  *    be visibile.
  */
-export interface BaseControlConfig {
+interface BaseControlConfig {
   label?: ReactNode;
   description?: ReactNode;
   default?: unknown;
