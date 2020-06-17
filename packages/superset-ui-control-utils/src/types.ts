@@ -67,7 +67,7 @@ export interface ActionDispatcher<ARGS extends unknown[], A extends Action = Any
 /**
  * Mapping of action dispatchers
  */
-export interface ControlPanelActionDispathers {
+export interface ControlPanelActionDispatchers {
   setDatasource: ActionDispatcher<[DatasourceMeta]>;
 }
 
@@ -86,7 +86,7 @@ export interface ControlStateMapping {
 
 // Ref: superset-frontend/src/explore/components/ControlPanelsContainer.jsx
 export interface ControlPanelsContainerProps extends AnyDict {
-  actions: ControlPanelActionDispathers;
+  actions: ControlPanelActionDispatchers;
   controls: ControlStateMapping;
   exportState: AnyDict;
   form_data: QueryFormData;
@@ -171,20 +171,12 @@ export interface GeneralControlConfig {
   mapStateToProps?: (
     state: ControlPanelState,
     control: ControlConfig,
-    actions?: ControlPanelActionDispathers,
+    actions?: ControlPanelActionDispatchers,
   ) => ExtraControlProps;
   tabOverride?: TabOverride;
   visibility?: (props: ControlPanelsContainerProps) => boolean;
   [key: string]: unknown;
 }
-
-export interface SharedControlConfig extends GeneralControlConfig {
-  type: InternalControlType;
-}
-
-export type CustomComponentControlConfig<P = unknown> = GeneralControlConfig & {
-  type: InternalControlType | React.ComponentType<P>;
-} & Omit<P, 'onChange' | 'hovered'>; // two run-time properties from superset-frontend/src/explore/components/Control.jsx
 
 /** --------------------------------------------
  * Additional Config for specific control Types
@@ -215,6 +207,19 @@ export interface SelectControlConfig<T extends SelectOption = SelectOption>
   valueRenderer?: (option: T) => ReactNode;
 }
 
+export type SharedControlConfig<
+  T extends InternalControlType = InternalControlType,
+  O extends SelectOption = SelectOption
+> = T extends SelectControlType ? SelectControlConfig<O> : GeneralControlConfig & { type: T };
+
+/** --------------------------------------------
+ * Custom controls
+ * --------------------------------------------- */
+export type CustomComponentControlConfig<P = unknown> = GeneralControlConfig & {
+  type: InternalControlType | React.ComponentType<P>;
+} & Omit<P, 'onChange' | 'hovered'>; // two run-time properties from superset-frontend/src/explore/components/Control.jsx
+
+// Catch-all ControlConfig
 export type ControlConfig<T extends SelectOption = SelectOption> =
   | GeneralControlConfig
   | CustomComponentControlConfig
@@ -250,6 +255,8 @@ export type ControlSetItem =
   | CustomControlItem
   | ReactElement
   | null;
+
+export type ExpandedControlItem = CustomControlItem | ReactElement | null;
 
 export type ControlSetRow = ControlSetItem[];
 

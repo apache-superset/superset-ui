@@ -2,6 +2,9 @@ import * as constantsModule from './constants';
 import * as sharedControlsModule from './shared-controls';
 import * as sectionModules from './sections';
 
+// explore all available shared controls
+export { default as sharedControls } from './shared-controls';
+
 // `export * as x from 'y'` doesn't work for some reason
 export const constants = constantsModule;
 export const internalSharedControls = sharedControlsModule;
