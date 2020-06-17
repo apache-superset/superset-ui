@@ -253,6 +253,8 @@ export type ControlSetItem =
   | SharedControlAlias
   | OverrideSharedControlItem
   | CustomControlItem
+  // using ReactElement instead of ReactNode as string, number, etc. may
+  // interfere with other control config types
   | ReactElement
   | null;
 
