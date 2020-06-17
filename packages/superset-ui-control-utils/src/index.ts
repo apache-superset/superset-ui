@@ -6,13 +6,13 @@ import * as sectionModules from './sections';
 export const constants = constantsModule;
 export const internalSharedControls = sharedControlsModule;
 export const sections = sectionModules;
-export { D3_FORMAT_DOCS, D3_FORMAT_OPTIONS, D3_TIME_FORMAT_OPTIONS } from './D3Formatting';
-export { formatSelectOptions, formatSelectOptionsForRange } from './selectOptions';
+export { D3_FORMAT_DOCS, D3_FORMAT_OPTIONS, D3_TIME_FORMAT_OPTIONS } from './utils/D3Formatting';
+export { formatSelectOptions, formatSelectOptionsForRange } from './utils/selectOptions';
+export * from './utils/mainMetric';
 
 export * from './components/InfoTooltipWithTrigger';
 export * from './components/ColumnOption';
 export * from './components/ColumnTypeLabel';
 export * from './components/MetricOption';
 
-export * from './mainMetric';
 export * from './types';

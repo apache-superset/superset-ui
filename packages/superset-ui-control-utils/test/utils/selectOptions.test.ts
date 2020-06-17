@@ -16,23 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { mainMetric } from '../src/mainMetric';
+import { formatSelectOptions, formatSelectOptionsForRange } from '../../src';
 
-describe('mainMetric', () => {
-  it('is null when no options', () => {
-    expect(mainMetric([])).toBeUndefined();
-    expect(mainMetric(null)).toBeUndefined();
+describe('formatSelectOptions', () => {
+  it('formats an array of options', () => {
+    expect(formatSelectOptions([1, 5, 10, 25, 50, 'unlimited'])).toEqual([
+      [1, '1'],
+      [5, '5'],
+      [10, '10'],
+      [25, '25'],
+      [50, '50'],
+      ['unlimited', 'unlimited'],
+    ]);
   });
-  it('prefers the "count" metric when first', () => {
-    const metrics = [{ metric_name: 'count' }, { metric_name: 'foo' }];
-    expect(mainMetric(metrics)).toBe('count');
-  });
-  it('prefers the "count" metric when not first', () => {
-    const metrics = [{ metric_name: 'foo' }, { metric_name: 'count' }];
-    expect(mainMetric(metrics)).toBe('count');
-  });
-  it('selects the first metric when "count" is not an option', () => {
-    const metrics = [{ metric_name: 'foo' }, { metric_name: 'not_count' }];
-    expect(mainMetric(metrics)).toBe('foo');
+});
+
+describe('formatSelectOptionsForRange', () => {
+  it('generates select options from a range', () => {
+    expect(formatSelectOptionsForRange(1, 5)).toEqual([
+      [1, '1'],
+      [2, '2'],
+      [3, '3'],
+      [4, '4'],
+      [5, '5'],
+    ]);
   });
 });
