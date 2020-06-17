@@ -158,8 +158,7 @@ export type TabOverride = 'data' | boolean;
  * - visibility: a function that uses control panel props to check whether a control should
  *    be visibile.
  */
-export interface GeneralControlConfig {
-  type: unknown;
+export interface BaseControlConfig {
   label?: ReactNode;
   description?: ReactNode;
   default?: unknown;
@@ -195,7 +194,7 @@ type SelectControlType =
   | 'AdhocFilterControlVerifiedOptions';
 
 export interface SelectControlConfig<T extends SelectOption = SelectOption>
-  extends GeneralControlConfig {
+  extends BaseControlConfig {
   type: SelectControlType;
   clearable?: boolean;
   freeForm?: boolean;
@@ -210,18 +209,18 @@ export interface SelectControlConfig<T extends SelectOption = SelectOption>
 export type SharedControlConfig<
   T extends InternalControlType = InternalControlType,
   O extends SelectOption = SelectOption
-> = T extends SelectControlType ? SelectControlConfig<O> : GeneralControlConfig & { type: T };
+> = T extends SelectControlType ? SelectControlConfig<O> : BaseControlConfig & { type: T };
 
 /** --------------------------------------------
  * Custom controls
  * --------------------------------------------- */
-export type CustomComponentControlConfig<P = unknown> = GeneralControlConfig & {
+export type CustomComponentControlConfig<P = unknown> = BaseControlConfig & {
   type: InternalControlType | React.ComponentType<P>;
 } & Omit<P, 'onChange' | 'hovered'>; // two run-time properties from superset-frontend/src/explore/components/Control.jsx
 
 // Catch-all ControlConfig
 export type ControlConfig<T extends SelectOption = SelectOption> =
-  | GeneralControlConfig
+  | BaseControlConfig
   | CustomComponentControlConfig
   | SelectControlConfig<T>;
 
