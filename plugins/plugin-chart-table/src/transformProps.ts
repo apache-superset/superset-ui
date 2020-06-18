@@ -26,6 +26,7 @@ import {
   getTimeFormatterForGranularity,
 } from '@superset-ui/time-format';
 
+import isEqualArray from './utils/isEqualArray';
 import { TableChartProps, TableChartTransformedProps, DataType, DataColumnMeta } from './types';
 
 const { PERCENT_3_POINT } = NumberFormats;
@@ -60,21 +61,13 @@ const processDataRecords = memoizeOne(function processDataRecords(data: DataReco
     return {
       ...x,
       [TIME_COLUMN]:
-        typeof time === 'string' && time.match(REGEXP_TIMESTAMP_NO_TIMEZONE)
+        typeof time === 'string' && REGEXP_TIMESTAMP_NO_TIMEZONE.test(time)
           ? // force UTC time for timestamps without a timezone
             `${time}Z`
           : time,
     };
   });
 });
-
-const isEqualArray = <T extends unknown[] | undefined | null>(arrA: T, arrB: T) => {
-  return (
-    arrA === arrB ||
-    (!arrA && !arrB) ||
-    (arrA && arrB && arrA.length === arrB.length && arrA.every((x, i) => x === arrB[i]))
-  );
-};
 
 const isEqualColumns = <T extends TableChartProps[]>(propsA: T, propsB: T) => {
   const a = propsA[0];

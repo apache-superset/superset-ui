@@ -16,17 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { ColumnInstance, Column, DefaultSortTypes } from 'react-table';
+import { extent as d3Extent, max as d3Max } from 'd3-array';
 import { FaSort, FaSortUp as FaSortAsc, FaSortDown as FaSortDesc } from 'react-icons/fa';
 import { t } from '@superset-ui/translation';
 import { DataRecordValue, DataRecord } from '@superset-ui/chart';
 
 import { TableChartTransformedProps, DataType, DataColumnMeta } from './types';
-import DataTable, { DataTableProps, SearchInputProps } from './DataTable';
+import DataTable, { DataTableProps, SearchInputProps, SizeOption } from './DataTable';
 import Styles from './Styles';
 import formatValue from './utils/formatValue';
-import extent from './utils/extent';
 import { PAGE_SIZE_OPTIONS } from './controlPanel';
 
 type ValueRange = [number, number];
@@ -132,33 +132,31 @@ export default function TableChart<D extends DataRecord = DataRecord>(
 
   // only take relevant page size options
   const pageSizeOptions = useMemo(
-    () => PAGE_SIZE_OPTIONS.filter(([n, _]) => n <= 2 * data.length),
+    () => PAGE_SIZE_OPTIONS.filter(([n, _]) => n <= 2 * data.length) as SizeOption[],
     [data.length],
   );
 
-  const columns = useMemo(() => {
+  const getValueRange = useCallback(
     function getValueRange(key: string) {
-      let maxValue;
-      let minValue;
       if (typeof data?.[0]?.[key] === 'number') {
         const nums = data.map(row => row[key]) as number[];
-        if (alignPositiveNegative) {
-          // Math.max(...) fails on very large arrays (~10^6), use a custom extent
-          // function borrowed from d3-array instead.
-          [minValue, maxValue] = extent(nums.map(Math.abs));
-          minValue = 0;
-        } else {
-          [minValue, maxValue] = extent(nums);
-        }
-        return [minValue, maxValue] as ValueRange;
+        return (alignPositiveNegative
+          ? [0, d3Max(nums.map(Math.abs))]
+          : d3Extent(nums)) as ValueRange;
       }
       return null;
-    }
+    },
+    [alignPositiveNegative, data],
+  );
 
+  const isActiveFilterValue = useCallback(
     function isActiveFilterValue(key: string, val: DataRecordValue) {
       return !!filters && filters[key]?.includes(val);
-    }
+    },
+    [filters],
+  );
 
+  const toggleFilter = useCallback(
     function toggleFilter(key: string, val: DataRecordValue) {
       const updatedFilters = { ...(filters || {}) };
       if (filters && isActiveFilterValue(key, val)) {
@@ -170,11 +168,47 @@ export default function TableChart<D extends DataRecord = DataRecord>(
       if (onChangeFilter) {
         onChangeFilter(updatedFilters);
       }
-    }
+    },
+    [filters, isActiveFilterValue, onChangeFilter],
+  );
 
-    const getColumnConfigs = (column: DataColumnMeta, i: number): Column<D> => {
+  const getColumnConfigs = useCallback(
+    (column: DataColumnMeta, i: number): Column<D> => {
       const { key, label, dataType } = column;
       const valueRange = showCellBars && getValueRange(key);
+      const cellProps: Column<D>['cellProps'] = ({ value: value_ }, sharedCellProps) => {
+        let className = '';
+        const value = value_ as DataRecordValue;
+        if (dataType === DataType.Number) {
+          className += ' dt-metric';
+        } else if (emitFilter) {
+          className += ' dt-is-filter';
+          if (isActiveFilterValue(key, value)) {
+            className += ' dt-is-active-filter';
+          }
+        }
+        const [isHtml, text] = formatValue(column, value);
+        const style = {
+          ...sharedCellProps.style,
+          background: valueRange
+            ? cellBar({
+                value: value as number,
+                valueRange,
+                alignPositiveNegative,
+                colorPositiveNegative,
+              })
+            : undefined,
+        };
+        return {
+          // show raw number in title in case of numeric values
+          title: typeof value === 'number' ? String(value) : undefined,
+          dangerouslySetInnerHTML: isHtml ? { __html: text } : undefined,
+          cellContent: text,
+          onClick: emitFilter && !valueRange ? () => toggleFilter(key, value) : undefined,
+          className,
+          style,
+        };
+      };
       return {
         id: String(i), // to allow duplicate column keys
         accessor: key,
@@ -182,52 +216,24 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         SortIcon,
         sortDescFirst: sortDesc,
         sortType: getSortTypeByDataType(dataType),
-        cellProps: ({ value: value_ }, cellProps) => {
-          let className = '';
-          const value = value_ as DataRecordValue;
-          if (dataType === DataType.Number) {
-            className += ' dt-metric';
-          } else if (emitFilter) {
-            className += ' dt-is-filter';
-            if (isActiveFilterValue(key, value)) {
-              className += ' dt-is-active-filter';
-            }
-          }
-          const [isHtml, text] = formatValue(column, value);
-          return {
-            // show raw number in title in case of numeric values
-            title: typeof value === 'number' ? String(value) : undefined,
-            dangerouslySetInnerHTML: isHtml ? { __html: text } : undefined,
-            cellContent: text,
-            onClick: emitFilter && !valueRange ? () => toggleFilter(key, value) : undefined,
-            className,
-            style: {
-              ...cellProps.style,
-              background: valueRange
-                ? cellBar({
-                    value: value as number,
-                    valueRange,
-                    alignPositiveNegative,
-                    colorPositiveNegative,
-                  })
-                : undefined,
-            },
-          };
-        },
+        cellProps,
       };
-    };
+    },
+    [
+      alignPositiveNegative,
+      colorPositiveNegative,
+      emitFilter,
+      getValueRange,
+      isActiveFilterValue,
+      showCellBars,
+      sortDesc,
+      toggleFilter,
+    ],
+  );
+
+  const columns = useMemo(() => {
     return columnsMeta.map(getColumnConfigs);
-  }, [
-    alignPositiveNegative,
-    colorPositiveNegative,
-    columnsMeta,
-    data,
-    emitFilter,
-    filters,
-    onChangeFilter,
-    showCellBars,
-    sortDesc,
-  ]);
+  }, [columnsMeta, getColumnConfigs]);
 
   return (
     <Styles>

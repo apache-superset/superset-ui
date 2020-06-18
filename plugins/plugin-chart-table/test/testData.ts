@@ -18,7 +18,6 @@
  */
 import { ChartProps } from '@superset-ui/chart';
 import { DatasourceType } from '@superset-ui/query';
-import { TableChartProps } from '../src/types';
 
 const basicFormData = {
   alignPn: false,
@@ -37,7 +36,6 @@ const basicFormData = {
 const basicChartProps = {
   width: 200,
   height: 500,
-  annotationData: {},
   datasource: {
     id: 0,
     name: '',
@@ -47,8 +45,6 @@ const basicChartProps = {
     columnFormats: {},
     verboseMap: {},
   },
-  rawDatasource: {},
-  rawFormData: {},
   hooks: {},
   initialValues: {},
   queryData: {
@@ -63,8 +59,8 @@ const basicChartProps = {
 /**
  * Basic data input
  */
-const basic: TableChartProps = {
-  ...basicChartProps,
+const basic = {
+  ...new ChartProps(basicChartProps),
   queryData: {
     data: {
       columns: ['__timestamp', 'name', 'sum__num'],
@@ -91,7 +87,7 @@ const basic: TableChartProps = {
  *   - verbose map
  *   - metric columns
  */
-const advanced: ChartProps = {
+const advanced = {
   ...basic,
   datasource: {
     ...basic.datasource,
