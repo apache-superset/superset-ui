@@ -29,6 +29,8 @@ import React, {
 } from 'react';
 import { TableInstance, Hooks } from 'react-table';
 import getScrollBarSize from '../utils/getScrollBarSize';
+import needScrollBar from '../utils/needScrollBar';
+import useMountedMemo from '../utils/useMountedMemo';
 
 type ReactElementWithChildren<
   T extends keyof JSX.IntrinsicElements,
@@ -95,27 +97,6 @@ const mergeStyleProp = (node: ReactElement<{ style?: CSSProperties }>, style: CS
 });
 
 /**
- * Whether we need scrollbars
- */
-function needScroll({
-  width,
-  height,
-  innerHeight,
-  scrollBarSize,
-  innerWidth,
-}: {
-  width: number;
-  height: number;
-  innerHeight: number;
-  scrollBarSize: number;
-  innerWidth: number;
-}): [boolean, boolean] {
-  const hasVerticalScroll = innerHeight > height;
-  const hasHorizontalScroll = innerWidth > width - (hasVerticalScroll ? scrollBarSize : 0);
-  return [hasVerticalScroll, hasHorizontalScroll];
-}
-
-/**
  * An HOC for generating sticky header and fixed-height scrollable area
  */
 function StickyWrap({
@@ -174,7 +155,7 @@ function StickyWrap({
       const fullTableHeight = (bodyThead.parentNode as HTMLTableElement).clientHeight;
       const ths = bodyThead.childNodes[0].childNodes as NodeListOf<HTMLTableHeaderCellElement>;
       const widths = Array.from(ths).map(th => th.clientWidth);
-      const [hasVerticalScroll, hasHorizontalScroll] = needScroll({
+      const [hasVerticalScroll, hasHorizontalScroll] = needScrollBar({
         width: maxWidth,
         height: maxHeight - theadHeight,
         innerHeight: fullTableHeight,
@@ -291,24 +272,6 @@ function StickyWrap({
       {sizerTable}
     </div>
   );
-}
-
-/**
- * Execute a memoized callback only when mounted. Execute again when factory updated.
- * Returns undefined if not mounted yet.
- */
-function useMountedMemo<T>(factory: () => T, deps?: unknown[]): T | undefined {
-  const mounted = useRef<typeof factory>();
-  useLayoutEffect(() => {
-    mounted.current = factory;
-  });
-  return useMemo(() => {
-    if (mounted.current) {
-      return factory();
-    }
-    return undefined;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mounted.current, mounted.current === factory, ...(deps || [])]);
 }
 
 function useInstance<D extends object>(instance: TableInstance<D>) {
