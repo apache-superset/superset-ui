@@ -26,6 +26,28 @@ cd superset-ui-new-package
 yo @superset-ui/superset
 ```
 
+## File structure generated
+
+```
+├── README.md
+├── package.json
+├── src
+│   ├── YourPluginName.tsx
+│   ├── images
+│   │   └── thumbnail.png
+│   ├── index.ts
+│   ├── plugin
+│   │   ├── buildQuery.ts
+│   │   ├── controlPanel.ts
+│   │   ├── index.ts
+│   │   └── transformProps.ts
+│   └── types.ts
+├── test
+│   └── index.test.ts
+└── types
+    └── external.d.ts
+```
+
 ## License
 
 Apache-2.0
