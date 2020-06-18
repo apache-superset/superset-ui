@@ -5,6 +5,5 @@ export { default as HelloWorldChartPlugin } from './plugin';
  * If you want to export multiple visualization modules, you will need to
  * either add additional plugin folders (similar in structure to ./plugin)
  * OR export multiple instances of `ChartPlugin` extensions in ./plugin/index.ts
- * exports from HelloWorld.tsx, e.g.:
- *
+ * which in turn load exports from HelloWorld.tsx
  */

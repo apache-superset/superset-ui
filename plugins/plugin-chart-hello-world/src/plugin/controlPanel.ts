@@ -91,11 +91,24 @@ export default {
    * - validateNonEmpty: must have at least one value
    * - validateInteger: must be an integer value
    * - validateNumber: must be an intger or decimal value
-   */ controlPanelSections: [
+   */
+
+  // For control input types, see: superset-frontend/src/explore/components/controls/index.js
+  controlPanelSections: [
     {
       label: t('Query'),
       expanded: true,
       controlSetRows: [['groupby'], ['metrics'], ['adhoc_filters'], ['row_limit', null]],
+    },
+    {
+      label: t('Hello Controls!'),
+      expanded: true,
+      controlSetRows: [
+        // TODO: Checkbox for bold
+        // TODO: Select menu for font size
+        // TODO: Input field for text replacement
+        //
+      ],
     },
   ],
   controlOverrides: {
