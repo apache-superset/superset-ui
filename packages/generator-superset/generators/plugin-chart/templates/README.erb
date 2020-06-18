@@ -30,3 +30,25 @@ Then use it via `SuperChart`. See [storybook](https://apache-superset.github.io/
   }}
 />
 ```
+
+### File structure generated
+
+```
+├── README.md
+├── package.json
+├── src
+│   ├── YourPluginName.tsx
+│   ├── images
+│   │   └── thumbnail.png
+│   ├── index.ts
+│   ├── plugin
+│   │   ├── buildQuery.ts
+│   │   ├── controlPanel.ts
+│   │   ├── index.ts
+│   │   └── transformProps.ts
+│   └── types.ts
+├── test
+│   └── index.test.ts
+└── types
+    └── external.d.ts
+```
