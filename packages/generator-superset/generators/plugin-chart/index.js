@@ -41,7 +41,7 @@ module.exports = class extends Generator {
       ['src/plugin/buildQuery.erb', 'src/plugin/buildQuery.ts'],
       ['src/plugin/controlPanel.txt', 'src/plugin/controlPanel.ts'],
       ['src/plugin/index.erb', 'src/plugin/index.ts'],
-      ['src/plugin/transformProps.txt', 'src/plugin/transformProps.ts'],
+      ['src/plugin/transformProps.erb', 'src/plugin/transformProps.ts'],
       ['src/MyChart.erb', `src/${packageLabel}.tsx`],
       ['test/index.erb', 'test/index.test.ts'],
     ].forEach(([src, dest]) => {

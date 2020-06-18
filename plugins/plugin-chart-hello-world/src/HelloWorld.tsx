@@ -29,8 +29,11 @@ export type HelloWorldProps = {
 /**
  * ********** WHAT YOU CAN BUILD HERE (3 OPTIONS!) **********
  *  In essence, a chart is given a few key ingredients to work with:
- *  Data: provided via `props.data`
- *  A DOM element: You can add your chart in two methods:
+ *  * Data: provided via `props.data`
+ *  * A DOM element
+ *  * FormData (your controls!)
+ *
+ *  You can add your chart in (at least) methods:
  *  1) Class component returning a block of JSX to drop right into
  *     the dashboard. This also shows how to use a "ref" to get a
  *     hold of the DOM element of the chart if needed.
@@ -87,6 +90,7 @@ export default class HelloWorld extends PureComponent<HelloWorldProps> {
 
 /**
  * EXAMPLE OF OPTION 2 - Function component with DOM ref
+ *
  * Note: this export is not being consumed anywhere.
  * The viz plugin only uses the default export. If you want to build a plugin with
  * multiple chart exports, you will need to adjust index.ts (see comments there)
@@ -99,10 +103,10 @@ export function HelloWorldOpt2(props: any) {
   useEffect(() => {
     const root = rootElem.current as HTMLElement;
     console.log('Approach 2 element', root);
-    root.innerHTML = `<h3>Hello, World! (option 2)</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
   });
 
   // sometimes you just want to get a hold of the DOM and go nuts. Here's one way:
+
   console.log('Approach 2 props', props);
 
   const Wrapper = styled.div`
@@ -113,11 +117,17 @@ export function HelloWorldOpt2(props: any) {
     width: ${width};
   `;
 
-  return <Wrapper ref={rootElem}></Wrapper>;
+  return (
+    <Wrapper ref={rootElem}>
+      <h3>Hello, World! (option 2)</h3>
+      <pre>${JSON.stringify(data, null, 2)}</pre>
+    </Wrapper>
+  );
 }
 
 /**
  * EXAMPLE OF OPTION 3 - "reactified" function
+ *
  * Reactify takes a DOM-oriented render function, plus an optional object of
  * React lifecycle callbacks, and renders that. Handy for D3-style DOM manipulation
  * viz components.
