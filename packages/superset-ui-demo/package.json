@@ -61,7 +61,7 @@
     "@superset-ui/legacy-plugin-chart-sunburst": "0.14.0",
     "@superset-ui/legacy-plugin-chart-table": "0.14.0",
     "@superset-ui/legacy-plugin-chart-treemap": "0.14.0",
-    "@superset-ui/legacy-plugin-chart-word-cloud": "^0.11.15",
+    "@superset-ui/legacy-plugin-chart-word-cloud": "^0.14.0",
     "@superset-ui/legacy-plugin-chart-world-map": "0.14.0",
     "@superset-ui/legacy-preset-chart-big-number": "0.14.0",
     "@superset-ui/number-format": "0.14.0",
