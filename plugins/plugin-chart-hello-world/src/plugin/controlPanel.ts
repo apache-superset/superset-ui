@@ -68,11 +68,6 @@ export default {
    *   },
    * }
    *
-   * This would create a new control called `secondary_entity`, which is 
-   * based on the standard `entity` control and only offers columns that are 
-   * defined as groupable in the table metadata,
-   * and requires the control to not be empty prior to execution.
-   *
    * In addition to the basic drop down control, there are several predefined
    * control types (can be set via the `type` property) that can be used. Some 
    * commonly used examples:
@@ -96,6 +91,7 @@ export default {
    * - validateNumber: must be an intger or decimal value
    */
 
+  // For control input types, see: superset-frontend/src/explore/components/controls/index.js
   controlPanelSections: [
     {
       label: t('Query'),
