@@ -84,6 +84,9 @@ export default {
    * - CheckboxControl: A checkbox for choosing true/false values
    * - SliderControl: A slider with min/max values
    * - TextControl: Control for text data
+   *  
+   * For more control input types, check out the `incubator-superset` repo
+   * and open this file: superset-frontend/src/explore/components/controls/index.js
    *
    * To ensure all controls have been filled out correctly, the following
    * validators are provided
@@ -93,7 +96,6 @@ export default {
    * - validateNumber: must be an intger or decimal value
    */
 
-  // For control input types, see: superset-frontend/src/explore/components/controls/index.js
   controlPanelSections: [
     {
       label: t('Query'),
@@ -104,10 +106,48 @@ export default {
       label: t('Hello Controls!'),
       expanded: true,
       controlSetRows: [
-        // TODO: Checkbox for bold
-        // TODO: Select menu for font size
-        // TODO: Input field for text replacement
-        //
+        [
+          {
+            name: 'header_text',
+            config: {
+              type: 'TextControl',
+              default: 'Hello, World',
+              renderTrigger: true,
+              label: t('Header Text'),
+              description: t('The text you want to see in the header'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'bold_text',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Bold Text'),
+              renderTrigger: true,
+              default: true,
+              description: t('A checkbox to make the '),
+            },
+          },
+        ],
+        [
+          {
+            name: 'header_font_size',
+            config: {
+              type: 'SelectControl',
+              label: t('Font Size'),
+              default: 'medium',
+              choices: [
+                ['small', 'small'],
+                ['medium', 'medium'],
+                ['large', 'large'],
+              ],
+              renderTrigger: true,
+              // ^ this makes it apply instantaneously, without triggering a "run query" button
+              description: t('The size of your header font'),
+            },
+          },
+        ],
       ],
     },
   ],
