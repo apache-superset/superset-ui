@@ -16,42 +16,65 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { t } from '@superset-ui/translation';
-import React from 'react';
-import { Row, FilterValue, useAsyncDebounce } from 'react-table';
-import { FormControl } from 'react-bootstrap';
+import React, { ComponentType, ChangeEventHandler } from 'react';
+import { Row, FilterValue } from 'react-table';
+import useAsyncState from '../utils/useAsyncState';
 
-interface GlobalFilterProps<D extends object> {
-  preGlobalFilteredRows: Row<D>[];
-  globalFilter?: string;
-  setGlobalFilter: (filterValue: FilterValue) => void;
+export interface SearchInputProps {
+  count: number;
+  value: string;
+  onChange: ChangeEventHandler<HTMLInputElement>;
 }
 
-export default function GlobalFilter<D extends object>({
-  preGlobalFilteredRows,
-  globalFilter,
-  setGlobalFilter,
-}: GlobalFilterProps<D>) {
-  const count = preGlobalFilteredRows.length;
-  const [value, setValue] = React.useState(globalFilter);
-  const onChange = useAsyncDebounce((newValue: string) => {
-    setGlobalFilter(newValue || undefined);
-  }, 200);
+export interface GlobalFilterProps<D extends object> {
+  preGlobalFilteredRows: Row<D>[];
+  // filter value cannot be `undefined` otherwise React will report component
+  // control type undefined error
+  filterValue: string;
+  setGlobalFilter: (filterValue: FilterValue) => void;
+  searchInput?: ComponentType<SearchInputProps>;
+}
 
+function DefaultSearchInput({ count, value, onChange }: SearchInputProps) {
   return (
     <span className="dt-global-filter">
-      {t('Search')}{' '}
-      <FormControl
-        bsSize="small"
-        value={value}
+      Search{' '}
+      <input
+        className="form-control input-sm"
         placeholder={`${count} records...`}
-        onChange={e => {
-          const target = e.target as HTMLInputElement;
-          e.preventDefault();
-          setValue(target.value);
-          onChange(target.value);
-        }}
+        value={value}
+        onChange={onChange}
       />
     </span>
   );
 }
+
+export default (React.memo as <T>(fn: T) => T)(function GlobalFilter<D extends object>({
+  preGlobalFilteredRows,
+  filterValue = '',
+  searchInput,
+  setGlobalFilter,
+}: GlobalFilterProps<D>) {
+  const count = preGlobalFilteredRows.length;
+  const [value, setValue] = useAsyncState(
+    filterValue,
+    (newValue: string) => {
+      setGlobalFilter(newValue || undefined);
+    },
+    200,
+  );
+
+  const SearchInput = searchInput || DefaultSearchInput;
+
+  return (
+    <SearchInput
+      count={count}
+      value={value}
+      onChange={e => {
+        const target = e.target as HTMLInputElement;
+        e.preventDefault();
+        setValue(target.value);
+      }}
+    />
+  );
+});

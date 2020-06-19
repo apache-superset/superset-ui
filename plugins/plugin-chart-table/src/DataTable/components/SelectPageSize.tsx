@@ -17,46 +17,63 @@
  * under the License.
  */
 import React from 'react';
-import { FormControl } from 'react-bootstrap';
 
-interface SelectPageSizeProps {
-  sizeOptions: number[];
+export type SizeOption = number | [number, string];
+
+export interface SelectPageSizeProps {
+  sizeOptions: SizeOption[];
   currentSize?: number;
+  total?: number;
   onChange: (pageSize: number) => void;
 }
 
-export default function SelectPageSize({
+function getOptionValue(x: SizeOption) {
+  return Array.isArray(x) ? x[0] : x;
+}
+
+export default React.memo(function SelectPageSize({
+  total,
   sizeOptions,
-  currentSize: currentSize_,
+  currentSize,
   onChange,
 }: SelectPageSizeProps) {
-  const currentSize = currentSize_ || sizeOptions[0];
+  const sizeOptionValues = sizeOptions.map(getOptionValue);
+  let options = [...sizeOptions];
   // insert current size to list
-  if (!sizeOptions.includes(currentSize)) {
-    sizeOptions.splice(
-      sizeOptions.findIndex(x => x > currentSize),
+  if (
+    currentSize !== undefined &&
+    (currentSize !== total || !sizeOptionValues.includes(0)) &&
+    !sizeOptionValues.includes(currentSize)
+  ) {
+    options = [...sizeOptions];
+    options.splice(
+      sizeOptionValues.findIndex(x => x > currentSize),
       0,
       currentSize,
     );
   }
+  const current = currentSize === undefined ? sizeOptionValues[0] : currentSize;
   return (
     <span className="dt-select-page-size form-inline">
       Show{' '}
-      <FormControl
-        bsSize="small"
-        componentClass="select"
-        value={currentSize}
+      <select
+        className="form-control input-sm"
+        value={current}
+        onBlur={() => {}}
         onChange={e => {
           onChange(Number((e.target as HTMLSelectElement).value));
         }}
       >
-        {sizeOptions.map(size => (
-          <option key={size} value={size}>
-            {size}
-          </option>
-        ))}
-      </FormControl>{' '}
+        {options.map(option => {
+          const [size, text] = Array.isArray(option) ? option : [option, option];
+          return (
+            <option key={size} value={size}>
+              {text}
+            </option>
+          );
+        })}
+      </select>{' '}
       entries
     </span>
   );
-}
+});

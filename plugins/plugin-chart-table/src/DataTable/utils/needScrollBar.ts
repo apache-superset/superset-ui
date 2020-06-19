@@ -16,10 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export * from './hooks/useColumnCellProps';
-export * from './hooks/useSticky';
-export * from './components/GlobalFilter';
-export * from './components/Pagination';
-export * from './components/SelectPageSize';
-export * from './DataTable';
-export { default } from './DataTable';
+/**
+ * Whether a container need scroll bars when in another container.
+ */
+export default function needScrollBar({
+  width,
+  height,
+  innerHeight,
+  innerWidth,
+  scrollBarSize,
+}: {
+  width: number;
+  height: number;
+  innerHeight: number;
+  scrollBarSize: number;
+  innerWidth: number;
+}): [boolean, boolean] {
+  const hasVerticalScroll = innerHeight > height;
+  const hasHorizontalScroll = innerWidth > width - (hasVerticalScroll ? scrollBarSize : 0);
+  return [hasVerticalScroll, hasHorizontalScroll];
+}

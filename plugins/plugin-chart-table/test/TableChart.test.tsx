@@ -39,14 +39,26 @@ describe('plugin-chart-table', () => {
         }).pageSize,
       ).toBe(0);
     });
+    it('should memoize data records', () => {
+      expect(transformProps(testData.basic).data).toBe(transformProps(testData.basic).data);
+    });
+    it('should memoize columns meta', () => {
+      expect(transformProps(testData.basic).columns).toBe(
+        transformProps({
+          ...testData.basic,
+          formData: { ...testData.basic.formData, pageLength: null },
+        }).columns,
+      );
+    });
   });
 
   describe('TableChart', () => {
     let wrap: CommonWrapper; // the ReactDataTable wraper
+    let tree: Cheerio;
 
     it('render basic data', () => {
-      wrap = mount(<TableChart {...transformProps(testData.basic)} />);
-      const tree = wrap.render(); // returns a CheerioWrapper with jQuery-like API
+      wrap = mount(<TableChart {...transformProps(testData.basic)} sticky={false} />);
+      tree = wrap.render(); // returns a CheerioWrapper with jQuery-like API
       const cells = tree.find('td');
       expect(cells).toHaveLength(6);
       expect(cells.eq(0).text()).toEqual('2020-01-01 12:34:56');
@@ -57,9 +69,9 @@ describe('plugin-chart-table', () => {
     });
 
     it('render advanced data', () => {
+      wrap = mount(<TableChart {...transformProps(testData.advanced)} sticky={false} />);
+      tree = wrap.render();
       // should successfull rerender with new props
-      wrap.setProps(transformProps(testData.advanced));
-      const tree = wrap.render();
       const cells = tree.find('td');
       expect(tree.find('th').eq(1).text()).toEqual('Sum of Num');
       expect(cells.eq(2).text()).toEqual('12.346%');
@@ -67,8 +79,8 @@ describe('plugin-chart-table', () => {
     });
 
     it('render empty data', () => {
-      wrap.setProps(transformProps(testData.empty));
-      const tree = wrap.render();
+      wrap.setProps({ ...transformProps(testData.empty), sticky: false });
+      tree = wrap.render();
       expect(tree.text()).toContain('No records found');
     });
   });

@@ -16,35 +16,101 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
+import { ColumnInstance, Column, DefaultSortTypes } from 'react-table';
+import { extent as d3Extent, max as d3Max } from 'd3-array';
+import { FaSort, FaSortUp as FaSortAsc, FaSortDown as FaSortDesc } from 'react-icons/fa';
+import { t } from '@superset-ui/translation';
 import { DataRecordValue, DataRecord } from '@superset-ui/chart';
-import { filterXSS } from 'xss';
-import { TableChartTransformedProps, DataColumnMeta, DataType } from './types';
-import Table, { UseColumnCellPropsColumnOption } from './DataTable';
 
-function isProbablyHTML(text: string) {
-  return /<[^>]+>/.test(text);
+import { TableChartTransformedProps, DataType, DataColumnMeta } from './types';
+import DataTable, { DataTableProps, SearchInputProps, SizeOption } from './DataTable';
+import Styles from './Styles';
+import formatValue from './utils/formatValue';
+import { PAGE_SIZE_OPTIONS } from './controlPanel';
+
+type ValueRange = [number, number];
+
+/**
+ * Return sortType based on data type
+ */
+function getSortTypeByDataType(dataType: DataType): DefaultSortTypes {
+  if (dataType === DataType.DateTime) {
+    return 'datetime';
+  }
+  if (dataType === DataType.String) {
+    return 'alphanumeric';
+  }
+  return 'basic';
 }
 
 /**
- * Format text for cell value
+ * Cell background to render columns as horizontal bar chart
  */
-function formatValue({ formatter }: DataColumnMeta, value: DataRecordValue): [boolean, string] {
-  if (value === null) {
-    return [false, 'N/A'];
+function cellBar({
+  value,
+  valueRange,
+  colorPositiveNegative = false,
+  alignPositiveNegative,
+}: {
+  value: number;
+  valueRange: ValueRange;
+  colorPositiveNegative: boolean;
+  alignPositiveNegative: boolean;
+}) {
+  const [minValue, maxValue] = valueRange;
+  const r = colorPositiveNegative && value < 0 ? 150 : 0;
+  if (alignPositiveNegative) {
+    const perc = Math.abs(Math.round((value / maxValue) * 100));
+    // The 0.01 to 0.001 is a workaround for what appears to be a
+    // CSS rendering bug on flat, transparent colors
+    return (
+      `linear-gradient(to right, rgba(${r},0,0,0.2), rgba(${r},0,0,0.2) ${perc}%, ` +
+      `rgba(0,0,0,0.01) ${perc}%, rgba(0,0,0,0.001) 100%)`
+    );
   }
-  if (formatter) {
-    // in case percent metric can specify percent format in the future
-    return [false, formatter(value as number)];
-  }
-  if (typeof value === 'string') {
-    const htmlText = filterXSS(value, { stripIgnoreTag: true });
-    return isProbablyHTML(htmlText) ? [true, htmlText] : [false, value];
-  }
-  return [false, value.toString()];
+  const posExtent = Math.abs(Math.max(maxValue, 0));
+  const negExtent = Math.abs(Math.min(minValue, 0));
+  const tot = posExtent + negExtent;
+  const perc1 = Math.round((Math.min(negExtent + value, negExtent) / tot) * 100);
+  const perc2 = Math.round((Math.abs(value) / tot) * 100);
+  // The 0.01 to 0.001 is a workaround for what appears to be a
+  // CSS rendering bug on flat, transparent colors
+  return (
+    `linear-gradient(to right, rgba(0,0,0,0.01), rgba(0,0,0,0.001) ${perc1}%, ` +
+    `rgba(${r},0,0,0.2) ${perc1}%, rgba(${r},0,0,0.2) ${perc1 + perc2}%, ` +
+    `rgba(0,0,0,0.01) ${perc1 + perc2}%, rgba(0,0,0,0.001) 100%)`
+  );
 }
 
-export default function TableChart(props: TableChartTransformedProps) {
+function SortIcon({ column }: { column: ColumnInstance }) {
+  const { isSorted, isSortedDesc } = column;
+  let sortIcon = <FaSort />;
+  if (isSorted) {
+    sortIcon = isSortedDesc ? <FaSortDesc /> : <FaSortAsc />;
+  }
+  return sortIcon;
+}
+
+function SearchInput({ count, value, onChange }: SearchInputProps) {
+  return (
+    <span className="dt-global-filter">
+      {t('Search')}{' '}
+      <input
+        className="form-control input-sm"
+        placeholder={t('%s records...', count)}
+        value={value}
+        onChange={onChange}
+      />
+    </span>
+  );
+}
+
+export default function TableChart<D extends DataRecord = DataRecord>(
+  props: TableChartTransformedProps<D> & {
+    sticky?: DataTableProps<D>['sticky'];
+  },
+) {
   const {
     height,
     width,
@@ -57,83 +123,60 @@ export default function TableChart(props: TableChartTransformedProps) {
     showCellBars = true,
     emitFilter = false,
     sortDesc = false,
-    onChangeFilter = () => {},
-    filters: initialFilters = {},
+    onChangeFilter,
+    filters: initialFilters,
+    sticky = true, // whether to use sticky header
   } = props;
 
   const [filters, setFilters] = useState(initialFilters);
 
-  function getValueRange(key: string) {
-    let maxValue;
-    let minValue;
-    if (typeof data?.[0]?.[key] === 'number') {
-      const nums = data.map(row => row[key]) as number[];
-      if (alignPositiveNegative) {
-        maxValue = Math.max(...nums.map(Math.abs));
-        minValue = 0;
-      } else {
-        maxValue = Math.max(...nums);
-        minValue = Math.min(...nums);
+  // only take relevant page size options
+  const pageSizeOptions = useMemo(
+    () => PAGE_SIZE_OPTIONS.filter(([n, _]) => n <= 2 * data.length) as SizeOption[],
+    [data.length],
+  );
+
+  const getValueRange = useCallback(
+    function getValueRange(key: string) {
+      if (typeof data?.[0]?.[key] === 'number') {
+        const nums = data.map(row => row[key]) as number[];
+        return (alignPositiveNegative
+          ? [0, d3Max(nums.map(Math.abs))]
+          : d3Extent(nums)) as ValueRange;
       }
-      return [minValue, maxValue];
-    }
-    return null;
-  }
+      return null;
+    },
+    [alignPositiveNegative, data],
+  );
 
-  /**
-   * Cell background to render columns as horizontal bar chart
-   */
-  function cellBar(val: number, valueRange: number[]) {
-    const [minValue, maxValue] = valueRange;
-    const r = colorPositiveNegative && val < 0 ? 150 : 0;
-    if (alignPositiveNegative) {
-      const perc = Math.abs(Math.round((val / maxValue) * 100));
-      // The 0.01 to 0.001 is a workaround for what appears to be a
-      // CSS rendering bug on flat, transparent colors
-      return (
-        `linear-gradient(to right, rgba(${r},0,0,0.2), rgba(${r},0,0,0.2) ${perc}%, ` +
-        `rgba(0,0,0,0.01) ${perc}%, rgba(0,0,0,0.001) 100%)`
-      );
-    }
-    const posExtent = Math.abs(Math.max(maxValue, 0));
-    const negExtent = Math.abs(Math.min(minValue, 0));
-    const tot = posExtent + negExtent;
-    const perc1 = Math.round((Math.min(negExtent + val, negExtent) / tot) * 100);
-    const perc2 = Math.round((Math.abs(val) / tot) * 100);
-    // The 0.01 to 0.001 is a workaround for what appears to be a
-    // CSS rendering bug on flat, transparent colors
-    return (
-      `linear-gradient(to right, rgba(0,0,0,0.01), rgba(0,0,0,0.001) ${perc1}%, ` +
-      `rgba(${r},0,0,0.2) ${perc1}%, rgba(${r},0,0,0.2) ${perc1 + perc2}%, ` +
-      `rgba(0,0,0,0.01) ${perc1 + perc2}%, rgba(0,0,0,0.001) 100%)`
-    );
-  }
+  const isActiveFilterValue = useCallback(
+    function isActiveFilterValue(key: string, val: DataRecordValue) {
+      return !!filters && filters[key]?.includes(val);
+    },
+    [filters],
+  );
 
-  function isActiveFilterValue(key: string, val: DataRecordValue) {
-    return filters[key]?.includes(val);
-  }
+  const toggleFilter = useCallback(
+    function toggleFilter(key: string, val: DataRecordValue) {
+      const updatedFilters = { ...(filters || {}) };
+      if (filters && isActiveFilterValue(key, val)) {
+        updatedFilters[key] = filters[key].filter((x: DataRecordValue) => x !== val);
+      } else {
+        updatedFilters[key] = [...(filters?.[key] || []), val];
+      }
+      setFilters(updatedFilters);
+      if (onChangeFilter) {
+        onChangeFilter(updatedFilters);
+      }
+    },
+    [filters, isActiveFilterValue, onChangeFilter],
+  );
 
-  function toggleFilter(key: string, val: DataRecordValue) {
-    const updatedFilters = { ...filters };
-    if (isActiveFilterValue(key, val)) {
-      updatedFilters[key] = filters[key].filter((x: DataRecordValue) => x !== val);
-    } else {
-      updatedFilters[key] = [...(filters[key] || []), val];
-    }
-    setFilters(updatedFilters);
-    onChangeFilter(updatedFilters);
-  }
-
-  const columns = columnsMeta.map((column, i) => {
-    const { key, label, dataType } = column;
-    const valueRange = showCellBars && getValueRange(key);
-    return {
-      id: String(i), // to allow duplicate column keys
-      accessor: key,
-      Header: label,
-      dataType,
-      sortDescFirst: sortDesc,
-      cellProps: (({ value: value_ }, cellProps) => {
+  const getColumnConfigs = useCallback(
+    (column: DataColumnMeta, i: number): Column<D> => {
+      const { key, label, dataType } = column;
+      const valueRange = showCellBars && getValueRange(key);
+      const cellProps: Column<D>['cellProps'] = ({ value: value_ }, sharedCellProps) => {
         let className = '';
         const value = value_ as DataRecordValue;
         if (dataType === DataType.Number) {
@@ -145,33 +188,72 @@ export default function TableChart(props: TableChartTransformedProps) {
           }
         }
         const [isHtml, text] = formatValue(column, value);
+        const style = {
+          ...sharedCellProps.style,
+          background: valueRange
+            ? cellBar({
+                value: value as number,
+                valueRange,
+                alignPositiveNegative,
+                colorPositiveNegative,
+              })
+            : undefined,
+        };
         return {
           // show raw number in title in case of numeric values
           title: typeof value === 'number' ? String(value) : undefined,
           dangerouslySetInnerHTML: isHtml ? { __html: text } : undefined,
           cellContent: text,
-          onClick: valueRange ? undefined : () => toggleFilter(key, value),
+          onClick: emitFilter && !valueRange ? () => toggleFilter(key, value) : undefined,
           className,
-          style: {
-            ...cellProps.style,
-            background: valueRange ? cellBar(value as number, valueRange) : undefined,
-          },
+          style,
         };
-      }) as UseColumnCellPropsColumnOption<DataRecord>['cellProps'],
-    };
-  });
+      };
+      return {
+        id: String(i), // to allow duplicate column keys
+        accessor: key,
+        Header: label,
+        SortIcon,
+        sortDescFirst: sortDesc,
+        sortType: getSortTypeByDataType(dataType),
+        cellProps,
+      };
+    },
+    [
+      alignPositiveNegative,
+      colorPositiveNegative,
+      emitFilter,
+      getValueRange,
+      isActiveFilterValue,
+      showCellBars,
+      sortDesc,
+      toggleFilter,
+    ],
+  );
+
+  const columns = useMemo(() => {
+    return columnsMeta.map(getColumnConfigs);
+  }, [columnsMeta, getColumnConfigs]);
 
   return (
-    <Table<DataRecord>
-      className="table table-striped"
-      columns={columns}
-      data={data}
-      showSearchInput={includeSearch}
-      // make `width` and `height` state so when resizing the chart
-      // does not rerender
-      pageSize={pageSize}
-      width={width}
-      height={height}
-    />
+    <Styles>
+      <DataTable<D>
+        columns={columns}
+        data={data}
+        tableClassName="table table-striped table-condensed"
+        searchInput={includeSearch && SearchInput}
+        pageSize={pageSize}
+        pageSizeOptions={pageSizeOptions}
+        width={width}
+        height={height}
+        // 9 page items in > 340px works well even for 100+ pages
+        maxPageItemCount={width > 340 ? 9 : 7}
+        noResultsText={(filter: string) =>
+          t(filter ? 'No matching records found' : 'No records found')
+        }
+        // not in use in Superset, but needed for unit tests
+        sticky={sticky}
+      />
+    </Styles>
   );
 }

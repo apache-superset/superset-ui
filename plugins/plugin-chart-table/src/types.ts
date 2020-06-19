@@ -36,8 +36,8 @@ export interface DataColumnMeta {
   formatter?: TimeFormatter | NumberFormatter;
 }
 
-export interface TableChartData {
-  records: DataRecord[];
+export interface TableChartData<D extends DataRecord = DataRecord> {
+  records: D[];
   columns: string[];
 }
 
@@ -45,7 +45,7 @@ export interface TableChartFormData {
   alignPn?: boolean;
   colorPn?: boolean;
   includeSearch?: boolean;
-  pageSize?: string | number;
+  pageLength?: string | number | null; // null means auto-paginate
   metrics?: QueryFormDataMetric[] | null;
   percentMetrics?: QueryFormDataMetric[] | null;
   orderDesc?: boolean;
@@ -55,20 +55,20 @@ export interface TableChartFormData {
   timeGrainSqla?: TimeGranularity;
 }
 
-export type TableChartProps = ChartProps & {
+export interface TableChartProps<D extends DataRecord = DataRecord> extends ChartProps {
   formData: TableChartFormData;
   queryData: ChartProps['queryData'] & {
-    data?: TableChartData;
+    data?: TableChartData<D>;
   };
-};
+}
 
-export interface TableChartTransformedProps {
+export interface TableChartTransformedProps<D extends DataRecord = DataRecord> {
   height: number;
   width: number;
-  data: DataRecord[];
+  data: D[];
   columns: DataColumnMeta[];
-  metrics?: string[];
-  percentMetrics?: string[];
+  metrics?: (keyof D)[];
+  percentMetrics?: (keyof D)[];
   pageSize?: number;
   showCellBars?: boolean;
   sortDesc?: boolean;

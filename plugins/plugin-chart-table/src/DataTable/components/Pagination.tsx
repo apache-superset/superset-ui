@@ -16,14 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
-interface PaginationProps {
+export interface PaginationProps {
   pageCount: number; // number of pages
   currentPage?: number; // index of current page, zero-based
   maxPageItemCount?: number;
   ellipsis?: string; // content for ellipsis item
   onPageChange: (page: number) => void; // `page` is zero-based
+  style?: CSSProperties;
 }
 
 // first, ..., prev, current, next, ..., last
@@ -34,7 +35,7 @@ const MINIMAL_PAGE_ITEM_COUNT = 7;
  *   - Always include first and last page
  *   - Add ellipsis if needed
  */
-function generatePageItems(total: number, current: number, width: number) {
+export function generatePageItems(total: number, current: number, width: number) {
   if (width < MINIMAL_PAGE_ITEM_COUNT) {
     throw new Error(`Must allow at least ${MINIMAL_PAGE_ITEM_COUNT} page items`);
   }
@@ -61,36 +62,38 @@ function generatePageItems(total: number, current: number, width: number) {
   return items;
 }
 
-export default React.forwardRef(function Pagination(
-  { pageCount, currentPage = 0, maxPageItemCount = 9, onPageChange }: PaginationProps,
-  ref: React.Ref<HTMLDivElement>,
-) {
-  const pageItems = generatePageItems(pageCount, currentPage, maxPageItemCount);
-  return (
-    <div ref={ref} className="dt-pagination">
-      <ul className="pagination pagination-sm">
-        {pageItems.map((item, i) =>
-          typeof item === 'number' ? (
-            // actual page number
-            <li key={item} className={currentPage === item ? 'active' : undefined}>
-              <a
-                href={`#page-${item}`}
-                role="button"
-                onClick={e => {
-                  e.preventDefault();
-                  onPageChange(item);
-                }}
-              >
-                {item + 1}
-              </a>
-            </li>
-          ) : (
-            <li key={item} className="dt-pagination-ellipsis">
-              <span>…</span>
-            </li>
-          ),
-        )}
-      </ul>
-    </div>
-  );
-});
+export default React.memo(
+  React.forwardRef(function Pagination(
+    { style, pageCount, currentPage = 0, maxPageItemCount = 9, onPageChange }: PaginationProps,
+    ref: React.Ref<HTMLDivElement>,
+  ) {
+    const pageItems = generatePageItems(pageCount, currentPage, maxPageItemCount);
+    return (
+      <div ref={ref} className="dt-pagination" style={style}>
+        <ul className="pagination pagination-sm">
+          {pageItems.map((item, i) =>
+            typeof item === 'number' ? (
+              // actual page number
+              <li key={item} className={currentPage === item ? 'active' : undefined}>
+                <a
+                  href={`#page-${item}`}
+                  role="button"
+                  onClick={e => {
+                    e.preventDefault();
+                    onPageChange(item);
+                  }}
+                >
+                  {item + 1}
+                </a>
+              </li>
+            ) : (
+              <li key={item} className="dt-pagination-ellipsis">
+                <span>…</span>
+              </li>
+            ),
+          )}
+        </ul>
+      </div>
+    );
+  }),
+);

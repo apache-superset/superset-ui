@@ -1,5 +1,6 @@
 import React from 'react';
-import { withKnobs, number } from '@storybook/addon-knobs';
+import memoizeOne from 'memoize-one';
+import { withKnobs, number, boolean } from '@storybook/addon-knobs';
 import { SuperChart } from '@superset-ui/chart';
 import TableChartPlugin, { TableChartProps } from '@superset-ui/plugin-chart-table';
 import { basicData, birthNames } from './testData';
@@ -12,60 +13,53 @@ export default {
 
 new TableChartPlugin().configure({ key: 'table' }).register();
 
-function paginated(props_: TableChartProps, pageSize = 50): TableChartProps {
-  const props: TableChartProps = { ...props_ };
-  if (props.formData) {
-    props.formData = {
-      ...props.formData,
-      page_length: pageSize,
-    };
+function expandArray<T>(input: T[], targetSize: number) {
+  if (!input || input.length === 0) {
+    throw new Error('Cannot expand an empty array');
   }
-  // eslint-disable-next-line camelcase
-  if (props.queryData?.form_data) {
-    props.queryData.form_data = {
-      ...props.queryData.form_data,
-      page_length: pageSize,
-    };
+  let arr = input;
+  while (arr.length < targetSize) {
+    arr = arr.concat(arr);
   }
-  return props;
+  return arr.slice(0, targetSize);
 }
 
-function adjustNumCols(props: TableChartProps, numCols = 7): TableChartProps {
-  const newProps = { ...props };
-  if (props?.queryData.data) {
-    const { columns, records } = props.queryData.data;
-    const curSize = columns.length;
-    const newColumns = [...new Array(numCols)].map((_, i) => {
-      return columns[i % curSize];
-    });
-    newProps.queryData = {
-      ...props.queryData,
-      data: {
-        records,
-        columns: newColumns,
-      },
-    };
-  }
-  return newProps;
-}
+// memoize expanded array so to make sure we always return the same
+// data when changing page sizes
+const expandRecords = memoizeOne(expandArray);
+const expandColumns = memoizeOne(expandArray);
 
 /**
  * Load sample data for testing
  * @param props the original props passed to SuperChart
- * @param pageSize number of records perpage
- * @param targetSize the target total number of records
+ * @param pageLength number of records perpage
+ * @param rows the target number of records
+ * @param cols the target number of columns
  */
-function loadData(props: TableChartProps, pageSize = 50, targetSize = 1042): TableChartProps {
+function loadData(
+  props: TableChartProps,
+  { pageLength = 50, rows = 1042, cols = 8, alignPn = false, showCellBars = true },
+): TableChartProps {
   if (!props.queryData) return props;
-  const data = props.queryData?.data;
-  if (data && data.records.length > 0) {
-    while (data.records.length < targetSize) {
-      const { records } = data;
-      data.records = records.concat(records);
-    }
-    data.records = data.records.slice(0, targetSize);
-  }
-  return paginated({ ...props, height: window.innerHeight - 130 }, pageSize);
+  const records = props.queryData?.data?.records || [];
+  const columns = props.queryData?.data?.columns || [];
+  return {
+    ...props,
+    queryData: {
+      ...props.queryData,
+      data: {
+        records: expandRecords(records, rows),
+        columns: expandColumns(columns, cols),
+      },
+    },
+    formData: {
+      ...props.formData,
+      alignPn,
+      pageLength,
+      showCellBars,
+    },
+    height: window.innerHeight - 130,
+  };
 }
 
 export const basic = ({ width, height }) => (
@@ -102,21 +96,19 @@ basic.story = {
 };
 
 export const BigTable = ({ width, height }) => {
-  // memoimize the data so resize do not trigger rerenders of the pagination.
-  const initialProps = React.useMemo(() => loadData(birthNames), []);
-  const numCols = number('Num columns', 5, { range: true, min: 1, max: 11 });
-  const pageSize = number('Page size', 10, { range: true, min: 0, max: 100 });
-  const chartProps = React.useMemo(
-    () => adjustNumCols(paginated(initialProps, pageSize), numCols),
-    [initialProps, pageSize, numCols],
-  );
+  const rows = number('Records', 2046, { range: true, min: 0, max: 50000 });
+  const cols = number('Columns', 8, { range: true, min: 1, max: 20 });
+  const pageLength = number('Page size', 50, { range: true, min: 0, max: 100 });
+  const alignPn = boolean('Algin PosNeg', false);
+  const showCellBars = boolean('Show Cell Bars', true);
+  const chartProps = loadData(birthNames, { pageLength, rows, cols, alignPn, showCellBars });
   return <SuperChart chartType="table" {...chartProps} width={width} height={height} />;
 };
 BigTable.story = {
   parameters: {
     initialSize: {
-      width: 680,
-      height: 420,
+      width: 620,
+      height: 440,
     },
   },
 };

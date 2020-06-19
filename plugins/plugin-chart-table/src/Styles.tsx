@@ -1,10 +1,16 @@
 import styled from '@superset-ui/style';
 
 export default styled.div`
-  margin: 0 auto;
   table {
-    min-width: 100%;
+    width: 100%;
+    min-width: auto;
+    max-width: none;
     margin: 0;
+  }
+
+  th,
+  td {
+    min-width: 4.3em;
   }
 
   thead > tr > th {
@@ -15,13 +21,20 @@ export default styled.div`
   th svg {
     color: #ccc;
     position: absolute;
-    bottom: 0.7em;
+    bottom: 0.6em;
     right: 0.2em;
   }
   th.is-sorted svg {
     color: #a8a8a8;
   }
+  .table > tbody > tr:first-of-type > td,
+  .table > tbody > tr:first-of-type > th {
+    border-top: 0;
+  }
 
+  .dt-controls {
+    padding-bottom: 0.65em;
+  }
   .dt-metric {
     text-align: right;
   }
@@ -55,5 +68,6 @@ export default styled.div`
 
   .dt-no-results {
     text-align: center;
+    padding: 1em 0.6em;
   }
 `;

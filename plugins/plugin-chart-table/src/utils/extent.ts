@@ -16,10 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export * from './hooks/useColumnCellProps';
-export * from './hooks/useSticky';
-export * from './components/GlobalFilter';
-export * from './components/Pagination';
-export * from './components/SelectPageSize';
-export * from './DataTable';
-export { default } from './DataTable';
+export default function extent<T = number | string | Date | undefined | null>(values: T[]) {
+  let min: T | undefined;
+  let max: T | undefined;
+  // eslint-disable-next-line no-restricted-syntax
+  for (const value of values) {
+    if (value !== null) {
+      if (min === undefined) {
+        if (value !== undefined) {
+          min = value;
+          max = value;
+        }
+      } else {
+        if (min > value) {
+          min = value;
+        }
+        if (max !== undefined) {
+          if (max < value) {
+            max = value;
+          }
+        }
+      }
+    }
+  }
+  return [min, max];
+}

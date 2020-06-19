@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export * from './hooks/useColumnCellProps';
-export * from './hooks/useSticky';
-export * from './components/GlobalFilter';
-export * from './components/Pagination';
-export * from './components/SelectPageSize';
-export * from './DataTable';
-export { default } from './DataTable';
+export default function isEqualArray<T extends unknown[] | undefined | null>(arrA: T, arrB: T) {
+  return (
+    arrA === arrB ||
+    (!arrA && !arrB) ||
+    (arrA && arrB && arrA.length === arrB.length && arrA.every((x, i) => x === arrB[i]))
+  );
+}
