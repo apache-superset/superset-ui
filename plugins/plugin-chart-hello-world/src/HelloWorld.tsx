@@ -23,6 +23,10 @@ export type HelloWorldProps = {
   height: number;
   width: number;
   data: { x: number; y: number }[];
+  // add typing here for the props you pass in from transformProps.ts!
+  boldText: boolean;
+  headerFontSize: string;
+  headerText: string;
 };
 
 /**
@@ -30,7 +34,7 @@ export type HelloWorldProps = {
  *  In essence, a chart is given a few key ingredients to work with:
  *  * Data: provided via `props.data`
  *  * A DOM element
- *  * FormData (your controls!)
+ *  * FormData (your controls!) provided as props by transformProps.ts
  *
  *  You can add your chart in (at least) two methods:
  *  1) Class component returning a block of JSX to drop right into
@@ -72,6 +76,12 @@ export default class HelloWorld extends PureComponent<HelloWorldProps> {
       border-radius: ${({ theme }) => theme.gridUnit * 2}px;
       height: ${height};
       width: ${width};
+
+      h3 {
+        /* You can use your props to control CSS! */
+        font-weight: ${({ theme }) =>
+          theme.typography.weights[this.props.boldText ? 'bold' : 'normal']};
+      }
     `;
 
     console.log('Approach 1 props', this.props);
@@ -112,6 +122,11 @@ export function HelloWorldAlt(props: any) {
     border-radius: ${({ theme }) => theme.gridUnit * 2}px;
     height: ${height};
     width: ${width};
+
+    h3 {
+      /* You can use your props to control CSS! */
+      font-weight: ${({ theme }) => theme.typography.weights[props.boldText ? 'bold' : 'normal']};
+    }
   `;
 
   return (
