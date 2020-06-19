@@ -51,6 +51,8 @@ export default function transformProps(chartProps: ChartProps) {
   const { width, height, formData, queryData } = chartProps;
   const { data } = queryData;
 
+  console.log('formData', formData);
+
   return {
     width,
     height,
