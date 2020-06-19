@@ -107,7 +107,6 @@ export default {
         // TODO: Checkbox for bold
         // TODO: Select menu for font size
         // TODO: Input field for text replacement
-        // 
       ],
     },
   ],

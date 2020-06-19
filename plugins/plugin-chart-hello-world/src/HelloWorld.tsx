@@ -17,8 +17,7 @@
  * under the License.
  */
 import React, { PureComponent, useEffect, createRef } from 'react';
-import styled, { withTheme } from '@superset-ui/style';
-import { reactify } from '@superset-ui/chart';
+import styled from '@superset-ui/style';
 
 export type HelloWorldProps = {
   height: number;
@@ -27,20 +26,18 @@ export type HelloWorldProps = {
 };
 
 /**
- * ********** WHAT YOU CAN BUILD HERE (3 OPTIONS!) **********
+ * ******************* WHAT YOU CAN BUILD HERE *******************
  *  In essence, a chart is given a few key ingredients to work with:
  *  * Data: provided via `props.data`
  *  * A DOM element
  *  * FormData (your controls!)
  *
- *  You can add your chart in (at least) methods:
+ *  You can add your chart in (at least) two methods:
  *  1) Class component returning a block of JSX to drop right into
  *     the dashboard. This also shows how to use a "ref" to get a
  *     hold of the DOM element of the chart if needed.
  *  2) A Function component returning a block of JSX, with ref to
  *     the DOM element in use
- *  3) A "reactified" a component, which gives you access to the
- *     DOM element of your rendered chart, which allows you to manipulate the DOM element directly.
  */
 
 /**
@@ -95,7 +92,7 @@ export default class HelloWorld extends PureComponent<HelloWorldProps> {
  * The viz plugin only uses the default export. If you want to build a plugin with
  * multiple chart exports, you will need to adjust index.ts (see comments there)
  */
-export function HelloWorldOpt2(props: any) {
+export function HelloWorldAlt(props: any) {
   const { data, height, width } = props;
 
   const rootElem = createRef<HTMLDivElement>();
@@ -124,32 +121,3 @@ export function HelloWorldOpt2(props: any) {
     </Wrapper>
   );
 }
-
-/**
- * EXAMPLE OF OPTION 3 - "reactified" function
- *
- * Reactify takes a DOM-oriented render function, plus an optional object of
- * React lifecycle callbacks, and renders that. Handy for D3-style DOM manipulation
- * viz components.
- *
- * Note: this export is not being consumed anywhere.
- * The viz plugin only uses the default export. If you want to build a plugin with
- * multiple chart exports, you will need to adjust index.ts (see comments there)
- */
-const HelloWorldOpt3 = reactify((elem, props) => {
-  // `elem` is the DOM element being used by this plugin, to do whatever you'd like with
-
-  console.log('Approach 3 props', props);
-  console.log('Approach 3 element', elem);
-
-  const { width, height, data, theme } = props; // additional controls appear as props here
-  elem.style.width = width;
-  elem.style.height = height;
-  elem.style.padding = theme.gridUnit * 4 + 'px';
-  elem.style.backgroundColor = theme.colors.secondary.light2;
-  elem.style.borderRadius = theme.gridUnit * 2 + 'px';
-  elem.innerHTML = `<h3>Hello, World! (option 3)</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
-});
-
-export const StyledHelloWorldOpt3 = withTheme(HelloWorldOpt3);
-// Note: `withTheme` is a Higher Order Component that provides the Theme as a direct prop.
