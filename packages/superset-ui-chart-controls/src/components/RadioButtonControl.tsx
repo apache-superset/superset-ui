@@ -18,7 +18,7 @@
  */
 import React, { ReactText, ReactNode, MouseEvent, useCallback } from 'react';
 import styled from '@superset-ui/style';
-import { InfoTooltipWithTrigger } from '@superset-ui/chart-controls';
+import { InfoTooltipWithTrigger } from './InfoTooltipWithTrigger';
 
 export interface RadioButtonOption {
   label: string;

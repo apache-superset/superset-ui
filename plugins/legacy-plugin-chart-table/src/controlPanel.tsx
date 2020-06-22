@@ -22,15 +22,13 @@ import { t } from '@superset-ui/translation';
 import {
   formatSelectOptions,
   D3_TIME_FORMAT_OPTIONS,
+  ControlConfig,
   ColumnOption,
   ControlStateMapping,
   ControlPanelConfig,
   ControlPanelsContainerProps,
-  CustomComponentControlConfig,
-} from '@superset-ui/chart-controls';
+} from '@superset-ui/chart-controls/src';
 import { validateNonEmpty } from '@superset-ui/validator';
-
-import RadioButtonControl, { RadioButtonControlProps } from './RadioButtonControl';
 
 export enum QueryMode {
   agg = 'agg',
@@ -64,8 +62,8 @@ function isQueryMode(mode: QueryMode) {
 const isAggMode = isQueryMode(QueryMode.agg);
 const isRawMode = isQueryMode(QueryMode.raw);
 
-const queryMode: CustomComponentControlConfig<RadioButtonControlProps> = {
-  type: RadioButtonControl,
+const queryMode: ControlConfig<'RadioButtonControl'> = {
+  type: 'RadioButtonControl',
   label: t('Query Mode'),
   default: QueryMode.agg,
   options: [
@@ -83,18 +81,18 @@ const queryMode: CustomComponentControlConfig<RadioButtonControlProps> = {
   },
 };
 
-const queryModeControl = {
-  name: 'query_mode',
-  config: queryMode,
-};
-
 const config: ControlPanelConfig = {
   controlPanelSections: [
     {
       label: t('Query'),
       expanded: true,
       controlSetRows: [
-        [queryModeControl],
+        [
+          {
+            name: 'query_mode',
+            config: queryMode,
+          },
+        ],
         [
           {
             name: 'groupby',

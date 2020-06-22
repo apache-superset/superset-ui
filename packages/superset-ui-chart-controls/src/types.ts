@@ -20,12 +20,17 @@
 import React, { ReactNode, ReactText, ReactElement } from 'react';
 import { QueryFormData } from '@superset-ui/query';
 import sharedControls from './shared-controls';
+import sharedControlComponents from './shared-controls/components';
 
 type AnyDict = Record<string, unknown>;
 interface Action {
   type: string;
 }
 interface AnyAction extends Action, AnyDict {}
+
+export type SharedControls = typeof sharedControls;
+export type SharedControlAlias = keyof typeof sharedControls;
+export type SharedControlComponents = typeof sharedControlComponents;
 
 /** ----------------------------------------------
  * Input data/props while rendering
@@ -125,11 +130,8 @@ export type InternalControlType =
   | 'FilterBoxItemControl'
   | 'MetricsControlVerifiedOptions'
   | 'SelectControlVerifiedOptions'
-  | 'AdhocFilterControlVerifiedOptions';
-
-export interface ControlValueValidator<T = unknown, O extends SelectOption = SelectOption> {
-  (value: T, state: ControlState<O>): boolean | string;
-}
+  | 'AdhocFilterControlVerifiedOptions'
+  | keyof SharedControlComponents; // expanded in `expandControlConfig`
 
 export type TabOverride = 'data' | boolean;
 
@@ -160,24 +162,36 @@ export type TabOverride = 'data' | boolean;
  * - visibility: a function that uses control panel props to check whether a control should
  *    be visibile.
  */
-export interface BaseControlConfig<T = unknown> {
+export interface BaseControlConfig<
+  T = unknown,
+  O extends SelectOption = SelectOption,
+  V = unknown
+> {
   type: T;
   label?: ReactNode;
   description?: ReactNode;
   default?: unknown;
   renderTrigger?: boolean;
-  validators?: ControlValueValidator[];
+  validators?: ControlValueValidator<T, O, V>[];
   warning?: ReactNode;
   error?: ReactNode;
   // override control panel state props
   mapStateToProps?: (
     state: ControlPanelState,
-    control: ControlConfig<T>,
+    control: this,
     actions?: ControlPanelActionDispatchers,
   ) => ExtraControlProps;
   tabOverride?: TabOverride;
   visibility?: (props: ControlPanelsContainerProps) => boolean;
   [key: string]: unknown;
+}
+
+export interface ControlValueValidator<
+  T = unknown,
+  O extends SelectOption = SelectOption,
+  V = unknown
+> {
+  (value: V, state: ControlState<T, O>): boolean | string;
 }
 
 /** --------------------------------------------
@@ -207,7 +221,7 @@ interface FilterOption<T extends SelectOption> {
 export interface SelectControlConfig<
   O extends SelectOption = SelectOption,
   T extends SelectControlType = SelectControlType
-> extends BaseControlConfig<T> {
+> extends BaseControlConfig<T, O> {
   clearable?: boolean;
   freeForm?: boolean;
   multi?: boolean;
@@ -227,26 +241,26 @@ export type SharedControlConfig<
 /** --------------------------------------------
  * Custom controls
  * --------------------------------------------- */
-export type CustomComponentControlConfig<
-  P = unknown,
-  T = InternalControlType | React.ComponentType<P>
-> = BaseControlConfig<T> & Omit<P, 'onChange' | 'hovered'>; // two run-time properties from superset-frontend/src/explore/components/Control.jsx
+export type CustomControlConfig<P = {}> = BaseControlConfig<React.ComponentType<P>> &
+  // two run-time properties from superset-frontend/src/explore/components/Control.jsx
+  Omit<P, 'onChange' | 'hovered'>;
 
 // Catch-all ControlConfig
-//  - if T == known control types, return SharedControlConfig,
+//  - if T is known control types, return SharedControlConfig,
+//  - if T is object, assume a CustomComponent
 //  - otherwise assume it's a custom component control
 export type ControlConfig<
-  T extends InternalControlType | unknown = InternalControlType,
+  T extends InternalControlType | object | unknown = unknown,
   O extends SelectOption = SelectOption
 > = T extends InternalControlType
   ? SharedControlConfig<T, O>
-  : CustomComponentControlConfig<unknown, T>;
+  : T extends object
+  ? CustomControlConfig<T> // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  : CustomControlConfig<any>;
 
 /** ===========================================================
  * Chart plugin control panel config
  * ========================================================= */
-export type SharedControlAlias = keyof typeof sharedControls;
-
 export type SharedSectionAlias =
   | 'annotations'
   | 'colorScheme'
@@ -255,16 +269,21 @@ export type SharedSectionAlias =
   | 'sqlaTimeSeries'
   | 'NVD3TimeSeries';
 
-export interface OverrideSharedControlItem {
-  name: SharedControlAlias;
-  override: Partial<SharedControlConfig>;
+export interface OverrideSharedControlItem<A extends SharedControlAlias = SharedControlAlias> {
+  name: A;
+  override: Partial<SharedControls[A]>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface CustomControlItem<P = any> {
-  name: string;
-  config: CustomComponentControlConfig<P>;
-}
+export type CustomControlItem<P = any> = P extends SharedControlAlias
+  ? {
+      name: P;
+      config: SharedControls[P];
+    }
+  : {
+      name: string;
+      config: CustomControlConfig<P>;
+    };
 
 // use ReactElement instead of ReactNode because `string`, `number`, etc. may
 // interfere with other ControlSetItem types
@@ -293,7 +312,7 @@ export interface ControlPanelConfig {
 }
 
 export type ControlOverrides = {
-  [P in SharedControlAlias]?: Partial<ControlConfig>;
+  [P in SharedControlAlias]?: Partial<SharedControls[P]>;
 };
 
 export type SectionOverrides = {

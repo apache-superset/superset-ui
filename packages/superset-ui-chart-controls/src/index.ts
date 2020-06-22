@@ -18,4 +18,7 @@ export * from './components/ColumnOption';
 export * from './components/ColumnTypeLabel';
 export * from './components/MetricOption';
 
+// React control components
+export * from './components/RadioButtonControl';
+
 export * from './types';
