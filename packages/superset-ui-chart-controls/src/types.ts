@@ -172,7 +172,7 @@ export interface BaseControlConfig<T = unknown> {
   // override control panel state props
   mapStateToProps?: (
     state: ControlPanelState,
-    control: this,
+    control: ControlConfig<T>,
     actions?: ControlPanelActionDispatchers,
   ) => ExtraControlProps;
   tabOverride?: TabOverride;
@@ -227,10 +227,10 @@ export type SharedControlConfig<
 /** --------------------------------------------
  * Custom controls
  * --------------------------------------------- */
-export type CustomComponentControlConfig<P = unknown> = BaseControlConfig<
-  InternalControlType | React.ComponentType<P>
-> &
-  Omit<P, 'onChange' | 'hovered'>; // two run-time properties from superset-frontend/src/explore/components/Control.jsx
+export type CustomComponentControlConfig<
+  P = unknown,
+  T = InternalControlType | React.ComponentType<P>
+> = BaseControlConfig<T> & Omit<P, 'onChange' | 'hovered'>; // two run-time properties from superset-frontend/src/explore/components/Control.jsx
 
 // Catch-all ControlConfig
 //  - if T == known control types, return SharedControlConfig,
@@ -238,11 +238,13 @@ export type CustomComponentControlConfig<P = unknown> = BaseControlConfig<
 export type ControlConfig<
   T extends InternalControlType | unknown = InternalControlType,
   O extends SelectOption = SelectOption
-> = T extends InternalControlType ? SharedControlConfig<T, O> : CustomComponentControlConfig<T>;
+> = T extends InternalControlType
+  ? SharedControlConfig<T, O>
+  : CustomComponentControlConfig<unknown, T>;
 
-/** --------------------------------------------
+/** ===========================================================
  * Chart plugin control panel config
- * --------------------------------------------- */
+ * ========================================================= */
 export type SharedControlAlias = keyof typeof sharedControls;
 
 export type SharedSectionAlias =
@@ -264,16 +266,11 @@ export interface CustomControlItem<P = any> {
   config: CustomComponentControlConfig<P>;
 }
 
-export type ControlSetItem =
-  | SharedControlAlias
-  | OverrideSharedControlItem
-  | CustomControlItem
-  // use ReactElement instead of ReactNode because `string`, `number`, etc. may
-  // interfere with other ControlSetItem types
-  | ReactElement
-  | null;
-
+// use ReactElement instead of ReactNode because `string`, `number`, etc. may
+// interfere with other ControlSetItem types
 export type ExpandedControlItem = CustomControlItem | ReactElement | null;
+
+export type ControlSetItem = SharedControlAlias | OverrideSharedControlItem | ExpandedControlItem;
 
 export type ControlSetRow = ControlSetItem[];
 
