@@ -22,7 +22,8 @@ import { QueryFormData } from '@superset-ui/query';
 import sharedControls from './shared-controls';
 import sharedControlComponents from './shared-controls/components';
 
-type AnyDict = Record<string, unknown>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyDict = Record<string, any>;
 interface Action {
   type: string;
 }
@@ -82,10 +83,11 @@ export interface ControlPanelActionDispatchers {
 export type ExtraControlProps = AnyDict;
 
 // Ref:superset-frontend/src/explore/store.js
-export type ControlState<
-  T extends InternalControlType | unknown = InternalControlType,
-  O extends SelectOption = SelectOption
-> = ControlConfig<T, O> & ExtraControlProps;
+export type ControlState<T = ControlType, O extends SelectOption = SelectOption> = ControlConfig<
+  T,
+  O
+> &
+  ExtraControlProps;
 
 export interface ControlStateMapping {
   [key: string]: ControlState;
@@ -169,7 +171,7 @@ export interface BaseControlConfig<
   T extends ControlType = ControlType,
   O extends SelectOption = SelectOption,
   V = unknown
-> {
+> extends AnyDict {
   type: T;
   label?: ReactNode;
   description?: ReactNode;
@@ -186,11 +188,10 @@ export interface BaseControlConfig<
   ) => ExtraControlProps;
   tabOverride?: TabOverride;
   visibility?: (props: ControlPanelsContainerProps) => boolean;
-  [key: string]: unknown;
 }
 
 export interface ControlValueValidator<
-  T = unknown,
+  T = ControlType,
   O extends SelectOption = SelectOption,
   V = unknown
 > {
@@ -253,7 +254,7 @@ export type CustomControlConfig<P = {}> = BaseControlConfig<React.ComponentType<
 //  - if T is object, assume a CustomComponent
 //  - otherwise assume it's a custom component control
 export type ControlConfig<
-  T extends InternalControlType | object | unknown = unknown,
+  T = AnyDict,
   O extends SelectOption = SelectOption
 > = T extends InternalControlType
   ? SharedControlConfig<T, O>
