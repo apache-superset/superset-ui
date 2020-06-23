@@ -27,27 +27,31 @@ import {
   ControlStateMapping,
   ControlPanelConfig,
   ControlPanelsContainerProps,
+  sharedControls,
 } from '@superset-ui/chart-controls';
 import { validateNonEmpty } from '@superset-ui/validator';
+import { smartDateFormatter } from '@superset-ui/time-format';
+
+export const PAGE_SIZE_OPTIONS = formatSelectOptions<number>([[0, t('All')], 10, 20, 50, 100, 200]);
 
 export enum QueryMode {
-  agg = 'agg',
-  raw = 'raw',
+  aggregate = 'AGGREGATE',
+  raw = 'RAW',
 }
 
 const QueryModeLabel = {
-  [QueryMode.agg]: t('Aggregate'),
+  [QueryMode.aggregate]: t('Aggregate'),
   [QueryMode.raw]: t('Raw Records'),
 };
 
 function getQueryMode(controls: ControlStateMapping): QueryMode {
   const mode = controls?.query_mode?.value;
-  if (mode === QueryMode.agg || mode === QueryMode.raw) {
+  if (mode === QueryMode.aggregate || mode === QueryMode.raw) {
     return mode as QueryMode;
   }
   const groupby = controls?.groupby?.value;
   const hasGroupBy = groupby && (groupby as string[])?.length > 0;
-  return hasGroupBy ? QueryMode.agg : QueryMode.raw;
+  return hasGroupBy ? QueryMode.aggregate : QueryMode.raw;
 }
 
 /**
@@ -59,17 +63,17 @@ function isQueryMode(mode: QueryMode) {
   };
 }
 
-const isAggMode = isQueryMode(QueryMode.agg);
+const isAggMode = isQueryMode(QueryMode.aggregate);
 const isRawMode = isQueryMode(QueryMode.raw);
 
 const queryMode: ControlConfig<'RadioButtonControl'> = {
   type: 'RadioButtonControl',
   label: t('Query Mode'),
-  default: QueryMode.agg,
+  default: QueryMode.aggregate,
   options: [
     {
-      label: QueryModeLabel[QueryMode.agg],
-      value: QueryMode.agg,
+      label: QueryModeLabel[QueryMode.aggregate],
+      value: QueryMode.aggregate,
     },
     {
       label: QueryModeLabel[QueryMode.raw],
@@ -77,8 +81,45 @@ const queryMode: ControlConfig<'RadioButtonControl'> = {
     },
   ],
   mapStateToProps: ({ controls }) => {
-    return { value: getQueryMode(controls as ControlStateMapping) };
+    return { value: getQueryMode(controls) };
   },
+};
+
+const all_columns: typeof sharedControls.groupby = {
+  type: 'SelectControl',
+  label: t('Columns'),
+  description: t('Columns to display'),
+  multi: true,
+  freeForm: true,
+  allowAll: true,
+  commaChoosesOption: false,
+  default: [],
+  optionRenderer: c => <ColumnOption showType column={c} />,
+  valueRenderer: c => <ColumnOption column={c} />,
+  valueKey: 'column_name',
+  mapStateToProps: ({ datasource, controls }) => ({
+    options: datasource?.columns || [],
+    queryMode: getQueryMode(controls),
+  }),
+  visibility: isRawMode,
+};
+
+const percent_metrics: typeof sharedControls.metrics = {
+  type: 'MetricsControl',
+  label: t('Percentage Metrics'),
+  description: t('Metrics for which percentage of total are to be displayed'),
+  multi: true,
+  visibility: isAggMode,
+  mapStateToProps: ({ datasource, controls }) => {
+    return {
+      columns: datasource?.columns || [],
+      savedMetrics: datasource?.metrics || [],
+      datasourceType: datasource?.type,
+      queryMode: getQueryMode(controls),
+    };
+  },
+  default: [],
+  validators: [],
 };
 
 const config: ControlPanelConfig = {
@@ -111,46 +152,13 @@ const config: ControlPanelConfig = {
           },
           {
             name: 'all_columns',
-            config: {
-              type: 'SelectControl',
-              label: t('Columns'),
-              description: t('Columns to display'),
-              multi: true,
-              freeForm: true,
-              allowAll: true,
-              commaChoosesOption: false,
-              default: [],
-              optionRenderer: (c: never) => <ColumnOption showType column={c} />,
-              valueRenderer: (c: never) => <ColumnOption column={c} />,
-              valueKey: 'column_name',
-              mapStateToProps: ({ datasource, controls }) => ({
-                options: datasource?.columns || [],
-                queryMode: getQueryMode(controls),
-              }),
-              visibility: isRawMode,
-            },
+            config: all_columns,
           },
         ],
         [
           {
             name: 'percent_metrics',
-            config: {
-              type: 'MetricsControl',
-              label: t('Percentage Metrics'),
-              description: t('Metrics for which percentage of total are to be displayed'),
-              multi: true,
-              visibility: isAggMode,
-              mapStateToProps: ({ datasource, controls }) => {
-                return {
-                  columns: datasource?.columns || [],
-                  savedMetrics: datasource?.metrics || [],
-                  datasourceType: datasource?.type,
-                  queryMode: getQueryMode(controls),
-                };
-              },
-              default: [],
-              validators: [],
-            },
+            config: percent_metrics,
           },
         ],
         [
@@ -214,7 +222,7 @@ const config: ControlPanelConfig = {
               type: 'SelectControl',
               freeForm: true,
               label: t('Table Timestamp Format'),
-              default: '%Y-%m-%d %H:%M:%S',
+              default: smartDateFormatter.id,
               renderTrigger: true,
               validators: [validateNonEmpty],
               clearable: false,
@@ -231,8 +239,8 @@ const config: ControlPanelConfig = {
               freeForm: true,
               renderTrigger: true,
               label: t('Page Length'),
-              default: 0,
-              choices: formatSelectOptions([0, 10, 25, 40, 50, 75, 100, 150, 200]),
+              default: null,
+              choices: PAGE_SIZE_OPTIONS,
               description: t('Rows per page, 0 means no pagination'),
             },
           },
