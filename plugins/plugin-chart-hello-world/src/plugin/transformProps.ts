@@ -1,5 +1,3 @@
-import { ChartProps } from '@superset-ui/chart';
-
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,8 +16,9 @@ import { ChartProps } from '@superset-ui/chart';
  * specific language governing permissions and limitations
  * under the License.
  */
-export default function transformProps(chartProps: ChartProps) {
+import { ChartProps } from '@superset-ui/chart';
 
+export default function transformProps(chartProps: ChartProps) {
   /**
    * This function is called after a successful response has been
    * received from the chart data endpoint, and is used to transform

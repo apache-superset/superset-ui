@@ -16,16 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { PureComponent, useEffect, createRef } from 'react';
+import { PureComponent, useEffect, createRef } from 'react';
 import styled from '@superset-ui/style';
 
 export type HelloWorldProps = {
   height: number;
   width: number;
-  data: { x: number; y: number }[];
+  data: Record<any, any>;
   // add typing here for the props you pass in from transformProps.ts!
   boldText: boolean;
-  headerFontSize: string;
+  headerFontSize: 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
   headerText: string;
 };
 
@@ -61,6 +61,7 @@ export default class HelloWorld extends PureComponent<HelloWorldProps> {
   render() {
     // height and width are the height and width of the DOM element as it exists in the dashboard.
     // There is also a `data` prop, which is, of course, your DATA 🎉
+    console.log('Approach 1 props', this.props);
     const { data, height, width } = this.props;
 
     // The following Wrapper is a <div> element, which has been styled using Emotion
@@ -76,6 +77,7 @@ export default class HelloWorld extends PureComponent<HelloWorldProps> {
       border-radius: ${({ theme }) => theme.gridUnit * 2}px;
       height: ${height};
       width: ${width};
+      overflow-y: scroll;
 
       h3 {
         /* You can use your props to control CSS! */
@@ -103,7 +105,7 @@ export default class HelloWorld extends PureComponent<HelloWorldProps> {
  * The viz plugin only uses the default export. If you want to build a plugin with
  * multiple chart exports, you will need to adjust index.ts (see comments there)
  */
-export function HelloWorldAlt(props: any) {
+export function HelloWorldAlt(props: HelloWorldProps) {
   const { data, height, width } = props;
 
   const rootElem = createRef<HTMLDivElement>();
@@ -123,6 +125,7 @@ export function HelloWorldAlt(props: any) {
     border-radius: ${({ theme }) => theme.gridUnit * 2}px;
     height: ${height};
     width: ${width};
+    overflow-y: scroll;
 
     h3 {
       /* You can use your props to control CSS! */

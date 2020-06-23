@@ -16,7 +16,7 @@ const metadata = new ChartMetadata({
 export default class WordCloudChartPlugin extends ChartPlugin<WordCloudFormData> {
   constructor() {
     super({
-      // buildQuery,
+      buildQuery,
       loadChart: () => import('../chart/WordCloud'),
       metadata,
       transformProps,
