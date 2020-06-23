@@ -19,10 +19,10 @@
 import React from 'react';
 import sharedControls from '../shared-controls';
 import sharedControlComponents from '../shared-controls/components';
-import { ControlSetItem, ExpandedControlItem, ControlOverrides } from '../types';
+import { ControlType, ControlSetItem, ExpandedControlItem, ControlOverrides } from '../types';
 
-export function expandControlType(controlType: string) {
-  if (controlType in sharedControlComponents) {
+export function expandControlType(controlType: ControlType) {
+  if (typeof controlType === 'string' && controlType in sharedControlComponents) {
     return sharedControlComponents[controlType as keyof typeof sharedControlComponents];
   }
   return controlType;
@@ -57,13 +57,13 @@ export default function expandControlConfig(
   if (!control || typeof control === 'string' || React.isValidElement(control)) {
     return <>control</>;
   }
-  // already fully expanded contron config
+  // already fully expanded control config
   if ('name' in control && 'config' in control) {
     return {
       ...control,
       config: {
         ...control.config,
-        type: expandControlType(control.config.type),
+        type: expandControlType(control.config.type as ControlType),
       },
     };
   }

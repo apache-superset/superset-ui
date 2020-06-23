@@ -133,6 +133,9 @@ export type InternalControlType =
   | 'AdhocFilterControlVerifiedOptions'
   | keyof SharedControlComponents; // expanded in `expandControlConfig`
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ControlType = InternalControlType | React.ComponentType<any>;
+
 export type TabOverride = 'data' | boolean;
 
 /**
@@ -163,14 +166,14 @@ export type TabOverride = 'data' | boolean;
  *    be visibile.
  */
 export interface BaseControlConfig<
-  T = unknown,
+  T extends ControlType = ControlType,
   O extends SelectOption = SelectOption,
   V = unknown
 > {
   type: T;
   label?: ReactNode;
   description?: ReactNode;
-  default?: unknown;
+  default?: V;
   renderTrigger?: boolean;
   validators?: ControlValueValidator<T, O, V>[];
   warning?: ReactNode;
@@ -274,16 +277,11 @@ export interface OverrideSharedControlItem<A extends SharedControlAlias = Shared
   override: Partial<SharedControls[A]>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type CustomControlItem<P = any> = P extends SharedControlAlias
-  ? {
-      name: P;
-      config: SharedControls[P];
-    }
-  : {
-      name: string;
-      config: CustomControlConfig<P>;
-    };
+export type CustomControlItem = {
+  name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  config: BaseControlConfig<any, any, any>;
+};
 
 // use ReactElement instead of ReactNode because `string`, `number`, etc. may
 // interfere with other ControlSetItem types
