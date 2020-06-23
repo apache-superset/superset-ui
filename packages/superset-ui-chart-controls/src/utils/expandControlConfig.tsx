@@ -29,7 +29,7 @@ export function expandControlType(controlType: ControlType) {
 }
 
 /**
- * Expand shorthand control config item to full config in the format of
+ * Expand a shorthand control config item to full config in the format of
  *   {
  *     name: ...,
  *     config: {
