@@ -35,8 +35,8 @@ import { smartDateFormatter } from '@superset-ui/time-format';
 export const PAGE_SIZE_OPTIONS = formatSelectOptions<number>([[0, t('All')], 10, 20, 50, 100, 200]);
 
 export enum QueryMode {
-  aggregate = 'AGGREGATE',
-  raw = 'RAW',
+  aggregate = 'aggregate',
+  raw = 'raw',
 }
 
 const QueryModeLabel = {
