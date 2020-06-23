@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from 'react';
+import React, { ReactElement } from 'react';
 import sharedControls from '../shared-controls';
 import sharedControlComponents from '../shared-controls/components';
 import { ControlType, ControlSetItem, ExpandedControlItem, ControlOverrides } from '../types';
@@ -38,7 +38,7 @@ export function expandControlType(controlType: ControlType) {
  *     }
  *   }
  */
-export default function expandControlConfig(
+export function expandControlConfig(
   control: ControlSetItem,
   controlOverrides: ControlOverrides = {},
 ): ExpandedControlItem {
@@ -55,7 +55,7 @@ export default function expandControlConfig(
   }
   // JSX/React element or NULL
   if (!control || typeof control === 'string' || React.isValidElement(control)) {
-    return <>control</>;
+    return control as ReactElement;
   }
   // already fully expanded control config
   if ('name' in control && 'config' in control) {
