@@ -19,6 +19,7 @@ import { ChartProps } from '@superset-ui/chart';
  * under the License.
  */
 export default function transformProps(chartProps: ChartProps) {
+
   /**
    * This function is called after a successful response has been
    * received from the chart data endpoint, and is used to transform

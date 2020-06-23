@@ -107,7 +107,7 @@ export default {
             name: 'header_text',
             config: {
               type: 'TextControl',
-              default: 'Hello, World',
+              default: 'Hello, World!',
               renderTrigger: true,
               label: t('Header Text'),
               description: t('The text you want to see in the header'),
@@ -132,11 +132,15 @@ export default {
             config: {
               type: 'SelectControl',
               label: t('Font Size'),
-              default: 'medium',
+              default: 'xl',
               choices: [
-                ['small', 'small'],
-                ['medium', 'medium'],
-                ['large', 'large'],
+                ['xxs', 'xx-small'],
+                ['xs', 'x-small'],
+                ['s', 'small'],
+                ['m', 'medium'],
+                ['l', 'large'],
+                ['xl', 'x-large'],
+                ['xxl', 'xx-large'],
               ],
               renderTrigger: true,
               // ^ this makes it apply instantaneously, without triggering a "run query" button

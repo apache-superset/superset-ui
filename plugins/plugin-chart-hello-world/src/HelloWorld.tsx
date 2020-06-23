@@ -79,6 +79,7 @@ export default class HelloWorld extends PureComponent<HelloWorldProps> {
 
       h3 {
         /* You can use your props to control CSS! */
+        font-size: ${({ theme }) => theme.typography.sizes[this.props.headerFontSize]};
         font-weight: ${({ theme }) =>
           theme.typography.weights[this.props.boldText ? 'bold' : 'normal']};
       }
@@ -88,7 +89,7 @@ export default class HelloWorld extends PureComponent<HelloWorldProps> {
 
     return (
       <Wrapper ref={this.rootElem}>
-        <h3>Hello, World! (option 1)</h3>
+        <h3>{this.props.headerText} (option 1)</h3>
         <pre>{JSON.stringify(data, null, 2)}</pre>
       </Wrapper>
     );
@@ -125,13 +126,14 @@ export function HelloWorldAlt(props: any) {
 
     h3 {
       /* You can use your props to control CSS! */
+      font-size: ${({ theme }) => theme.typography.sizes[props.headerFontSize]};
       font-weight: ${({ theme }) => theme.typography.weights[props.boldText ? 'bold' : 'normal']};
     }
   `;
 
   return (
     <Wrapper ref={rootElem}>
-      <h3>Hello, World! (option 2)</h3>
+      <h3>{props.headerText} (option 2)</h3>
       <pre>${JSON.stringify(data, null, 2)}</pre>
     </Wrapper>
   );
