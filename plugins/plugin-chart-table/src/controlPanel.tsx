@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,45 +22,162 @@ import { t } from '@superset-ui/translation';
 import {
   formatSelectOptions,
   D3_TIME_FORMAT_OPTIONS,
+  ControlConfig,
   ColumnOption,
+  ControlStateMapping,
+  ControlPanelConfig,
+  ControlPanelsContainerProps,
 } from '@superset-ui/chart-controls';
 import { validateNonEmpty } from '@superset-ui/validator';
-import { smartDateFormatter } from '@superset-ui/time-format';
 
 export const PAGE_SIZE_OPTIONS = formatSelectOptions<number>([[0, t('All')], 10, 20, 50, 100, 200]);
 
-export default {
+export enum QueryMode {
+  agg = 'agg',
+  raw = 'raw',
+}
+
+const QueryModeLabel = {
+  [QueryMode.agg]: t('Aggregate'),
+  [QueryMode.raw]: t('Raw Records'),
+};
+
+function getQueryMode(controls: ControlStateMapping): QueryMode {
+  const mode = controls?.query_mode?.value;
+  if (mode === QueryMode.agg || mode === QueryMode.raw) {
+    return mode as QueryMode;
+  }
+  const groupby = controls?.groupby?.value;
+  const hasGroupBy = groupby && (groupby as string[])?.length > 0;
+  return hasGroupBy ? QueryMode.agg : QueryMode.raw;
+}
+
+/**
+ * Visibility check
+ */
+function isQueryMode(mode: QueryMode) {
+  return ({ controls }: ControlPanelsContainerProps) => {
+    return getQueryMode(controls) === mode;
+  };
+}
+
+const isAggMode = isQueryMode(QueryMode.agg);
+const isRawMode = isQueryMode(QueryMode.raw);
+
+const queryMode: ControlConfig<'RadioButtonControl'> = {
+  type: 'RadioButtonControl',
+  label: t('Query Mode'),
+  default: QueryMode.agg,
+  options: [
+    {
+      label: QueryModeLabel[QueryMode.agg],
+      value: QueryMode.agg,
+    },
+    {
+      label: QueryModeLabel[QueryMode.raw],
+      value: QueryMode.raw,
+    },
+  ],
+  mapStateToProps: ({ controls }) => {
+    return { value: getQueryMode(controls as ControlStateMapping) };
+  },
+};
+
+const config: ControlPanelConfig = {
   controlPanelSections: [
     {
-      label: t('GROUP BY'),
-      description: t('Use this section if you want a query that aggregates'),
+      label: t('Query'),
       expanded: true,
       controlSetRows: [
-        ['groupby'],
-        ['metrics'],
+        [
+          {
+            name: 'query_mode',
+            config: queryMode,
+          },
+        ],
+        [
+          {
+            name: 'groupby',
+            override: {
+              visibility: isAggMode,
+            },
+          },
+        ],
+        [
+          {
+            name: 'metrics',
+            override: {
+              validators: [],
+              visibility: isAggMode,
+            },
+          },
+          {
+            name: 'all_columns',
+            config: {
+              type: 'SelectControl',
+              label: t('Columns'),
+              description: t('Columns to display'),
+              multi: true,
+              freeForm: true,
+              allowAll: true,
+              commaChoosesOption: false,
+              default: [],
+              optionRenderer: (c: never) => <ColumnOption showType column={c} />,
+              valueRenderer: (c: never) => <ColumnOption column={c} />,
+              valueKey: 'column_name',
+              mapStateToProps: ({ datasource, controls }) => ({
+                options: datasource?.columns || [],
+                queryMode: getQueryMode(controls),
+              }),
+              visibility: isRawMode,
+            },
+          },
+        ],
         [
           {
             name: 'percent_metrics',
             config: {
               type: 'MetricsControl',
+              label: t('Percentage Metrics'),
+              description: t('Metrics for which percentage of total are to be displayed'),
               multi: true,
-              mapStateToProps: (state: never) => {
-                const { datasource } = state;
-                const { columns, metrics, type } = datasource;
+              visibility: isAggMode,
+              mapStateToProps: ({ datasource, controls }) => {
                 return {
-                  columns: datasource ? columns : [],
-                  savedMetrics: datasource ? metrics : [],
-                  datasourceType: datasource && type,
+                  columns: datasource?.columns || [],
+                  savedMetrics: datasource?.metrics || [],
+                  datasourceType: datasource?.type,
+                  queryMode: getQueryMode(controls),
                 };
               },
               default: [],
-              label: t('Percentage Metrics'),
               validators: [],
-              description: t('Metrics for which percentage of total are to be displayed'),
             },
           },
         ],
-        ['timeseries_limit_metric', 'row_limit'],
+        [
+          {
+            name: 'timeseries_limit_metric',
+            override: {
+              visibility: isAggMode,
+            },
+          },
+          {
+            name: 'order_by_cols',
+            config: {
+              type: 'SelectControl',
+              label: t('Ordering'),
+              description: t('One or many metrics to display'),
+              multi: true,
+              default: [],
+              mapStateToProps: ({ datasource }) => ({
+                choices: datasource?.order_by_choices || [],
+              }),
+              visibility: isRawMode,
+            },
+          },
+        ],
+        ['row_limit'],
         [
           {
             name: 'include_time',
@@ -70,6 +188,7 @@ export default {
                 'Whether to include the time granularity as defined in the time section',
               ),
               default: false,
+              visibility: isAggMode,
             },
           },
           {
@@ -79,60 +198,12 @@ export default {
               label: t('Sort Descending'),
               default: true,
               description: t('Whether to sort descending or ascending'),
+              visibility: isAggMode,
             },
           },
         ],
+        ['adhoc_filters'],
       ],
-    },
-    {
-      label: t('NOT GROUPED BY'),
-      description: t('Use this section if you want to query atomic rows'),
-      expanded: true,
-      controlSetRows: [
-        [
-          {
-            name: 'all_columns',
-            config: {
-              type: 'SelectControl',
-              multi: true,
-              label: t('Columns'),
-              default: [],
-              description: t('Columns to display'),
-              optionRenderer: (c: never) => <ColumnOption showType column={c} />,
-              valueRenderer: (c: never) => <ColumnOption column={c} />,
-              valueKey: 'column_name',
-              allowAll: true,
-              mapStateToProps: (state: { datasource: { columns: unknown } }) => ({
-                options: state.datasource ? state.datasource.columns : [],
-              }),
-              commaChoosesOption: false,
-              freeForm: true,
-            },
-          },
-        ],
-        [
-          {
-            name: 'order_by_cols',
-            config: {
-              type: 'SelectControl',
-              multi: true,
-              label: t('Ordering'),
-              default: [],
-              description: t('One or many metrics to display'),
-              // eslint-disable-next-line camelcase
-              mapStateToProps: (state: { datasource: { order_by_choices: never } }) => ({
-                choices: state.datasource ? state.datasource.order_by_choices : [],
-              }),
-            },
-          },
-        ],
-        ['row_limit', null],
-      ],
-    },
-    {
-      label: t('Query'),
-      expanded: true,
-      controlSetRows: [['adhoc_filters']],
     },
     {
       label: t('Options'),
@@ -145,7 +216,7 @@ export default {
               type: 'SelectControl',
               freeForm: true,
               label: t('Table Timestamp Format'),
-              default: smartDateFormatter.id,
+              default: '%Y-%m-%d %H:%M:%S',
               renderTrigger: true,
               validators: [validateNonEmpty],
               clearable: false,
@@ -162,11 +233,9 @@ export default {
               freeForm: true,
               renderTrigger: true,
               label: t('Page Length'),
-              default: null,
+              default: 0,
               choices: PAGE_SIZE_OPTIONS,
-              description: t(
-                'Rows per page, 0 means no pagination. Leave empty to automatically add pagination for large tables.',
-              ),
+              description: t('Rows per page, 0 means no pagination'),
             },
           },
           null,
@@ -231,11 +300,6 @@ export default {
       ],
     },
   ],
-  controlOverrides: {
-    metrics: {
-      validators: [],
-    },
-  },
   sectionOverrides: {
     druidTimeSeries: {
       controlSetRows: [['granularity', 'druid_time_origin'], ['time_range']],
@@ -245,3 +309,5 @@ export default {
     },
   },
 };
+
+export default config;

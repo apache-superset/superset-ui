@@ -27,7 +27,7 @@ import {
   ControlStateMapping,
   ControlPanelConfig,
   ControlPanelsContainerProps,
-} from '@superset-ui/chart-controls/src';
+} from '@superset-ui/chart-controls';
 import { validateNonEmpty } from '@superset-ui/validator';
 
 export enum QueryMode {
