@@ -37,7 +37,7 @@ Then use it via `SuperChart`. See [storybook](https://apache-superset.github.io/
 ├── README.md
 ├── package.json
 ├── src
-│   ├── YourPluginName.tsx
+│   ├── HelloWorld.tsx
 │   ├── images
 │   │   └── thumbnail.png
 │   ├── index.ts
