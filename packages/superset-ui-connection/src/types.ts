@@ -11,11 +11,18 @@ export type FetchRetryOptions = {
 };
 export type Headers = { [k: string]: string };
 export type Host = string;
+export type JSONPrimitive = string | number | boolean | null;
+export type JSONValue = JSONPrimitive | JSONObject | JSONArray;
+export type JSONObject = { [member: string]: JSONValue };
+export type JSONArray = JSONValue[];
+
+// `JSONObject` could not accept more specific types, so we had to employ any.
+// see: https://github.com/microsoft/TypeScript/issues/15300
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Json = { [k: string]: any };
+export type JsonObject = { [member: string]: any };
+export type PostPayload = JsonObject | string;
+
 export type Method = RequestInit['method'];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type PostPayload = { [key: string]: any };
 export type Mode = RequestInit['mode'];
 export type Redirect = RequestInit['redirect'];
 export type ClientTimeout = number | undefined;
@@ -24,23 +31,10 @@ export type Signal = RequestInit['signal'];
 export type Stringify = boolean;
 export type Url = string;
 
-export interface CallApi {
+export interface RequestConfig {
   body?: Body;
-  cache?: Cache;
-  credentials?: Credentials;
-  fetchRetryOptions?: FetchRetryOptions;
-  headers?: Headers;
-  method?: Method;
-  mode?: Mode;
-  postPayload?: PostPayload;
-  redirect?: Redirect;
-  signal?: Signal;
-  stringify?: Stringify;
-  url: Url;
-}
-
-export interface RequestBase {
-  body?: Body;
+  endpoint?: Endpoint;
+  url?: Url;
   credentials?: Credentials;
   fetchRetryOptions?: FetchRetryOptions;
   headers?: Headers;
@@ -49,25 +43,21 @@ export interface RequestBase {
   method?: Method;
   parseMethod?: ParseMethod;
   postPayload?: PostPayload;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  json?: any;
   signal?: Signal;
   stringify?: Stringify;
   timeout?: ClientTimeout;
 }
 
-export interface RequestWithEndpoint extends RequestBase {
-  endpoint: Endpoint;
-  url?: undefined;
-}
-
-export interface RequestWithUrl extends RequestBase {
+export interface CallApi extends RequestConfig {
   url: Url;
-  endpoint?: undefined;
+  cache?: Cache;
+  redirect?: Redirect;
 }
-
-export type RequestConfig = RequestWithEndpoint | RequestWithUrl;
 
 export interface JsonTextResponse {
-  json?: Json;
+  json?: JsonObject;
   response: Response;
   text?: string;
 }
