@@ -46,7 +46,7 @@ export default {
    * `groupby`, which automatically appends the values from the
    * `series` control to the `groupby` control when the query is generated.
    *
-   * It is also possible to define custom controls by importing the 
+   * It is also possible to define custom controls by importing the
    * necessary dependencies and overriding the default parameters, which
    * can then be placed in the `controlSetRows` section
    * of the `Query` section instead of a predefined control.
