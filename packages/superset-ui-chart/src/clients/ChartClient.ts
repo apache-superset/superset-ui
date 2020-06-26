@@ -82,7 +82,6 @@ export default class ChartClient {
 
     if (metaDataRegistry.has(visType)) {
       const { useLegacyApi } = metaDataRegistry.get(visType)!;
-      let buildQuery = await buildQueryRegistry.get(visType);
 
       let postPayload;
       if (useLegacyApi)
@@ -90,19 +89,20 @@ export default class ChartClient {
           // legacy endpoint doesn't support buildQuery
           form_data: formData,
         };
-      else
-        postPayload = {
-          // default to calling buildQueryContext with default callback
-          query_context:
-            buildQuery ??
-            (formData => {
-              buildQueryContext(formData, baseQueryObject => [
-                {
-                  ...baseQueryObject,
-                },
-              ]);
-            }),
-        };
+      else {
+        // default to calling buildQueryContext with default callback
+        const buildQuery =
+          (await buildQueryRegistry.get(visType)) ??
+          (buildQueryformData =>
+            buildQueryContext(buildQueryformData, baseQueryObject => [
+              {
+                ...baseQueryObject,
+              },
+            ]));
+        postPayload = buildQuery({
+          ...formData,
+        });
+      }
 
       return this.client
         .post({
