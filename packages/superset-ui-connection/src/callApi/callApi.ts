@@ -19,7 +19,7 @@ export default function callApi({
   method = 'GET',
   mode = 'same-origin',
   postPayload,
-  json,
+  jsonPayload,
   redirect = 'follow',
   signal,
   stringify = true,
@@ -98,8 +98,8 @@ export default function callApi({
         }
       });
       request.body = formData;
-    } else if (json !== undefined) {
-      request.body = JSON.stringify(json as JSONValue);
+    } else if (jsonPayload !== undefined) {
+      request.body = JSON.stringify(jsonPayload);
       request.headers = { ...request.headers, 'Content-Type': 'application/json' };
     }
   }

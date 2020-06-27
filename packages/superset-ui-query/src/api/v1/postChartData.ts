@@ -15,7 +15,7 @@ export default async function postChartData({
   const { json } = await client.post({
     ...requestConfig,
     endpoint: '/api/v1/chart/data',
-    json: queryContext,
+    jsonPayload: queryContext,
   });
   return json as V1ChartDataResponse;
 }

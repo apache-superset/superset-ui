@@ -153,7 +153,7 @@ describe('callApi()', () => {
       return Promise.all([
         callApi({ url: mockPostUrl, method: 'POST', postPayload }),
         callApi({ url: mockPostUrl, method: 'POST', postPayload, stringify: false }),
-        callApi({ url: mockPostUrl, method: 'POST', json: postPayload }),
+        callApi({ url: mockPostUrl, method: 'POST', jsonPayload: postPayload }),
       ]).then(() => {
         const calls = fetchMock.calls(mockPostUrl);
         expect(calls).toHaveLength(3);
