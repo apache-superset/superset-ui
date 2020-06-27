@@ -19,12 +19,11 @@
 import React from 'react';
 import Mustache from 'mustache';
 import { scaleLinear } from 'd3-scale';
-// @ts-ignore
 import { Table, Thead, Th, Tr, Td } from 'reactable-arc';
 import { formatNumber } from '@superset-ui/number-format';
 import { formatTime } from '@superset-ui/time-format';
 import moment from 'moment';
-import { InfoTooltipWithTrigger, MetricOption } from '@superset-ui/control-utils';
+import { InfoTooltipWithTrigger, MetricOption } from '@superset-ui/chart-controls';
 
 import FormattedNumber from './FormattedNumber';
 import SparklineCell from './SparklineCell';
@@ -37,7 +36,7 @@ interface ColorFromBoundProps {
   colorBounds: Array<string>;
 }
 function colorFromBounds(
-  value: string,
+  value: number,
   bounds: number[],
   colorBounds = ACCESSIBLE_COLOR_BOUNDS,
 ): ColorFromBoundProps | null {
@@ -72,12 +71,12 @@ interface ColumnConfigProps {
   label: string;
   timeLag: number;
   tooltip: any;
-  bounds: any;
+  bounds: number[];
   dateFormat: string;
   width: string;
   height: string;
-  yAxisBounds: boolean;
-  showYAxis: ConstrainBooleanParameters;
+  yAxisBounds: number[];
+  showYAxis: boolean;
   timeRatio: number;
 }
 
@@ -98,13 +97,14 @@ interface ChartProps {
   row: Array<unknown>;
 }
 interface Entry {
-  time: string;
+  [key: string]: number;
 }
 
 class TimeTable extends React.PureComponent<ChartProps, {}> {
   renderLeftCell(row: RowData) {
     const { rowType, url } = this.props;
     const context = { metric: row };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
     const fullUrl = url ? Mustache.render(url, context) : null;
 
     if (rowType === 'column') {
@@ -127,7 +127,7 @@ class TimeTable extends React.PureComponent<ChartProps, {}> {
 
   // eslint-disable-next-line class-methods-use-this
   renderSparklineCell(valueField: string, column: ColumnConfigProps, entries: Entry[]) {
-    let sparkData: any[];
+    let sparkData: number[];
     if (column.timeRatio) {
       // Period ratio sparkline
       sparkData = [];
@@ -136,6 +136,7 @@ class TimeTable extends React.PureComponent<ChartProps, {}> {
         if (prevData && prevData !== 0) {
           sparkData.push(entries[i][valueField] / prevData);
         } else {
+          // @ts-ignore
           sparkData.push(null);
         }
       }
@@ -166,9 +167,9 @@ class TimeTable extends React.PureComponent<ChartProps, {}> {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  renderValueCell(valueField: string, column: ColumnConfigProps, reversedEntries: object[]) {
+  renderValueCell(valueField: string, column: ColumnConfigProps, reversedEntries: Entry[]) {
     const recent = reversedEntries[0][valueField];
-    let v;
+    let v: number = 0;
     let errorMsg;
     if (column.colType === 'time') {
       // Time lag ratio
@@ -192,14 +193,13 @@ class TimeTable extends React.PureComponent<ChartProps, {}> {
       v =
         recent /
         Object.keys(reversedEntries[0])
-          // eslint-disable-next-line no-negated-condition
-          .map(k => (k !== 'time' ? reversedEntries[0][k] : null))
+          .map(k => (k === 'time' ? 0 : reversedEntries[0][k]))
           .reduce((a, b) => a + b);
     } else if (column.colType === 'avg') {
       // Average over the last {timeLag}
       v =
         reversedEntries
-          .map((k: object, i: number) => (i < column.timeLag ? k[valueField] : 0))
+          .map((k: Entry, i: number) => (i < column.timeLag ? k[valueField] : 0))
           .reduce((a: number, b: number) => a + b) / column.timeLag;
     }
 
@@ -229,7 +229,7 @@ class TimeTable extends React.PureComponent<ChartProps, {}> {
     );
   }
 
-  renderRow(row: RowData, entries: Entry[], reversedEntries: object[]) {
+  renderRow(row: RowData, entries: Entry[], reversedEntries: Entry[]) {
     const { columnConfigs } = this.props;
     const valueField: string = row.label || row.metric_name;
     const leftCell = this.renderLeftCell(row);
@@ -249,9 +249,10 @@ class TimeTable extends React.PureComponent<ChartProps, {}> {
 
   render() {
     const { className, height, data, columnConfigs, rowType, rows } = this.props;
-
     const entries = Object.keys(data)
       .sort()
+      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       .map(time => ({ ...data[time], time }));
 
     const reversedEntries = entries.concat().reverse();

@@ -19,7 +19,6 @@
  * under the License.
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   Sparkline,
   LineSeries,
@@ -31,29 +30,30 @@ import {
 import { formatNumber } from '@superset-ui/number-format';
 import { getTextDimension } from '@superset-ui/dimension';
 
-const propTypes = {
-  ariaLabel: PropTypes.string,
-  className: PropTypes.string,
-  data: PropTypes.array.isRequired,
-  height: PropTypes.number,
-  numberFormat: PropTypes.string,
-  renderTooltip: PropTypes.func,
-  showYAxis: PropTypes.bool,
-  width: PropTypes.number,
-  yAxisBounds: PropTypes.array,
-};
-const defaultProps = {
-  ariaLabel: '',
-  className: '',
-  height: 50,
-  numberFormat: undefined,
-  renderTooltip() {
-    return <div />;
-  },
-  showYAxis: false,
-  width: 300,
-  yAxisBounds: [null, null],
-};
+interface Props {
+  ariaLabel: string;
+  className?: string;
+  height: number;
+  numberFormat: string;
+  renderTooltip: ({ index }: { index: number }) => void;
+  showYAxis: boolean;
+  width: number;
+  yAxisBounds: Array<number>;
+  data: Array<number>;
+}
+
+interface TooltipProps {
+  onMouseLeave: () => void;
+  onMouseMove: () => void;
+  tooltipData: {
+    index: number;
+  };
+}
+
+interface Yscale {
+  min?: number;
+  max?: number;
+}
 
 const MARGIN = {
   top: 8,
@@ -68,7 +68,7 @@ const tooltipProps = {
   offsetTop: 0,
 };
 
-function getSparklineTextWidth(text) {
+function getSparklineTextWidth(text: string) {
   return (
     getTextDimension({
       text,
@@ -81,12 +81,13 @@ function getSparklineTextWidth(text) {
   );
 }
 
-function isValidBoundValue(value) {
+function isValidBoundValue(value?: number) {
+  // @ts-ignore
   return value !== null && value !== undefined && value !== '' && !Number.isNaN(value);
 }
 
-class SparklineCell extends React.Component {
-  renderHorizontalReferenceLine(value, label) {
+class SparklineCell extends React.Component<Props, {}> {
+  renderHorizontalReferenceLine(value?: number, label?: string) {
     return (
       <HorizontalReferenceLine
         reference={value}
@@ -101,17 +102,17 @@ class SparklineCell extends React.Component {
 
   render() {
     const {
-      width,
-      height,
+      width = 300,
+      height = 50,
       data,
       ariaLabel,
-      numberFormat,
-      yAxisBounds,
-      showYAxis,
-      renderTooltip,
+      numberFormat = undefined,
+      yAxisBounds = [undefined, undefined],
+      showYAxis = false,
+      renderTooltip = () => <div />,
     } = this.props;
 
-    const yScale = {};
+    const yScale: Yscale = {};
     let hasMinBound = false;
     let hasMaxBound = false;
 
@@ -127,10 +128,10 @@ class SparklineCell extends React.Component {
       }
     }
 
-    let min;
-    let max;
-    let minLabel;
-    let maxLabel;
+    let min: number | undefined;
+    let max: number | undefined;
+    let minLabel: string;
+    let maxLabel: string;
     let labelLength = 0;
     if (showYAxis) {
       const [minBound, maxBound] = yAxisBounds;
@@ -149,7 +150,7 @@ class SparklineCell extends React.Component {
 
     return (
       <WithTooltip tooltipProps={tooltipProps} hoverStyles={null} renderTooltip={renderTooltip}>
-        {({ onMouseLeave, onMouseMove, tooltipData }) => (
+        {({ onMouseLeave, onMouseMove, tooltipData }: TooltipProps) => (
           <Sparkline
             ariaLabel={ariaLabel}
             width={width}
@@ -179,8 +180,5 @@ class SparklineCell extends React.Component {
     );
   }
 }
-
-SparklineCell.propTypes = propTypes;
-SparklineCell.defaultProps = defaultProps;
 
 export default SparklineCell;
