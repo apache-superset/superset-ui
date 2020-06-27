@@ -93,7 +93,7 @@ export default class ChartClient {
           }
         : {
             endpoint: '/api/v1/chart/data',
-            json: {
+            jsonPayload: {
               query_context: buildQuery(formData),
             },
             ...options,
