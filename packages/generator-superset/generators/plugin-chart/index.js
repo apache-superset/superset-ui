@@ -23,6 +23,21 @@ module.exports = class extends Generator {
         default: _.upperFirst(_.startCase(this.appname.replace('plugin chart', '').trim())),
       },
       {
+        type: 'list',
+        name: 'componentType',
+        message: 'What type of React component would you like?',
+        choices: [
+          {
+            name: 'Class component',
+            value: 'class',
+          },
+          {
+            name: 'Function component (with hooks)',
+            value: 'function',
+          },
+        ],
+      },
+      {
         type: 'confirm',
         name: 'addBadges',
         message: "Add superset-ui badges to your plugin's README.md",
