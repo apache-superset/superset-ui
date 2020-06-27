@@ -495,4 +495,14 @@ describe('callApi()', () => {
     expect(calls).toHaveLength(4);
     expect(response.status).toEqual(503);
   });
+
+  it('invalid json for postPayload should thrown error', () => {
+    expect(() => {
+      callApi({
+        url: mockPostUrl,
+        method: 'POST',
+        postPayload: 'haha',
+      });
+    }).toThrow('Invalid postPayload:\n\nhaha');
+  });
 });
