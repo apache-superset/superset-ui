@@ -22,6 +22,12 @@ module.exports = class extends Generator {
         // Default to current folder name
         default: _.upperFirst(_.startCase(this.appname.replace('plugin chart', '').trim())),
       },
+      {
+        type: 'confirm',
+        name: 'addBadges',
+        message: "Add superset-ui badges to your plugin's README.md",
+        default: true,
+      },
     ]);
   }
 
