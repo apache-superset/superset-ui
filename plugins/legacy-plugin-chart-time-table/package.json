@@ -34,7 +34,7 @@
     "@superset-ui/number-format": "^0.13.21",
     "@superset-ui/time-format": "^0.13.22",
     "@types/d3-scale": "^2.0.2",
-    "@types/react": "^16.3.0",
+    "@types/react": "^16.9.38",
     "d3-scale": "^3.2.1",
     "emotion-theming": "^10.0.27",
     "moment": "^2.26.0",
@@ -43,12 +43,12 @@
     "reactable-arc": "^0.15.0"
   },
   "peerDependencies": {
-    "@superset-ui/chart": "^0.13.0",
-    "@superset-ui/color": "^0.13.0",
-    "@superset-ui/query": "^0.13.0",
-    "@superset-ui/style": "^0.13.11",
-    "@superset-ui/translation": "^0.13.0",
-    "@superset-ui/validator": "^0.13.0",
-    "react": "^16.3.0"
+    "@superset-ui/chart": "^0.14.0",
+    "@superset-ui/color": "^0.14.0",
+    "@superset-ui/query": "^0.14.0",
+    "@superset-ui/style": "^0.14.0",
+    "@superset-ui/translation": "^0.14.0",
+    "@superset-ui/validator": "^0.14.0",
+    "react": "^16.3.1"
   }
 }

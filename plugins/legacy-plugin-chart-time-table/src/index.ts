@@ -33,6 +33,7 @@ export default class TimeTableChartPlugin extends ChartPlugin {
     super({
       loadChart: () => import('./TimeTable'),
       metadata,
+      // @ts-ignore
       transformProps,
       controlPanel,
     });

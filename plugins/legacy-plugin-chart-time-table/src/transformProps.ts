@@ -26,15 +26,17 @@ interface FormData {
 }
 
 interface DataObj {
-  data: {
-    records: DataRecord[];
-    columns: string[];
-  };
+  records: DataRecord[];
+  columns: string[];
+}
+
+interface QueryData {
+  data: DataObj;
 }
 
 export type TableChartProps = ChartProps & {
   formData: FormData;
-  queryData: DataObj;
+  queryData: QueryData;
 };
 
 interface ColumnData {
@@ -44,7 +46,7 @@ export default function transformProps(chartProps: TableChartProps) {
   const { height, datasource, formData, queryData } = chartProps;
   const { columnCollection, groupby, metrics, url } = formData;
   const { records, columns } = queryData.data;
-  const isGroupBy = groupby.length > 0;
+  const isGroupBy = groupby?.length > 0;
 
   // When there is a "group by",
   // each row in the table is a database column
