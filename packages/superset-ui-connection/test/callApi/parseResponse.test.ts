@@ -45,8 +45,6 @@ describe('parseResponse()', () => {
       expect(keys).toContain('response');
       expect(keys).toContain('json');
       expect(args.json).toEqual(expect.objectContaining(mockGetPayload) as typeof args.json);
-
-      return true;
     });
   });
 
@@ -81,7 +79,7 @@ describe('parseResponse()', () => {
 
     const apiPromise = callApi({ url: mockTextParseUrl, method: 'GET' });
 
-    return parseResponse(apiPromise, 'text').then(args => {
+    return parseResponse<'text'>(apiPromise, 'text').then(args => {
       expect(fetchMock.calls(mockTextParseUrl)).toHaveLength(1);
       const keys = Object.keys(args);
       expect(keys).toContain('response');
@@ -94,7 +92,6 @@ describe('parseResponse()', () => {
 
   it('throws if parseMethod is not null|json|text', () => {
     const apiPromise = callApi({ url: mockNoParseUrl, method: 'GET' });
-
     // @ts-ignore - 'something-else' is *intentionally* an invalid type
     expect(() => parseResponse(apiPromise, 'something-else')).toThrow();
   });
