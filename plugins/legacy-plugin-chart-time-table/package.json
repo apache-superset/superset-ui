@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@data-ui/sparkline": "^0.0.84",
-    "@superset-ui/chart-controls": "^0.14.2",
+    "@superset-ui/chart-controls": "^0.14.3",
     "@superset-ui/dimension": "^0.13.21",
     "@superset-ui/number-format": "^0.13.21",
     "@superset-ui/time-format": "^0.13.22",
