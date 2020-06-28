@@ -1,4 +1,4 @@
-import callApi from './callApi';
+import callApiAndParseWithTimeout from './callApi/callApiAndParseWithTimeout';
 import {
   ClientConfig,
   ClientTimeout,
@@ -11,7 +11,7 @@ import {
   Mode,
   Protocol,
   RequestConfig,
-  SupersetClientResponse,
+  ParseMethod,
 } from './types';
 import { DEFAULT_FETCH_RETRY_OPTIONS } from './constants';
 
@@ -20,6 +20,7 @@ export default class SupersetClientClass {
   csrfToken?: CsrfToken;
   csrfPromise?: CsrfPromise;
   fetchRetryOptions?: FetchRetryOptions;
+  baseUrl: string;
   protocol: Protocol;
   host: Host;
   headers: Headers;
@@ -27,8 +28,9 @@ export default class SupersetClientClass {
   timeout: ClientTimeout;
 
   constructor({
-    protocol = 'http:',
-    host = 'localhost',
+    baseUrl = 'http://localhost',
+    host,
+    protocol,
     headers = {},
     fetchRetryOptions = {},
     mode = 'same-origin',
@@ -36,16 +38,19 @@ export default class SupersetClientClass {
     credentials = undefined,
     csrfToken = undefined,
   }: ClientConfig = {}) {
+    const url = new URL(
+      host || protocol ? `${protocol || 'https:'}//${host || 'localhost'}` : baseUrl,
+    );
+    this.baseUrl = url.href.replace(/\/+$/, ''); // always strip trailing slash
+    this.host = url.host;
+    this.protocol = url.protocol as Protocol;
     this.headers = { ...headers };
-    this.host = host;
     this.mode = mode;
     this.timeout = timeout;
-    this.protocol = protocol;
     this.credentials = credentials;
     this.csrfToken = csrfToken;
     this.csrfPromise = undefined;
     this.fetchRetryOptions = { ...DEFAULT_FETCH_RETRY_OPTIONS, ...fetchRetryOptions };
-
     if (typeof this.csrfToken === 'string') {
       this.headers = { ...this.headers, 'X-CSRFToken': this.csrfToken };
       this.csrfPromise = Promise.resolve(this.csrfToken);
@@ -56,8 +61,11 @@ export default class SupersetClientClass {
     if (this.isAuthenticated() && !force) {
       return this.csrfPromise as CsrfPromise;
     }
-
     return this.getCSRFToken();
+  }
+
+  reAuthenticate() {
+    return this.init(true);
   }
 
   isAuthenticated(): boolean {
@@ -65,23 +73,23 @@ export default class SupersetClientClass {
     return this.csrfToken !== null && this.csrfToken !== undefined;
   }
 
-  async get(requestConfig: RequestConfig): Promise<SupersetClientResponse> {
-    return this.request({ ...requestConfig, method: 'GET' });
+  get<T extends ParseMethod = 'json'>(requestConfig: RequestConfig) {
+    return this.request<T>({ ...requestConfig, method: 'GET' });
   }
 
-  async delete(requestConfig: RequestConfig): Promise<SupersetClientResponse> {
-    return this.request({ ...requestConfig, method: 'DELETE' });
+  delete<T extends ParseMethod = 'json'>(requestConfig: RequestConfig) {
+    return this.request<T>({ ...requestConfig, method: 'DELETE' });
   }
 
-  async put(requestConfig: RequestConfig): Promise<SupersetClientResponse> {
-    return this.request({ ...requestConfig, method: 'PUT' });
+  put<T extends ParseMethod = 'json'>(requestConfig: RequestConfig) {
+    return this.request<T>({ ...requestConfig, method: 'PUT' });
   }
 
-  async post(requestConfig: RequestConfig): Promise<SupersetClientResponse> {
-    return this.request({ ...requestConfig, method: 'POST' });
+  post<T extends ParseMethod = 'json'>(requestConfig: RequestConfig) {
+    return this.request<T>({ ...requestConfig, method: 'POST' });
   }
 
-  async request({
+  async request<T extends ParseMethod = 'json'>({
     body,
     credentials,
     endpoint,
@@ -97,9 +105,9 @@ export default class SupersetClientClass {
     stringify,
     timeout,
     url,
-  }: RequestConfig): Promise<SupersetClientResponse> {
+  }: RequestConfig) {
     return this.ensureAuth().then(() =>
-      callApi({
+      callApiAndParseWithTimeout<T>({
         body,
         credentials: credentials ?? this.credentials,
         fetchRetryOptions,
@@ -121,10 +129,9 @@ export default class SupersetClientClass {
     return (
       this.csrfPromise ??
       Promise.reject({
-        error: `SupersetClient has no CSRF token, ensure it is initialized or
-        try logging into the Superset instance at ${this.getUrl({
-          endpoint: '/login',
-        })}`,
+        error: `SupersetClient has not been provided a CSRF token, ensure it is
+        initialized with \`client.getCSRFToken()\` or try logging in at
+        ${this.getUrl({ endpoint: '/login' })}`,
       })
     );
   }
@@ -134,7 +141,7 @@ export default class SupersetClientClass {
 
     // If we can request this resource successfully, it means that the user has
     // authenticated. If not we throw an error prompting to authenticate.
-    this.csrfPromise = callApi({
+    this.csrfPromise = callApiAndParseWithTimeout<'json'>({
       credentials: this.credentials,
       headers: {
         ...this.headers,

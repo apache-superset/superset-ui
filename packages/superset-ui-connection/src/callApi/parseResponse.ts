@@ -1,26 +1,37 @@
-import { ParseMethod, SupersetClientResponse } from '../types';
+import { ParseMethod, SupersetClientResponse, TextResponse, JsonResponse } from '../types';
 
-function rejectIfNotOkay(response: Response): Promise<Response> {
-  if (!response.ok) return Promise.reject<Response>(response);
-
-  return Promise.resolve<Response>(response);
-}
-
-export default function parseResponse(
+export default function parseResponse<T extends ParseMethod = 'json'>(
   apiPromise: Promise<Response>,
   parseMethod: ParseMethod = 'json',
-): Promise<SupersetClientResponse> {
-  const checkedPromise = apiPromise.then(rejectIfNotOkay);
+) {
+  type ReturnType = Promise<
+    T extends 'text'
+      ? TextResponse
+      : T extends 'json'
+      ? JsonResponse
+      : T extends 'raw' | null
+      ? Response
+      : SupersetClientResponse
+  >;
+  const promise = apiPromise.then(response => {
+    // reject failed HTTP requests with the raw response
+    if (!response.ok) return Promise.reject(response);
+    return response;
+  });
 
-  if (parseMethod === null) {
-    return apiPromise.then(rejectIfNotOkay);
+  if (parseMethod === null || parseMethod === 'raw') {
+    return promise as ReturnType;
   }
   if (parseMethod === 'text') {
-    return checkedPromise.then(response => response.text().then(text => ({ response, text })));
+    return promise.then(response =>
+      response.text().then(text => ({ response, text })),
+    ) as ReturnType;
   }
   if (parseMethod === 'json') {
-    return checkedPromise.then(response => response.json().then(json => ({ json, response })));
+    return promise.then(response =>
+      response.json().then(json => ({ json, response })),
+    ) as ReturnType;
   }
 
-  throw new Error(`Expected parseResponse=null|json|text, got '${parseMethod}'.`);
+  throw new Error(`Expected parseResponse=json|text|raw|null, got '${parseMethod}'.`);
 }

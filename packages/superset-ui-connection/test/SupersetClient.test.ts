@@ -35,7 +35,7 @@ describe('SupersetClient', () => {
   });
 
   // this also tests that the ^above doesn't throw if configure is called appropriately
-  it('calls appropriate SupersetClient methods when configured', () => {
+  it('calls appropriate SupersetClient methods when configured', async () => {
     const mockGetUrl = '/mock/get/url';
     const mockPostUrl = '/mock/post/url';
     const mockRequestUrl = '/mock/request/url';
@@ -43,8 +43,13 @@ describe('SupersetClient', () => {
     const mockDeleteUrl = '/mock/delete/url';
     const mockGetPayload = { get: 'payload' };
     const mockPostPayload = { post: 'payload' };
+    const mockDeletePayload = { delete: 'ok' };
+    const mockPutPayload = { put: 'ok' };
     fetchMock.get(mockGetUrl, mockGetPayload);
     fetchMock.post(mockPostUrl, mockPostPayload);
+    fetchMock.delete(mockDeleteUrl, mockDeletePayload);
+    fetchMock.put(mockPutUrl, mockPutPayload);
+    fetchMock.get(mockRequestUrl, mockGetPayload);
 
     const initSpy = jest.spyOn(SupersetClientClass.prototype, 'init');
     const getSpy = jest.spyOn(SupersetClientClass.prototype, 'get');
@@ -56,19 +61,19 @@ describe('SupersetClient', () => {
     const requestSpy = jest.spyOn(SupersetClientClass.prototype, 'request');
 
     SupersetClient.configure({});
-    SupersetClient.init();
+    await SupersetClient.init();
 
     expect(initSpy).toHaveBeenCalledTimes(1);
-    expect(authenticatedSpy).toHaveBeenCalledTimes(1);
+    expect(authenticatedSpy).toHaveBeenCalledTimes(2);
     expect(csrfSpy).toHaveBeenCalledTimes(1);
 
-    SupersetClient.get({ url: mockGetUrl });
-    SupersetClient.post({ url: mockPostUrl });
-    SupersetClient.delete({ url: mockDeleteUrl });
-    SupersetClient.put({ url: mockPutUrl });
-    SupersetClient.request({ url: mockRequestUrl });
+    await SupersetClient.get({ url: mockGetUrl });
+    await SupersetClient.post({ url: mockPostUrl });
+    await SupersetClient.delete({ url: mockDeleteUrl });
+    await SupersetClient.put({ url: mockPutUrl });
+    await SupersetClient.request({ url: mockRequestUrl });
     SupersetClient.isAuthenticated();
-    SupersetClient.reAuthenticate();
+    await SupersetClient.reAuthenticate();
 
     expect(initSpy).toHaveBeenCalledTimes(2);
     expect(deleteSpy).toHaveBeenCalledTimes(1);

@@ -40,6 +40,8 @@ export default function callApi({
 
   if (
     method === 'GET' &&
+    cache !== 'no-store' &&
+    cache !== 'reload' &&
     CACHE_AVAILABLE &&
     (self.location && self.location.protocol) === 'https:'
   ) {
@@ -53,7 +55,6 @@ export default function callApi({
             const etag = cachedResponse.headers.get('Etag') as string;
             request.headers = { ...request.headers, 'If-None-Match': etag };
           }
-
           return fetchWithRetry(url, request);
         })
         .then(response => {
@@ -69,7 +70,6 @@ export default function callApi({
             supersetCache.delete(url);
             supersetCache.put(url, response.clone());
           }
-
           return response;
         }),
     );
@@ -80,13 +80,14 @@ export default function callApi({
       try {
         return JSON.parse(payloadString) as JsonObject;
       } catch (error) {
-        throw new Error(`Invalid postPayload:\n\n${payloadString}`);
+        throw new Error(`Invalid payload:\n\n${payloadString}`);
       }
     };
 
     // override request body with post payload
     const payload: JsonObject | undefined =
       typeof postPayload === 'string' ? tryParsePayload(postPayload) : postPayload;
+
     if (typeof payload === 'object') {
       // using FormData has the effect that Content-Type header is set to `multipart/form-data`,
       // not e.g., 'application/x-www-form-urlencoded'

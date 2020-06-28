@@ -1,15 +1,13 @@
 import callApi from './callApi';
 import rejectAfterTimeout from './rejectAfterTimeout';
 import parseResponse from './parseResponse';
-import { CallApi, ClientTimeout, SupersetClientResponse, ParseMethod } from '../types';
+import { CallApi, ClientTimeout, ParseMethod } from '../types';
 
-export default function callApiAndParseWithTimeout({
+export default function callApiAndParseWithTimeout<T extends ParseMethod = 'json'>({
   timeout,
-  parseMethod,
+  parseMethod = 'json',
   ...rest
-}: { timeout?: ClientTimeout; parseMethod?: ParseMethod } & CallApi): Promise<
-  SupersetClientResponse
-> {
+}: { timeout?: ClientTimeout; parseMethod?: ParseMethod } & CallApi) {
   const apiPromise = callApi(rest);
 
   const racedPromise =
@@ -17,5 +15,5 @@ export default function callApiAndParseWithTimeout({
       ? Promise.race([rejectAfterTimeout<Response>(timeout), apiPromise])
       : apiPromise;
 
-  return parseResponse(racedPromise, parseMethod);
+  return parseResponse<T>(racedPromise, parseMethod);
 }

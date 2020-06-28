@@ -326,7 +326,6 @@ describe('callApi()', () => {
 
     beforeEach(() => {
       self.location.protocol = 'https:';
-
       return caches.delete(constants.CACHE_KEY);
     });
 
@@ -334,12 +333,9 @@ describe('callApi()', () => {
       callApi({ url: mockCacheUrl, method: 'GET' }).then(() => {
         const calls = fetchMock.calls(mockCacheUrl);
         expect(calls).toHaveLength(1);
-
         return caches.open(constants.CACHE_KEY).then(supersetCache =>
           supersetCache.match(mockCacheUrl).then(cachedResponse => {
             expect(cachedResponse).toBeDefined();
-
-            return true;
           }),
         );
       }));
@@ -503,6 +499,6 @@ describe('callApi()', () => {
         method: 'POST',
         postPayload: 'haha',
       });
-    }).toThrow('Invalid postPayload:\n\nhaha');
+    }).toThrow('Invalid payload:\n\nhaha');
   });
 });
