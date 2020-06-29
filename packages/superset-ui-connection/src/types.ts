@@ -13,11 +13,14 @@ export type Headers = { [k: string]: string };
 export type Host = string;
 
 // More strict generic JSON types
-export type JSONPrimitive = string | number | boolean | null;
 export type JSONValue = JSONPrimitive | JSONObject | JSONArray;
-export type JSONObject = { [member: string]: JSONValue };
+export type JSONPrimitive = string | number | boolean | null;
 export type JSONArray = JSONValue[];
+export type JSONObject = { [member: string]: JSONValue };
 
+export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
+export type JsonPrimitive = JSONPrimitive;
+export type JsonArray = JsonValue[];
 // `JSONObject` does not accept specific types when used as function arguments,
 // so we had to employ `any` (Ref: https://github.com/microsoft/TypeScript/issues/15300).
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
