@@ -28,8 +28,10 @@
     "access": "public"
   },
   "dependencies": {
+    "@superset-ui/style": "^0.14.3",
     "d3": "^3.5.17",
-    "prop-types": "^15.6.2"
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1"
   },
   "peerDependencies": {
     "@superset-ui/chart": "^0.14.0",
