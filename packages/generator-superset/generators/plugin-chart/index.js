@@ -38,6 +38,21 @@ module.exports = class extends Generator {
         ],
       },
       {
+        type: 'list',
+        name: 'chartType',
+        message: 'What type of chart would you like?',
+        choices: [
+          {
+            name: 'Time-series chart',
+            value: 'timeseries',
+          },
+          {
+            name: 'Regular chart',
+            value: 'regular',
+          },
+        ],
+      },
+      {
         type: 'confirm',
         name: 'addBadges',
         message: "Add superset-ui badges to your plugin's README.md",
@@ -60,7 +75,7 @@ module.exports = class extends Generator {
       ['src/index.erb', 'src/index.ts'],
       ['src/types.erb', 'src/types.ts'],
       ['src/plugin/buildQuery.erb', 'src/plugin/buildQuery.ts'],
-      ['src/plugin/controlPanel.txt', 'src/plugin/controlPanel.ts'],
+      ['src/plugin/controlPanel.erb', 'src/plugin/controlPanel.ts'],
       ['src/plugin/index.erb', 'src/plugin/index.ts'],
       ['src/plugin/transformProps.erb', 'src/plugin/transformProps.ts'],
       ['src/MyChart.erb', `src/${packageLabel}.tsx`],

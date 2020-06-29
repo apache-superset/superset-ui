@@ -37,6 +37,8 @@ export default function buildQuery(formData: <%= packageLabel %>FormData) {
   return buildQueryContext(formData, baseQueryObject => [
     {
       ...baseQueryObject,
-    },
+<%if (chartType === 'timeseries') { %>      // Time series charts need to set the `is_timeseries` flag to true
+      is_timeseries: true,
+<% } %>    },
   ]);
 }

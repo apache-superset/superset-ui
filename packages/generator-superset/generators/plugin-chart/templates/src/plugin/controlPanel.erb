@@ -92,6 +92,7 @@ export default {
    */
 
   // For control input types, see: superset-frontend/src/explore/components/controls/index.js
+<%if (chartType === 'timeseries') { %>  requiresTime: true,<% } %>
   controlPanelSections: [
     {
       label: t('Query'),
@@ -151,6 +152,16 @@ export default {
       ],
     },
   ],
+<%if (chartType === 'timeseries') { %>  // Time series charts need to override the `druidTimeSeries` and `sqlaTimeSeries`
+  // sections to add the time grain dropdown.
+  sectionOverrides: {
+    druidTimeSeries: {
+      controlSetRows: [['granularity', 'druid_time_origin'], ['time_range']],
+    },
+    sqlaTimeSeries: {
+      controlSetRows: [['granularity_sqla', 'time_grain_sqla'], ['time_range']],
+    },
+  },<% } %>
   controlOverrides: {
     series: {
       validators: [validateNonEmpty],

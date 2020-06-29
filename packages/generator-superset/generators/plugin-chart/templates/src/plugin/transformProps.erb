@@ -57,7 +57,12 @@ export default function transformProps(chartProps: ChartProps) {
   return {
     width,
     height,
-    data,
+<%if (chartType === 'timeseries') { %>    data: data.map(item => ({
+      ...item,
+      // convert epoch to native Date
+      // eslint-disable-next-line no-underscore-dangle
+      __timestamp: new Date(item.__timestamp),
+    })),<% } else { %>    data,<% } %>
     // and now your control data, manipulated as needed, and passed through as props!
     boldText: formData.boldText,
     headerFontSize: formData.headerFontSize,
