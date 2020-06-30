@@ -2,7 +2,7 @@ import { ParseMethod, SupersetClientResponse, TextResponse, JsonResponse } from 
 
 export default function parseResponse<T extends ParseMethod = 'json'>(
   apiPromise: Promise<Response>,
-  parseMethod: ParseMethod = 'json',
+  parseMethod?: T,
 ) {
   type ReturnType = Promise<
     T extends 'text'
@@ -27,7 +27,8 @@ export default function parseResponse<T extends ParseMethod = 'json'>(
       response.text().then(text => ({ response, text })),
     ) as ReturnType;
   }
-  if (parseMethod === 'json') {
+  // by default treat this as json
+  if (parseMethod === undefined || parseMethod === 'json') {
     return promise.then(response =>
       response.json().then(json => ({ json, response })),
     ) as ReturnType;

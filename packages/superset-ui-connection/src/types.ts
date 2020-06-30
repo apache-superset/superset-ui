@@ -88,8 +88,6 @@ export interface TextResponse {
   text: string;
 }
 
-export type JsonTextResponse = JsonResponse | TextResponse;
-
 export type CsrfToken = string;
 export type CsrfPromise = Promise<string | undefined>;
 export type Protocol = 'http:' | 'https:';
@@ -116,4 +114,4 @@ export interface SupersetClientInterface
   reset: () => void;
 }
 
-export type SupersetClientResponse = Response | JsonTextResponse;
+export type SupersetClientResponse = Response | JsonResponse | TextResponse;

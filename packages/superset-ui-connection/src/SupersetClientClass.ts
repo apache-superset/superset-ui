@@ -73,20 +73,20 @@ export default class SupersetClientClass {
     return this.csrfToken !== null && this.csrfToken !== undefined;
   }
 
-  get<T extends ParseMethod = 'json'>(requestConfig: RequestConfig) {
-    return this.request<T>({ ...requestConfig, method: 'GET' });
+  get<T extends ParseMethod = 'json'>(requestConfig: RequestConfig & { parseMethod?: T }) {
+    return this.request({ ...requestConfig, method: 'GET' });
   }
 
-  delete<T extends ParseMethod = 'json'>(requestConfig: RequestConfig) {
-    return this.request<T>({ ...requestConfig, method: 'DELETE' });
+  delete<T extends ParseMethod = 'json'>(requestConfig: RequestConfig & { parseMethod?: T }) {
+    return this.request({ ...requestConfig, method: 'DELETE' });
   }
 
-  put<T extends ParseMethod = 'json'>(requestConfig: RequestConfig) {
-    return this.request<T>({ ...requestConfig, method: 'PUT' });
+  put<T extends ParseMethod = 'json'>(requestConfig: RequestConfig & { parseMethod?: T }) {
+    return this.request({ ...requestConfig, method: 'PUT' });
   }
 
-  post<T extends ParseMethod = 'json'>(requestConfig: RequestConfig) {
-    return this.request<T>({ ...requestConfig, method: 'POST' });
+  post<T extends ParseMethod = 'json'>(requestConfig: RequestConfig & { parseMethod?: T }) {
+    return this.request({ ...requestConfig, method: 'POST' });
   }
 
   async request<T extends ParseMethod = 'json'>({
@@ -105,9 +105,9 @@ export default class SupersetClientClass {
     stringify,
     timeout,
     url,
-  }: RequestConfig) {
+  }: RequestConfig & { parseMethod?: T }) {
     return this.ensureAuth().then(() =>
-      callApiAndParseWithTimeout<T>({
+      callApiAndParseWithTimeout({
         body,
         credentials: credentials ?? this.credentials,
         fetchRetryOptions,
@@ -141,7 +141,7 @@ export default class SupersetClientClass {
 
     // If we can request this resource successfully, it means that the user has
     // authenticated. If not we throw an error prompting to authenticate.
-    this.csrfPromise = callApiAndParseWithTimeout<'json'>({
+    this.csrfPromise = callApiAndParseWithTimeout({
       credentials: this.credentials,
       headers: {
         ...this.headers,
