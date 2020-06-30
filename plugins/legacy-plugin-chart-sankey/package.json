@@ -30,9 +30,11 @@
   "dependencies": {
     "d3": "^3.5.17",
     "d3-sankey": "^0.4.2",
-    "prop-types": "^15.6.2"
+    "prop-types": "^15.6.2",
+    "react": "^16.13.1"
   },
   "peerDependencies": {
+    "@superset-ui/style": "^0.14.3",
     "@superset-ui/chart": "^0.14.0",
     "@superset-ui/color": "^0.14.0",
     "@superset-ui/number-format": "^0.14.0",
