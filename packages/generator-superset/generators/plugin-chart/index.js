@@ -73,13 +73,14 @@ module.exports = class extends Generator {
       ['package.erb', 'package.json'],
       ['README.erb', 'README.md'],
       ['src/index.erb', 'src/index.ts'],
-      ['src/types.erb', 'src/types.ts'],
       ['src/plugin/buildQuery.erb', 'src/plugin/buildQuery.ts'],
       ['src/plugin/controlPanel.erb', 'src/plugin/controlPanel.ts'],
       ['src/plugin/index.erb', 'src/plugin/index.ts'],
       ['src/plugin/transformProps.erb', 'src/plugin/transformProps.ts'],
       ['src/MyChart.erb', `src/${packageLabel}.tsx`],
       ['test/index.erb', 'test/index.test.ts'],
+      ['test/plugin/buildQuery.test.erb', 'test/plugin/buildQuery.test.ts'],
+      ['test/plugin/transformProps.test.erb', 'test/plugin/transformProps.test.ts'],
     ].forEach(([src, dest]) => {
       this.fs.copyTpl(this.templatePath(src), this.destinationPath(dest), params);
     });

@@ -32,44 +32,4 @@ describe('@superset-ui/plugin-chart-<%= packageName %>', () => {
   it('exists', () => {
     expect(<%= packageLabel %>ChartPlugin).toBeDefined();
   });
-
-  it('transformProps returns correct data', () => {
-    const chartProps = {
-      width: 10,
-      height: 20,
-      formData: {
-        boldText: true,
-        headerFontSize: 'xs',
-        headerText: 'my text',
-      },
-      queryData: {
-        abc: 123,
-        qwerty: 'xyz',
-      },
-      annotationData: {},
-      datasource: {
-        id: 1,
-        name: 'myDatasource',
-        type: DatasourceType.Table,
-        columns: [],
-        metrics: [],
-      },
-      rawDatasource: {},
-      rawFormData: {},
-      initialValues: {},
-      hooks: {},
-    };
-    const transformedProps = transformProps(chartProps);
-
-    // Make sure correct data is returned from transformProps
-    expect(transformedProps).toHaveProperty('width', 10);
-    expect(transformedProps).toHaveProperty('height', 20);
-    expect(transformedProps).toHaveProperty('data');
-    expect(transformedProps).toHaveProperty('boldText', true);
-    expect(transformedProps).toHaveProperty('headerFontSize', 'xs');
-    expect(transformedProps).toHaveProperty('headerText', 'my text');
-    // Make sure data that is supposed to be removed isn't returned
-    expect(transformedProps).not.toHaveProperty('hooks');
-    expect(transformedProps).not.toHaveProperty('annotationData');
-  });
 });
