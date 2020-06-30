@@ -56,7 +56,8 @@ export default function transformProps(chartProps: ChartProps) {
   return {
     width,
     height,
-    data: data.map(item => ({
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+    data: data.map((item: { __timestamp: number }) => ({
       ...item,
       // convert epoch to native Date
       // eslint-disable-next-line no-underscore-dangle
