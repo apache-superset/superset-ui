@@ -289,7 +289,7 @@ describe('SupersetClientClass', () => {
         expect.assertions(2);
         const client = new SupersetClientClass({ protocol, host });
         await client.init();
-        const { text } = await client.get<'text'>({ url: mockTextUrl, parseMethod: 'text' });
+        const { text } = await client.get({ url: mockTextUrl, parseMethod: 'text' });
         expect(fetchMock.calls(mockTextUrl)).toHaveLength(1);
         expect(text).toBe(mockTextJsonResponse);
       });
@@ -370,7 +370,7 @@ describe('SupersetClientClass', () => {
         expect.assertions(2);
         const client = new SupersetClientClass({ protocol, host });
         await client.init();
-        const { text } = await client.post<'text'>({ url: mockTextUrl, parseMethod: 'text' });
+        const { text } = await client.post({ url: mockTextUrl, parseMethod: 'text' });
         expect(fetchMock.calls(mockTextUrl)).toHaveLength(1);
         expect(text).toBe(mockTextJsonResponse);
       });

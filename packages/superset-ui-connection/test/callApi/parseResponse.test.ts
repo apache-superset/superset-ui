@@ -87,10 +87,7 @@ describe('parseResponse()', () => {
     const mockTextJsonResponse = '{ "value": 9223372036854775807 }';
     fetchMock.get(mockTextParseUrl, mockTextJsonResponse);
 
-    const args = await parseResponse<'text'>(
-      callApi({ url: mockTextParseUrl, method: 'GET' }),
-      'text',
-    );
+    const args = await parseResponse(callApi({ url: mockTextParseUrl, method: 'GET' }), 'text');
     expect(fetchMock.calls(mockTextParseUrl)).toHaveLength(1);
     const keys = Object.keys(args);
     expect(keys).toContain('response');
@@ -103,14 +100,13 @@ describe('parseResponse()', () => {
     expect(() => parseResponse(apiPromise, 'something-else' as never)).toThrow();
   });
 
-  it('resolves to the unmodified `Response` object if `parseMethod=null`', async () => {
+  it('resolves to the unmodified `Response` object if `parseMethod=null|raw`', async () => {
     expect.assertions(2);
-    const response = await parseResponse<'raw'>(
-      callApi({ url: mockNoParseUrl, method: 'GET' }),
-      null,
-    );
+    const responseNull = await parseResponse(callApi({ url: mockNoParseUrl, method: 'GET' }), null);
+    const responseRaw = await parseResponse(callApi({ url: mockNoParseUrl, method: 'GET' }), 'raw');
     expect(fetchMock.calls(mockNoParseUrl)).toHaveLength(1);
-    expect(response.bodyUsed).toBe(false);
+    expect(responseNull.bodyUsed).toBe(false);
+    expect(responseRaw.bodyUsed).toBe(false);
   });
 
   it('rejects if request.ok=false', async () => {
