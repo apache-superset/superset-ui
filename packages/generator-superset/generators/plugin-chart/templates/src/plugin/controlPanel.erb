@@ -18,8 +18,9 @@
  */
 import { t } from '@superset-ui/translation';
 import { validateNonEmpty } from '@superset-ui/validator';
+import { ControlPanelConfig } from '@superset-ui/chart-controls'; 
 
-export default {
+const config: ControlPanelConfig = {
   /**
    * The control panel is split into two tabs: "Query" and
    * "Chart Options". The controls that define the inputs to
@@ -52,7 +53,7 @@ export default {
    * of the `Query` section instead of a predefined control.
    *
    * import { validateNonEmpty } from '@superset-ui/validator';
-   * import { sharedControls, ControlConfig } from '@superset-ui/chart-controls'; 
+   * import { sharedControls, ControlConfig, ControlPanelConfig } from '@superset-ui/chart-controls'; 
    *
    * const myControl: ControlConfig<'SelectControl'> = {
    *   name: 'secondary_entity',
@@ -173,3 +174,5 @@ export default {
     },
   },
 };
+
+export default config;
