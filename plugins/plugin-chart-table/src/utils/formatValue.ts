@@ -25,7 +25,7 @@ const xss = new FilterXSS({
     ...getDefaultWhiteList(),
     span: ['style', 'title'],
     div: ['style'],
-    a: ['style'],
+    a: ['style', 'href', 'title', 'target'],
     img: ['style', 'src', 'alt', 'title', 'width', 'height'],
   },
   stripIgnoreTag: true,
