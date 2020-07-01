@@ -45,7 +45,6 @@ export type Mode = RequestInit['mode'];
 export type Redirect = RequestInit['redirect'];
 export type ClientTimeout = number | undefined;
 export type ParseMethod = 'json' | 'text' | 'raw' | null | undefined;
-export type ParseMethodOptional = ParseMethod | undefined;
 export type Signal = RequestInit['signal'];
 export type Stringify = boolean;
 export type Url = string;
