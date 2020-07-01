@@ -1,27 +1,27 @@
-import { SupersetClient, RequestConfig } from '@superset-ui/connection';
+import { SupersetClient, Method, Url } from '@superset-ui/connection';
 import { QueryFormData } from '../../types/QueryFormData';
 import { LegacyChartDataResponse } from './types';
 import { BaseParams } from '../types';
 
 export interface Params extends BaseParams {
-  method?: 'GET' | 'POST';
-  url?: string;
+  method?: Method;
+  url?: Url;
   formData: QueryFormData;
 }
 
-export default function fetchExploreJson({
+export default async function fetchExploreJson({
   client = SupersetClient,
   method = 'POST',
   requestConfig,
   url = '/superset/explore_json/',
   formData,
 }: Params) {
-  const fetchFunc = method === 'GET' ? client.get : client.post;
-
-  return fetchFunc({
+  const { json } = await client.request({
     ...requestConfig,
-    // TODO: Have to transform formData as query string for GET
+    method,
     url,
+    // TODO: Have to transform formData as query string for GET
     postPayload: { form_data: formData },
-  } as RequestConfig).then(({ json }) => json as LegacyChartDataResponse);
+  });
+  return json as LegacyChartDataResponse;
 }
