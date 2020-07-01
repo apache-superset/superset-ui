@@ -304,6 +304,7 @@ export interface ControlPanelSectionConfig {
 }
 
 export interface ControlPanelConfig {
+  requiresTime?: boolean;
   controlPanelSections: ControlPanelSectionConfig[];
   controlOverrides?: ControlOverrides;
   sectionOverrides?: SectionOverrides;
