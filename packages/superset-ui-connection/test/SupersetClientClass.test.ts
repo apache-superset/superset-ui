@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 import fetchMock from 'fetch-mock';
 import { SupersetClientClass, ClientConfig } from '../src';
 import { LOGIN_GLOB } from './fixtures/constants';
@@ -56,67 +74,66 @@ describe('SupersetClientClass', () => {
       fetchMock.get(LOGIN_GLOB, { csrf_token: 1234 }, { overwriteRoutes: true });
     });
 
-    it('calls superset/csrf_token/ when init() is called if no CSRF token is passed', () => {
+    it('calls superset/csrf_token/ when init() is called if no CSRF token is passed', async () => {
       expect.assertions(1);
-
-      return new SupersetClientClass().init().then(() => {
-        expect(fetchMock.calls(LOGIN_GLOB)).toHaveLength(1);
-      });
+      await new SupersetClientClass().init();
+      expect(fetchMock.calls(LOGIN_GLOB)).toHaveLength(1);
     });
 
-    it('does NOT call superset/csrf_token/ when init() is called if a CSRF token is passed', () => {
+    it('does NOT call superset/csrf_token/ when init() is called if a CSRF token is passed', async () => {
       expect.assertions(1);
-
-      return new SupersetClientClass({ csrfToken: 'abc' }).init().then(() => {
-        expect(fetchMock.calls(LOGIN_GLOB)).toHaveLength(0);
-      });
+      await new SupersetClientClass({ csrfToken: 'abc' }).init();
+      expect(fetchMock.calls(LOGIN_GLOB)).toHaveLength(0);
     });
 
-    it('calls superset/csrf_token/ when init(force=true) is called even if a CSRF token is passed', () => {
+    it('calls superset/csrf_token/ when init(force=true) is called even if a CSRF token is passed', async () => {
       expect.assertions(4);
       const initialToken = 'initial_token';
       const client = new SupersetClientClass({ csrfToken: initialToken });
 
-      return client.init().then(() => {
-        expect(fetchMock.calls(LOGIN_GLOB)).toHaveLength(0);
-        expect(client.csrfToken).toBe(initialToken);
+      await client.init();
+      expect(fetchMock.calls(LOGIN_GLOB)).toHaveLength(0);
+      expect(client.csrfToken).toBe(initialToken);
 
-        return client.init(true).then(() => {
-          expect(fetchMock.calls(LOGIN_GLOB)).toHaveLength(1);
-          expect(client.csrfToken).not.toBe(initialToken);
-        });
-      });
+      await client.init(true);
+      expect(fetchMock.calls(LOGIN_GLOB)).toHaveLength(1);
+      expect(client.csrfToken).not.toBe(initialToken);
     });
 
     it('throws if superset/csrf_token/ returns an error', async () => {
       expect.assertions(1);
-      fetchMock.get(LOGIN_GLOB, () => Promise.reject({ status: 403 }), {
+      const rejectError = { status: 403 };
+      fetchMock.get(LOGIN_GLOB, () => Promise.reject(rejectError), {
         overwriteRoutes: true,
       });
       try {
         await new SupersetClientClass({}).init();
       } catch (error) {
-        expect(error).toEqual({ status: 403 });
+        expect(error as typeof rejectError).toEqual(rejectError);
       }
     });
 
+    const invalidCsrfTokenError = { error: 'Failed to fetch CSRF token' };
+
     it('throws if superset/csrf_token/ does not return a token', async () => {
+      expect.assertions(1);
       fetchMock.get(LOGIN_GLOB, {}, { overwriteRoutes: true });
       try {
         await new SupersetClientClass({}).init();
       } catch (error) {
-        expect(error).toBeDefined();
+        expect(error as typeof invalidCsrfTokenError).toEqual(invalidCsrfTokenError);
       }
     });
 
     it('does not set csrfToken if response is not json', async () => {
+      expect.assertions(1);
       fetchMock.get(LOGIN_GLOB, '123', {
         overwriteRoutes: true,
       });
       try {
         await new SupersetClientClass({}).init();
       } catch (error) {
-        expect(error).toBeDefined();
+        expect(error as typeof invalidCsrfTokenError).toEqual(invalidCsrfTokenError);
       }
     });
   });
@@ -339,6 +356,7 @@ describe('SupersetClientClass', () => {
       });
 
       it('allows overriding host, headers, mode, and credentials per-request', async () => {
+        expect.assertions(3);
         const clientConfig: ClientConfig = {
           host,
           protocol,

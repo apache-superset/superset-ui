@@ -59,7 +59,7 @@ export default async function callApi({
       if (cachedFullResponse) {
         return cachedFullResponse.clone();
       }
-      throw new Error('Received 304 but no content is not cached!');
+      throw new Error('Received 304 but no content is cached!');
     }
     if (response.status === HTTP_STATUS_OK && response.headers.get('Etag')) {
       supersetCache.delete(url);
