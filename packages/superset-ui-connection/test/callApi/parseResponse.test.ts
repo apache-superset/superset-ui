@@ -117,10 +117,10 @@ describe('parseResponse()', () => {
   });
 
   it('rejects if request.ok=false', async () => {
+    expect.assertions(3);
     const mockNotOkayUrl = '/mock/notokay/url';
     fetchMock.get(mockNotOkayUrl, 404); // 404s result in not response.ok=false
 
-    expect.assertions(3);
     const apiPromise = callApi({ url: mockNotOkayUrl, method: 'GET' });
 
     try {

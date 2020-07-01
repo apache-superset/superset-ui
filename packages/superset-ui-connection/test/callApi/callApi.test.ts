@@ -311,6 +311,7 @@ describe('callApi()', () => {
     });
 
     it('caches requests with ETags', async () => {
+      expect.assertions(2);
       await callApi({ url: mockCacheUrl, method: 'GET' });
       const calls = fetchMock.calls(mockCacheUrl);
       expect(calls).toHaveLength(1);
@@ -320,6 +321,7 @@ describe('callApi()', () => {
     });
 
     it('will not use cache when running off an insecure connection', async () => {
+      expect.assertions(2);
       self.location.protocol = 'http:';
 
       await callApi({ url: mockCacheUrl, method: 'GET' });
@@ -332,6 +334,7 @@ describe('callApi()', () => {
     });
 
     it('works when the Cache API is disabled', async () => {
+      expect.assertions(5);
       // eslint-disable-next-line no-import-assign
       Object.defineProperty(constants, 'CACHE_AVAILABLE', { value: false });
 
@@ -354,6 +357,7 @@ describe('callApi()', () => {
     });
 
     it('sends known ETags in the If-None-Match header', async () => {
+      expect.assertions(3);
       // first call sets the cache
       await callApi({ url: mockCacheUrl, method: 'GET' });
       const calls = fetchMock.calls(mockCacheUrl);
@@ -370,6 +374,7 @@ describe('callApi()', () => {
     });
 
     it('reuses cached responses on 304 status', async () => {
+      expect.assertions(3);
       // first call sets the cache
       await callApi({ url: mockCacheUrl, method: 'GET' });
       const calls = fetchMock.calls(mockCacheUrl);
@@ -405,6 +410,7 @@ describe('callApi()', () => {
     });
 
     it('returns original response if no Etag', async () => {
+      expect.assertions(3);
       const url = mockGetUrl;
       const response = await callApi({ url, method: 'GET' });
       const calls = fetchMock.calls(url);
@@ -415,6 +421,7 @@ describe('callApi()', () => {
     });
 
     it('returns original response if status not 304 or 200', async () => {
+      expect.assertions(2);
       const url = mockNotFound;
       const response = await callApi({ url, method: 'GET' });
       const calls = fetchMock.calls(url);
@@ -456,6 +463,7 @@ describe('callApi()', () => {
   });
 
   it('rejects after retrying thrice if the request returns a 503', async () => {
+    expect.assertions(2);
     const url = mock503;
     const response = await callApi({
       fetchRetryOptions: DEFAULT_FETCH_RETRY_OPTIONS,
@@ -467,13 +475,17 @@ describe('callApi()', () => {
     expect(response.status).toEqual(503);
   });
 
-  it('invalid json for postPayload should thrown error', () => {
-    expect(() => {
-      callApi({
+  it('invalid json for postPayload should thrown error', async () => {
+    expect.assertions(2);
+    try {
+      await callApi({
         url: mockPostUrl,
         method: 'POST',
         postPayload: 'haha',
       });
-    }).toThrow('Invalid payload:\n\nhaha');
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+      expect(error.message).toEqual('Invalid payload:\n\nhaha');
+    }
   });
 });

@@ -48,12 +48,12 @@ describe('SupersetClient', () => {
     expect(SupersetClient.isAuthenticated).toThrow();
     expect(SupersetClient.reAuthenticate).toThrow();
     expect(SupersetClient.request).toThrow();
-
     expect(SupersetClient.configure).not.toThrow();
   });
 
   // this also tests that the ^above doesn't throw if configure is called appropriately
   it('calls appropriate SupersetClient methods when configured', async () => {
+    expect.assertions(10);
     const mockGetUrl = '/mock/get/url';
     const mockPostUrl = '/mock/post/url';
     const mockRequestUrl = '/mock/request/url';
