@@ -95,16 +95,23 @@ describe('parseResponse()', () => {
     expect(args.text).toBe(mockTextJsonResponse);
   });
 
-  it('throws if parseMethod is not null|json|text', () => {
-    const apiPromise = callApi({ url: mockNoParseUrl, method: 'GET' });
-    expect(() => parseResponse(apiPromise, 'something-else' as never)).toThrow();
+  it('throws if parseMethod is not null|json|text', async () => {
+    expect.assertions(1);
+    try {
+      await parseResponse(
+        callApi({ url: mockNoParseUrl, method: 'GET' }),
+        'something-else' as never,
+      );
+    } catch (error) {
+      expect(error.message).toEqual(expect.stringContaining('Expected parseResponse=json'));
+    }
   });
 
-  it('resolves to the unmodified `Response` object if `parseMethod=null|raw`', async () => {
-    expect.assertions(2);
+  it('resolves to unmodified `Response` object if `parseMethod=null|raw`', async () => {
+    expect.assertions(3);
     const responseNull = await parseResponse(callApi({ url: mockNoParseUrl, method: 'GET' }), null);
     const responseRaw = await parseResponse(callApi({ url: mockNoParseUrl, method: 'GET' }), 'raw');
-    expect(fetchMock.calls(mockNoParseUrl)).toHaveLength(1);
+    expect(fetchMock.calls(mockNoParseUrl)).toHaveLength(2);
     expect(responseNull.bodyUsed).toBe(false);
     expect(responseRaw.bodyUsed).toBe(false);
   });

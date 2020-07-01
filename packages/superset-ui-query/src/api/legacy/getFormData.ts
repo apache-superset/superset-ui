@@ -18,7 +18,7 @@ export default function getFormData({
       endpoint: `/api/v1/form_data/?slice_id=${sliceId}`,
       ...requestConfig,
     })
-    .then(response => response.json as QueryFormData);
+    .then(({ json }) => json as QueryFormData);
 
   return overrideFormData
     ? promise.then(formData => ({ ...formData, ...overrideFormData }))

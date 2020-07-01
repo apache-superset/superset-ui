@@ -1,37 +1,42 @@
-import { ParseMethod, SupersetClientResponse, TextResponse, JsonResponse } from '../types';
+import { ParseMethod, TextResponse, JsonResponse } from '../types';
 
-export default function parseResponse<T extends ParseMethod = 'json'>(
+export default async function parseResponse<T extends ParseMethod = 'json'>(
   apiPromise: Promise<Response>,
   parseMethod?: T,
 ) {
-  type ReturnType = Promise<
-    T extends 'text'
-      ? TextResponse
-      : T extends 'json'
-      ? JsonResponse
-      : T extends 'raw' | null
-      ? Response
-      : SupersetClientResponse
-  >;
-  const promise = apiPromise.then(response => {
-    // reject failed HTTP requests with the raw response
-    if (!response.ok) return Promise.reject(response);
-    return response;
-  });
+  type ReturnType = T extends 'raw' | null
+    ? Response
+    : T extends 'json' | undefined
+    ? JsonResponse
+    : T extends 'text'
+    ? TextResponse
+    : never;
+  const response = await apiPromise;
+  // reject failed HTTP requests with the raw response
+  if (!response.ok) {
+    // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    throw response;
+  }
 
   if (parseMethod === null || parseMethod === 'raw') {
-    return promise as ReturnType;
+    return response as ReturnType;
   }
   if (parseMethod === 'text') {
-    return promise.then(response =>
-      response.text().then(text => ({ response, text })),
-    ) as ReturnType;
+    const text = await response.text();
+    const result: TextResponse = {
+      response,
+      text,
+    };
+    return result as ReturnType;
   }
   // by default treat this as json
   if (parseMethod === undefined || parseMethod === 'json') {
-    return promise.then(response =>
-      response.json().then(json => ({ json, response })),
-    ) as ReturnType;
+    const json = await response.json();
+    const result: JsonResponse = {
+      json,
+      response,
+    };
+    return result as ReturnType;
   }
 
   throw new Error(`Expected parseResponse=json|text|raw|null, got '${parseMethod}'.`);
