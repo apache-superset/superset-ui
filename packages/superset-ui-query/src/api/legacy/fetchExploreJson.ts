@@ -9,19 +9,19 @@ export interface Params extends BaseParams {
   formData: QueryFormData;
 }
 
-export default function fetchExploreJson({
+export default async function fetchExploreJson({
   client = SupersetClient,
   method = 'POST',
   requestConfig,
   url = '/superset/explore_json/',
   formData,
 }: Params) {
-  const fetchFunc = method === 'GET' ? client.get : client.post;
-
-  return fetchFunc({
+  const { json } = await client.request({
     ...requestConfig,
+    method,
     // TODO: Have to transform formData as query string for GET
     url,
     postPayload: { form_data: formData },
-  }).then(({ json }) => json as LegacyChartDataResponse);
+  });
+  return json as LegacyChartDataResponse;
 }

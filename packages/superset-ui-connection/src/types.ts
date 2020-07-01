@@ -38,7 +38,8 @@ export type Method = RequestInit['method'];
 export type Mode = RequestInit['mode'];
 export type Redirect = RequestInit['redirect'];
 export type ClientTimeout = number | undefined;
-export type ParseMethod = 'json' | 'text' | 'raw' | null;
+export type ParseMethod = 'json' | 'text' | 'raw' | null | undefined;
+export type ParseMethodOptional = ParseMethod | undefined;
 export type Signal = RequestInit['signal'];
 export type Stringify = boolean;
 export type Url = string;
@@ -51,7 +52,6 @@ export interface RequestBase {
   host?: Host;
   mode?: Mode;
   method?: Method;
-  parseMethod?: ParseMethod;
   postPayload?: Payload;
   jsonPayload?: Payload;
   signal?: Signal;

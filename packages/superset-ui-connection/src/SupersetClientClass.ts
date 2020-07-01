@@ -49,7 +49,6 @@ export default class SupersetClientClass {
     this.timeout = timeout;
     this.credentials = credentials;
     this.csrfToken = csrfToken;
-    this.csrfPromise = undefined;
     this.fetchRetryOptions = { ...DEFAULT_FETCH_RETRY_OPTIONS, ...fetchRetryOptions };
     if (typeof this.csrfToken === 'string') {
       this.headers = { ...this.headers, 'X-CSRFToken': this.csrfToken };
@@ -57,14 +56,14 @@ export default class SupersetClientClass {
     }
   }
 
-  init(force: boolean = false): CsrfPromise {
+  async init(force: boolean = false): CsrfPromise {
     if (this.isAuthenticated() && !force) {
       return this.csrfPromise as CsrfPromise;
     }
     return this.getCSRFToken();
   }
 
-  reAuthenticate() {
+  async reAuthenticate() {
     return this.init(true);
   }
 
@@ -73,19 +72,19 @@ export default class SupersetClientClass {
     return this.csrfToken !== null && this.csrfToken !== undefined;
   }
 
-  get<T extends ParseMethod = 'json'>(requestConfig: RequestConfig & { parseMethod?: T }) {
+  async get<T extends ParseMethod = 'json'>(requestConfig: RequestConfig & { parseMethod?: T }) {
     return this.request({ ...requestConfig, method: 'GET' });
   }
 
-  delete<T extends ParseMethod = 'json'>(requestConfig: RequestConfig & { parseMethod?: T }) {
+  async delete<T extends ParseMethod = 'json'>(requestConfig: RequestConfig & { parseMethod?: T }) {
     return this.request({ ...requestConfig, method: 'DELETE' });
   }
 
-  put<T extends ParseMethod = 'json'>(requestConfig: RequestConfig & { parseMethod?: T }) {
+  async put<T extends ParseMethod = 'json'>(requestConfig: RequestConfig & { parseMethod?: T }) {
     return this.request({ ...requestConfig, method: 'PUT' });
   }
 
-  post<T extends ParseMethod = 'json'>(requestConfig: RequestConfig & { parseMethod?: T }) {
+  async post<T extends ParseMethod = 'json'>(requestConfig: RequestConfig & { parseMethod?: T }) {
     return this.request({ ...requestConfig, method: 'POST' });
   }
 
@@ -106,26 +105,25 @@ export default class SupersetClientClass {
     timeout,
     url,
   }: RequestConfig & { parseMethod?: T }) {
-    return this.ensureAuth().then(() =>
-      callApiAndParseWithTimeout({
-        body,
-        credentials: credentials ?? this.credentials,
-        fetchRetryOptions,
-        headers: { ...this.headers, ...headers },
-        method,
-        mode: mode ?? this.mode,
-        parseMethod,
-        postPayload,
-        jsonPayload,
-        signal,
-        stringify,
-        timeout: timeout ?? this.timeout,
-        url: this.getUrl({ endpoint, host, url }),
-      }),
-    );
+    await this.ensureAuth();
+    return callApiAndParseWithTimeout({
+      body,
+      credentials: credentials ?? this.credentials,
+      fetchRetryOptions,
+      headers: { ...this.headers, ...headers },
+      method,
+      mode: mode ?? this.mode,
+      parseMethod,
+      postPayload,
+      jsonPayload,
+      signal,
+      stringify,
+      timeout: timeout ?? this.timeout,
+      url: this.getUrl({ endpoint, host, url }),
+    });
   }
 
-  ensureAuth(): CsrfPromise {
+  async ensureAuth(): CsrfPromise {
     return (
       this.csrfPromise ??
       Promise.reject({
@@ -136,9 +134,8 @@ export default class SupersetClientClass {
     );
   }
 
-  async getCSRFToken(): CsrfPromise {
+  async getCSRFToken() {
     this.csrfToken = undefined;
-
     // If we can request this resource successfully, it means that the user has
     // authenticated. If not we throw an error prompting to authenticate.
     this.csrfPromise = callApiAndParseWithTimeout({
@@ -150,19 +147,19 @@ export default class SupersetClientClass {
       mode: this.mode,
       timeout: this.timeout,
       url: this.getUrl({ endpoint: 'superset/csrf_token/' }),
-    }).then(response => {
-      if (typeof response.json === 'object') {
-        this.csrfToken = response.json.csrf_token as string;
+      parseMethod: 'json',
+    }).then(({ json }) => {
+      if (typeof json === 'object') {
+        this.csrfToken = json.csrf_token as string;
         if (typeof this.csrfToken === 'string') {
           this.headers = { ...this.headers, 'X-CSRFToken': this.csrfToken };
         }
       }
-      if (!this.isAuthenticated()) {
-        return Promise.reject({ error: 'Failed to fetch CSRF token' });
+      if (this.isAuthenticated()) {
+        return this.csrfToken;
       }
-      return this.csrfToken;
+      return Promise.reject({ error: 'Failed to fetch CSRF token' });
     });
-
     return this.csrfPromise;
   }
 
