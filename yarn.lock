@@ -9432,10 +9432,10 @@ fetch-mock@^7.2.5:
     path-to-regexp "^2.2.1"
     whatwg-url "^6.5.0"
 
-fetch-retry@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/fetch-retry/-/fetch-retry-3.1.0.tgz#53a25652adf56def526f9b6f6d749a5bebffd319"
-  integrity sha512-pHCYCq7g854KkebphR3tKb4M7TJK91ZI0K2BU82cWv+vNkFQn0PZZFrQd/mL+Ra/mj2HLZNvzkTRjPEq2Dh/Bg==
+fetch-retry@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/fetch-retry/-/fetch-retry-4.0.0.tgz#b8c9dc365caa7cf61d624bc0398f8091087aacf7"
+  integrity sha512-bOaeyiPCzY+iGZigBQEWg65vjI3yoXYoYSfCyI9oDc0CiC7yBq6jkkVWQA0FIHzo5vPnyKYmfpNmpB10NXPqxA==
   dependencies:
     es6-promise "^4.2.8"
 
