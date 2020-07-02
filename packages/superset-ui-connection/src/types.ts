@@ -22,6 +22,12 @@ export type JsonPrimitive = string | number | boolean | null;
  */
 export type StrictJsonValue = JsonPrimitive | StrictJsonObject | StrictJsonArray;
 export type StrictJsonArray = StrictJsonValue[];
+/**
+ * More strict JSON objects that makes sure all values are plain objects.
+ * If this fails to satisfy TypeScript when using as function arguments,
+ * use `JsonObject` instead.
+ * (Ref: https://github.com/microsoft/TypeScript/issues/15300).
+ */
 export type StrictJsonObject = { [member: string]: StrictJsonValue };
 
 export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
