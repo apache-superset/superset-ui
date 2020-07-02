@@ -17,7 +17,14 @@
  * under the License.
  */
 import React, { PureComponent, createRef } from 'react';
-import styled from '@superset-ui/style';
+import styled, { supersetTheme } from '@superset-ui/style';
+
+interface HelloWorldStylesProps {
+  height: number;
+  width: number;
+  headerFontSize: keyof typeof supersetTheme.typography.sizes;
+  boldText: boolean;
+}
 
 export type HelloWorldProps = {
   height: number;
@@ -29,6 +36,28 @@ export type HelloWorldProps = {
   headerFontSize: 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
   headerText: string;
 };
+
+// The following Styles component is a <div> element, which has been styled using Emotion
+// For docs, visit https://emotion.sh/docs/styled
+
+// Theming variables are provided for your use via a ThemeProvider
+// imported from @superset-ui/style. For variables available, please visit
+// https://github.com/apache-superset/superset-ui/blob/master/packages/superset-ui-style/src/index.ts
+
+const Styles = styled.div<HelloWorldStylesProps>`
+  background-color: ${({ theme }) => theme.colors.secondary.light2};
+  padding: ${({ theme }) => theme.gridUnit * 4}px;
+  border-radius: ${({ theme }) => theme.gridUnit * 2}px;
+  height: ${({ height }) => height};
+  width: ${({ width }) => width};
+  overflow-y: scroll;
+
+  h3 {
+    /* You can use your props to control CSS! */
+    font-size: ${({ theme, headerFontSize }) => theme.typography.sizes[headerFontSize]};
+    font-weight: ${({ theme, boldText }) => theme.typography.weights[boldText ? 'bold' : 'normal']};
+  }
+`;
 
 /**
  * ******************* WHAT YOU CAN BUILD HERE *******************
@@ -55,36 +84,19 @@ export default class HelloWorld extends PureComponent<HelloWorldProps> {
     console.log('Approach 1 props', this.props);
     const { data, height, width } = this.props;
 
-    // The following Wrapper is a <div> element, which has been styled using Emotion
-    // For docs, visit https://emotion.sh/docs/styled
-
-    // Theming variables are provided for your use via a ThemeProvider
-    // imported from @superset-ui/style. For variables available, please visit
-    // https://github.com/apache-superset/superset-ui/blob/master/packages/superset-ui-style/src/index.ts
-
-    const Wrapper = styled.div`
-      background-color: ${({ theme }) => theme.colors.secondary.light2};
-      padding: ${({ theme }) => theme.gridUnit * 4}px;
-      border-radius: ${({ theme }) => theme.gridUnit * 2}px;
-      height: ${height};
-      width: ${width};
-      overflow-y: scroll;
-
-      h3 {
-        /* You can use your props to control CSS! */
-        font-size: ${({ theme }) => theme.typography.sizes[this.props.headerFontSize]};
-        font-weight: ${({ theme }) =>
-          theme.typography.weights[this.props.boldText ? 'bold' : 'normal']};
-      }
-    `;
-
     console.log('Plugin props', this.props);
 
     return (
-      <Wrapper ref={this.rootElem}>
+      <Styles
+        ref={this.rootElem}
+        boldText={this.props.boldText}
+        headerFontSize={this.props.headerFontSize}
+        height={height}
+        width={width}
+      >
         <h3>{this.props.headerText}</h3>
         <pre>{JSON.stringify(data, null, 2)}</pre>
-      </Wrapper>
+      </Styles>
     );
   }
 }
