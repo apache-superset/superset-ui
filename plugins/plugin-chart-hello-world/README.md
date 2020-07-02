@@ -1,7 +1,6 @@
 ## @superset-ui/plugin-chart-hello-world
 
-[![Version](https://img.shields.io/npm/v/@superset-ui/plugin-chart-hello-world.svg?style=flat-square)](https://img.shields.io/npm/v/@superset-ui/plugin-chart-hello-world.svg?style=flat-square)
-[![David (path)](https://img.shields.io/david/apache-superset/superset-ui.svg?path=packages%2Fsuperset-ui-plugin-chart-hello-world&style=flat-square)](https://david-dm.org/apache-superset/superset-ui?path=packages/superset-ui-plugin-chart-hello-world)
+
 
 This plugin provides Hello World for Superset.
 
