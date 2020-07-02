@@ -18,7 +18,7 @@
  */
 import { ChartProps, DataRecord } from '@superset-ui/chart';
 
-<%if (chartType === 'timeseries') { %>type TimestampType = string | number | null | Date;
+<%if (chartType === 'timeseries') { %>type TimestampType = string | number | Date;
 
 interface <%= packageLabel %>Datum extends DataRecord {
   __timestamp: TimestampType;
