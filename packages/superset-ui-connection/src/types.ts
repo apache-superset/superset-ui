@@ -12,21 +12,26 @@ export type FetchRetryOptions = {
 export type Headers = { [k: string]: string };
 export type Host = string;
 
-// More strict generic JSON types
-export type JSONValue = JSONPrimitive | JSONObject | JSONArray;
-export type JSONPrimitive = string | number | boolean | null;
-export type JSONArray = JSONValue[];
-export type JSONObject = { [member: string]: JSONValue };
+export type JsonPrimitive = string | number | boolean | null;
+/**
+ * More strict JSON value types. If this fails to satisfy TypeScript when using
+ * as function arguments, use `JsonObject` instead. `StrictJsonObject` helps make
+ * sure all values are plain objects, but it does not accept specific types when
+ * used as function arguments.
+ * (Ref: https://github.com/microsoft/TypeScript/issues/15300).
+ */
+export type StrictJsonValue = JsonPrimitive | StrictJsonObject | StrictJsonArray;
+export type StrictJsonArray = StrictJsonValue[];
+export type StrictJsonObject = { [member: string]: StrictJsonValue };
 
 export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
-export type JsonPrimitive = JSONPrimitive;
 export type JsonArray = JsonValue[];
-// `JSONObject` does not accept specific types when used as function arguments,
-// so we had to employ `any` (Ref: https://github.com/microsoft/TypeScript/issues/15300).
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type JsonObject = { [member: string]: any };
 
-// Post form or JSON payload, if string, will parse with JSON.parse
+/**
+ * Post form or JSON payload, if string, will parse with JSON.parse
+ */
 export type Payload = JsonObject | string;
 
 export type Method = RequestInit['method'];

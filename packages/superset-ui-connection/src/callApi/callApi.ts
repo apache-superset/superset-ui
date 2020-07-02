@@ -1,13 +1,13 @@
 import 'whatwg-fetch';
 import fetchRetry from 'fetch-retry';
-import { CallApi, JSONValue, JsonObject } from '../types';
+import { CallApi, JsonObject, JsonValue } from '../types';
 import { CACHE_AVAILABLE, CACHE_KEY, HTTP_STATUS_NOT_MODIFIED, HTTP_STATUS_OK } from '../constants';
 
 /**
  * Fetch an API response and returns the corresponding json.
  *
- * @param {PostPayload} postPayload payload to send as FormData in a post form
- * @param {JSONValue} json json payload to post, will automatically add Content-Type header
+ * @param {Payload} postPayload payload to send as FormData in a post form
+ * @param {Payload} jsonPayload json payload to post, will automatically add Content-Type header
  * @param {string} stringify whether to stringify field values when post as formData
  */
 export default function callApi({
@@ -92,7 +92,7 @@ export default function callApi({
       // not e.g., 'application/x-www-form-urlencoded'
       const formData: FormData = new FormData();
       Object.keys(payload).forEach(key => {
-        const value = payload[key] as JSONValue;
+        const value = payload[key] as JsonValue;
         if (typeof value !== 'undefined') {
           formData.append(key, stringify ? JSON.stringify(value) : String(value));
         }
