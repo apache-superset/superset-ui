@@ -60,6 +60,10 @@ function isTimeType(key: string, data: DataRecord[] = []) {
   );
 }
 
+function isNumeric(key: string, data: DataRecord[] = []) {
+  return data.every(x => x[key] === null || x[key] === undefined || typeof x[key] === 'number');
+}
+
 const processDataRecords = memoizeOne(function processDataRecords(data: DataRecord[] | undefined) {
   if (!data || !data[0] || !(TIME_COLUMN in data[0])) {
     return data || [];
@@ -119,7 +123,8 @@ const processColumns = memoizeOne(function processColumns(props: TableChartProps
     // fallback to column level formats defined in datasource
     const format = columnFormats?.[key];
     const isTime = isTimeType(key, records);
-    const isMetric = metricsSet.has(key);
+    // for the purpose of presentation, only numeric values are treated as metrics
+    const isMetric = metricsSet.has(key) && isNumeric(key, records);
     const isPercentMetric = percentMetricsSet.has(key);
     let dataType = DataType.Number; // TODO: get this from data source
     let formatter;
