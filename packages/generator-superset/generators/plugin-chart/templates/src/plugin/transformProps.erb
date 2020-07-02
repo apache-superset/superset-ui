@@ -17,15 +17,14 @@
  * under the License.
  */
 import { ChartProps, DataRecord } from '@superset-ui/chart';
-<%if (chartType === 'timeseries') { %>
-interface <%= packageLabel %>Datum extends DataRecord {
-  __timestamp: string | number | null | Date;
-}
-<% } else { %>
-type <%= packageLabel %>Datum = DataRecord;
-<% } %>
-export default function transformProps(chartProps: ChartProps) {
 
+<%if (chartType === 'timeseries') { %>type TimestampType = string | number | null | Date;
+
+interface <%= packageLabel %>Datum extends DataRecord {
+  __timestamp: TimestampType;
+}<% } else { %>type <%= packageLabel %>Datum = DataRecord;<% } %>
+
+export default function transformProps(chartProps: ChartProps) {
   /**
    * This function is called after a successful response has been
    * received from the chart data endpoint, and is used to transform
@@ -63,8 +62,8 @@ export default function transformProps(chartProps: ChartProps) {
   return {
     width,
     height,
-<%if (chartType === 'timeseries') { %>    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-    data: data.map((item: { __timestamp: number }) => ({
+<%if (chartType === 'timeseries') { %>
+    data: data.map((item: { __timestamp: TimestampType }) => ({
       ...item,
       // convert epoch to native Date
       // eslint-disable-next-line no-underscore-dangle
