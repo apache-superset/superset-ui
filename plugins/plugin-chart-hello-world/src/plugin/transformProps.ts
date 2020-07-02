@@ -18,7 +18,7 @@
  */
 import { ChartProps, DataRecord } from '@superset-ui/chart';
 
-type TimestampType = string | number | null | Date;
+type TimestampType = string | number | Date;
 
 interface HelloWorldDatum extends DataRecord {
   __timestamp: TimestampType;
