@@ -69,15 +69,16 @@ const processDataRecords = memoizeOne(function processDataRecords(data: DataReco
     return data || [];
   }
   return data.map(x => {
-    const time = x[TIME_COLUMN];
-    return {
-      ...x,
-      [TIME_COLUMN]:
-        typeof time === 'string' && REGEXP_TIMESTAMP_NO_TIMEZONE.test(time)
-          ? // force UTC time for timestamps without a timezone
-            `${time}Z`
-          : time,
-    };
+    const datum: typeof x = {};
+    Object.entries(x).forEach(([key, value]) => {
+      // force UTC time for all timestamps without a timezone
+      if (typeof value === 'string' && REGEXP_TIMESTAMP_NO_TIMEZONE.test(value)) {
+        datum[key] = `${value}Z`;
+      } else {
+        datum[key] = value;
+      }
+    });
+    return datum;
   });
 });
 
