@@ -5,7 +5,7 @@ import * as constants from '../../src/constants';
 
 import { LOGIN_GLOB } from '../fixtures/constants';
 import throwIfCalled from '../utils/throwIfCalled';
-import { CallApi, JSONObject } from '../../src/types';
+import { CallApi, JsonObject } from '../../src/types';
 import { DEFAULT_FETCH_RETRY_OPTIONS } from '../../src/constants';
 
 describe('callApi()', () => {
@@ -160,7 +160,7 @@ describe('callApi()', () => {
 
         const stringified = calls[0][1].body as FormData;
         const unstringified = calls[1][1].body as FormData;
-        const jsonRequestBody = JSON.parse(calls[2][1].body as string) as JSONObject;
+        const jsonRequestBody = JSON.parse(calls[2][1].body as string) as JsonObject;
 
         Object.entries(postPayload).forEach(([key, value]) => {
           expect(stringified.get(key)).toBe(JSON.stringify(value));
