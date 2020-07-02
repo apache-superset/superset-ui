@@ -16,7 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartProps } from '@superset-ui/chart';
+import { ChartProps, DataRecord } from '@superset-ui/chart';
+
+type HelloWorldDatum = DataRecord;
 
 export default function transformProps(chartProps: ChartProps) {
   /**
@@ -49,7 +51,7 @@ export default function transformProps(chartProps: ChartProps) {
    * be seen until restarting the development server.
    */
   const { width, height, formData, queryData } = chartProps;
-  const { data } = queryData;
+  const data = queryData.data as HelloWorldDatum[];
 
   console.log('formData via TransformProps.ts', formData);
 
