@@ -18,8 +18,9 @@
  */
 import { t } from '@superset-ui/translation';
 import { validateNonEmpty } from '@superset-ui/validator';
+import { ControlPanelConfig } from '@superset-ui/chart-controls';
 
-export default {
+const config: ControlPanelConfig = {
   /**
    * The control panel is split into two tabs: "Query" and
    * "Chart Options". The controls that define the inputs to
@@ -52,16 +53,16 @@ export default {
    * of the `Query` section instead of a predefined control.
    *
    * import { validateNonEmpty } from '@superset-ui/validator';
-   * import { internalSharedControls } from '@superset-ui/control-utils';
+   * import { sharedControls, ControlConfig, ControlPanelConfig } from '@superset-ui/chart-controls'; 
    *
-   * const myControl = {
+   * const myControl: ControlConfig<'SelectControl'> = {
    *   name: 'secondary_entity',
    *   config: {
-   *     ...internalSharedControls.controls.entity,
+   *     ...sharedControls.entity,
    *     type: 'SelectControl',
    *     label: t('Secondary Entity'),
    *     mapStateToProps: state => ({
-   *       internalSharedControls.columnChoices(state.datasource)
+   *       sharedControls.columnChoices(state.datasource)
    *       .columns.filter(c => c.groupby)
    *     })
    *     validators: [validateNonEmpty],
@@ -92,7 +93,6 @@ export default {
    */
 
   // For control input types, see: superset-frontend/src/explore/components/controls/index.js
-  requiresTime: true,
   controlPanelSections: [
     {
       label: t('Query'),
@@ -110,6 +110,7 @@ export default {
               type: 'TextControl',
               default: 'Hello, World!',
               renderTrigger: true,
+              // ^ this makes it apply instantaneously, without triggering a "run query" button
               label: t('Header Text'),
               description: t('The text you want to see in the header'),
             },
@@ -135,6 +136,7 @@ export default {
               label: t('Font Size'),
               default: 'xl',
               choices: [
+                // [value, label]
                 ['xxs', 'xx-small'],
                 ['xs', 'x-small'],
                 ['s', 'small'],
@@ -144,7 +146,6 @@ export default {
                 ['xxl', 'xx-large'],
               ],
               renderTrigger: true,
-              // ^ this makes it apply instantaneously, without triggering a "run query" button
               description: t('The size of your header font'),
             },
           },
@@ -172,3 +173,5 @@ export default {
     },
   },
 };
+
+export default config;
