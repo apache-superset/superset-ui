@@ -12,16 +12,17 @@ function tryParsePayload(payload: Payload) {
 }
 
 /**
- * Try appending search params to an URL.
+ * Try appending search params to an URL if needed.
  */
 function getFullUrl(partialUrl: string, params: CallApi['searchParams']) {
-  const url = new URL(partialUrl);
   if (params) {
+    const url = new URL(partialUrl, window.location.href);
     const search = params instanceof URLSearchParams ? params : new URLSearchParams(params);
     // will completely override any existing search params
     url.search = search.toString();
+    return url.href;
   }
-  return url.href;
+  return partialUrl;
 }
 
 /**
@@ -96,7 +97,7 @@ export default async function callApi({
 
   if (method === 'POST' || method === 'PATCH' || method === 'PUT') {
     if (postPayload && jsonPayload) {
-      throw new Error('Please provide only one of jsonPayload and postPayload');
+      throw new Error('Please provide only one of jsonPayload or postPayload');
     }
     if (postPayload instanceof FormData) {
       request.body = postPayload;
