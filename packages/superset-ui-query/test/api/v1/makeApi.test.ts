@@ -17,7 +17,7 @@
  * under the License.
  */
 import fetchMock from 'fetch-mock';
-import { JsonValue } from '@superset-ui/connection';
+import { JsonValue, SupersetClientClass } from '@superset-ui/connection';
 import { makeApi, SupersetApiError } from '../../../src';
 import setupClientForTest from '../setupClientForTest';
 
@@ -32,6 +32,29 @@ describe('makeApi()', () => {
     });
     expect(api.method).toEqual('GET');
     expect(api.endpoint).toEqual('/test');
+  });
+
+  it('should allow custom client', async () => {
+    expect.assertions(2);
+    const api = makeApi({
+      method: 'GET',
+      endpoint: '/test-custom-client',
+    });
+    const client = new SupersetClientClass({ baseUrl: 'http://foo/' });
+    const mockResponse = { yes: 'ok' };
+    const mockRequest = jest.fn(() =>
+      Promise.resolve(
+        new Response(JSON.stringify(mockResponse), {
+          headers: { 'Content-Type': 'application/json' },
+        }),
+      ),
+    );
+    Object.assign(client, {
+      request: mockRequest,
+    });
+    const result = await api(null, { client });
+    expect(result).toEqual(mockResponse);
+    expect(mockRequest).toHaveBeenCalledTimes(1);
   });
 
   it('should obtain json response by default', async () => {
@@ -60,7 +83,7 @@ describe('makeApi()', () => {
     expect(await api({})).toBe(6);
   });
 
-  it('should respect requestType', async () => {
+  it('should post FormData when requestType=form', async () => {
     expect.assertions(3);
     const api = makeApi({
       method: 'POST',
@@ -77,6 +100,29 @@ describe('makeApi()', () => {
 
     expect(received).toBeInstanceOf(FormData);
     expect(received.get('request')).toEqual(expected.get('request'));
+  });
+
+  it('should use searchParams for method=GET (`requestType=search` implied)', async () => {
+    expect.assertions(1);
+    const api = makeApi({
+      method: 'GET',
+      endpoint: '/test-get-search',
+    });
+    fetchMock.get('glob:*/test-get-search*', { search: 'get' });
+    await api({ p1: 1, p2: 2, p3: [1, 2] });
+    expect(fetchMock.lastUrl()).toContain('/test-get-search?p1=1&p2=2&p3=1%2C2');
+  });
+
+  it('should use searchParams for method=POST, requestType=search', async () => {
+    expect.assertions(1);
+    const api = makeApi({
+      method: 'POST',
+      endpoint: '/test-post-search',
+      requestType: 'search',
+    });
+    fetchMock.post('glob:*/test-post-search*', { search: 'post' });
+    await api({ p1: 1, p3: [1, 2] });
+    expect(fetchMock.lastUrl()).toContain('/test-post-search?p1=1&p3=1%2C2');
   });
 
   it('should handle errors', async () => {
@@ -109,7 +155,7 @@ describe('makeApi()', () => {
     }
   });
 
-  it('should parse text', async () => {
+  it('should parse text response when responseType=text', async () => {
     expect.assertions(1);
     const api = makeApi<JsonValue, string, 'text'>({
       method: 'PUT',
@@ -121,5 +167,19 @@ describe('makeApi()', () => {
     fetchMock.put('glob:*/test-parse-text', 'ok');
     const result = await api({ field1: 11 });
     expect(result).toBe('ok?');
+  });
+
+  it('should return raw resposnse when responseType=raw', async () => {
+    expect.assertions(2);
+    const api = makeApi<JsonValue, number, 'raw'>({
+      method: 'DELETE',
+      endpoint: '/test-raw-response',
+      responseType: 'raw',
+      processResponse: response => response.status,
+    });
+    fetchMock.delete('glob:*/test-raw-response?*', 'ok');
+    const result = await api({ field1: 11 }, {});
+    expect(result).toEqual(200);
+    expect(fetchMock.lastUrl()).toContain('/test-raw-response?field1=11');
   });
 });

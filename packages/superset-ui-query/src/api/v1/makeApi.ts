@@ -24,15 +24,31 @@ import {
   ParseMethod,
   Endpoint,
   Method,
+  RequestBase,
 } from '@superset-ui/connection';
 import handleError, { ErrorType } from './handleError';
 import { SupersetApiRequestOptions, SupersetApiErrorPayload, ParsedResponseType } from './types';
 
-interface SupersetApiFactoryOptions {
+interface SupersetApiFactoryOptions extends Omit<RequestBase, 'url'> {
+  /**
+   * API endpoint, must be relative.
+   */
   endpoint: Endpoint;
+  /**
+   * Request method: 'GET' | 'POST' | 'DELETE' | 'PUT' | ...
+   */
   method: Method;
-  requestType?: 'form' | 'json';
-  responseType?: ParseMethod;
+  /**
+   * How to send the payload:
+   *  - form: set request.body as FormData
+   *  - json: as JSON string with request Content-Type header set to application/json
+   *  - search: add to search params
+   */
+  requestType?: 'form' | 'json' | 'search';
+}
+
+function isPayloadless(method?: Method) {
+  return !method || method === 'GET' || method === 'DELETE' || method === 'HEAD';
 }
 
 /**
@@ -46,29 +62,43 @@ export default function makeApi<
 >({
   endpoint,
   method,
-  requestType = 'json',
+  requestType: requestType_,
   responseType,
   processResponse,
   ...requestOptions
 }: SupersetApiFactoryOptions & {
+  /**
+   * How to parse response, choose from: 'json' | 'text' | 'raw'.
+   */
   responseType?: T;
-  // further process response JSON or text
+  /**
+   * Further process parsed response
+   */
   processResponse?(result: ParsedResponseType<T>): Result;
 }) {
   async function request(
     payload: Payload,
     { client = SupersetClient }: SupersetApiRequestOptions = { client: SupersetClient },
   ): Promise<Result> {
+    // use `search` payload (searchParams) when it's a GET request
+    const requestType = requestType_ || (isPayloadless(method) ? 'search' : 'json');
     try {
       const requestConfig = {
         ...requestOptions,
         method,
         endpoint,
-        postPayload: requestType === 'form' ? payload : undefined,
-        jsonPayload: requestType === 'json' ? payload : undefined,
       };
+      if (requestType === 'search') {
+        requestConfig.searchParams = payload;
+      } else if (requestType === 'form') {
+        requestConfig.postPayload = payload;
+      } else if (requestType === 'json') {
+        requestConfig.jsonPayload = payload;
+      }
+
       let result: JsonValue | Response;
       const response = await client.request({ ...requestConfig, parseMethod: 'raw' });
+
       if (responseType === 'text') {
         result = await response.text();
       } else if (responseType === 'raw' || responseType === null) {

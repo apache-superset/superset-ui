@@ -31,7 +31,8 @@ export type ParsedResponseType<T> = T extends 'text'
   : JsonValue;
 
 /**
- * Runtime options when calling a Superset API.
+ * Runtime options when calling a Superset API. Currently only allow overriding
+ * SupersetClient instance.
  */
 export interface SupersetApiRequestOptions {
   client?: SupersetClientInterface | SupersetClientClass;
