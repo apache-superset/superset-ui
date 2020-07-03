@@ -1,7 +1,13 @@
 import 'whatwg-fetch';
 import fetchRetry from 'fetch-retry';
 import { CallApi, Payload, JsonValue } from '../types';
-import { CACHE_AVAILABLE, CACHE_KEY, HTTP_STATUS_NOT_MODIFIED, HTTP_STATUS_OK } from '../constants';
+import {
+  CACHE_AVAILABLE,
+  CACHE_KEY,
+  HTTP_STATUS_NOT_MODIFIED,
+  HTTP_STATUS_OK,
+  DEFAULT_BASE_URL,
+} from '../constants';
 
 function tryParsePayload(payload: Payload) {
   try {
@@ -16,7 +22,7 @@ function tryParsePayload(payload: Payload) {
  */
 function getFullUrl(partialUrl: string, params: CallApi['searchParams']) {
   if (params) {
-    const url = new URL(partialUrl, window.location.href);
+    const url = new URL(partialUrl, window.location.href || DEFAULT_BASE_URL);
     const search = params instanceof URLSearchParams ? params : new URLSearchParams(params);
     // will completely override any existing search params
     url.search = search.toString();

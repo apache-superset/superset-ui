@@ -31,7 +31,7 @@ import {
   RequestConfig,
   ParseMethod,
 } from './types';
-import { DEFAULT_FETCH_RETRY_OPTIONS } from './constants';
+import { DEFAULT_FETCH_RETRY_OPTIONS, DEFAULT_BASE_URL } from './constants';
 
 export default class SupersetClientClass {
   credentials: Credentials;
@@ -46,7 +46,7 @@ export default class SupersetClientClass {
   timeout: ClientTimeout;
 
   constructor({
-    baseUrl = 'http://localhost',
+    baseUrl = DEFAULT_BASE_URL,
     host,
     protocol,
     headers = {},
@@ -60,7 +60,7 @@ export default class SupersetClientClass {
       host || protocol ? `${protocol || 'https:'}//${host || 'localhost'}` : baseUrl,
       // baseUrl for API could also be relative, so we provide current location.href
       // as the base of baseUrl
-      window.location.href || 'http://localhost',
+      window.location.href || DEFAULT_BASE_URL,
     );
     this.baseUrl = url.href.replace(/\/+$/, ''); // always strip trailing slash
     this.host = url.host;
