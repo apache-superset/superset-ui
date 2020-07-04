@@ -60,7 +60,7 @@ export default class SupersetClientClass {
       host || protocol ? `${protocol || 'https:'}//${host || 'localhost'}` : baseUrl,
       // baseUrl for API could also be relative, so we provide current location.href
       // as the base of baseUrl
-      window.location.href || DEFAULT_BASE_URL,
+      window.location.href,
     );
     this.baseUrl = url.href.replace(/\/+$/, ''); // always strip trailing slash
     this.host = url.host;
