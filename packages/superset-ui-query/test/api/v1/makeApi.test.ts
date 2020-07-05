@@ -32,6 +32,7 @@ describe('makeApi()', () => {
     });
     expect(api.method).toEqual('GET');
     expect(api.endpoint).toEqual('/test');
+    expect(api.requestType).toEqual('search');
   });
 
   it('should allow custom client', async () => {
@@ -71,7 +72,6 @@ describe('makeApi()', () => {
     expect.assertions(2);
     const responseJson = { items: [1, 2, 3] };
     fetchMock.post('glob:*/test', responseJson);
-
     const api = makeApi({
       method: 'POST',
       endpoint: '/test',
@@ -125,6 +125,17 @@ describe('makeApi()', () => {
     expect(fetchMock.lastUrl()).toContain('/test-post-search?p1=1&p3=1%2C2');
   });
 
+  it('should throw when requestType is invalid', () => {
+    expect(() => {
+      makeApi({
+        method: 'POST',
+        endpoint: '/test-formdata',
+        // @ts-ignore
+        requestType: 'text',
+      });
+    }).toThrow('Invalid request payload type');
+  });
+
   it('should handle errors', async () => {
     expect.assertions(1);
     const api = makeApi({
@@ -145,7 +156,7 @@ describe('makeApi()', () => {
     const api = makeApi({
       method: 'POST',
       endpoint: '/test-200-error',
-      requestType: 'form',
+      requestType: 'json',
     });
     fetchMock.post('glob:*/test-200-error', { error: 'not ok' });
     try {

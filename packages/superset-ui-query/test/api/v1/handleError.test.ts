@@ -42,6 +42,12 @@ describe('handleError()', () => {
     await testHandleError(mockResponse, '404 NOT FOUND');
   });
 
+  it('should handle HTTP error with status < 400', async () => {
+    expect.assertions(2);
+    const mockResponse = new Response('Ha haha?', { status: 302, statusText: 'Found' });
+    await testHandleError(mockResponse, '302 Found');
+  });
+
   it('should use message from HTTP error', async () => {
     expect.assertions(2);
     const mockResponse = new Response('{ "message": "BAD BAD" }', {
@@ -60,9 +66,21 @@ describe('handleError()', () => {
     await testHandleError(mockResponse, 'NOT OK');
   });
 
-  it('should handle regular JS error', async () => {
+  it('should fallback to statusText', async () => {
     expect.assertions(2);
+    const mockResponse = new Response('{ "failed": "random ramble" }', {
+      status: 403,
+      statusText: 'Access Denied',
+    });
+    await testHandleError(mockResponse, '403 Access Denied');
+  });
+
+  it('should handle regular JS error', async () => {
+    expect.assertions(4);
     await testHandleError(new Error('What?'), 'What?');
+    const emptyError = new Error();
+    emptyError.stack = undefined;
+    await testHandleError(emptyError, 'Unknown Error');
   });
 
   it('should handle { error: ... }', async () => {
@@ -72,6 +90,6 @@ describe('handleError()', () => {
 
   it('should throw unknown error', async () => {
     expect.assertions(2);
-    await testHandleError(new Date() as never, 'Unknown Error');
+    await testHandleError(Promise.resolve('Some random things') as never, 'Unknown Error');
   });
 });

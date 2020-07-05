@@ -37,8 +37,8 @@ export default async function handleError(error: ErrorType): Promise<never> {
   // catch HTTP errors
   if (error instanceof Response) {
     const { status, statusText } = error;
+    let errorMessage = `${status} ${statusText}`;
     if (status >= 400) {
-      let errorMessage = `${status} ${statusText}`;
       try {
         const json = (await error.json()) as
           | SupersetApiHttpErrorPayload
@@ -48,6 +48,12 @@ export default async function handleError(error: ErrorType): Promise<never> {
       } catch (error_) {
         // pass
       }
+      throw new SupersetApiError({
+        status,
+        statusText,
+        message: errorMessage,
+      });
+    } else {
       throw new SupersetApiError({
         status,
         statusText,

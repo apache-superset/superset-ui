@@ -29,6 +29,8 @@ import {
 import handleError, { ErrorType } from './handleError';
 import { SupersetApiRequestOptions, SupersetApiErrorPayload, ParsedResponseType } from './types';
 
+const validRequestTypes = new Set(['form', 'json', 'search']);
+
 interface SupersetApiFactoryOptions extends Omit<RequestBase, 'url'> {
   /**
    * API endpoint, must be relative.
@@ -76,12 +78,16 @@ export default function makeApi<
    */
   processResponse?(result: ParsedResponseType<T>): Result;
 }) {
+  // use `search` payload (searchParams) when it's a GET request
+  const requestType = requestType_ || (isPayloadless(method) ? 'search' : 'json');
+  if (!validRequestTypes.has(requestType)) {
+    throw new Error('Invalid request payload type, choose from: form | json | search');
+  }
+
   async function request(
     payload: Payload,
     { client = SupersetClient }: SupersetApiRequestOptions = { client: SupersetClient },
   ): Promise<Result> {
-    // use `search` payload (searchParams) when it's a GET request
-    const requestType = requestType_ || (isPayloadless(method) ? 'search' : 'json');
     try {
       const requestConfig = {
         ...requestOptions,
@@ -92,7 +98,7 @@ export default function makeApi<
         requestConfig.searchParams = payload;
       } else if (requestType === 'form') {
         requestConfig.postPayload = payload;
-      } else if (requestType === 'json') {
+      } else {
         requestConfig.jsonPayload = payload;
       }
 
@@ -119,6 +125,7 @@ export default function makeApi<
 
   request.method = method;
   request.endpoint = endpoint;
+  request.requestType = requestType;
 
   return request;
 }

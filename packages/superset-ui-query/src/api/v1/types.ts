@@ -87,9 +87,10 @@ export class SupersetApiError extends Error {
   }) {
     super(message);
     this.name = 'SupersetApiError';
-    this.stack = stack
-      ? [(this.stack || '').split('\n')[0], ...stack.split('\n').slice(1)].join('\n')
-      : this.stack;
+    this.stack =
+      stack && this.stack
+        ? [this.stack.split('\n')[0], ...stack.split('\n').slice(1)].join('\n')
+        : this.stack;
     this.status = status;
     this.statusText = statusText;
     this.link = link;

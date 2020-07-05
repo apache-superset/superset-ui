@@ -552,4 +552,15 @@ describe('callApi()', () => {
     });
     expect(fetchMock.lastOptions().body).toBe(payload);
   });
+
+  it('should ignore "null" postPayload string', async () => {
+    expect.assertions(1);
+    fetchMock.post('/post-null-postpayload', {});
+    await callApi({
+      url: '/post-formdata',
+      method: 'POST',
+      postPayload: 'null',
+    });
+    expect(fetchMock.lastOptions().body).toBeUndefined();
+  });
 });
