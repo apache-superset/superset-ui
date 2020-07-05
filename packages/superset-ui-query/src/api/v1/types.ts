@@ -71,7 +71,7 @@ export class SupersetApiError extends Error {
 
   link?: string;
 
-  originalError?: Error | string | Response;
+  originalError?: Error | Response | JsonValue;
 
   constructor({
     message,
@@ -83,7 +83,7 @@ export class SupersetApiError extends Error {
   }: Omit<SupersetApiErrorPayload, 'error'> & {
     message: string;
     stack?: Error['stack'];
-    originalError?: Error | string | Response; // original JavaScript error captured
+    originalError?: SupersetApiError['originalError']; // original JavaScript error captured
   }) {
     super(message);
     this.name = 'SupersetApiError';

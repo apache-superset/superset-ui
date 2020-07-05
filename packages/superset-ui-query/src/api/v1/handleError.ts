@@ -38,20 +38,23 @@ export default async function handleError(error: ErrorType): Promise<never> {
   if (error instanceof Response) {
     const { status, statusText } = error;
     let errorMessage = `${status} ${statusText}`;
+    let originalError;
     if (status >= 400) {
       try {
         const json = (await error.json()) as
           | SupersetApiHttpErrorPayload
           | SupersetApiHttpMultiErrorsPayload;
+        originalError = json;
         const err = 'errors' in json ? json.errors[0] : json;
         errorMessage = err.message || err.error_type || errorMessage;
       } catch (error_) {
-        // pass
+        originalError = error;
       }
       throw new SupersetApiError({
         status,
         statusText,
         message: errorMessage,
+        originalError,
       });
     } else {
       throw new SupersetApiError({
