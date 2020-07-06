@@ -9,13 +9,12 @@ export interface Params extends BaseParams {
   formData: QueryFormData;
 }
 
-interface transformParams {
+interface TransformParams {
   url: string;
   formData: QueryFormData;
 }
 
-
-function transformFormDataGetRequest({ formData, url }: transformParams) {
+function transformFormDataGetRequest({ formData, url }: TransformParams) {
   /** placeholderUrl is used so that we can make use of the URL constructor
    * and searchParams */
 
