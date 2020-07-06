@@ -24,6 +24,8 @@ import {
   getTimeFormatter,
   smartDateFormatter,
   getTimeFormatterForGranularity,
+  TimeFormatFunction,
+  TimeFormatter,
 } from '@superset-ui/time-format';
 
 import isEqualArray from './utils/isEqualArray';
@@ -31,7 +33,43 @@ import { TableChartProps, TableChartTransformedProps, DataType, DataColumnMeta }
 
 const { PERCENT_3_POINT } = NumberFormats;
 const TIME_COLUMN = '__timestamp';
-const toString = (x: DataRecordValue) => String(x);
+const REGEXP_TIMESTAMP_NO_TIMEZONE = /T(\d{2}:){2}\d{2}$/;
+
+/**
+ * Extended Date object with custom formatter.
+ * By default `String(date)` returns the raw input.
+ */
+export class DateWithFormatter extends Date {
+  formatter: TimeFormatFunction;
+
+  input: DataRecordValue;
+
+  constructor(
+    input: DataRecordValue,
+    { formatter = String, forceUTC = true }: { formatter?: TimeFormatFunction; forceUTC?: boolean },
+  ) {
+    let value = input;
+
+    // force UTC time for timestamps without a timezone
+    if (forceUTC && typeof value === 'string' && REGEXP_TIMESTAMP_NO_TIMEZONE.test(value)) {
+      value = `${value}Z`;
+    }
+
+    // react-table sorter expects all records to have Date type
+    // `new Date()` is capable of handling null/boolean/undefined, etc;
+    super(value as string);
+
+    this.input = input;
+    this.formatter = formatter;
+  }
+
+  toString(): string {
+    if (this.formatter === String) {
+      return String(this.input);
+    }
+    return this.formatter ? this.formatter(this) : Date.toString.call(this);
+  }
+}
 
 /**
  * Consolidate list of metrics to string, identified by its unique identifier
@@ -49,7 +87,6 @@ function isTimeColumn(key: string) {
 }
 
 const REGEXP_DATETIME = /^\d{4}-[01]\d-[03]\d/;
-const REGEXP_TIMESTAMP_NO_TIMEZONE = /T(\d{2}:){2}\d{2}$/;
 function isTimeType(key: string, data: DataRecord[] = []) {
   return (
     isTimeColumn(key) ||
@@ -64,22 +101,26 @@ function isNumeric(key: string, data: DataRecord[] = []) {
   return data.every(x => x[key] === null || x[key] === undefined || typeof x[key] === 'number');
 }
 
-const processDataRecords = memoizeOne(function processDataRecords(data: DataRecord[] | undefined) {
-  if (!data || !data[0] || !(TIME_COLUMN in data[0])) {
+const processDataRecords = memoizeOne(function processDataRecords(
+  data: DataRecord[] | undefined,
+  columns: DataColumnMeta[],
+) {
+  if (!data || !data[0]) {
     return data || [];
   }
-  return data.map(x => {
-    const datum: typeof x = {};
-    Object.entries(x).forEach(([key, value]) => {
-      // force UTC time for all timestamps without a timezone
-      if (typeof value === 'string' && REGEXP_TIMESTAMP_NO_TIMEZONE.test(value)) {
-        datum[key] = `${value}Z`;
-      } else {
-        datum[key] = value;
-      }
+  const timeColumns = columns.filter(column => column.dataType === DataType.DateTime);
+
+  if (timeColumns.length > 0) {
+    return data.map(x => {
+      const datum = { ...x };
+      timeColumns.forEach(({ key, formatter }) => {
+        // null, true/false etc can also be converted to string
+        datum[key] = new DateWithFormatter(x[key], { formatter: formatter as TimeFormatter });
+      });
+      return datum;
     });
-    return datum;
-  });
+  }
+  return data;
 });
 
 const isEqualColumns = <T extends TableChartProps[]>(propsA: T, propsB: T) => {
@@ -141,7 +182,7 @@ const processColumns = memoizeOne(function processColumns(props: TableChartProps
         } else {
           // return the identity string when datasource level formatter is not set
           // and table timestamp format is set to Adaptive Formatting
-          formatter = toString;
+          formatter = String;
         }
       }
       dataType = DataType.DateTime;
@@ -205,8 +246,8 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
     orderDesc: sortDesc = false,
   } = formData;
 
-  const data = processDataRecords(queryData?.data?.records);
   const [metrics, percentMetrics, columns] = processColumns(chartProps);
+  const data = processDataRecords(queryData?.data?.records, columns);
 
   return {
     height,
