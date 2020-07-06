@@ -9,6 +9,27 @@ export interface Params extends BaseParams {
   formData: QueryFormData;
 }
 
+interface transformParams {
+  url: string;
+  formData: QueryFormData;
+}
+
+
+function transformFormDataGetRequest({ formData, url }: transformParams) {
+  /** placeholderUrl is used so that we can make use of the URL constructor
+   * and searchParams */
+
+  let placeholderUrl = 'http://localhost:3000';
+
+  if (url.charAt(0) !== '/') {
+    placeholderUrl += '/';
+  }
+
+  const tempUrl = new URL(`${placeholderUrl}${url}`);
+  tempUrl.searchParams.append('form_data', JSON.stringify(formData));
+  return tempUrl.toString().replace(placeholderUrl, '');
+}
+
 export default function fetchExploreJson({
   client = SupersetClient,
   method = 'POST',
@@ -17,11 +38,9 @@ export default function fetchExploreJson({
   formData,
 }: Params) {
   const fetchFunc = method === 'GET' ? client.get : client.post;
-
   return fetchFunc({
     ...requestConfig,
-    // TODO: Have to transform formData as query string for GET
-    url,
+    url: method === 'GET' ? transformFormDataGetRequest({ formData, url }) : url,
     postPayload: { form_data: formData },
   } as RequestConfig).then(({ json }) => json as LegacyChartDataResponse);
 }
