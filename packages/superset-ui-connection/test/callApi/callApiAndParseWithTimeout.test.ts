@@ -100,7 +100,14 @@ describe('callApiAndParseWithTimeout()', () => {
       } catch (error) {
         expect(fetchMock.calls(mockTimeoutUrl)).toHaveLength(1);
         expect(error).toEqual({
-          error: 'Request timed out',
+          errors: [
+            {
+              error_type: 'FRONTEND_TIMEOUT_ERROR',
+              extra: { timeout: 1 },
+              level: 'error',
+              message: 'Request timed out',
+            },
+          ],
           statusText: 'timeout',
         });
       }

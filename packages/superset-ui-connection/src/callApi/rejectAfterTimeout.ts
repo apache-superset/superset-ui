@@ -4,7 +4,14 @@ export default function rejectAfterTimeout<T>(timeout: number) {
     setTimeout(
       () =>
         reject({
-          error: 'Request timed out',
+          errors: [
+            {
+              error_type: 'FRONTEND_TIMEOUT_ERROR',
+              extra: { timeout },
+              level: 'error',
+              message: 'Request timed out',
+            },
+          ],
           statusText: 'timeout',
         }),
       timeout,
