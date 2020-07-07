@@ -16,75 +16,76 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {
-  SupersetApiError,
-  SupersetApiErrorPayload,
-  SupersetApiHttpErrorPayload,
-  SupersetApiHttpMultiErrorsPayload,
-} from './types';
+import { SupersetApiError, SupersetApiErrorPayload, SupersetApiMultiErrorsPayload } from './types';
 
-export type ErrorType = string | Error | Response | SupersetApiErrorPayload;
+export type ErrorInput = string | Error | Response | SupersetApiErrorPayload;
 
 /**
  * Handle API request errors, convert to consistent Superset API error.
  * @param error the catched error from SupersetClient.request(...)
  */
-export default async function handleError(error: ErrorType): Promise<never> {
+export default async function handleError(error: ErrorInput): Promise<never> {
+  // already a Sueprset error
+  if (error instanceof SupersetApiError) {
+    throw error;
+  }
   // string is the error message itself
   if (typeof error === 'string') {
     throw new SupersetApiError({ message: error });
-  }
-  // catch HTTP errors
-  if (error instanceof Response) {
-    const { status, statusText } = error;
-    let errorMessage = `${status} ${statusText}`;
-    let originalError;
-    if (status >= 400) {
-      try {
-        const json = (await error.json()) as
-          | SupersetApiHttpErrorPayload
-          | SupersetApiHttpMultiErrorsPayload;
-        originalError = json;
-        const err = 'errors' in json ? json.errors[0] : json;
-        errorMessage = err.message || err.error_type || errorMessage;
-      } catch (error_) {
-        originalError = error;
-      }
-      throw new SupersetApiError({
-        status,
-        statusText,
-        message: errorMessage,
-        originalError,
-      });
-    } else {
-      throw new SupersetApiError({
-        status,
-        statusText,
-        message: errorMessage,
-      });
-    }
   }
   // JS errors, normally happens before request was sent
   if (error instanceof Error) {
     throw new SupersetApiError({
       message: error.message || 'Unknown Error',
-      stack: error.stack,
-      // pass along the raw error so consumer code can inspect trace stack
       originalError: error,
     });
   }
-  // when API returns 200 but operation fails
-  // (see Python API json_error_response(...))
-  if ('error' in error) {
-    const { error: message, ...rest } = error;
+
+  let errorJson;
+  let originalError;
+  let errorMessage = 'Unknown Error';
+  let status: number | undefined;
+  let statusText: string | undefined;
+
+  // catch HTTP errors
+  if (error instanceof Response) {
+    status = error.status;
+    statusText = error.statusText;
+    errorMessage = `${status} ${statusText}`;
+    try {
+      errorJson = (await error.json()) as SupersetApiErrorPayload | SupersetApiMultiErrorsPayload;
+      originalError = errorJson;
+    } catch (error_) {
+      originalError = error;
+    }
+  } else if (error) {
+    errorJson = error;
+  }
+
+  // when API returns 200 but operation fails (see Python API json_error_response(...))
+  // or when frontend promise rejects with `{ error: ... }`
+  if (errorJson && ('error' in errorJson || 'message' in errorJson || 'errors' in errorJson)) {
+    let err;
+    if ('errors' in errorJson) {
+      err = errorJson.errors?.[0] || {};
+    } else if (typeof errorJson.error === 'object') {
+      err = errorJson.error;
+    } else {
+      err = errorJson;
+    }
+    errorMessage =
+      err.message || (err.error as string | undefined) || err.error_type || errorMessage;
     throw new SupersetApiError({
-      message,
-      ...rest,
+      status,
+      statusText,
+      message: errorMessage,
+      originalError,
+      ...err,
     });
   }
   // all unknown error
   throw new SupersetApiError({
-    message: 'Unknown Error',
+    message: errorMessage,
     originalError: error,
   });
 }

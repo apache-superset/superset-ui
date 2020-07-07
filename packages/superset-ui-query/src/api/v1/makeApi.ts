@@ -26,7 +26,7 @@ import {
   Method,
   RequestBase,
 } from '@superset-ui/connection';
-import handleError, { ErrorType } from './handleError';
+import handleError, { ErrorInput } from './handleError';
 import { SupersetApiRequestOptions, SupersetApiErrorPayload, ParsedResponseType } from './types';
 
 const validRequestTypes = new Set(['form', 'json', 'search']);
@@ -119,7 +119,7 @@ export default function makeApi<
       const typedResult = result as ParsedResponseType<T>;
       return (processResponse ? processResponse(typedResult) : typedResult) as Result;
     } catch (error) {
-      return handleError(error as ErrorType);
+      return handleError(error as ErrorInput);
     }
   }
 

@@ -17,21 +17,38 @@
  * under the License.
  */
 import 'whatwg-fetch'; // for adding Response polyfill
-import handleError, { ErrorType } from '../../../src/api/v1/handleError';
-import { SupersetApiError } from '../../../src/api/v1/types';
+import { JsonObject } from '@superset-ui/connection';
+import handleError, { ErrorInput } from '../../../src/api/v1/handleError';
+import { SupersetApiError, SupersetApiErrorType } from '../../../src/api/v1/types';
 
-async function testHandleError(inputError: ErrorType, message: string) {
+async function testHandleError(
+  inputError: ErrorInput,
+  expected: string | JsonObject,
+): Promise<SupersetApiError> {
   try {
     await handleError(inputError);
   } catch (error) {
     const typedError = error as SupersetApiError;
     expect(typedError).toBeInstanceOf(SupersetApiError);
-    expect(typedError.message).toContain(message);
+    if (typeof expected === 'string') {
+      expect(typedError.message).toContain(expected);
+    } else {
+      expect(typedError).toEqual(expect.objectContaining(expected));
+    }
+    return error;
   }
+  return new SupersetApiError({ message: 'Where is the error?' });
 }
 
 describe('handleError()', () => {
-  it('should handle message string', async () => {
+  it('should throw error directly', async () => {
+    expect.assertions(3);
+    const input = new SupersetApiError({ message: 'timeout' });
+    const output = await testHandleError(input, 'timeout');
+    expect(input).toBe(output);
+  });
+
+  it('should handle error string', async () => {
     expect.assertions(2);
     await testHandleError('STOP', 'STOP');
   });
@@ -57,6 +74,35 @@ describe('handleError()', () => {
     await testHandleError(mockResponse, 'BAD BAD');
   });
 
+  it('should handle response of single error', async () => {
+    expect.assertions(2);
+    const mockResponse = new Response(
+      '{ "error": "BAD BAD", "link": "https://superset.apache.org" }',
+      {
+        status: 403,
+        statusText: 'Access Denied',
+      },
+    );
+    await testHandleError(mockResponse, {
+      message: 'BAD BAD',
+      extra: { link: 'https://superset.apache.org' },
+    });
+  });
+
+  it('should handle single error object', async () => {
+    expect.assertions(2);
+    const mockError = {
+      error: {
+        message: 'Request timeout',
+        error_type: SupersetApiErrorType.FRONTEND_TIMEOUT_ERROR,
+      },
+    };
+    await testHandleError(mockError, {
+      message: 'Request timeout',
+      errorType: 'FRONTEND_TIMEOUT_ERROR',
+    });
+  });
+
   it('should process multi errors in HTTP json', async () => {
     expect.assertions(2);
     const mockResponse = new Response('{ "errors": [{ "error_type": "NOT OK" }] }', {
@@ -64,6 +110,20 @@ describe('handleError()', () => {
       statusText: 'Access Denied',
     });
     await testHandleError(mockResponse, 'NOT OK');
+  });
+
+  it('should handle invalid multi errors', async () => {
+    expect.assertions(4);
+    const mockResponse1 = new Response('{ "errors": [] }', {
+      status: 403,
+      statusText: 'Access Denied',
+    });
+    const mockResponse2 = new Response('{ "errors": null }', {
+      status: 400,
+      statusText: 'Bad Request',
+    });
+    await testHandleError(mockResponse1, '403 Access Denied');
+    await testHandleError(mockResponse2, '400 Bad Request');
   });
 
   it('should fallback to statusText', async () => {
@@ -89,7 +149,8 @@ describe('handleError()', () => {
   });
 
   it('should throw unknown error', async () => {
-    expect.assertions(2);
+    expect.assertions(4);
     await testHandleError(Promise.resolve('Some random things') as never, 'Unknown Error');
+    await testHandleError(undefined as never, 'Unknown Error');
   });
 });
