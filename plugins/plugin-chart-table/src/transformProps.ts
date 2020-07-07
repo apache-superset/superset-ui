@@ -50,7 +50,7 @@ export class DateWithFormatter extends Date {
   ) {
     let value = input;
 
-    // force UTC time for timestamps without a timezone
+    // assuming timestamps without a timezone is of UTC time
     if (forceUTC && typeof value === 'string' && REGEXP_TIMESTAMP_NO_TIMEZONE.test(value)) {
       value = `${value}Z`;
     }
