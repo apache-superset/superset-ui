@@ -55,8 +55,6 @@ export class DateWithFormatter extends Date {
       value = `${value}Z`;
     }
 
-    // react-table sorter expects all records to have Date type
-    // `new Date()` is capable of handling null/boolean/undefined, etc;
     super(value as string);
 
     this.input = input;
@@ -114,7 +112,8 @@ const processDataRecords = memoizeOne(function processDataRecords(
     return data.map(x => {
       const datum = { ...x };
       timeColumns.forEach(({ key, formatter }) => {
-        // null, true/false etc can also be converted to string
+        // Convert datetime with a custom date class so we can use `String(...)`
+        // formatted value for global search, and `date.getTime()` for sorting.
         datum[key] = new DateWithFormatter(x[key], { formatter: formatter as TimeFormatter });
       });
       return datum;
