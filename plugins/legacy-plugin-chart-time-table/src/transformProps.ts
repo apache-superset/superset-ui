@@ -25,13 +25,11 @@ interface FormData {
   columnCollection: Array<object> | [];
 }
 
-interface DataObj {
-  records: DataRecord[];
-  columns: string[];
-}
-
 interface QueryData {
-  data: DataObj;
+  data: {
+    records: DataRecord[];
+    columns: string[];
+  };
 }
 
 export type TableChartProps = ChartProps & {

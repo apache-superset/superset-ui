@@ -18,8 +18,9 @@
  */
 import { t } from '@superset-ui/translation';
 import { validateNonEmpty } from '@superset-ui/validator';
+import { ControlPanelConfig } from '@superset-ui/chart-controls';
 
-export default {
+const config: ControlPanelConfig = {
   controlPanelSections: [
     {
       label: t('Query'),
@@ -71,3 +72,5 @@ export default {
     },
   },
 };
+
+export default config;

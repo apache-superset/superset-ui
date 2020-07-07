@@ -22,12 +22,12 @@ import { scaleLinear } from 'd3-scale';
 import { Table, Thead, Th, Tr, Td } from 'reactable-arc';
 import { formatNumber } from '@superset-ui/number-format';
 import { formatTime } from '@superset-ui/time-format';
+import styled from '@superset-ui/style';
 import moment from 'moment';
 import { InfoTooltipWithTrigger, MetricOption } from '@superset-ui/chart-controls';
 
 import FormattedNumber from './FormattedNumber';
 import SparklineCell from './SparklineCell';
-import './TimeTable.less';
 
 const ACCESSIBLE_COLOR_BOUNDS = ['#ca0020', '#0571b0'];
 interface ColorFromBoundProps {
@@ -295,4 +295,8 @@ class TimeTable extends React.PureComponent<ChartProps, {}> {
   }
 }
 
-export default TimeTable;
+export default styled(TimeTable)`
+  .time-table {
+    overflow: auto;
+  }
+`;
