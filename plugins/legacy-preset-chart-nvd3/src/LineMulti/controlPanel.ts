@@ -149,10 +149,6 @@ export default {
     y_axis_format: {
       label: t('Left Axis Format'),
     },
-    x_axis_format: {
-      choices: D3_TIME_FORMAT_OPTIONS,
-      default: 'smart_date',
-    },
   },
   sectionOverrides: {
     sqlaTimeSeries: {
