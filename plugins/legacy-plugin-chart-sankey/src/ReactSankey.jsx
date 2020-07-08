@@ -20,23 +20,23 @@ import React from 'react';
 import { reactify } from '@superset-ui/chart';
 import styled from '@superset-ui/style';
 import PropTypes from 'prop-types';
-import Component from './Sankey';
+import SanKey from './Sankey';
 
-const ReactComponent = reactify(Component);
+const ReactSanKey = reactify(SanKey);
 
-const Sankey = ({ className, ...otherProps }) => {
+const SankeyComponent = ({ className, ...otherProps }) => {
   return (
     <div className={className}>
-      <ReactComponent {...otherProps} />
+      <ReactSanKey {...otherProps} />
     </div>
   );
 };
 
-Sankey.propTypes = {
+SankeyComponent.propTypes = {
   className: PropTypes.string.isRequired,
 };
 
-export default styled(Sankey)`
+export default styled(SankeyComponent)`
   .superset-legacy-chart-sankey {
     .node {
       rect {
