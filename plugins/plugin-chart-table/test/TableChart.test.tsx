@@ -19,7 +19,8 @@
 import React from 'react';
 import { mount, CommonWrapper } from 'enzyme';
 import TableChart from '../src/TableChart';
-import transformProps, { DateWithFormatter } from '../src/transformProps';
+import transformProps from '../src/transformProps';
+import DateWithFormatter from '../src/utils/DateWithFormatter';
 import testData from './testData';
 
 describe('plugin-chart-table', () => {

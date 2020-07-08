@@ -17,57 +17,22 @@
  * under the License.
  */
 import memoizeOne from 'memoize-one';
-import { DataRecord, DataRecordValue } from '@superset-ui/chart';
+import { DataRecord } from '@superset-ui/chart';
 import { QueryFormDataMetric } from '@superset-ui/query';
 import { getNumberFormatter, NumberFormats } from '@superset-ui/number-format';
 import {
   getTimeFormatter,
   smartDateFormatter,
   getTimeFormatterForGranularity,
-  TimeFormatFunction,
   TimeFormatter,
 } from '@superset-ui/time-format';
 
 import isEqualArray from './utils/isEqualArray';
+import DateWithFormatter from './utils/DateWithFormatter';
 import { TableChartProps, TableChartTransformedProps, DataType, DataColumnMeta } from './types';
 
 const { PERCENT_3_POINT } = NumberFormats;
 const TIME_COLUMN = '__timestamp';
-const REGEXP_TIMESTAMP_NO_TIMEZONE = /T(\d{2}:){2}\d{2}$/;
-
-/**
- * Extended Date object with custom formatter.
- * By default `String(date)` returns the raw input.
- */
-export class DateWithFormatter extends Date {
-  formatter: TimeFormatFunction;
-
-  input: DataRecordValue;
-
-  constructor(
-    input: DataRecordValue,
-    { formatter = String, forceUTC = true }: { formatter?: TimeFormatFunction; forceUTC?: boolean },
-  ) {
-    let value = input;
-
-    // assuming timestamps without a timezone is of UTC time
-    if (forceUTC && typeof value === 'string' && REGEXP_TIMESTAMP_NO_TIMEZONE.test(value)) {
-      value = `${value}Z`;
-    }
-
-    super(value as string);
-
-    this.input = input;
-    this.formatter = formatter;
-  }
-
-  toString(): string {
-    if (this.formatter === String) {
-      return String(this.input);
-    }
-    return this.formatter ? this.formatter(this) : Date.toString.call(this);
-  }
-}
 
 /**
  * Consolidate list of metrics to string, identified by its unique identifier
