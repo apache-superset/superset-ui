@@ -30,7 +30,7 @@
   "dependencies": {
     "d3": "^3.5.17",
     "datamaps": "^0.5.8",
-    "prop-types": "^15.6.2",
+    "prop-types": "^15.6.2"
   },
   "peerDependencies": {
     "@superset-ui/chart": "^0.14.0",
