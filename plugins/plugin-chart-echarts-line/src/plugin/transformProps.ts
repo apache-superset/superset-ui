@@ -55,14 +55,16 @@ export default function transformProps(chartProps: ChartProps) {
    * be seen until restarting the development server.
    */
   const { width, height, formData, queryData } = chartProps;
+  const { colorScheme } = formData;
+
   const data = queryData.data as EchartsLineDatum[];
 
   console.log('formData via TransformProps.ts', formData);
 
   return {
+    colorScheme,
     width,
     height,
-
     data: data.map((item: { __timestamp: TimestampType }) => ({
       ...item,
       // convert epoch to native Date

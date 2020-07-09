@@ -16,9 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useEffect, createRef } from 'react';
+import React, { createRef } from 'react';
 import styled, { supersetTheme } from '@superset-ui/style';
 import ReactEcharts from 'echarts-for-react';
+import { CategoricalColorNamespace } from '@superset-ui/color';
 
 interface EchartsLineStylesProps {
   height: number;
@@ -28,6 +29,7 @@ interface EchartsLineStylesProps {
 }
 
 export type EchartsLineProps = {
+  colorScheme: string;
   height: number;
   width: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,8 +72,8 @@ const Styles = styled.div<EchartsLineStylesProps>`
 export default function EchartsLine(props: EchartsLineProps) {
   // height and width are the height and width of the DOM element as it exists in the dashboard.
   // There is also a `data` prop, which is, of course, your DATA 🎉
-  const { data, height, width } = props;
-
+  const { colorScheme, data, height, width } = props;
+  const colorFn = CategoricalColorNamespace.getScale(colorScheme);
   const rootElem = createRef<HTMLDivElement>();
 
   const keys = data.length > 0 ? Object.keys(data[0]).filter(key => key !== '__timestamp') : [];
@@ -92,6 +94,7 @@ export default function EchartsLine(props: EchartsLineProps) {
   const series2 = [];
   Object.entries(series).forEach(([key, value]) => {
     series2.push({
+      color: colorFn(key),
       name: key,
       data: value,
       type: 'line',
@@ -106,8 +109,17 @@ export default function EchartsLine(props: EchartsLineProps) {
       width={width}
     >
       <ReactEcharts
+        // needed so previous data is purged when new data comes in
+        notMerge
         style={{ height, width }}
         option={{
+          color: ['#00b04f', '#ffbf00', 'ff0000'],
+          grid: {
+            top: 60,
+            bottom: 60,
+            left: 40,
+            right: 40,
+          },
           xAxis: {
             type: 'time',
           },

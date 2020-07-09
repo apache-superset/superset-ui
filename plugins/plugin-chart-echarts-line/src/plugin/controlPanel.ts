@@ -97,12 +97,39 @@ const config: ControlPanelConfig = {
     {
       label: t('Query'),
       expanded: true,
-      controlSetRows: [['groupby'], ['metrics'], ['adhoc_filters'], ['row_limit', null]],
+      controlSetRows: [
+        ['metrics'],
+        ['groupby'],
+        ['adhoc_filters'],
+        ['limit', 'timeseries_limit_metric'],
+        [
+          {
+            name: 'order_desc',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Sort Descending'),
+              default: true,
+              description: t('Whether to sort descending or ascending'),
+            },
+          },
+          {
+            name: 'contribution',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Contribution'),
+              default: false,
+              description: t('Compute the contribution to the total'),
+            },
+          },
+        ],
+        ['row_limit', null],
+      ],
     },
     {
-      label: t('Hello Controls!'),
+      label: t('Chart Options!'),
       expanded: true,
       controlSetRows: [
+        ['color_scheme', 'label_colors'],
         [
           {
             name: 'header_text',
