@@ -33,7 +33,7 @@ const metadata = new ChartMetadata({
 export default class ForceDirectedChartPlugin extends ChartPlugin {
   constructor() {
     super({
-      loadChart: () => import('./ReactForceDirected.jsx'),
+      loadChart: () => import('./ReactForceDirected'),
       metadata,
       transformProps,
       controlPanel,
