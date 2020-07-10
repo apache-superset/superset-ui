@@ -16,13 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartProps, DataRecord } from '@superset-ui/chart';
-
-type TimestampType = string | number | Date;
-
-interface EchartsLineDatum extends DataRecord {
-  __timestamp: TimestampType;
-}
+import { ChartProps } from '@superset-ui/chart';
+import { EchartsLineRawDatum, TimestampType } from '../types';
 
 export default function transformProps(chartProps: ChartProps) {
   /**
@@ -55,14 +50,34 @@ export default function transformProps(chartProps: ChartProps) {
    * be seen until restarting the development server.
    */
   const { width, height, formData, queryData } = chartProps;
-  const { colorScheme } = formData;
+  const {
+    area,
+    colorScheme,
+    contributionMode,
+    lineType,
+    logAxis,
+    opacity,
+    stack,
+    markerEnabled,
+    markerSize,
+    minorSplitLine,
+  } = formData;
 
-  const data = queryData.data as EchartsLineDatum[];
+  const data = queryData.data as EchartsLineRawDatum[];
 
   console.log('formData via TransformProps.ts', formData);
 
   return {
+    area,
     colorScheme,
+    contributionMode,
+    lineType,
+    logAxis,
+    opacity,
+    stack,
+    markerEnabled,
+    markerSize,
+    minorSplitLine,
     width,
     height,
     data: data.map((item: { __timestamp: TimestampType }) => ({

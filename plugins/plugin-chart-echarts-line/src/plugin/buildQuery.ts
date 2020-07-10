@@ -57,6 +57,14 @@ export default function buildQuery(formData: QueryFormData) {
                 ),
             },
           },
+          formData.contributionMode
+            ? {
+                operation: 'contribution',
+                options: {
+                  orientation: formData.contributionMode,
+                },
+              }
+            : undefined,
         ],
       },
     ];

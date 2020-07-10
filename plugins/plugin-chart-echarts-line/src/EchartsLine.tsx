@@ -20,6 +20,9 @@ import React, { createRef } from 'react';
 import styled, { supersetTheme } from '@superset-ui/style';
 import ReactEcharts from 'echarts-for-react';
 import { CategoricalColorNamespace } from '@superset-ui/color';
+import { getNumberFormatter } from '@superset-ui/number-format';
+import { EchartsLineDatum } from './types';
+import { DataRecordValue } from '@superset-ui/chart/lib';
 
 interface EchartsLineStylesProps {
   height: number;
@@ -29,15 +32,21 @@ interface EchartsLineStylesProps {
 }
 
 export type EchartsLineProps = {
+  area: number;
   colorScheme: string;
+  contributionMode?: string;
   height: number;
+  lineType?: string;
+  logAxis: boolean;
   width: number;
+  stack: boolean;
+  markerEnabled: boolean;
+  markerSize: number;
+  minorSplitLine: boolean;
+  opacity: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: Record<any, any>; // please add additional typing for your data here
+  data: EchartsLineDatum[]; // please add additional typing for your data here
   // add typing here for the props you pass in from transformProps.ts!
-  boldText: boolean;
-  headerFontSize: 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
-  headerText: string;
 };
 
 // The following Styles component is a <div> element, which has been styled using Emotion
@@ -61,23 +70,31 @@ const Styles = styled.div<EchartsLineStylesProps>`
   }
 `;
 
-/**
- * ******************* WHAT YOU CAN BUILD HERE *******************
- *  In essence, a chart is given a few key ingredients to work with:
- *  * Data: provided via `props.data`
- *  * A DOM element
- *  * FormData (your controls!) provided as props by transformProps.ts
- */
-
 export default function EchartsLine(props: EchartsLineProps) {
   // height and width are the height and width of the DOM element as it exists in the dashboard.
   // There is also a `data` prop, which is, of course, your DATA 🎉
-  const { colorScheme, data, height, width } = props;
+  const {
+    area,
+    colorScheme,
+    contributionMode,
+    data,
+    height,
+    lineType,
+    logAxis,
+    opacity,
+    stack,
+    markerEnabled,
+    markerSize,
+    minorSplitLine,
+    width,
+  } = props;
   const colorFn = CategoricalColorNamespace.getScale(colorScheme);
   const rootElem = createRef<HTMLDivElement>();
 
+  // transform data into ECharts friendly format
   const keys = data.length > 0 ? Object.keys(data[0]).filter(key => key !== '__timestamp') : [];
-  const series = keys.reduce(
+
+  const rawSeries: Record<string, [Date, DataRecordValue][]> = keys.reduce(
     (obj, key) => ({
       ...obj,
       [key]: [],
@@ -88,23 +105,28 @@ export default function EchartsLine(props: EchartsLineProps) {
     // eslint-disable-next-line no-underscore-dangle
     const timestamp = row.__timestamp;
     keys.forEach(key => {
-      series[key].push([timestamp, row[key]]);
+      rawSeries[key].push([timestamp, area ? row[key] || 0 : row[key]]);
     });
   });
-  const series2 = [];
-  Object.entries(series).forEach(([key, value]) => {
-    series2.push({
+
+  const series = [];
+  Object.entries(rawSeries).forEach(([key, value]) => {
+    series.push({
       color: colorFn(key),
       name: key,
       data: value,
       type: 'line',
+      smooth: lineType === 'smooth',
+      step: ['start', 'middle', 'end'].includes(lineType) ? lineType : undefined,
+      stack: stack ? 'Total' : undefined,
+      areaStyle: area ? { opacity } : undefined,
+      symbolSize: markerEnabled ? markerSize : 0,
     });
   });
+
   return (
     <Styles
       ref={rootElem}
-      boldText={props.boldText}
-      headerFontSize={props.headerFontSize}
       height={height}
       width={width}
     >
@@ -113,7 +135,6 @@ export default function EchartsLine(props: EchartsLineProps) {
         notMerge
         style={{ height, width }}
         option={{
-          color: ['#00b04f', '#ffbf00', 'ff0000'],
           grid: {
             top: 60,
             bottom: 60,
@@ -124,7 +145,12 @@ export default function EchartsLine(props: EchartsLineProps) {
             type: 'time',
           },
           yAxis: {
-            type: 'value',
+            type: logAxis ? 'log' : 'value',
+            min: contributionMode === 'row' ? 0 : undefined,
+            max: contributionMode === 'row' ? 1 : undefined,
+            minorTick: { show: true },
+            minorSplitLine: { show: minorSplitLine },
+            axisLabel: contributionMode ? { formatter: getNumberFormatter(',.0%') } : {},
           },
           tooltip: {
             trigger: 'axis',
@@ -132,7 +158,7 @@ export default function EchartsLine(props: EchartsLineProps) {
           legend: {
             data: keys,
           },
-          series: series2,
+          series: series,
         }}
       />
     </Styles>
