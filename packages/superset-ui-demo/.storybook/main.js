@@ -12,7 +12,7 @@ const packages = readdirSync(basePath).filter(name => {
 const PLUGIN_PACKAGES_PATH_REGEXP = new RegExp(
   `${path.resolve(__dirname, '../../../plugins/(legacy-)*(plugin|preset)-')}.+/src`,
 );
-
+console.log('plugin packages path', PLUGIN_PACKAGES_PATH_REGEXP);
 module.exports = {
   addons: [
     '@storybook/preset-typescript',
@@ -52,11 +52,14 @@ module.exports = {
     // Let webpack know where to find the source code
     Object.assign(config.resolve.alias, {
       ...packages.reduce(
-        (acc, name) => ({
-          ...acc,
-          [`@superset-ui/${name}$`]: path.join(basePath, name, 'src'),
-        }),
-        {},
+        (acc, name) => { 
+          console.log('name', name)
+          return {
+            ...acc,
+            [`@superset-ui/${name}$`]: path.join(basePath, name, 'src'),
+          }
+        },
+        {}
       ),
     });
 
