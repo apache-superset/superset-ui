@@ -12,7 +12,7 @@ const packages = readdirSync(basePath).filter(name => {
 const PLUGIN_PACKAGES_PATH_REGEXP = new RegExp(
   `${path.resolve(__dirname, '../../../plugins/(legacy-)*(plugin|preset)-')}.+/src`,
 );
-console.log('plugin packages path', PLUGIN_PACKAGES_PATH_REGEXP);
+
 module.exports = {
   addons: [
     '@storybook/preset-typescript',
