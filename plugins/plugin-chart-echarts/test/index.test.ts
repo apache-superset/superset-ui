@@ -16,12 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-// eslint-disable-next-line import/prefer-default-export
-export { default as EchartsLineChartPlugin } from './plugin';
+import { EchartsLineChartPlugin } from '../src';
+
 /**
- * Note: this file exports the default export from EchartsLine.tsx.
- * If you want to export multiple visualization modules, you will need to
- * either add additional plugin folders (similar in structure to ./plugin)
- * OR export multiple instances of `ChartPlugin` extensions in ./plugin/index.ts
- * which in turn load exports from EchartsLine.tsx
+ * The example tests in this file act as a starting point, and
+ * we encourage you to build more. These tests check that the
+ * plugin loads properly, and focus on `transformProps`
+ * to ake sure that data, controls, and props are all
+ * treated correctly (e.g. formData from plugin controls
+ * properly transform the data and/or any resulting props).
  */
+describe('@superset-ui/plugin-chart-echarts', () => {
+  it('exists', () => {
+    expect(EchartsLineChartPlugin).toBeDefined();
+  });
+});

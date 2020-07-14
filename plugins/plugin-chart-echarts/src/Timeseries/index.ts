@@ -21,15 +21,15 @@ import { ChartMetadata, ChartPlugin } from '@superset-ui/chart';
 import buildQuery from './buildQuery';
 import controlPanel from './controlPanel';
 import transformProps from './transformProps';
-import thumbnail from '../images/thumbnail.png';
+import thumbnail from './images/thumbnail.png';
 
 const metadata = new ChartMetadata({
-  description: 'Echarts Line',
-  name: t('EchartsLine'),
+  description: 'Echarts Timeseries',
+  name: t('Echarts Timeseries'),
   thumbnail,
 });
 
-export default class EchartsLineChartPlugin extends ChartPlugin {
+export default class EchartsTimeseriesChartPlugin extends ChartPlugin {
   /**
    * The constructor is used to pass relevant metadata and callbacks that get
    * registered in respective registries that are used throughout the library
@@ -44,7 +44,7 @@ export default class EchartsLineChartPlugin extends ChartPlugin {
     super({
       buildQuery,
       controlPanel,
-      loadChart: () => import('../EchartsLine'),
+      loadChart: () => import('./EchartsTimeseries'),
       metadata,
       transformProps,
     });

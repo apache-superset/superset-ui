@@ -1,7 +1,7 @@
 import 'babel-polyfill';
-import buildQuery from '../../src/plugin/buildQuery';
+import buildQuery from '../../src/Timeseries/buildQuery';
 
-describe('EchartsLine buildQuery', () => {
+describe('EchartsTimeseries buildQuery', () => {
   const formData = {
     datasource: '5__table',
     granularity_sqla: 'ds',

@@ -10,7 +10,7 @@ This plugin provides Echarts Line for Superset.
 Configure `key`, which can be any `string`, and register the plugin. This `key` will be used to lookup this chart throughout the app.
 
 ```js
-import EchartsLineChartPlugin from '@superset-ui/plugin-chart-echarts-line';
+import EchartsLineChartPlugin from '@superset-ui/plugin-chart-echarts';
 
 new EchartsLineChartPlugin()
   .configure({ key: 'echarts-line' })
@@ -37,7 +37,7 @@ Then use it via `SuperChart`. See [storybook](https://apache-superset.github.io/
 ├── README.md
 ├── package.json
 ├── src
-│   ├── EchartsLine.tsx
+│   ├── EchartsTimeseries.tsx
 │   ├── images
 │   │   └── thumbnail.png
 │   ├── index.ts

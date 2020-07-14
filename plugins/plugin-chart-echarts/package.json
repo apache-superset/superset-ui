@@ -1,7 +1,7 @@
 {
-  "name": "@superset-ui/plugin-chart-echarts-line",
+  "name": "@superset-ui/plugin-chart-echarts",
   "version": "0.0.0",
-  "description": "Superset Chart - Echarts Line",
+  "description": "Superset Chart - Echarts",
   "sideEffects": false,
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -32,8 +32,8 @@
     "@superset-ui/translation": "^0.14.0",
     "@superset-ui/validator": "^0.14.1",
     "@superset-ui/style": "^0.14.0",
-    "echarts": "^4.0.0",
-    "echarts-for-react": "^2.0.0",
+    "echarts": "^4.8.0",
+    "echarts-for-react": "^2.0.16",
     "react": "^16.13.1"
   },
   "devDependencies": {

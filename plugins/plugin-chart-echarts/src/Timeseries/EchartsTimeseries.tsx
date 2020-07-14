@@ -21,8 +21,8 @@ import styled, { supersetTheme } from '@superset-ui/style';
 import ReactEcharts from 'echarts-for-react';
 import { CategoricalColorNamespace } from '@superset-ui/color';
 import { getNumberFormatter } from '@superset-ui/number-format';
-import { EchartsLineDatum } from './types';
-import { DataRecordValue } from '@superset-ui/chart/lib';
+import { DataRecordValue } from '@superset-ui/chart';
+import { EchartsTimeseriesDatum } from '../types';
 
 interface EchartsLineStylesProps {
   height: number;
@@ -36,7 +36,7 @@ export type EchartsLineProps = {
   colorScheme: string;
   contributionMode?: string;
   height: number;
-  lineType?: string;
+  seriesType: string;
   logAxis: boolean;
   width: number;
   stack: boolean;
@@ -45,7 +45,7 @@ export type EchartsLineProps = {
   minorSplitLine: boolean;
   opacity: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: EchartsLineDatum[]; // please add additional typing for your data here
+  data: EchartsTimeseriesDatum[]; // please add additional typing for your data here
   // add typing here for the props you pass in from transformProps.ts!
 };
 
@@ -70,7 +70,7 @@ const Styles = styled.div<EchartsLineStylesProps>`
   }
 `;
 
-export default function EchartsLine(props: EchartsLineProps) {
+export default function EchartsTimeseries(props: EchartsLineProps) {
   // height and width are the height and width of the DOM element as it exists in the dashboard.
   // There is also a `data` prop, which is, of course, your DATA 🎉
   const {
@@ -79,7 +79,7 @@ export default function EchartsLine(props: EchartsLineProps) {
     contributionMode,
     data,
     height,
-    lineType,
+    seriesType,
     logAxis,
     opacity,
     stack,
@@ -115,9 +115,9 @@ export default function EchartsLine(props: EchartsLineProps) {
       color: colorFn(key),
       name: key,
       data: value,
-      type: 'line',
-      smooth: lineType === 'smooth',
-      step: ['start', 'middle', 'end'].includes(lineType) ? lineType : undefined,
+      type: seriesType === 'bar' ? 'bar' : 'line',
+      smooth: seriesType === 'smooth',
+      step: ['start', 'middle', 'end'].includes(seriesType) ? seriesType : undefined,
       stack: stack ? 'Total' : undefined,
       areaStyle: area ? { opacity } : undefined,
       symbolSize: markerEnabled ? markerSize : 0,
@@ -125,11 +125,7 @@ export default function EchartsLine(props: EchartsLineProps) {
   });
 
   return (
-    <Styles
-      ref={rootElem}
-      height={height}
-      width={width}
-    >
+    <Styles ref={rootElem} height={height} width={width}>
       <ReactEcharts
         // needed so previous data is purged when new data comes in
         notMerge
@@ -146,8 +142,8 @@ export default function EchartsLine(props: EchartsLineProps) {
           },
           yAxis: {
             type: logAxis ? 'log' : 'value',
-            min: contributionMode === 'row' ? 0 : undefined,
-            max: contributionMode === 'row' ? 1 : undefined,
+            min: contributionMode === 'row' && stack ? 0 : undefined,
+            max: contributionMode === 'row' && stack ? 1 : undefined,
             minorTick: { show: true },
             minorSplitLine: { show: minorSplitLine },
             axisLabel: contributionMode ? { formatter: getNumberFormatter(',.0%') } : {},
@@ -158,7 +154,7 @@ export default function EchartsLine(props: EchartsLineProps) {
           legend: {
             data: keys,
           },
-          series: series,
+          series,
         }}
       />
     </Styles>

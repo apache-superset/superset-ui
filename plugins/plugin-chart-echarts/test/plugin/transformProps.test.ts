@@ -1,8 +1,8 @@
 import 'babel-polyfill';
 import { ChartProps } from '@superset-ui/chart';
-import transformProps from '../../src/plugin/transformProps';
+import transformProps from '../../src/Timeseries/transformProps';
 
-describe('EchartsLine tranformProps', () => {
+describe('EchartsTimeseries tranformProps', () => {
   const formData = {
     colorScheme: 'bnbColors',
     datasource: '3__table',

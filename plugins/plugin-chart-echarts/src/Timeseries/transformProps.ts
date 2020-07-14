@@ -17,7 +17,7 @@
  * under the License.
  */
 import { ChartProps } from '@superset-ui/chart';
-import { EchartsLineRawDatum, TimestampType } from '../types';
+import { EchartsTimeseriesRawDatum, TimestampType } from '../types';
 
 export default function transformProps(chartProps: ChartProps) {
   /**
@@ -27,7 +27,7 @@ export default function transformProps(chartProps: ChartProps) {
    *
    * The transformProps function is also quite useful to return
    * additional/modified props to your data viz component. The formData
-   * can also be accessed from your EchartsLine.tsx file, but
+   * can also be accessed from your EchartsTimeseries.tsx file, but
    * doing supplying custom props here is often handy for integrating third
    * party libraries that rely on specific props.
    *
@@ -54,7 +54,7 @@ export default function transformProps(chartProps: ChartProps) {
     area,
     colorScheme,
     contributionMode,
-    lineType,
+    seriesType,
     logAxis,
     opacity,
     stack,
@@ -63,7 +63,7 @@ export default function transformProps(chartProps: ChartProps) {
     minorSplitLine,
   } = formData;
 
-  const data = queryData.data as EchartsLineRawDatum[];
+  const data = queryData.data as EchartsTimeseriesRawDatum[];
 
   console.log('formData via TransformProps.ts', formData);
 
@@ -71,7 +71,7 @@ export default function transformProps(chartProps: ChartProps) {
     area,
     colorScheme,
     contributionMode,
-    lineType,
+    seriesType,
     logAxis,
     opacity,
     stack,
