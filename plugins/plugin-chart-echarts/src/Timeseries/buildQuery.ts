@@ -32,8 +32,11 @@ import { buildQueryContext, QueryFormData } from '@superset-ui/query';
  * it is possible to define post processing operations in the QueryObject, or multiple queries
  * if a viz needs multiple different result sets.
  */
+
 export default function buildQuery(formData: QueryFormData) {
   return buildQueryContext(formData, baseQueryObject => {
+    const baseQueryMetrics = baseQueryObject?.metrics ? baseQueryObject.metrics : [];
+
     return [
       {
         ...baseQueryObject,
@@ -46,7 +49,7 @@ export default function buildQuery(formData: QueryFormData) {
               index: ['__timestamp'],
               columns: formData.groupby,
               // Create 'dummy' sum aggregates to assign cell values in pivot table
-              aggregates: baseQueryObject.metrics
+              aggregates: baseQueryMetrics
                 .map(metric => metric.label)
                 .reduce(
                   (obj, cur) => ({

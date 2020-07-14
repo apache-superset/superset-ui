@@ -16,38 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { createRef } from 'react';
-import styled, { supersetTheme } from '@superset-ui/style';
-import ReactEcharts from 'echarts-for-react';
-import { CategoricalColorNamespace } from '@superset-ui/color';
-import { getNumberFormatter } from '@superset-ui/number-format';
-import { DataRecordValue } from '@superset-ui/chart';
-import { EchartsTimeseriesDatum } from '../types';
+import React, { useEffect, createRef } from 'react';
+import styled from '@superset-ui/style';
+import ECharts from 'echarts';
+import { EchartsLineProps } from '../types';
 
 interface EchartsLineStylesProps {
   height: number;
   width: number;
-  headerFontSize: keyof typeof supersetTheme.typography.sizes;
-  boldText: boolean;
 }
-
-export type EchartsLineProps = {
-  area: number;
-  colorScheme: string;
-  contributionMode?: string;
-  height: number;
-  seriesType: string;
-  logAxis: boolean;
-  width: number;
-  stack: boolean;
-  markerEnabled: boolean;
-  markerSize: number;
-  minorSplitLine: boolean;
-  opacity: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: EchartsTimeseriesDatum[]; // please add additional typing for your data here
-  // add typing here for the props you pass in from transformProps.ts!
-};
 
 // The following Styles component is a <div> element, which has been styled using Emotion
 // For docs, visit https://emotion.sh/docs/styled
@@ -57,106 +34,22 @@ export type EchartsLineProps = {
 // https://github.com/apache-superset/superset-ui/blob/master/packages/superset-ui-style/src/index.ts
 
 const Styles = styled.div<EchartsLineStylesProps>`
-  padding: ${({ theme }) => theme.gridUnit * 4}px;
-  border-radius: ${({ theme }) => theme.gridUnit * 2}px;
   height: ${({ height }) => height};
   width: ${({ width }) => width};
-  overflow-y: scroll;
-
-  h3 {
-    /* You can use your props to control CSS! */
-    font-size: ${({ theme, headerFontSize }) => theme.typography.sizes[headerFontSize]};
-    font-weight: ${({ theme, boldText }) => theme.typography.weights[boldText ? 'bold' : 'normal']};
-  }
 `;
 
 export default function EchartsTimeseries(props: EchartsLineProps) {
   // height and width are the height and width of the DOM element as it exists in the dashboard.
   // There is also a `data` prop, which is, of course, your DATA 🎉
-  const {
-    area,
-    colorScheme,
-    contributionMode,
-    data,
-    height,
-    seriesType,
-    logAxis,
-    opacity,
-    stack,
-    markerEnabled,
-    markerSize,
-    minorSplitLine,
-    width,
-  } = props;
-  const colorFn = CategoricalColorNamespace.getScale(colorScheme);
+  const { echartOptions, height, width } = props;
   const rootElem = createRef<HTMLDivElement>();
 
-  // transform data into ECharts friendly format
-  const keys = data.length > 0 ? Object.keys(data[0]).filter(key => key !== '__timestamp') : [];
+  useEffect(() => {
+    const root = rootElem.current as HTMLDivElement;
+    const myChart = ECharts.init(root);
 
-  const rawSeries: Record<string, [Date, DataRecordValue][]> = keys.reduce(
-    (obj, key) => ({
-      ...obj,
-      [key]: [],
-    }),
-    {},
-  );
-  data.forEach(row => {
-    // eslint-disable-next-line no-underscore-dangle
-    const timestamp = row.__timestamp;
-    keys.forEach(key => {
-      rawSeries[key].push([timestamp, area ? row[key] || 0 : row[key]]);
-    });
+    myChart.setOption(echartOptions);
   });
 
-  const series = [];
-  Object.entries(rawSeries).forEach(([key, value]) => {
-    series.push({
-      color: colorFn(key),
-      name: key,
-      data: value,
-      type: seriesType === 'bar' ? 'bar' : 'line',
-      smooth: seriesType === 'smooth',
-      step: ['start', 'middle', 'end'].includes(seriesType) ? seriesType : undefined,
-      stack: stack ? 'Total' : undefined,
-      areaStyle: area ? { opacity } : undefined,
-      symbolSize: markerEnabled ? markerSize : 0,
-    });
-  });
-
-  return (
-    <Styles ref={rootElem} height={height} width={width}>
-      <ReactEcharts
-        // needed so previous data is purged when new data comes in
-        notMerge
-        style={{ height, width }}
-        option={{
-          grid: {
-            top: 60,
-            bottom: 60,
-            left: 40,
-            right: 40,
-          },
-          xAxis: {
-            type: 'time',
-          },
-          yAxis: {
-            type: logAxis ? 'log' : 'value',
-            min: contributionMode === 'row' && stack ? 0 : undefined,
-            max: contributionMode === 'row' && stack ? 1 : undefined,
-            minorTick: { show: true },
-            minorSplitLine: { show: minorSplitLine },
-            axisLabel: contributionMode ? { formatter: getNumberFormatter(',.0%') } : {},
-          },
-          tooltip: {
-            trigger: 'axis',
-          },
-          legend: {
-            data: keys,
-          },
-          series,
-        }}
-      />
-    </Styles>
-  );
+  return <Styles ref={rootElem} height={height} width={width} />;
 }

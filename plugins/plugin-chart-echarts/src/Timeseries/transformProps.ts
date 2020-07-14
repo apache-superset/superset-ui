@@ -16,10 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartProps } from '@superset-ui/chart';
-import { EchartsTimeseriesRawDatum, TimestampType } from '../types';
+import { ChartProps, DataRecordValue } from '@superset-ui/chart';
+import { CategoricalColorNamespace } from '@superset-ui/color';
+import { getNumberFormatter } from '@superset-ui/number-format';
+import { EchartsTimeseriesRawDatum, TimestampType, EchartsLineProps } from '../types';
 
-export default function transformProps(chartProps: ChartProps) {
+export default function transformProps(chartProps: ChartProps & EchartsLineProps) {
   /**
    * This function is called after a successful response has been
    * received from the chart data endpoint, and is used to transform
@@ -63,14 +65,84 @@ export default function transformProps(chartProps: ChartProps) {
     minorSplitLine,
   } = formData;
 
-  const data = queryData.data as EchartsTimeseriesRawDatum[];
+  let data = queryData.data as EchartsTimeseriesRawDatum[];
+  data = data.map((item: { __timestamp: TimestampType }) => ({
+    ...item,
+    // convert epoch to native Date
+    // eslint-disable-next-line no-underscore-dangle
+    __timestamp: new Date(item.__timestamp),
+  }));
 
-  console.log('formData via TransformProps.ts', formData);
+  // console.log('formData via TransformProps.ts', formData);
+
+  const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
+
+  const series = [] as unknown[];
+
+  const keys = data.length > 0 ? Object.keys(data[0]).filter(key => key !== '__timestamp') : [];
+
+  const rawSeries: Record<string, [Date, DataRecordValue][]> = keys.reduce(
+    (obj, key) => ({
+      ...obj,
+      [key]: [],
+    }),
+    {},
+  );
+
+  data.forEach(row => {
+    // eslint-disable-next-line no-underscore-dangle
+    const timestamp = row.__timestamp;
+    keys.forEach(key => {
+      rawSeries[key].push([timestamp as Date, area ? row[key] || 0 : row[key]]);
+    });
+  });
+
+  Object.entries(rawSeries).forEach(([key, value]) => {
+    series.push({
+      color: colorFn(key),
+      name: key,
+      data: value,
+      type: seriesType === 'bar' ? 'bar' : 'line',
+      smooth: seriesType === 'smooth',
+      step: ['start', 'middle', 'end'].includes(seriesType as string) ? seriesType : undefined,
+      stack: stack ? 'Total' : undefined,
+      areaStyle: area ? { opacity } : undefined,
+      symbolSize: markerEnabled ? markerSize : 0,
+    });
+  });
+
+  const echartOptions = {
+    grid: {
+      top: 60,
+      bottom: 60,
+      left: 40,
+      right: 40,
+    },
+    xAxis: {
+      type: 'time',
+    },
+    yAxis: {
+      type: logAxis ? 'log' : 'value',
+      min: contributionMode === 'row' && stack ? 0 : undefined,
+      max: contributionMode === 'row' && stack ? 1 : undefined,
+      minorTick: { show: true },
+      minorSplitLine: { show: minorSplitLine },
+      axisLabel: contributionMode ? { formatter: getNumberFormatter(',.0%') } : {},
+    },
+    tooltip: {
+      trigger: 'axis',
+    },
+    legend: {
+      data: keys,
+    },
+    series,
+  };
 
   return {
     area,
     colorScheme,
     contributionMode,
+    echartOptions,
     seriesType,
     logAxis,
     opacity,
@@ -80,15 +152,7 @@ export default function transformProps(chartProps: ChartProps) {
     minorSplitLine,
     width,
     height,
-    data: data.map((item: { __timestamp: TimestampType }) => ({
-      ...item,
-      // convert epoch to native Date
-      // eslint-disable-next-line no-underscore-dangle
-      __timestamp: new Date(item.__timestamp),
-    })),
+    data,
     // and now your control data, manipulated as needed, and passed through as props!
-    boldText: formData.boldText,
-    headerFontSize: formData.headerFontSize,
-    headerText: formData.headerText,
   };
 }
