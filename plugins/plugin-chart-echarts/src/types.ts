@@ -15,6 +15,7 @@ export type EchartsLineProps = {
   area: number;
   colorScheme: string;
   contributionMode?: string;
+  zoomable?: boolean;
   height: number;
   seriesType: string;
   logAxis: boolean;

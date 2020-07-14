@@ -63,6 +63,7 @@ export default function transformProps(chartProps: ChartProps & EchartsLineProps
     markerEnabled,
     markerSize,
     minorSplitLine,
+    zoomable,
   } = formData;
 
   let data = queryData.data as EchartsTimeseriesRawDatum[];
@@ -114,7 +115,7 @@ export default function transformProps(chartProps: ChartProps & EchartsLineProps
   const echartOptions = {
     grid: {
       top: 60,
-      bottom: 60,
+      bottom: zoomable ? 100 : 60,
       left: 40,
       right: 40,
     },
@@ -136,6 +137,26 @@ export default function transformProps(chartProps: ChartProps & EchartsLineProps
       data: keys,
     },
     series,
+    toolbox: {
+      show: zoomable,
+      feature: {
+        dataZoom: {
+          yAxisIndex: false,
+          title: {
+            zoom: 'zoom area',
+            back: 'restore zoom',
+          },
+        },
+      },
+    },
+    dataZoom: [
+      {
+        show: zoomable,
+        type: 'slider',
+        start: 0,
+        end: 100,
+      },
+    ],
   };
 
   return {
