@@ -67,7 +67,8 @@ export default function EchartsPie(props: EchartsPiePropsReceived) {
     const root = rootElem.current as HTMLDivElement;
     // console.log('Plugin element', root);
     const myChart = echarts.init(root);
-    myChart.setOption(echartOptions);
+    myChart.setOption(echartOptions, true);
+    myChart.resize();
   });
 
   return <Styles ref={rootElem} height={height} width={width} />;
