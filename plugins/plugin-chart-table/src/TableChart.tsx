@@ -212,6 +212,8 @@ export default function TableChart<D extends DataRecord = DataRecord>(
       return {
         id: String(i), // to allow duplicate column keys
         // must use custom accessor to allow `.` in column names
+        // typing is incorrect in current version of `@types/react-table`
+        // so we ask TS not to check.
         accessor: ((datum: D) => datum[key]) as never,
         Header: label,
         SortIcon,
