@@ -100,53 +100,34 @@ const config: ControlPanelConfig = {
       controlSetRows: [['groupby'], ['metrics'], ['adhoc_filters'], ['row_limit', null]],
     },
     {
-      label: t('Hello Controls!'),
+      label: t('Chart Options'),
       expanded: true,
       controlSetRows: [
         [
           {
-            name: 'header_text',
+            name: 'outerRadius',
             config: {
-              type: 'TextControl',
-              default: 'Hello, World!',
+              type: 'SliderControl',
+              label: t('Outer Radius'),
               renderTrigger: true,
-              // ^ this makes it apply instantaneously, without triggering a "run query" button
-              label: t('Header Text'),
-              description: t('The text you want to see in the header'),
+              min: 10,
+              max: 100,
+              step: 1,
+              default: 70,
+              description: t('Outer edge of Pie chart'),
             },
           },
-        ],
-        [
           {
-            name: 'bold_text',
+            name: 'innerRadius',
             config: {
-              type: 'CheckboxControl',
-              label: t('Bold Text'),
+              type: 'SliderControl',
+              label: t('Inner Radius'),
               renderTrigger: true,
-              default: true,
-              description: t('A checkbox to make the '),
-            },
-          },
-        ],
-        [
-          {
-            name: 'header_font_size',
-            config: {
-              type: 'SelectControl',
-              label: t('Font Size'),
-              default: 'xl',
-              choices: [
-                // [value, label]
-                ['xxs', 'xx-small'],
-                ['xs', 'x-small'],
-                ['s', 'small'],
-                ['m', 'medium'],
-                ['l', 'large'],
-                ['xl', 'x-large'],
-                ['xxl', 'xx-large'],
-              ],
-              renderTrigger: true,
-              description: t('The size of your header font'),
+              min: 0,
+              max: 100,
+              step: 1,
+              default: 50,
+              description: t('Inner radius of donut hole'),
             },
           },
         ],

@@ -18,9 +18,11 @@
  */
 import { ChartProps, DataRecord } from '@superset-ui/chart';
 
+import { EchartsPieProps } from './types';
+
 type EchartsPieDatum = DataRecord;
 
-export default function transformProps(chartProps: ChartProps) {
+export default function transformProps(chartProps: ChartProps & EchartsPieProps) {
   /**
    * This function is called after a successful response has been
    * received from the chart data endpoint, and is used to transform
@@ -53,28 +55,32 @@ export default function transformProps(chartProps: ChartProps) {
   const { width, height, formData, queryData } = chartProps;
   const data = queryData.data as EchartsPieDatum[];
 
+  const { innerRadius, outerRadius, groupby, metrics } = formData;
+
+  const keys = Array.from(new Set(data.map(datum => datum[groupby[0]])));
+
   const transformedData = data.map(datum => {
     return {
-      value: datum.count,
-      name: datum.gender,
+      value: datum[metrics[0]],
+      name: datum[groupby[0]],
     };
   });
 
   const echartOptions = {
     tooltip: {
       trigger: 'item',
-      formatter: '{a} <br/>{b}: {c} ({d}%)',
+      formatter: '{b}: {c} ({d}%)',
     },
     legend: {
       orient: 'vertical',
       left: 10,
-      data: ['boy', 'girl'],
+      data: keys,
     },
     series: [
       {
-        name: 'gender',
+        // name: 'gender',
         type: 'pie',
-        radius: ['50%', '70%'],
+        radius: [`${innerRadius}%`, `${outerRadius}%`],
         avoidLabelOverlap: false,
         label: {
           show: false,
