@@ -53,8 +53,6 @@ export default function transformProps(chartProps: ChartProps) {
   const { width, height, formData, queryData } = chartProps;
   const data = queryData.data as EchartsPieDatum[];
 
-  console.log('formData via TransformProps.ts', formData);
-
   const transformedData = data.map(datum => {
     return {
       value: datum.count,
