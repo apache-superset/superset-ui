@@ -24,8 +24,8 @@ import transformProps from './transformProps';
 import thumbnail from './images/thumbnail.png';
 
 const metadata = new ChartMetadata({
-  description: 'Echarts Timeseries',
-  name: t('Echarts Timeseries'),
+  description: 'ECharts Timeseries',
+  name: t('ECharts Timeseries'),
   thumbnail,
 });
 
