@@ -135,6 +135,7 @@ export default function transformProps(chartProps: ChartProps & EchartsLineProps
     },
     legend: {
       data: keys,
+      right: zoomable ? 80 : 'auto',
     },
     series,
     toolbox: {
@@ -149,14 +150,16 @@ export default function transformProps(chartProps: ChartProps & EchartsLineProps
         },
       },
     },
-    dataZoom: [
-      {
-        show: zoomable,
-        type: 'slider',
-        start: 0,
-        end: 100,
-      },
-    ],
+    dataZoom: zoomable
+      ? [
+          {
+            type: 'slider',
+            start: 0,
+            end: 100,
+            bottom: 30,
+          },
+        ]
+      : [],
   };
 
   return {
