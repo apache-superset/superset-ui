@@ -19,7 +19,7 @@
 import { ChartProps, DataRecordValue } from '@superset-ui/chart';
 import { CategoricalColorNamespace } from '@superset-ui/color';
 import { getNumberFormatter } from '@superset-ui/number-format';
-import { EchartsTimeseriesRawDatum, TimestampType, EchartsLineProps } from '../types';
+import { EchartsTimeseriesRawDatum, TimestampType, EchartsLineProps } from './types';
 
 export default function transformProps(chartProps: ChartProps & EchartsLineProps) {
   /**

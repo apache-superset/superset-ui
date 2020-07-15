@@ -1,5 +1,5 @@
 import { DataRecord } from '@superset-ui/chart';
-import ECharts from 'echarts';
+import echarts from 'echarts';
 
 export type TimestampType = string | number | Date;
 
@@ -27,5 +27,5 @@ export type EchartsLineProps = {
   opacity: number;
   data: EchartsTimeseriesDatum[]; // please add additional typing for your data here
   // add typing here for the props you pass in from transformProps.ts!
-  echartOptions: ECharts.EChartOption;
+  echartOptions: echarts.EChartOption;
 };

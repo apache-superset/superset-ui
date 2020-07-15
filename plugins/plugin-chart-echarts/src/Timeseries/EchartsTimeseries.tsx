@@ -18,8 +18,8 @@
  */
 import React, { useEffect, createRef } from 'react';
 import styled from '@superset-ui/style';
-import ECharts from 'echarts';
-import { EchartsLineProps } from '../types';
+import echarts from 'echarts';
+import { EchartsLineProps } from './types';
 
 interface EchartsLineStylesProps {
   height: number;
@@ -46,7 +46,7 @@ export default function EchartsTimeseries(props: EchartsLineProps) {
 
   useEffect(() => {
     const root = rootElem.current as HTMLDivElement;
-    const myChart = ECharts.init(root);
+    const myChart = echarts.init(root);
 
     myChart.setOption(echartOptions);
   });
