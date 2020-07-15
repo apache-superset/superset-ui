@@ -1,20 +1,15 @@
-import { DataRecord } from '@superset-ui/chart';
+import { DataRecord, ChartProps } from '@superset-ui/chart';
 
-import echarts from 'echarts';
+export interface PieChartFormData {
+  groupby?: string[];
+  metrics?: string[];
+  outerRadius?: number;
+  innerRadius?: number;
+}
 
-export type EchartsPieProps = {
-  height: number;
-  width: number;
-  data: DataRecord[]; // please add additional typing for your data here
-  // add typing here for the props you pass in from transformProps.ts!
-  echartOptions: echarts.EChartOption;
-  innerRadius: number;
-  outerRadius: number;
-  queryData: {
-    data: DataRecord[];
+export interface EchartsPieProps<D extends DataRecord = DataRecord> extends ChartProps {
+  formData: PieChartFormData;
+  queryData: ChartProps['queryData'] & {
+    data?: D[];
   };
-  formData: {
-    groupby: string[];
-    metrics: string[];
-  };
-};
+}

@@ -25,7 +25,7 @@ interface EchartsPieStylesProps {
   width: number;
 }
 
-export type EchartsPieProps = {
+export type EchartsPiePropsReceived = {
   height: number;
   width: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,7 +54,7 @@ const Styles = styled.div<EchartsPieStylesProps>`
  *  * FormData (your controls!) provided as props by transformProps.ts
  */
 
-export default function EchartsPie(props: EchartsPieProps) {
+export default function EchartsPie(props: EchartsPiePropsReceived) {
   // height and width are the height and width of the DOM element as it exists in the dashboard.
   // There is also a `data` prop, which is, of course, your DATA 🎉
   const { height, width, echartOptions } = props;

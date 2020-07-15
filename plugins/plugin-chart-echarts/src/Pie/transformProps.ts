@@ -16,11 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartProps } from '@superset-ui/chart';
-
 import { EchartsPieProps } from './types';
 
-export default function transformProps(chartProps: ChartProps & EchartsPieProps) {
+export default function transformProps(chartProps: EchartsPieProps) {
   /**
    * This function is called after a successful response has been
    * received from the chart data endpoint, and is used to transform
@@ -51,9 +49,9 @@ export default function transformProps(chartProps: ChartProps & EchartsPieProps)
    * be seen until restarting the development server.
    */
   const { width, height, formData, queryData } = chartProps;
-  const { data } = queryData;
+  const data = queryData.data || [];
 
-  const { innerRadius, outerRadius, groupby, metrics } = formData;
+  const { innerRadius = 50, outerRadius = 70, groupby = [], metrics = [] } = formData;
 
   const keys = Array.from(new Set(data.map(datum => datum[groupby[0]])));
 
