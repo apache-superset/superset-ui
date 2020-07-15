@@ -18,6 +18,8 @@
  */
 // eslint-disable-next-line import/prefer-default-export
 export { default as EchartsTimeseriesChartPlugin } from './Timeseries';
+export { default as EchartsPieChartPlugin } from './Pie';
+
 /**
  * Note: this file exports the default export from EchartsTimeseries.tsx.
  * If you want to export multiple visualization modules, you will need to

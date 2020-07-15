@@ -53,11 +53,56 @@ export default function transformProps(chartProps: ChartProps) {
   const { width, height, formData, queryData } = chartProps;
   const data = queryData.data as EchartsPieDatum[];
 
+  console.log('formData via TransformProps.ts', formData);
+
+  const transformedData = data.map(datum => {
+    return {
+      value: datum.count,
+      name: datum.gender,
+    };
+  });
+
+  const echartOptions = {
+    tooltip: {
+      trigger: 'item',
+      formatter: '{a} <br/>{b}: {c} ({d}%)',
+    },
+    legend: {
+      orient: 'vertical',
+      left: 10,
+      data: ['boy', 'girl'],
+    },
+    series: [
+      {
+        name: 'gender',
+        type: 'pie',
+        radius: ['50%', '70%'],
+        avoidLabelOverlap: false,
+        label: {
+          show: false,
+          position: 'center',
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: '30',
+            fontWeight: 'bold',
+          },
+        },
+        labelLine: {
+          show: false,
+        },
+        data: transformedData,
+      },
+    ],
+  };
+
   return {
     width,
     height,
     data,
     // and now your control data, manipulated as needed, and passed through as props!
+    echartOptions,
     boldText: formData.boldText,
     headerFontSize: formData.headerFontSize,
     headerText: formData.headerText,
