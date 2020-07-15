@@ -16,11 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartProps, DataRecord } from '@superset-ui/chart';
+import { ChartProps } from '@superset-ui/chart';
 
 import { EchartsPieProps } from './types';
-
-type EchartsPieDatum = DataRecord;
 
 export default function transformProps(chartProps: ChartProps & EchartsPieProps) {
   /**
@@ -53,7 +51,7 @@ export default function transformProps(chartProps: ChartProps & EchartsPieProps)
    * be seen until restarting the development server.
    */
   const { width, height, formData, queryData } = chartProps;
-  const data = queryData.data as EchartsPieDatum[];
+  const { data } = queryData;
 
   const { innerRadius, outerRadius, groupby, metrics } = formData;
 
@@ -107,8 +105,5 @@ export default function transformProps(chartProps: ChartProps & EchartsPieProps)
     data,
     // and now your control data, manipulated as needed, and passed through as props!
     echartOptions,
-    boldText: formData.boldText,
-    headerFontSize: formData.headerFontSize,
-    headerText: formData.headerText,
   };
 }

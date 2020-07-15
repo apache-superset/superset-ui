@@ -1,4 +1,5 @@
 import { DataRecord } from '@superset-ui/chart';
+
 import echarts from 'echarts';
 
 export type EchartsPieProps = {
@@ -9,4 +10,11 @@ export type EchartsPieProps = {
   echartOptions: echarts.EChartOption;
   innerRadius: number;
   outerRadius: number;
+  queryData: {
+    data: DataRecord[];
+  };
+  formData: {
+    groupby: string[];
+    metrics: string[];
+  };
 };
