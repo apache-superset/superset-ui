@@ -34,7 +34,6 @@
     "@superset-ui/validator": "^0.14.1",
     "@superset-ui/number-format": "^0.14.0",
     "@superset-ui/style": "^0.14.0",
-    "echarts": "^4.8.0",
     "react": "^16.13.1"
   },
   "devDependencies": {
