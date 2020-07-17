@@ -5,21 +5,40 @@ import { BinaryOperator, SetOperator, UnaryOperator } from './Operator';
 import { TimeRange } from './Time';
 import { QueryFormDataMetric, QueryFormResidualDataValue } from './QueryFormData';
 
-export type QueryObjectFilterClause = {
+export type QueryObjectBaseFilterClause = {
   col: string;
-} & (
-  | {
-      op: BinaryOperator;
-      val: string;
-    }
-  | {
-      op: SetOperator;
-      val: string[];
-    }
-  | {
-      op: UnaryOperator;
-    }
-);
+};
+
+export type QueryObjectBinaryFilterClause = QueryObjectBaseFilterClause & {
+  op: BinaryOperator;
+  val: string;
+};
+
+export type QueryObjectSetFilterClause = QueryObjectBaseFilterClause & {
+  op: SetOperator;
+  val: string[];
+};
+
+export type QueryObjectUnaryFilterClause = QueryObjectBaseFilterClause & {
+  op: UnaryOperator;
+};
+
+export type QueryObjectFilterClause =
+  | QueryObjectBinaryFilterClause
+  | QueryObjectSetFilterClause
+  | QueryObjectUnaryFilterClause;
+
+export function isQueryObjectBinaryFilterClause(
+  filter: QueryObjectFilterClause,
+): filter is QueryObjectBinaryFilterClause {
+  return 'val' in filter && !Array.isArray(filter.val) && !!filter.val;
+}
+
+export function isQueryObjectSetFilterClause(
+  filter: QueryObjectFilterClause,
+): filter is QueryObjectSetFilterClause {
+  return 'val' in filter && Array.isArray(filter.val) && !!filter.val;
+}
 
 export type QueryObjectMetric = {
   label: string;

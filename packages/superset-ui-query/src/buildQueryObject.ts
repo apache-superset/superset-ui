@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { QueryObject } from './types/Query';
-import { isSqlaFormData, QueryFormData } from './types/QueryFormData';
+import { isDruidFormData, isSqlaFormData, QueryFormData } from './types/QueryFormData';
 import processGroupby from './processGroupby';
 import convertMetric from './convertMetric';
 import processFilters from './processFilters';
@@ -39,9 +39,21 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
   const { metrics, groupby, columns } = extractQueryFields(residualFormData, queryFields);
   const groupbySet = new Set([...columns, ...groupby]);
 
+  const filters = processFilters(formData);
+
   return {
-    extras: processExtras(formData),
-    granularity: processGranularity(formData),
+    extras: processExtras({
+      ...formData,
+      ...(isDruidFormData(formData) && { druid_time_origin: filters.druid_time_origin }),
+      ...(isDruidFormData(formData) && { having_druid: formData.having_druid }),
+      ...(isSqlaFormData(formData) && { having: filters.having }),
+      ...(isSqlaFormData(formData) && { time_grain_sqla: filters.time_grain_sqla }),
+    }),
+    granularity: processGranularity({
+      ...formData,
+      granularity: filters.granularity || formData.granularity,
+      granularity_sqla: filters.granularity_sqla || formData.granularity_sqla,
+    }),
     groupby: processGroupby(Array.from(groupbySet)),
     is_timeseries: groupbySet.has(DTTM_ALIAS),
     metrics: metrics.map(convertMetric),
@@ -50,12 +62,14 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
     row_limit: row_limit == null || Number.isNaN(numericRowLimit) ? undefined : numericRowLimit,
     row_offset: row_offset == null || Number.isNaN(numericRowOffset) ? undefined : numericRowOffset,
     since,
-    time_range,
+    time_range: filters.time_range || time_range,
     timeseries_limit: limit ? Number(limit) : 0,
     timeseries_limit_metric: timeseries_limit_metric
       ? convertMetric(timeseries_limit_metric)
       : null,
     until,
-    ...processFilters(formData),
+    filters: filters.filters,
+    having: filters.having,
+    having_filters: filters.having_filters,
   };
 }

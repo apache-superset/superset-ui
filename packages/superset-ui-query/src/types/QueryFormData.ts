@@ -3,6 +3,7 @@
 import { AdhocMetric } from './Metric';
 import { TimeRange } from './Time';
 import { AdhocFilter } from './Filter';
+import { QueryObjectFilterClause } from './Query';
 
 export type QueryFormDataMetric = string | AdhocMetric;
 export type QueryFormResidualDataValue = string | AdhocMetric;
@@ -37,6 +38,7 @@ export type BaseFormData = {
   all_columns?: string[];
   /** list of filters */
   adhoc_filters?: AdhocFilter[];
+  extra_filters?: QueryObjectFilterClause[];
   /** order descending */
   order_desc?: boolean;
   /** limit number of time series */
