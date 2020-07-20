@@ -3,7 +3,7 @@
 import { AdhocMetric } from './Metric';
 import { TimeRange } from './Time';
 import { AdhocFilter } from './Filter';
-import { QueryObjectFilterClause } from './Query';
+import { BinaryOperator, SetOperator } from './Operator';
 
 export type QueryFormDataMetric = string | AdhocMetric;
 export type QueryFormResidualDataValue = string | AdhocMetric;
@@ -11,9 +11,24 @@ export type QueryFormResidualData = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 };
+
+// Currently only Binary and Set filters are supported
 export type QueryFields = {
   [key: string]: string;
 };
+
+export type QueryFormExtraFilter = {
+  col: string;
+} & (
+  | {
+      op: BinaryOperator;
+      val: string;
+    }
+  | {
+      op: SetOperator;
+      val: string[];
+    }
+);
 
 // Type signature for formData shared by all viz types
 // It will be gradually filled out as we build out the query object
@@ -38,7 +53,7 @@ export type BaseFormData = {
   all_columns?: string[];
   /** list of filters */
   adhoc_filters?: AdhocFilter[];
-  extra_filters?: QueryObjectFilterClause[];
+  extra_filters?: QueryFormExtraFilter[];
   /** order descending */
   order_desc?: boolean;
   /** limit number of time series */

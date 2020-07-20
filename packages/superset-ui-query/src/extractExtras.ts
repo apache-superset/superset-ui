@@ -1,8 +1,8 @@
 /* eslint-disable camelcase */
 import { isDruidFormData, QueryFormData } from './types/QueryFormData';
-import { QueryObject, QueryObjectBinaryFilterClause } from './types/Query';
+import { QueryObject } from './types/Query';
 
-export default function processExtras(formData: QueryFormData): Partial<QueryObject> {
+export default function extractExtras(formData: QueryFormData): Partial<QueryObject> {
   const partialQueryObject: Partial<QueryObject> = {
     filters: formData.filters || [],
     extras: formData.extras || {},
@@ -16,18 +16,15 @@ export default function processExtras(formData: QueryFormData): Partial<QueryObj
     __granularity: 'granularity',
   };
 
-  const { extra_filters: formDataExtraFilters } = formData;
-  if (Array.isArray(formDataExtraFilters)) {
-    formDataExtraFilters.forEach(filter => {
-      if (filter.col in reservedColumnsToQueryField) {
-        const queryField = reservedColumnsToQueryField[filter.col];
-        partialQueryObject[queryField] = (filter as QueryObjectBinaryFilterClause).val;
-      } else {
-        // @ts-ignore
-        partialQueryObject.filters.push(filter);
-      }
-    });
-  }
+  (formData.extra_filters || []).forEach(filter => {
+    if (filter.col in reservedColumnsToQueryField) {
+      const queryField = reservedColumnsToQueryField[filter.col];
+      partialQueryObject[queryField] = filter.val;
+    } else {
+      // @ts-ignore
+      partialQueryObject.filters.push(filter);
+    }
+  });
 
   // map to undeprecated names and remove deprecated fields
   if (isDruidFormData(formData) && !partialQueryObject.druid_time_origin) {

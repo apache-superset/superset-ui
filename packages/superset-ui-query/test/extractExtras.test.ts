@@ -1,6 +1,6 @@
-import processExtras from '../src/processExtras';
+import extractExtras from '../src/extractExtras';
 
-describe('processExtras', () => {
+describe('extractExtras', () => {
   const baseQueryFormData = {
     datasource: '1__table',
     granularity_sqla: 'ds',
@@ -17,7 +17,7 @@ describe('processExtras', () => {
 
   it('should override formData with double underscored date options', () => {
     expect(
-      processExtras({
+      extractExtras({
         ...baseQueryFormData,
         extra_filters: [
           {
@@ -55,7 +55,7 @@ describe('processExtras', () => {
 
   it('should create regular filters from non-reserved columns', () => {
     expect(
-      processExtras({
+      extractExtras({
         ...baseQueryFormData,
         extra_filters: [
           {

@@ -4,7 +4,7 @@ import { QueryFormData } from './types/QueryFormData';
 import processGroupby from './processGroupby';
 import convertMetric from './convertMetric';
 import processFilters from './processFilters';
-import processExtras from './processExtras';
+import extractExtras from './extractExtras';
 import extractQueryFields from './extractQueryFields';
 
 export const DTTM_ALIAS = '__timestamp';
@@ -36,7 +36,7 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
   const { metrics, groupby, columns } = extractQueryFields(residualFormData, queryFields);
   const groupbySet = new Set([...columns, ...groupby]);
 
-  const extraFilters = processExtras(formData);
+  const extraFilters = extractExtras(formData);
   const extrasAndfilters = processFilters({
     ...formData,
     ...extraFilters,
