@@ -1,14 +1,50 @@
 /* eslint-disable camelcase */
-import { QueryFormData, isDruidFormData } from './types/QueryFormData';
+import { isDruidFormData, QueryFormData } from './types/QueryFormData';
+import { QueryObject, QueryObjectBinaryFilterClause } from './types/Query';
 
-export default function processExtras(formData: QueryFormData) {
-  if (isDruidFormData(formData)) {
-    const { druid_time_origin, having_druid } = formData;
+export default function processExtras(formData: QueryFormData): Partial<QueryObject> {
+  const partialQueryObject: Partial<QueryObject> = {
+    filters: formData.filters || [],
+    extras: formData.extras || {},
+  };
 
-    return { druid_time_origin, having_druid };
+  const reservedColumnsToQueryField: Record<string, keyof QueryObject> = {
+    __time_range: 'time_range',
+    __time_col: 'granularity_sqla',
+    __time_grain: 'time_grain_sqla',
+    __time_origin: 'druid_time_origin',
+    __granularity: 'granularity',
+  };
+
+  const { extra_filters: formDataExtraFilters } = formData;
+  if (Array.isArray(formDataExtraFilters)) {
+    formDataExtraFilters.forEach(filter => {
+      if (filter.col in reservedColumnsToQueryField) {
+        const queryField = reservedColumnsToQueryField[filter.col];
+        partialQueryObject[queryField] = (filter as QueryObjectBinaryFilterClause).val;
+      } else {
+        // @ts-ignore
+        partialQueryObject.filters.push(filter);
+      }
+    });
   }
 
-  const { time_grain_sqla, having } = formData;
-
-  return { having, time_grain_sqla };
+  // map to undeprecated names and remove deprecated fields
+  if (isDruidFormData(formData) && !partialQueryObject.druid_time_origin) {
+    partialQueryObject.extras = {
+      druid_time_origin: formData.druid_time_origin,
+    };
+    delete partialQueryObject.druid_time_origin;
+  } else {
+    // SQL
+    partialQueryObject.extras = {
+      ...partialQueryObject.extras,
+      time_grain_sqla: partialQueryObject.time_grain_sqla || formData.time_grain_sqla,
+    };
+    partialQueryObject.granularity =
+      partialQueryObject.granularity_sqla || formData.granularity || formData.granularity_sqla;
+    delete partialQueryObject.granularity_sqla;
+    delete partialQueryObject.time_grain_sqla;
+  }
+  return partialQueryObject;
 }

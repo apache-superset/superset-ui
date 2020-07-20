@@ -3,7 +3,6 @@ import { QueryFormData } from './types/QueryFormData';
 import { QueryObjectFilterClause } from './types/Query';
 import { isSimpleAdhocFilter } from './types/Filter';
 import convertFilter from './convertFilter';
-import processExtraFilters from './processExtraFilters';
 
 /** Logic formerly in viz.py's process_query_filters */
 export default function processFilters(formData: QueryFormData) {
@@ -20,7 +19,7 @@ export default function processFilters(formData: QueryFormData) {
   //     2.2 SQL (freeform SQL expression))
   const { adhoc_filters } = formData;
   if (Array.isArray(adhoc_filters)) {
-    const simpleWhere: QueryObjectFilterClause[] = [];
+    const simpleWhere: QueryObjectFilterClause[] = formData.filters || [];
     const simpleHaving: QueryObjectFilterClause[] = [];
     const freeformWhere: string[] = [];
     if (formData.where) freeformWhere.push(formData.where);
@@ -45,28 +44,17 @@ export default function processFilters(formData: QueryFormData) {
       }
     });
 
-    const extraFilters = processExtraFilters(formData);
-    const {
-      druid_time_origin,
-      filters,
-      granularity,
-      granularity_sqla,
-      time_range,
-      time_grain_sqla,
-    } = extraFilters;
+    const extras = {
+      having: freeformHaving.map(exp => `(${exp})`).join(' AND '),
+      having_druid: simpleHaving,
+      where: freeformWhere.map(exp => `(${exp})`).join(' AND '),
+      ...formData.extras,
+    };
 
     return {
-      druid_time_origin: druid_time_origin || formData.druid_time_origin,
-      // @ts-ignore
-      filters: filters.concat(simpleWhere),
-      granularity: granularity || formData.granularity,
-      granularity_sqla: granularity_sqla || formData.granularity_sqla,
-      having: freeformHaving.map(exp => `(${exp})`).join(' AND '),
-      having_druid: formData.having_druid,
-      having_filters: simpleHaving,
-      time_grain_sqla: time_grain_sqla || formData.time_grain_sqla,
-      time_range: time_range || formData.time_range,
-      where: freeformWhere.map(exp => `(${exp})`).join(' AND '),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      filters: (formData.filters || []).concat(simpleWhere),
+      extras,
     };
   }
 
