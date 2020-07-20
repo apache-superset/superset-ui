@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "d3": "^3.5.17",
-    "prop-types": "^15.7.2",
+    "prop-types": "^15.7.2"
   },
   "peerDependencies": {
     "@superset-ui/chart": "^0.14.0",
