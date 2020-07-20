@@ -14,6 +14,7 @@ describe('processFilters', () => {
   it('should handle an empty array', () => {
     expect(
       processFilters({
+        where: '1 = 1',
         granularity: 'something',
         viz_type: 'custom',
         datasource: 'boba',
@@ -24,7 +25,7 @@ describe('processFilters', () => {
       extras: {
         having: '',
         having_druid: [],
-        where: '',
+        where: '(1 = 1)',
       },
     });
   });
