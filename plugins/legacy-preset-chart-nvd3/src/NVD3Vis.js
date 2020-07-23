@@ -434,7 +434,7 @@ function nvd3Vis(element, props) {
           chart.tooltip.valueFormatter(d => `${((d / total) * 100).toFixed()}%`);
           chart.labelType(
             d =>
-              `${d.data.x}: ${numberFormatter(d.data.y)}(${((d.data.y / total) * 100).toFixed()}%)`,
+              `${d.data.x}: ${numberFormatter(d.data.y)} (${((d.data.y / total) * 100).toFixed()}%)`,
           );
         }
         // Pie chart does not need top margin
