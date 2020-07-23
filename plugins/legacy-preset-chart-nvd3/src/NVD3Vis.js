@@ -217,7 +217,14 @@ const propTypes = {
   // 'pie' only
   isDonut: PropTypes.bool,
   isPieLabelOutside: PropTypes.bool,
-  pieLabelType: PropTypes.oneOf(['key', 'value', 'percent', 'key_value', 'key_percent']),
+  pieLabelType: PropTypes.oneOf([
+    'key',
+    'value',
+    'percent',
+    'key_value',
+    'key_percent',
+    'key_value_percent',
+  ]),
   showLabels: PropTypes.bool,
   // 'area' only
   areaStackedStyle: PropTypes.string,
@@ -422,6 +429,13 @@ function nvd3Vis(element, props) {
           const total = d3.sum(data, d => d.y);
           chart.tooltip.valueFormatter(d => `${((d / total) * 100).toFixed()}%`);
           chart.labelType(d => `${d.data.x}: ${((d.data.y / total) * 100).toFixed()}%`);
+        } else if (pieLabelType === 'key_value_percent') {
+          const total = d3.sum(data, d => d.y);
+          chart.tooltip.valueFormatter(d => `${((d / total) * 100).toFixed()}%`);
+          chart.labelType(
+            d =>
+              `${d.data.x}: ${numberFormatter(d.data.y)}(${((d.data.y / total) * 100).toFixed()}%)`,
+          );
         }
         // Pie chart does not need top margin
         chart.margin({ top: 0 });
