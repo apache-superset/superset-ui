@@ -64,10 +64,11 @@ class MapBox extends React.Component {
     // Get a viewport that fits the given bounds, which all marks to be clustered.
     // Derive lat, lon and zoom from this viewport. This is only done on initial
     // render as the bounds don't update as we pan/zoom in the current design.
+    // A round is done so points don't render on the margins of the map.
     const mercator = new ViewportMercator({
       width,
       height,
-    }).fitBounds(bounds);
+    }).fitBounds([bounds[0].map(Math.floor), bounds[1].map(Math.ceil)]);
     const { latitude, longitude, zoom } = mercator;
 
     this.state = {
