@@ -9,7 +9,7 @@ describe('extractExtras', () => {
     filters: [
       {
         col: 'gender',
-        op: '=',
+        op: '==',
         val: 'girl',
       },
     ],
@@ -22,17 +22,17 @@ describe('extractExtras', () => {
         extra_filters: [
           {
             col: '__time_col',
-            op: '=',
+            op: '==',
             val: 'ds2',
           },
           {
             col: '__time_grain',
-            op: '=',
+            op: '==',
             val: 'PT5M',
           },
           {
             col: '__time_range',
-            op: '=',
+            op: '==',
             val: '2009-07-17T00:00:00 : 2020-07-17T00:00:00',
           },
         ],
@@ -44,7 +44,7 @@ describe('extractExtras', () => {
       filters: [
         {
           col: 'gender',
-          op: '=',
+          op: '==',
           val: 'girl',
         },
       ],
@@ -72,7 +72,7 @@ describe('extractExtras', () => {
       filters: [
         {
           col: 'gender',
-          op: '=',
+          op: '==',
           val: 'girl',
         },
         {
