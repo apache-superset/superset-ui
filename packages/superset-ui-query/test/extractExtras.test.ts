@@ -15,10 +15,11 @@ describe('extractExtras', () => {
     ],
   };
 
-  it('should override formData with double underscored date options', () => {
+  it('should populate time range endpoints and override formData with double underscored date options', () => {
     expect(
       extractExtras({
         ...baseQueryFormData,
+        time_range_endpoints: ['inclusive', 'exclusive'],
         extra_filters: [
           {
             col: '__time_col',
@@ -40,6 +41,7 @@ describe('extractExtras', () => {
     ).toEqual({
       extras: {
         time_grain_sqla: 'PT5M',
+        time_range_endpoints: ['inclusive', 'exclusive'],
       },
       filters: [
         {
