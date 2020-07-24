@@ -431,11 +431,12 @@ function nvd3Vis(element, props) {
           const getPercent = function (d) {
             return `${((d / total) * 100).toFixed()}%`;
           };
-          chart.tooltip.valueFormatter(d => getPercent(d.data.y));
           if (pieLabelType === 'key_percent') {
+            chart.tooltip.valueFormatter(d => getPercent(d));
             chart.labelType(d => `${d.data.x}: ${getPercent(d.data.y)}`);
           } else {
             // pieLabelType === 'key_value_percent'
+            chart.tooltip.valueFormatter(d => `${numberFormatter(d)} (${getPercent(d)})`);
             chart.labelType(
               d => `${d.data.x}: ${numberFormatter(d.data.y)} (${getPercent(d.data.y)})`,
             );
