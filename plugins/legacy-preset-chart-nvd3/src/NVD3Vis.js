@@ -428,10 +428,10 @@ function nvd3Vis(element, props) {
         } else {
           // pieLabelType in ['key_percent', 'key_value_percent']
           const total = d3.sum(data, d => d.y);
-          chart.tooltip.valueFormatter(d => `${((d / total) * 100).toFixed()}%`);
           const getPercent = function (d) {
             return `${((d / total) * 100).toFixed()}%`;
           };
+          chart.tooltip.valueFormatter(d => getPercent(d.data.y));
           if (pieLabelType === 'key_percent') {
             chart.labelType(d => `${d.data.x}: ${getPercent(d.data.y)}`);
           } else {
