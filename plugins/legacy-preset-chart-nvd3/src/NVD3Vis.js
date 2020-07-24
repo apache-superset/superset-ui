@@ -425,20 +425,22 @@ function nvd3Vis(element, props) {
           chart.labelType(pieLabelType);
         } else if (pieLabelType === 'key_value') {
           chart.labelType(d => `${d.data.x}: ${numberFormatter(d.data.y)}`);
-        } else if (pieLabelType === 'key_percent') {
+        } else {
+          // pieLabelType in ['key_percent', 'key_value_percent']
           const total = d3.sum(data, d => d.y);
           chart.tooltip.valueFormatter(d => `${((d / total) * 100).toFixed()}%`);
-          chart.labelType(d => `${d.data.x}: ${((d.data.y / total) * 100).toFixed()}%`);
-        } else if (pieLabelType === 'key_value_percent') {
-          const total = d3.sum(data, d => d.y);
-          chart.tooltip.valueFormatter(d => `${((d / total) * 100).toFixed()}%`);
-          chart.labelType(
-            d =>
-              `${d.data.x}: ${numberFormatter(d.data.y)} (${(
-                (d.data.y / total) *
-                100
-              ).toFixed()}%)`,
-          );
+          if (pieLabelType === 'key_percent') {
+            chart.labelType(d => `${d.data.x}: ${((d.data.y / total) * 100).toFixed()}%`);
+          } else {
+            // pieLabelType === 'key_value_percent'
+            chart.labelType(
+              d =>
+                `${d.data.x}: ${numberFormatter(d.data.y)} (${(
+                  (d.data.y / total) *
+                  100
+                ).toFixed()}%)`,
+            );
+          }
         }
         // Pie chart does not need top margin
         chart.margin({ top: 0 });
