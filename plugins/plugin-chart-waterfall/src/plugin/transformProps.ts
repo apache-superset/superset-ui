@@ -21,7 +21,7 @@ import { t } from '@superset-ui/translation';
 
 type WaterfallDatum = DataRecord;
 
-const convertDataForReCharts = ({ periodColumn, xAxisColumn, valueColumn, data }) => {
+const convertDataForRecharts = ({ periodColumn, xAxisColumn, valueColumn, data }) => {
   // Group by period (temporary map)
   data = data.reduce((acc, cur) => {
     const period = cur[periodColumn];
@@ -36,7 +36,7 @@ const convertDataForReCharts = ({ periodColumn, xAxisColumn, valueColumn, data }
   data.forEach((val, key) => {
     // Sort for waterfall Desc
     val.sort((a, b) => a.period - b.period);
-    // calc total per period
+    // Calc total per period
     const sum = val.reduce((acc, cur) => acc + cur[valueColumn], 0);
     // Push total per period to the end of period values array
     val.push({
@@ -50,7 +50,33 @@ const convertDataForReCharts = ({ periodColumn, xAxisColumn, valueColumn, data }
     }
     resultData = resultData.concat(val);
   });
+  return resultData;
 };
+
+const createReChartsBarValues = ({ rechartsData, valueColumn, periodColumn }) =>
+  // Create ReCharts values array of deltas for bars
+  rechartsData.map((cur, index) => {
+    let totalSumUpToCur = 0;
+    for (let i = 0; i < index; i++) {
+      // Ignore calculation on period column
+      if (rechartsData[i][periodColumn] !== '__TOTAL__' || i === 0) {
+        totalSumUpToCur += rechartsData[i][valueColumn];
+      }
+    }
+
+    if (cur[periodColumn] === '__TOTAL__') {
+      return {
+        ...cur,
+        __TOTAL__: true,
+        [valueColumn]: [0, totalSumUpToCur || cur[valueColumn]],
+      };
+    }
+
+    return {
+      ...cur,
+      [valueColumn]: [totalSumUpToCur, totalSumUpToCur + cur[valueColumn]],
+    };
+  });
 
 export default function transformProps(chartProps: ChartProps) {
   const { width, height, formData, queryData, hooks } = chartProps;
@@ -71,42 +97,26 @@ export default function transformProps(chartProps: ChartProps) {
   // Sort by period (ascending)
   data.sort((a, b) => Number.parseInt(a.period) - Number.parseInt(b.period));
 
-  const rechartsData = convertDataForReCharts({
+  const rechartsData = convertDataForRecharts({
     periodColumn,
     xAxisColumn,
     valueColumn,
     data,
   });
 
-  // Create recharts value array for deltas
-  const resultData = rechartsData.map((cur, index) => {
-    let totalSumUpToCur = 0;
-    for (let i = 0; i < index; i++) {
-      // ignore calculation on period column
-      if (rechartsData[i][periodColumn] !== '__TOTAL__' || i === 0) {
-        totalSumUpToCur += rechartsData[i][valueColumn];
-      }
-    }
-
-    if (cur[periodColumn] === '__TOTAL__') {
-      return {
-        ...cur,
-        __TOTAL__: true,
-        [valueColumn]: [0, totalSumUpToCur || cur[valueColumn]],
-      };
-    }
-
-    return {
-      ...cur,
-      [valueColumn]: [totalSumUpToCur, totalSumUpToCur + cur[valueColumn]],
-    };
+  const resultData = createReChartsBarValues({
+    rechartsData,
+    valueColumn,
+    periodColumn,
   });
 
-  const onBarClick = data => {
-    hooks.onAddFilter({ [filterConfigs[0].column]: [data[filterConfigs[0].column]] }, false);
+  const onBarClick = () => {
+    // TODO: Uncomment when dashboard will support ChartsFilter
+    // hooks.onAddFilter({ [filterConfigs[0].column]: [data[filterConfigs[0].column]] }, false);
   };
   const resetFilters = () => {
-    hooks.onAddFilter({ [filterConfigs[0].column]: null }, false);
+    // TODO: Uncomment when dashboard will support ChartsFilter
+    // hooks.onAddFilter({ [filterConfigs[0].column]: null }, false);
   };
 
   return {
@@ -115,11 +125,7 @@ export default function transformProps(chartProps: ChartProps) {
     width: width,
     height: height,
     data: resultData,
-    // and now your control data, manipulated as needed, and passed through as props!
-    boldText: formData.boldText,
-    headerFontSize: formData.headerFontSize,
     onBarClick,
     resetFilters,
-    headerText: formData.headerText,
   };
 }
