@@ -18,6 +18,7 @@
  */
 import { ChartProps, DataRecord } from '@superset-ui/chart';
 import { t } from '@superset-ui/translation';
+import { TWaterfallProps } from '../components/Waterfall';
 
 type WaterfallDatum = DataRecord;
 
@@ -78,9 +79,8 @@ const createReChartsBarValues = ({ rechartsData, valueColumn, periodColumn }) =>
     };
   });
 
-export default function transformProps(chartProps: ChartProps) {
+export default function transformProps(chartProps: ChartProps): TWaterfallProps {
   const { width, height, formData, queryData } = chartProps;
-  console.log(JSON.stringify({ width, height, formData, queryData }));
   let data = queryData.data as WaterfallDatum[];
 
   const { periodColumn, xAxisColumn, metrics } = formData;
