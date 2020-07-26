@@ -1,8 +1,8 @@
+import React from 'react';
 import { CommonWrapper, mount } from 'enzyme';
 import Waterfall from '../../src/components/Waterfall';
 import transformProps from '../../src/plugin/transformProps';
 import waterfallData from '../mocks/waterfallData';
-import React from 'react';
 
 describe('Waterfall chart', () => {
   let wrap: CommonWrapper; // the ReactDataTable wraper
