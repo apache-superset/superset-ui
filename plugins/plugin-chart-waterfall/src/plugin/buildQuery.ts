@@ -38,6 +38,7 @@ export default function buildQuery(formData: QueryFormData) {
       ...baseQueryObject,
       filters: [
         ...baseQueryObject.filters,
+        // Add extra filters from dashboard
         ...(formData.extra_filters || []).filter(filter => filter.val !== null),
       ],
       groupby: [formData.x_axis_column, formData.period_column],

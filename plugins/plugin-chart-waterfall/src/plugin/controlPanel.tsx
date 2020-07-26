@@ -20,7 +20,7 @@ import { t } from '@superset-ui/translation';
 import { validateNonEmpty } from '@superset-ui/validator';
 import { ControlPanelConfig } from '@superset-ui/chart-controls';
 import React from 'react';
-import ColumnOption, { sharedControls } from '@superset-ui/chart-controls';
+import { sharedControls } from '@superset-ui/chart-controls';
 
 const xAxisColumn: typeof sharedControls.groupby = {
   type: 'SelectControl',
