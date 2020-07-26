@@ -9,6 +9,7 @@ describe('Waterfall chart', () => {
   let tree: Cheerio;
 
   it('Render legend', () => {
+    // @ts-ignore
     wrap = mount(<Waterfall {...transformProps(waterfallData)} />);
     tree = wrap.render();
     const legend = tree.find('[data-test-id=legend]');
