@@ -41,7 +41,7 @@ const LegendLabel = styled.div`
 `;
 
 const WaterfallLegend = () => (
-  <Legend>
+  <Legend data-test-id="legend">
     {LEGEND.map(item => (
       <LegendItem key={item.label}>
         <LegendIcon color={item.color} />

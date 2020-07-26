@@ -79,10 +79,11 @@ const createReChartsBarValues = ({ rechartsData, valueColumn, periodColumn }) =>
   });
 
 export default function transformProps(chartProps: ChartProps) {
-  const { width, height, formData, queryData, hooks } = chartProps;
+  const { width, height, formData, queryData } = chartProps;
+  console.log(JSON.stringify({ width, height, formData, queryData }));
   let data = queryData.data as WaterfallDatum[];
 
-  const { periodColumn, xAxisColumn, metrics, filterConfigs, extraFilters } = formData;
+  const { periodColumn, xAxisColumn, metrics } = formData;
 
   if (metrics.length !== 1) {
     return {
@@ -122,8 +123,8 @@ export default function transformProps(chartProps: ChartProps) {
   return {
     dataKey: valueColumn,
     xAxisDataKey: xAxisColumn,
-    width: width,
-    height: height,
+    width,
+    height,
     data: resultData,
     onBarClick,
     resetFilters,
