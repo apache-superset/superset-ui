@@ -31,15 +31,15 @@ interface WaterfallStylesProps {
 }
 
 export type TWaterfallProps = {
-  xAxisDataKey: string;
-  dataKey: string;
-  error: string;
-  height: number;
-  resetFilters: Function;
-  onBarClick: Function;
-  width: number;
+  xAxisDataKey?: string;
+  dataKey?: string;
+  error?: string;
+  height?: number;
+  resetFilters?: Function;
+  onBarClick?: Function;
+  width?: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: Record<any, any>; // please add additional typing for your data here
+  data?: Record<any, any>; // please add additional typing for your data here
 };
 
 const Styles = styled.div<WaterfallStylesProps>`
