@@ -25,24 +25,29 @@ import { valueFormatter } from './utils';
 import WaterfallBar from './WaterfallBar';
 import WaterfallLegend from './WaterfallLegend';
 
-interface WaterfallStylesProps {
+type TWaterfallStylesProps = {
   height: number;
   width: number;
-}
+};
+
+export type TBarValue = { value: [number, number] };
+
+export type TWaterfallData = {
+  [key: string]: string | boolean | TBarValue;
+};
 
 export type TWaterfallProps = {
   xAxisDataKey?: string;
-  dataKey?: string;
+  dataKey: string;
   error?: string;
-  height?: number;
+  height: number;
   resetFilters?: Function;
   onBarClick?: Function;
-  width?: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: Record<any, any>; // please add additional typing for your data here
+  width: number;
+  data?: TWaterfallData[]; // please add additional typing for your data here
 };
 
-const Styles = styled.div<WaterfallStylesProps>`
+const Styles = styled.div<TWaterfallStylesProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -93,15 +98,16 @@ const Waterfall: FC<TWaterfallProps> = ({
   error,
 }) => {
   const rootElem = createRef<HTMLDivElement>();
-  const [notification, setNotification] = useState(null);
+  const [notification, setNotification] = useState<string | null>(null);
 
-  const handleBarClick = data => {
-    onBarClick(data);
+  const handleBarClick = (barData: TWaterfallData) => {
+    onBarClick(barData);
     setNotification(t('Bar was clicked, filter will be emitted on a dashboard'));
   };
   const closeNotification = () => setNotification(null);
 
-  const renderLabel = ({ value }) => valueFormatter(value[1] - value[0]);
+  const renderLabel: (barValue: TBarValue) => string = ({ value }) =>
+    valueFormatter(value[1] - value[0]);
 
   return (
     <Styles ref={rootElem} height={height} width={width}>
@@ -123,11 +129,15 @@ const Waterfall: FC<TWaterfallProps> = ({
             <YAxis tickFormatter={valueFormatter} />
             <Tooltip />
             <Bar
-              onClick={handleBarClick}
               dataKey={dataKey}
-              shape={WaterfallBar}
-              numberOfBars={data.length}
+              shape={props => (
+                // @ts-ignore
+                <WaterfallBar {...props} numberOfBars={data?.length} />
+              )}
+              onClick={handleBarClick}
             >
+              {/*
+              // @ts-ignore */}
               <LabelList dataKey={dataKey} position="top" content={renderLabel} />
             </Bar>
           </BarChart>

@@ -1,42 +1,42 @@
-import React, { FC, Fragment } from 'react';
-import { supersetTheme } from '@superset-ui/style';
-import styled from '@superset-ui/style';
+import React, { FC } from 'react';
+import { supersetTheme, styled } from '@superset-ui/style';
+import { BarProps } from 'recharts';
 
-type TWaterfallBarProps = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  __TOTAL__: boolean;
-  index: number;
-  numberOfBars: number;
-};
+interface IWaterfallBarProps extends BarProps {
+  __TOTAL__?: boolean;
+  numberOfBars?: number;
+  index?: number;
+}
 
 const ClickableRect = styled.rect`
   cursor: pointer;
 `;
 
-const WaterfallBar: FC<TWaterfallBarProps> = ({
-  x,
-  y,
-  width,
-  height,
+const WaterfallBar: FC<IWaterfallBarProps> = ({
+  x = 0,
+  y = 0,
+  width = 0,
+  height = 0,
   __TOTAL__,
-  index,
-  numberOfBars,
+  index = 0,
+  numberOfBars = 0,
 }) => {
   const isNegative = height < 0;
-  let fill = height > 0 ? supersetTheme.colors.success.base : supersetTheme.colors.error.base;
+  // eslint-disable-next-line no-negated-condition
+  let fill = !isNegative ? supersetTheme.colors.success.base : supersetTheme.colors.error.base;
   if (__TOTAL__) {
     fill = supersetTheme.colors.info.base;
   }
   if (isNegative) {
-    y = y + height;
+    // eslint-disable-next-line no-param-reassign
+    y += height;
+    // eslint-disable-next-line no-param-reassign
     height = Math.abs(height);
   }
+  // eslint-disable-next-line no-negated-condition
   const lineY = !isNegative ? y : y + height;
   return (
-    <Fragment>
+    <>
       {index !== numberOfBars - 1 && (
         <line
           x1={x + 0.1 * width}
@@ -56,7 +56,7 @@ const WaterfallBar: FC<TWaterfallBarProps> = ({
         height={height}
         fill={fill}
       />
-    </Fragment>
+    </>
   );
 };
 

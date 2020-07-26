@@ -39,6 +39,7 @@
     "jest": "^26.0.1"
   },
   "dependencies": {
+    "@types/recharts": "^1.8.14",
     "recharts": "^1.8.5"
   }
 }

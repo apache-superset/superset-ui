@@ -6,7 +6,7 @@ type TWaterfallTickProps = {
   y: number;
   angle: number;
   payload: {
-    value;
+    value: number;
   };
   dy: number;
 };

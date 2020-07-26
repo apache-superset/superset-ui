@@ -5,5 +5,5 @@ export const valueFormatter = (value: number) => {
   if (Math.abs(Math.round(value / 1000)) >= 1) {
     return `${(value / 1000).toFixed(1)}K`;
   }
-  return value;
+  return `${value}`;
 };
