@@ -1,6 +1,6 @@
 {
   "name": "@superset-ui/legacy-plugin-chart-time-table",
-  "version": "0.14.9",
+  "version": "0.14.11",
   "description": "Superset Chart Plugin - Time Table",
   "sideEffects": [
     "*.css"
@@ -30,7 +30,7 @@
   "dependencies": {
     "@data-ui/sparkline": "^0.0.84",
     "@types/d3-scale": "^2.0.2",
-    "@types/react": "^16.9.38",
+    "@types/react": "^16.9.43",
     "d3-scale": "^3.2.1",
     "emotion-theming": "^10.0.27",
     "moment": "^2.26.0",
