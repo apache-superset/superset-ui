@@ -14,14 +14,17 @@ describe('Waterfall chart', () => {
     jest.spyOn(console, 'warn').mockImplementation(() => {});
   });
 
-  it('Render legend', () => {
-    wrap = mount(
+  const getWrapper = () =>
+    mount(
       <ThemeProvider theme={supersetTheme}>
         {/*
         // @ts-ignore */}
         <Waterfall {...transformProps(waterfallData)} />
       </ThemeProvider>,
     );
+
+  it('Render legend', () => {
+    wrap = getWrapper();
     tree = wrap.render();
     const legend = tree.find('[data-test-id=legend]');
     expect(legend.children()).toHaveLength(4);
@@ -32,13 +35,7 @@ describe('Waterfall chart', () => {
   });
 
   it('Render ticks', () => {
-    wrap = mount(
-      <ThemeProvider theme={supersetTheme}>
-        {/*
-        // @ts-ignore */}
-        <Waterfall {...transformProps(waterfallData)} />
-      </ThemeProvider>,
-    );
+    wrap = getWrapper();
     tree = wrap.render();
     const label2017 = tree.find('[data-test-id=tick-2017]');
     const labelFacebook = tree.find('[data-test-id=tick-Facebook]');
@@ -47,13 +44,7 @@ describe('Waterfall chart', () => {
   });
 
   it('Render Bars', () => {
-    wrap = mount(
-      <ThemeProvider theme={supersetTheme}>
-        {/*
-        // @ts-ignore */}
-        <Waterfall {...transformProps(waterfallData)} />
-      </ThemeProvider>,
-    );
+    wrap = getWrapper();
     tree = wrap.render();
     const bars = tree.find('[data-test-id=bar]');
     expect(bars).toHaveLength(20);
