@@ -18,7 +18,7 @@
  */
 import { ChartProps } from '@superset-ui/chart';
 import { t } from '@superset-ui/translation';
-import { TWaterfallData, TWaterfallProps } from '../components/WaterfallChart';
+import { TWaterfallChartData, TWaterfallChartProps } from '../components/WaterfallChart';
 
 type TMetric = {
   label: string;
@@ -77,7 +77,7 @@ const createReChartsBarValues = (
   rechartsData: TQueryData[],
   valueColumn: keyof TQueryData,
   periodColumn: keyof TQueryData,
-): TWaterfallData[] =>
+): TWaterfallChartData[] =>
   // Create ReCharts values array of deltas for bars
   rechartsData.map((cur: TQueryData, index: number) => {
     let totalSumUpToCur = 0;
@@ -94,17 +94,17 @@ const createReChartsBarValues = (
         ...cur,
         __TOTAL__: true,
         [valueColumn]: [0, totalSumUpToCur || cur[valueColumn]],
-      } as TWaterfallData;
+      } as TWaterfallChartData;
     }
 
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return {
       ...cur,
       [valueColumn]: [totalSumUpToCur, totalSumUpToCur + (cur[valueColumn] as number)],
-    } as TWaterfallData;
+    } as TWaterfallChartData;
   });
 
-export default function transformProps(chartProps: ChartProps): TWaterfallProps {
+export default function transformProps(chartProps: ChartProps): TWaterfallChartProps {
   const { width, height, formData, queryData } = chartProps;
 
   const { periodColumn, xAxisColumn, metrics } = formData as TFormData;
