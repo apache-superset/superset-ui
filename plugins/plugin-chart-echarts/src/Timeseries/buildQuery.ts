@@ -73,11 +73,11 @@ export default function buildQuery(formData: QueryFormData) {
                 operation: 'prophet',
                 options: {
                   time_grain: formData.time_grain_sqla,
-                  periods: formData.forecastPeriods,
-                  confidence_interval: formData.forecastInterval,
-                  seasonality_yearly: formData.forecastSeasonalityYearly,
-                  seasonality_weekly: formData.forecastSeasonalityWeekly,
-                  seasonality_daily: formData.forecastSeasonalityDaily,
+                  periods: parseInt(formData.forecastPeriods, 10),
+                  confidence_interval: parseFloat(formData.forecastInterval),
+                  yearly_seasonality: formData.forecastSeasonalityYearly,
+                  weekly_seasonality: formData.forecastSeasonalityWeekly,
+                  daily_seasonality: formData.forecastSeasonalityDaily,
                 },
               }
             : undefined,
