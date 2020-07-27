@@ -68,6 +68,19 @@ export default function buildQuery(formData: QueryFormData) {
                 },
               }
             : undefined,
+          formData.forecastEnabled
+            ? {
+                operation: 'prophet',
+                options: {
+                  time_grain: formData.time_grain_sqla,
+                  periods: formData.forecastPeriods,
+                  confidence_interval: formData.forecastInterval,
+                  seasonality_yearly: formData.forecastSeasonalityYearly,
+                  seasonality_weekly: formData.forecastSeasonalityWeekly,
+                  seasonality_daily: formData.forecastSeasonalityDaily,
+                },
+              }
+            : undefined,
         ],
       },
     ];

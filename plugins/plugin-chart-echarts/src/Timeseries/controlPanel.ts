@@ -17,7 +17,11 @@
  * under the License.
  */
 import { t } from '@superset-ui/translation';
-import { validateNonEmpty } from '@superset-ui/validator';
+import {
+  validateNonEmpty,
+  legacyValidateInteger,
+  legacyValidateNumber,
+} from '@superset-ui/validator';
 import { ControlPanelConfig } from '@superset-ui/chart-controls';
 
 const config: ControlPanelConfig = {
@@ -58,6 +62,101 @@ const config: ControlPanelConfig = {
           },
         ],
         ['row_limit', null],
+      ],
+    },
+    {
+      label: t('Predictive Analytics'),
+      expanded: true,
+      controlSetRows: [
+        [
+          {
+            name: 'forecastEnabled',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Enable forecast'),
+              renderTrigger: true,
+              default: false,
+              description: t('Enable forecasting'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'forecastPeriods',
+            config: {
+              type: 'TextControl',
+              label: t('Forecast periods'),
+              validators: [legacyValidateInteger],
+              default: 10,
+              description: t('How many periods into the future do we want to predict'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'forecastInterval',
+            config: {
+              type: 'TextControl',
+              label: t('Confidence interval'),
+              validators: [legacyValidateNumber],
+              default: 0.8,
+              description: t('Width of the confidence interval. Should be between 0 and 1'),
+            },
+          },
+          {
+            name: 'forecastSeasonalityYearly',
+            config: {
+              type: 'SelectControl',
+              freeForm: true,
+              label: 'Yearly seasonality',
+              choices: [
+                [null, 'default'],
+                [true, 'Yes'],
+                [false, 'No'],
+              ],
+              default: null,
+              description: t(
+                'Should yearly seasonality be applied. An integer value will specify Fourier order of seasonality.',
+              ),
+            },
+          },
+        ],
+        [
+          {
+            name: 'forecastSeasonalityWeekly',
+            config: {
+              type: 'SelectControl',
+              freeForm: true,
+              label: 'Weekly seasonality',
+              choices: [
+                [null, 'default'],
+                [true, 'Yes'],
+                [false, 'No'],
+              ],
+              default: null,
+              description: t(
+                'Should weekly seasonality be applied. An integer value will specify Fourier order of seasonality.',
+              ),
+            },
+          },
+          {
+            name: 'forecastSeasonalityDaily',
+            config: {
+              type: 'SelectControl',
+              freeForm: true,
+              label: 'Daily seasonality',
+              choices: [
+                [null, 'default'],
+                [true, 'Yes'],
+                [false, 'No'],
+              ],
+              default: null,
+              description: t(
+                'Should daily seasonality be applied. An integer value will specify Fourier order of seasonality.',
+              ),
+            },
+          },
+        ],
       ],
     },
     {
