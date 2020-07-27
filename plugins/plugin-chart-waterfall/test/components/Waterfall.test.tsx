@@ -1,7 +1,7 @@
 import React from 'react';
 import { CommonWrapper, mount } from 'enzyme';
 import { supersetTheme, ThemeProvider } from '@superset-ui/style';
-import Waterfall from '../../src/components/Waterfall';
+import WaterfallChart from '../../src/components/WaterfallChart';
 import transformProps from '../../src/plugin/transformProps';
 import waterfallData from '../mocks/waterfallData';
 
@@ -19,7 +19,7 @@ describe('Waterfall chart', () => {
       <ThemeProvider theme={supersetTheme}>
         {/*
         // @ts-ignore */}
-        <Waterfall {...transformProps(waterfallData)} />
+        <WaterfallChart {...transformProps(waterfallData)} />
       </ThemeProvider>,
     );
 
@@ -28,38 +28,10 @@ describe('Waterfall chart', () => {
     tree = wrap.render();
     const legend = tree.find('[data-test-id=legend]');
     expect(legend.children()).toHaveLength(4);
-    expect(
-      legend
-        .children()
-        .eq(0)
-        .children()
-        .eq(1)
-        .text(),
-    ).toEqual('Increase');
-    expect(
-      legend
-        .children()
-        .eq(1)
-        .children()
-        .eq(1)
-        .text(),
-    ).toEqual('Decrease');
-    expect(
-      legend
-        .children()
-        .eq(2)
-        .children()
-        .eq(1)
-        .text(),
-    ).toEqual('Total');
-    expect(
-      legend
-        .children()
-        .eq(3)
-        .children()
-        .eq(1)
-        .text(),
-    ).toEqual('Other');
+    expect(legend.children().eq(0).children().eq(1).text()).toEqual('Increase');
+    expect(legend.children().eq(1).children().eq(1).text()).toEqual('Decrease');
+    expect(legend.children().eq(2).children().eq(1).text()).toEqual('Total');
+    expect(legend.children().eq(3).children().eq(1).text()).toEqual('Other');
   });
 
   it('Render ticks', () => {

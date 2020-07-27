@@ -41,11 +41,11 @@ type TWaterfallStylesProps = {
 
 export type TBarValue = [number, number];
 
-export type TWaterfallData = {
+export type TWaterfallChartData = {
   [key: string]: string | boolean | number | TBarValue;
 };
 
-export type TWaterfallProps = {
+export type TWaterfallChartProps = {
   xAxisDataKey?: string;
   dataKey: string;
   error?: string;
@@ -53,7 +53,7 @@ export type TWaterfallProps = {
   resetFilters?: Function;
   onBarClick?: Function;
   width: number;
-  data?: TWaterfallData[];
+  data?: TWaterfallChartData[];
 };
 
 const Styles = styled.div<TWaterfallStylesProps>`
@@ -97,7 +97,7 @@ const Notification = styled.div`
   background-color: ${({ theme }) => theme.colors.info.light1};
 `;
 
-const Waterfall: FC<TWaterfallProps> = ({
+const WaterfallChart: FC<TWaterfallChartProps> = ({
   onBarClick = () => {},
   xAxisDataKey,
   dataKey,
@@ -109,7 +109,7 @@ const Waterfall: FC<TWaterfallProps> = ({
   const rootElem = createRef<HTMLDivElement>();
   const [notification, setNotification] = useState<string | null>(null);
 
-  const handleBarClick = (barData: TWaterfallData) => {
+  const handleBarClick = (barData: TWaterfallChartData) => {
     onBarClick(barData);
     setNotification(t('Bar was clicked, filter will be emitted on a dashboard'));
   };
@@ -151,4 +151,4 @@ const Waterfall: FC<TWaterfallProps> = ({
   );
 };
 
-export default Waterfall;
+export default WaterfallChart;

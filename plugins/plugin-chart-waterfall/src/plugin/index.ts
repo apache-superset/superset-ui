@@ -44,7 +44,7 @@ export default class WaterfallChartPlugin extends ChartPlugin {
     super({
       buildQuery,
       controlPanel,
-      loadChart: () => import('../components/Waterfall'),
+      loadChart: () => import('../components/WaterfallChart'),
       metadata,
       transformProps,
     });

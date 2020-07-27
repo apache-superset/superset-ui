@@ -18,7 +18,7 @@
  */
 import { ChartProps } from '@superset-ui/chart';
 import { t } from '@superset-ui/translation';
-import { TWaterfallData, TWaterfallProps } from '../components/Waterfall';
+import { TWaterfallData, TWaterfallProps } from '../components/WaterfallChart';
 
 type TMetric = {
   label: string;
