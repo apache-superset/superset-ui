@@ -18,7 +18,7 @@
  */
 import { ChartProps } from '@superset-ui/chart';
 import { t } from '@superset-ui/translation';
-import { TWaterfallProps } from '../components/Waterfall';
+import { TWaterfallData, TWaterfallProps } from '../components/Waterfall';
 
 type TMetric = {
   label: string;
@@ -26,7 +26,7 @@ type TMetric = {
 
 type TQueryData = {
   [key: string]: number | string;
-}[];
+};
 
 type TFormData = {
   xAxisColumn: string;
@@ -39,7 +39,7 @@ const convertDataForRecharts = (
   periodColumn: string,
   xAxisColumn: string,
   valueColumn: string,
-  data: TQueryData,
+  data: TQueryData[],
 ) => {
   // Group by period (temporary map)
   const groupedData = data.reduce((acc, cur) => {
@@ -48,9 +48,9 @@ const convertDataForRecharts = (
     periodData.push(cur);
     acc.set(period, periodData);
     return acc;
-  }, new Map<string, TQueryData>());
+  }, new Map<string, TQueryData[]>());
 
-  let resultData: TQueryData = [];
+  let resultData: TQueryData[] = [];
   let counter = 0;
   groupedData.forEach((val, key) => {
     // Sort for waterfall Desc
@@ -74,12 +74,12 @@ const convertDataForRecharts = (
 };
 
 const createReChartsBarValues = (
-  rechartsData: TQueryData,
-  valueColumn: string,
-  periodColumn: string,
-) =>
+  rechartsData: TQueryData[],
+  valueColumn: keyof TQueryData,
+  periodColumn: keyof TQueryData,
+): TWaterfallData[] =>
   // Create ReCharts values array of deltas for bars
-  rechartsData.map((cur, index) => {
+  rechartsData.map((cur: TQueryData, index: number) => {
     let totalSumUpToCur = 0;
     for (let i = 0; i < index; i++) {
       // Ignore calculation on period column
@@ -89,17 +89,19 @@ const createReChartsBarValues = (
     }
 
     if (cur[periodColumn] === '__TOTAL__') {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       return {
         ...cur,
         __TOTAL__: true,
         [valueColumn]: [0, totalSumUpToCur || cur[valueColumn]],
-      };
+      } as TWaterfallData;
     }
 
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return {
       ...cur,
       [valueColumn]: [totalSumUpToCur, totalSumUpToCur + (cur[valueColumn] as number)],
-    };
+    } as TWaterfallData;
   });
 
 export default function transformProps(chartProps: ChartProps): TWaterfallProps {
@@ -108,7 +110,7 @@ export default function transformProps(chartProps: ChartProps): TWaterfallProps 
   const { periodColumn, xAxisColumn, metrics } = formData as TFormData;
 
   const valueColumn = metrics[0].label;
-  let data = queryData.data as TQueryData;
+  let data = queryData.data as TQueryData[];
 
   if (metrics.length !== 1) {
     return {
@@ -120,12 +122,14 @@ export default function transformProps(chartProps: ChartProps): TWaterfallProps 
   }
 
   // Remove bars with value 0
-  // @ts-ignore
   data = data.filter(item => item[valueColumn] !== 0);
 
   // Sort by period (ascending)
-  // @ts-ignore
-  data.sort((a, b) => Number.parseInt(a[periodColumn], 10) - Number.parseInt(b[periodColumn], 10));
+  data.sort(
+    (a, b) =>
+      Number.parseInt(a[periodColumn] as string, 10) -
+      Number.parseInt(b[periodColumn] as string, 10),
+  );
 
   const rechartsData = convertDataForRecharts(periodColumn, xAxisColumn, valueColumn, data);
 
@@ -147,7 +151,6 @@ export default function transformProps(chartProps: ChartProps): TWaterfallProps 
     xAxisDataKey: xAxisColumn,
     width,
     height,
-    // @ts-ignore
     data: resultData,
     onBarClick,
     resetFilters,

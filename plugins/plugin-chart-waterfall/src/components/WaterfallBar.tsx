@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { supersetTheme, styled } from '@superset-ui/style';
 import { BarProps } from 'recharts';
 
-interface IWaterfallBarProps extends BarProps {
+interface IWaterfallBarProps extends Partial<BarProps> {
   __TOTAL__?: boolean;
   numberOfBars?: number;
   index?: number;
@@ -50,6 +50,7 @@ const WaterfallBar: FC<IWaterfallBarProps> = ({
         />
       )}
       <ClickableRect
+        data-test-id="bar"
         x={x + 0.1 * width}
         y={y}
         width={width - 0.2 * width}

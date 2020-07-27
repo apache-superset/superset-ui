@@ -18,17 +18,30 @@
  */
 
 import { buildQueryContext, QueryFormData } from '@superset-ui/query';
+import { BinaryOperator, SetOperator } from '@superset-ui/query/lib/types/Operator';
+
+// Not correctly imported form node_modules, so add it here
+export type QueryFormExtraFilter = {
+  col: string;
+} & (
+  | {
+      op: BinaryOperator;
+      val: string;
+    }
+  | {
+      op: SetOperator;
+      val: string[];
+    }
+);
 
 export default function buildQuery(formData: QueryFormData) {
   return buildQueryContext(formData, baseQueryObject => [
     {
       ...baseQueryObject,
       filters: [
-        // @ts-ignore
-        ...baseQueryObject.filters,
+        ...(baseQueryObject.filters || []),
         // Add extra filters from dashboard
         ...(formData.extra_filters || []).filter(
-          // @ts-ignore
           (filter: QueryFormExtraFilter) => filter.val !== null,
         ),
       ],

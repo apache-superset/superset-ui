@@ -32,12 +32,12 @@ const LegendIcon = styled.div`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background-color: ${({ theme, color }) => color};
+  background-color: ${({ color }) => color};
 `;
 
 const LegendLabel = styled.div`
   line-height: 0;
-  font-size: ${({ theme }) => theme.typography.sizes.l};
+  font-size: ${({ theme }) => theme?.typography?.sizes?.l};
 `;
 
 const WaterfallLegend = () => (

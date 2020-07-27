@@ -19,7 +19,16 @@
 import React, { createRef, FC, useState } from 'react';
 import { t } from '@superset-ui/translation';
 import styled from '@superset-ui/style';
-import { BarChart, Bar, LabelList, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  LabelList,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  LabelProps,
+} from 'recharts';
 import WaterfallTick from './WaterfallTick';
 import { valueFormatter } from './utils';
 import WaterfallBar from './WaterfallBar';
@@ -30,7 +39,7 @@ type TWaterfallStylesProps = {
   width: number;
 };
 
-export type TBarValue = { value: [number, number] };
+export type TBarValue = [number, number];
 
 export type TWaterfallData = {
   [key: string]: string | boolean | number | TBarValue;
@@ -60,7 +69,7 @@ const Styles = styled.div<TWaterfallStylesProps>`
 
   h3 {
     /* You can use your props to control CSS! */
-    font-size: ${({ theme }) => theme.typography.sizes.xxl};
+    font-size: ${({ theme }) => theme?.typography?.sizes?.xxl};
     font-weight: bold;
   }
 `;
@@ -106,8 +115,8 @@ const Waterfall: FC<TWaterfallProps> = ({
   };
   const closeNotification = () => setNotification(null);
 
-  const renderLabel: (barValue: TBarValue) => string = ({ value }) =>
-    valueFormatter(value[1] - value[0]);
+  const renderLabel: (barValue: LabelProps) => string = ({ value }) =>
+    valueFormatter(((value as unknown) as TBarValue)[1] - ((value as unknown) as TBarValue)[0]);
 
   return (
     <Styles ref={rootElem} height={height} width={width}>
@@ -130,14 +139,9 @@ const Waterfall: FC<TWaterfallProps> = ({
             <Tooltip />
             <Bar
               dataKey={dataKey}
-              shape={props => (
-                // @ts-ignore
-                <WaterfallBar {...props} numberOfBars={data?.length} />
-              )}
+              shape={props => <WaterfallBar {...props} numberOfBars={data?.length} />}
               onClick={handleBarClick}
             >
-              {/*
-              // @ts-ignore */}
               <LabelList dataKey={dataKey} position="top" content={renderLabel} />
             </Bar>
           </BarChart>

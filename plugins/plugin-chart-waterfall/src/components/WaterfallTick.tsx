@@ -14,6 +14,7 @@ type TWaterfallTickProps = {
 const WaterfallTick: FC<TWaterfallTickProps> = ({ x, y, angle, payload, dy }) => (
   <g transform={`translate(${x},${y})`}>
     <Text
+      data-test-id={`tick-${payload.value}`}
       angle={angle}
       dy={dy}
       fontSize={14}
