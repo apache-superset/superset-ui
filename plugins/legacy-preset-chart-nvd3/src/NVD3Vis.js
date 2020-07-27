@@ -428,17 +428,18 @@ function nvd3Vis(element, props) {
         } else {
           // pieLabelType in ['key_percent', 'key_value_percent']
           const total = d3.sum(data, d => d.y);
-          const getPercent = function (d) {
-            return `${((d / total) * 100).toFixed()}%`;
-          };
+          const percentFormatter = getNumberFormatter(NumberFormats.PERCENT_2_POINT);
           if (pieLabelType === 'key_percent') {
-            chart.tooltip.valueFormatter(d => getPercent(d));
-            chart.labelType(d => `${d.data.x}: ${getPercent(d.data.y)}`);
+            chart.tooltip.valueFormatter(d => percentFormatter(d));
+            chart.labelType(d => `${d.data.x}: ${percentFormatter(d.data.y / total)}`);
           } else {
             // pieLabelType === 'key_value_percent'
-            chart.tooltip.valueFormatter(d => `${numberFormatter(d)} (${getPercent(d)})`);
+            chart.tooltip.valueFormatter(
+              d => `${numberFormatter(d)} (${percentFormatter(d / total)})`,
+            );
             chart.labelType(
-              d => `${d.data.x}: ${numberFormatter(d.data.y)} (${getPercent(d.data.y)})`,
+              d =>
+                `${d.data.x}: ${numberFormatter(d.data.y)} (${percentFormatter(d.data.y / total)})`,
             );
           }
         }
