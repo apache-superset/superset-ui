@@ -146,8 +146,5 @@ const Waterfall: FC<TWaterfallProps> = ({
     </Styles>
   );
 };
-<<<<<<< HEAD
-=======
 
->>>>>>> feat: waterfall chart
 export default Waterfall;
