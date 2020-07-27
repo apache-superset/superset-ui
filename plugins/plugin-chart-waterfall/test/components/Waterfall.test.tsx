@@ -28,10 +28,38 @@ describe('Waterfall chart', () => {
     tree = wrap.render();
     const legend = tree.find('[data-test-id=legend]');
     expect(legend.children()).toHaveLength(4);
-    expect(legend.children().eq(0).children().eq(1).text()).toEqual('Increase');
-    expect(legend.children().eq(1).children().eq(1).text()).toEqual('Decrease');
-    expect(legend.children().eq(2).children().eq(1).text()).toEqual('Total');
-    expect(legend.children().eq(3).children().eq(1).text()).toEqual('Other');
+    expect(
+      legend
+        .children()
+        .eq(0)
+        .children()
+        .eq(1)
+        .text(),
+    ).toEqual('Increase');
+    expect(
+      legend
+        .children()
+        .eq(1)
+        .children()
+        .eq(1)
+        .text(),
+    ).toEqual('Decrease');
+    expect(
+      legend
+        .children()
+        .eq(2)
+        .children()
+        .eq(1)
+        .text(),
+    ).toEqual('Total');
+    expect(
+      legend
+        .children()
+        .eq(3)
+        .children()
+        .eq(1)
+        .text(),
+    ).toEqual('Other');
   });
 
   it('Render ticks', () => {
