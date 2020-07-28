@@ -21,7 +21,8 @@ import d3tip from 'd3-tip';
 import dompurify from 'dompurify';
 import { getNumberFormatter } from '@superset-ui/number-format';
 import { smartDateFormatter } from '@superset-ui/time-format';
-
+import _ from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 // Regexp for the label added to time shifted series
 // (1 hour offset, 2 days offset, etc.)
 const TIME_SHIFT_PATTERN = /\d+ \w+ offset/;
@@ -50,7 +51,7 @@ export function getTimeOrNumberFormatter(format) {
 export function drawBarValues(svg, data, stacked, axisFormat) {
   const format = getNumberFormatter(axisFormat);
   const countSeriesDisplayed = data.filter(d => !d.disabled).length;
-
+  const uuid = uuidv4();
   const totalStackedValues =
     stacked && data.length !== 0
       ? data[0].values.map((bar, iBar) => {
@@ -59,13 +60,13 @@ export function drawBarValues(svg, data, stacked, axisFormat) {
           return d3.sum(bars, d => d.y);
         })
       : [];
-
   svg.selectAll('.bar-chart-label-group').remove();
   setTimeout(() => {
     const groupLabels = svg
       .select('g.nv-barsWrap')
       .append('g')
-      .attr('class', 'bar-chart-label-group');
+      .attr('class', 'bar-chart-label-group')
+      .attr('id', uuid);
     svg
       .selectAll('g.nv-group')
       .filter((d, i) => !stacked || i === countSeriesDisplayed - 1)
@@ -94,6 +95,12 @@ export function drawBarValues(svg, data, stacked, axisFormat) {
           textEls.attr('y', yPos + rectHeight + labelHeight);
         }
       });
+    svg
+      .selectAll('.bar-chart-label-group')
+      .filter(function () {
+        return d3.select(this).attr('id') !== uuid;
+      })
+      .remove();
   }, ANIMATION_TIME);
 }
 
