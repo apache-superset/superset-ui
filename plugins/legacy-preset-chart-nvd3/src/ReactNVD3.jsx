@@ -56,15 +56,6 @@ export default styled(NVD3)`
       }
     }
   }
-  .superset-legacy-chart-nvd3-dist-bar {
-    overflow-x: auto !important;
-    svg {
-      &.nvd3-svg {
-        width: auto;
-        font-size: ${({ theme }) => theme.typography.sizes.m};
-      }
-    }
-  }
   .superset-legacy-chart-nvd3 {
     nv-x text {
       font-size: ${({ theme }) => theme.typography.sizes.m};
