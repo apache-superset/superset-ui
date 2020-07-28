@@ -21,6 +21,7 @@ import d3tip from 'd3-tip';
 import dompurify from 'dompurify';
 import { getNumberFormatter } from '@superset-ui/number-format';
 import { smartDateFormatter } from '@superset-ui/time-format';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { v4 as uuidv4 } from 'uuid';
 // Regexp for the label added to time shifted series
 // (1 hour offset, 2 days offset, etc.)
