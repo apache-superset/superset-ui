@@ -17,6 +17,7 @@
  * under the License.
  */
 import { rgb } from 'd3-color';
+
 export default function transformProps(chartProps) {
   const { width, height, formData, queryData } = chartProps;
   const { maxBubbleSize, showBubbles, linearColorScheme, colorPicker } = formData;

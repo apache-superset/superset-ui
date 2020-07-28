@@ -53,8 +53,7 @@ function WorldMap(element, props) {
   // Ignore XXX's to get better normalization
   const filteredData = data.filter(d => d.country && d.country !== 'XXX');
 
-  const ext = d3.extent(filteredData, d => d.m1);
-  const extRadius = d3.extent(filteredData, d => d.m2);
+  const extRadius = d3.extent(filteredData, d => Math.sqrt(d.m2));
   const radiusScale = d3.scale
     .linear()
     .domain([extRadius[0], extRadius[1]])
@@ -66,7 +65,7 @@ function WorldMap(element, props) {
 
   const processedData = filteredData.map(d => ({
     ...d,
-    radius: radiusScale(d.m2),
+    radius: radiusScale(Math.sqrt(d.m2)),
     fillColor: colorScale(d.m1),
   }));
 
