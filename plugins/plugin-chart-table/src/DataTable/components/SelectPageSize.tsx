@@ -17,6 +17,7 @@
  * under the License.
  */
 import React from 'react';
+import { t } from '@superset-ui/translation';
 
 export type SizeOption = number | [number, string];
 
@@ -55,7 +56,7 @@ export default React.memo(function SelectPageSize({
   const current = currentSize === undefined ? sizeOptionValues[0] : currentSize;
   return (
     <span className="dt-select-page-size form-inline">
-      Show{' '}
+      {t('Show')}{' '}
       <select
         className="form-control input-sm"
         value={current}
@@ -73,7 +74,7 @@ export default React.memo(function SelectPageSize({
           );
         })}
       </select>{' '}
-      entries
+      {t('entries')}
     </span>
   );
 });
