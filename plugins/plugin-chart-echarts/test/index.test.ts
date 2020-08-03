@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { EchartsLineChartPlugin } from '../src';
+import { EchartsPieChartPlugin, EchartsTimeseriesChartPlugin } from '../src';
 
 /**
  * The example tests in this file act as a starting point, and
@@ -28,6 +28,7 @@ import { EchartsLineChartPlugin } from '../src';
  */
 describe('@superset-ui/plugin-chart-echarts', () => {
   it('exists', () => {
-    expect(EchartsLineChartPlugin).toBeDefined();
+    expect(EchartsPieChartPlugin).toBeDefined();
+    expect(EchartsTimeseriesChartPlugin).toBeDefined();
   });
 });

@@ -1,17 +1,30 @@
-import { DataRecord } from '@superset-ui/chart';
+import { DataRecord, DataRecordValue } from '@superset-ui/chart';
 import echarts from 'echarts';
 
 export type TimestampType = string | number | Date;
 
-export interface EchartsTimeseriesRawDatum extends DataRecord {
+export interface EchartsTimeseriesDatum extends DataRecord {
   __timestamp: TimestampType;
 }
 
-export interface EchartsTimeseriesDatum extends DataRecord {
-  __timestamp: Date;
-}
+export type EchartsBaseTimeseriesSeries = {
+  name: string;
+  data: [Date, DataRecordValue][];
+};
 
-export type EchartsLineProps = {
+export type EchartsTimeseriesSeries = EchartsBaseTimeseriesSeries & {
+  color: string;
+  stack?: string;
+  type: 'bar' | 'line';
+  smooth: boolean;
+  step?: 'start' | 'middle' | 'end';
+  areaStyle: {
+    opacity: number;
+  };
+  symbolSize: number;
+};
+
+export type EchartsTimeseriesProps = {
   area: number;
   colorScheme: string;
   contributionMode?: string;
@@ -25,7 +38,5 @@ export type EchartsLineProps = {
   markerSize: number;
   minorSplitLine: boolean;
   opacity: number;
-  data: EchartsTimeseriesDatum[]; // please add additional typing for your data here
-  // add typing here for the props you pass in from transformProps.ts!
   echartOptions: echarts.EChartOption;
 };
