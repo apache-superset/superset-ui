@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useState, useMemo, useCallback } from 'react';
-import { ColumnInstance, Column, DefaultSortTypes } from 'react-table';
+import { ColumnInstance, DefaultSortTypes, ColumnWithLooseAccessor } from 'react-table';
 import { extent as d3Extent, max as d3Max } from 'd3-array';
 import { FaSort, FaSortUp as FaSortAsc, FaSortDown as FaSortDesc } from 'react-icons/fa';
 import { t } from '@superset-ui/translation';
@@ -173,7 +173,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
   );
 
   const getColumnConfigs = useCallback(
-    (column: DataColumnMeta, i: number): Column<D> => {
+    (column: DataColumnMeta, i: number): ColumnWithLooseAccessor<D> => {
       const { key, label, dataType } = column;
       let className = '';
       if (dataType === DataType.Number) {
@@ -188,7 +188,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         // typing is incorrect in current version of `@types/react-table`
         // so we ask TS not to check.
         accessor: ((datum: D) => datum[key]) as never,
-        Cell: ({ column: col, value }: { column: Column<D>; value: DataRecordValue }) => {
+        Cell: ({ column: col, value }: { column: ColumnInstance<D>; value: DataRecordValue }) => {
           const [isHtml, text] = formatValue(column, value);
           const style = {
             background: valueRange
@@ -221,7 +221,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
             </td>
           );
         },
-        SortableHeader: ({ column: col, title, onClick, style }) => {
+        Header: ({ column: col, title, onClick, style }) => {
           return (
             <th
               key={col.id}

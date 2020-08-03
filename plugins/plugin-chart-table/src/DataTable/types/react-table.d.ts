@@ -66,7 +66,7 @@ declare module 'react-table' {
       UseSortByColumnOptions<D> {
     // must define as a new property because it's not possible to override
     // the existing `Header` renderer option
-    SortableHeader?: Renderer<TableSortByToggleProps & HeaderProps<D>>;
+    Header?: Renderer<TableSortByToggleProps & HeaderProps<D>>;
   }
 
   export interface ColumnInstance<D extends object>

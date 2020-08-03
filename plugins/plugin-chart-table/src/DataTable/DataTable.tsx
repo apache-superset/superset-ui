@@ -163,7 +163,7 @@ export default function DataTable<D extends object>({
           return (
             <tr key={headerGroupKey || headerGroup.id} {...headerGroupProps}>
               {headerGroup.headers.map(column => {
-                return column.render('SortableHeader', column.getSortByToggleProps());
+                return column.render('Header', column.getSortByToggleProps());
               })}
             </tr>
           );
