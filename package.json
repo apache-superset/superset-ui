@@ -78,8 +78,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-test-renderer": "^16.13.1",
-    "rimraf": "^3.0.2",
-    "uuid": "^8.3.0"
+    "rimraf": "^3.0.2"
   },
   "engines": {
     "node": ">=10.10.0",
