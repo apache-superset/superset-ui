@@ -21,7 +21,6 @@ import {
   ColumnInstance,
   Renderer,
   HeaderProps,
-  ColumnInterfaceBasedOnValue,
 } from 'react-table';
 
 import { UseStickyState, UseStickyTableOptions, UseStickyInstanceProps } from '../hooks/useSticky';
