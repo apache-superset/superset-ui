@@ -16,9 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-const logger = console;
+const logger = window.console || {
+  debug() {},
+  log() {},
+  warn() {},
+  error() {},
+  trace() {},
+};
 
 /**
- * Superset frontend logger, currently just dump to console directly.
+ * Superset frontend logger, currently just an alias to console.
  */
 export default logger;
