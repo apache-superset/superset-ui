@@ -13,7 +13,6 @@ jobs:
     name: Build and test
     runs-on: ubuntu-18.04
     env:
-      GITHUB_ACTION: "githubAction-${{ github.action }}-${{ github.job }}"
       CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
 
     strategy:
