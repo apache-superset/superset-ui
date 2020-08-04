@@ -11,8 +11,6 @@ on:
 jobs:
   build:
     name: Build and test
-    env:
-      CI: 'github'
 
     runs-on: ubuntu-latest
 
