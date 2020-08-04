@@ -12,7 +12,7 @@ jobs:
   build:
     name: Build and test
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     strategy:
       matrix:
@@ -58,4 +58,9 @@ jobs:
       run: yarn test
 
     - name: Report code coverage
-      run: curl -s https://codecov.io/bash | bash
+      uses: codecov/codecov-action@v1.0.12
+      env:
+        GITHUB_ACTION: "${{ github.action }}-${{ github.job }}"
+        CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
+      with:
+        fail_ci_if_error: true
