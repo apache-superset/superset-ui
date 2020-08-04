@@ -74,7 +74,7 @@ const config: ControlPanelConfig = {
             config: {
               type: 'CheckboxControl',
               label: t('Enable forecast'),
-              renderTrigger: true,
+              renderTrigger: false,
               default: false,
               description: t('Enable forecasting'),
             },
@@ -174,6 +174,7 @@ const config: ControlPanelConfig = {
               default: 'line',
               choices: [
                 ['line', 'Line'],
+                ['scatter', 'Scatter'],
                 ['smooth', 'Smooth Line'],
                 ['bar', 'Bar'],
                 ['start', 'Step - start'],

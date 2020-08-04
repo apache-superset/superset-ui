@@ -33,6 +33,7 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
     area,
     colorScheme,
     contributionMode,
+    forecastEnabled,
     seriesType,
     logAxis,
     opacity,
@@ -53,47 +54,52 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
 
   rawSeries.forEach(entry => {
     const forecastSeries = extractForecastSeriesContext(entry.name || '');
+    const isConfidenceBand = [
+      ForecastSeriesEnum.ForecastLower,
+      ForecastSeriesEnum.ForecastUpper,
+    ].includes(forecastSeries.type);
+    const isObservation = forecastSeries.type === ForecastSeriesEnum.Observation;
+    const isTrend = forecastSeries.type === ForecastSeriesEnum.ForecastTrend;
     let stackId;
-    if (forecastSeries.type === ForecastSeriesEnum.Observation) {
-      stackId = 'Total';
-    } else {
+    if (isConfidenceBand) {
       stackId = forecastSeries.name;
+    } else if (stack && isObservation) {
+      // the suffix of the observation series is '' (falsy), which disables
+      // stacking. Therefore we need to set something that is truthy.
+      stackId = 'obs';
+    } else if (stack && isTrend) {
+      stackId = forecastSeries.type;
     }
     let plotType;
-    if (forecastSeries.type === ForecastSeriesEnum.Observation) {
+    if (!isConfidenceBand && (seriesType === 'scatter' || (forecastEnabled && isObservation))) {
       plotType = 'scatter';
+    } else if (isConfidenceBand) {
+      plotType = 'line';
     } else {
       plotType = seriesType === 'bar' ? 'bar' : 'line';
     }
-    const lineStyle = [ForecastSeriesEnum.ForecastLower, ForecastSeriesEnum.ForecastUpper].includes(
-      forecastSeries.type,
-    )
-      ? { opacity: 0 }
-      : {};
+    const lineStyle = isConfidenceBand ? { opacity: 0 } : {};
 
-    series.push({
-      ...entry,
-      itemStyle: {
-        color: colorFn(forecastSeries.name),
-      },
-      type: plotType,
-      // @ts-ignore
-      smooth: seriesType === 'smooth',
-      step: ['start', 'middle', 'end'].includes(seriesType as string) ? seriesType : undefined,
-      stack:
-        stack ||
-        [ForecastSeriesEnum.ForecastLower, ForecastSeriesEnum.ForecastUpper].includes(
-          forecastSeries.type,
-        )
-          ? stackId
-          : undefined,
-      lineStyle,
-      areaStyle: {
-        opacity: forecastSeries.type === ForecastSeriesEnum.ForecastUpper || area ? opacity : 0,
-      },
-      symbolSize:
-        forecastSeries.type === ForecastSeriesEnum.Observation || markerEnabled ? markerSize : 0,
-    });
+    if (!((stack || area) && isConfidenceBand))
+      series.push({
+        ...entry,
+        itemStyle: {
+          color: colorFn(forecastSeries.name),
+        },
+        type: plotType,
+        // @ts-ignore
+        smooth: seriesType === 'smooth',
+        step: ['start', 'middle', 'end'].includes(seriesType as string) ? seriesType : undefined,
+        stack: stackId,
+        lineStyle,
+        areaStyle: {
+          opacity: forecastSeries.type === ForecastSeriesEnum.ForecastUpper || area ? opacity : 0,
+        },
+        symbolSize:
+          !isConfidenceBand && (plotType === 'scatter' || isObservation || markerEnabled)
+            ? markerSize
+            : 0,
+      });
   });
   const xAxis: echarts.EChartOption.XAxis = { type: 'time' };
   const yAxis: echarts.EChartOption.YAxis = {
