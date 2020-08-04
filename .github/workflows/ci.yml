@@ -11,8 +11,10 @@ on:
 jobs:
   build:
     name: Build and test
-
     runs-on: ubuntu-18.04
+    env:
+      GITHUB_ACTION: "githubAction-${{ github.action }}-${{ github.job }}"
+      CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
 
     strategy:
       matrix:
@@ -58,8 +60,5 @@ jobs:
       run: yarn test
 
     - name: Report code coverage
-      env:
-        GITHUB_ACTION: "githubAction-${{ github.action }}-${{ github.job }}"
-        CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
       run: curl -s https://codecov.io/bash | bash
 
