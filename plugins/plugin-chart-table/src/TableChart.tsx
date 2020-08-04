@@ -200,31 +200,27 @@ export default function TableChart<D extends DataRecord = DataRecord>(
                 })
               : undefined,
           };
+          const html = isHtml ? { __html: text } : undefined;
           const cellProps = {
             // show raw number in title in case of numeric values
             title: typeof value === 'number' ? String(value) : undefined,
-            dangerouslySetInnerHTML: isHtml ? { __html: text } : undefined,
             onClick: emitFilter && !valueRange ? () => toggleFilter(key, value) : undefined,
             className: `${className}${
               isActiveFilterValue(key, value) ? ' dt-is-active-filter' : ''
             }`,
             style,
           };
-          if (cellProps.dangerouslySetInnerHTML) {
-            return <td key={col.id} {...cellProps} />;
+          if (html) {
+            // eslint-disable-next-line react/no-danger
+            return <td {...cellProps} dangerouslySetInnerHTML={html} />;
           }
           // If cellProps renderes textContent already, then we don't have to
           // render `Cell`. This saves some time for large tables.
-          return (
-            <td key={col.id} {...cellProps}>
-              {text}
-            </td>
-          );
+          return <td {...cellProps}>{text}</td>;
         },
         Header: ({ column: col, title, onClick, style }) => {
           return (
             <th
-              key={col.id}
               title={title}
               className={col.isSorted ? `${className || ''} is-sorted` : className}
               style={style}
