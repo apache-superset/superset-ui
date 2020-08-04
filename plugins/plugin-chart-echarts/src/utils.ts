@@ -18,6 +18,7 @@
  */
 import { DataRecordValue } from '@superset-ui/chart/lib';
 import { EchartsBaseTimeseriesSeries, EchartsTimeseriesDatum } from './Timeseries/types';
+import { ForecastSeriesEnum, ForecastSeriesContext } from './types';
 
 export const extractTimeseriesSeries = (
   data: EchartsTimeseriesDatum[],
@@ -53,6 +54,18 @@ export const extractTimeseriesSeries = (
   return series;
 };
 
+const seriesTypeRegex = RegExp(
+  `(.+)(${ForecastSeriesEnum.ForecastLower}|${ForecastSeriesEnum.ForecastTrend}|${ForecastSeriesEnum.ForecastUpper})$`,
+);
+export const extractForecastSeriesContext = (seriesName: string): ForecastSeriesContext => {
+  const regexMatch = seriesTypeRegex.exec(seriesName);
+  if (!regexMatch) return { name: seriesName, type: ForecastSeriesEnum.Observation };
+  return {
+    name: regexMatch[1],
+    type: regexMatch[2] as ForecastSeriesEnum,
+  };
+};
+
 export const extractSeriesBase = (series: echarts.EChartOption.Series[]): number | null => {
   let minValue: number | null = null;
   series
@@ -67,4 +80,28 @@ export const extractSeriesBase = (series: echarts.EChartOption.Series[]): number
       }
     });
   return minValue;
+};
+
+export const rebaseTimeseriesDatum = (data: EchartsTimeseriesDatum[]): EchartsTimeseriesDatum[] => {
+  const keys = data.length > 0 ? Object.keys(data[0]) : [];
+
+  return data.map(row => {
+    const newRow: EchartsTimeseriesDatum = { __timestamp: '' };
+    keys.forEach(key => {
+      const forecastContext = extractForecastSeriesContext(key);
+      const lowerKey = `${forecastContext.name}${ForecastSeriesEnum.ForecastLower}`;
+      let value = row[key];
+      if (
+        forecastContext.type === ForecastSeriesEnum.ForecastUpper &&
+        keys.includes(lowerKey) &&
+        value !== null &&
+        row[lowerKey] !== null
+      ) {
+        // @ts-ignore
+        value -= row[lowerKey];
+      }
+      newRow[key] = value;
+    });
+    return newRow;
+  });
 };

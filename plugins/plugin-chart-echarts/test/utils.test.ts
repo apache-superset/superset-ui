@@ -16,7 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { extractSeriesBase, extractTimeseriesSeries } from '../../src/utils';
+import {
+  extractForecastSeriesContext,
+  extractSeriesBase,
+  extractTimeseriesSeries,
+  rebaseTimeseriesDatum,
+} from '../src/utils';
+import { ForecastSeriesEnum } from '../src/types';
 
 describe('extractTimeseriesSeries', () => {
   it('should generate a valid ECharts timeseries series object', () => {
@@ -79,5 +85,72 @@ describe('extractSeriesBase', () => {
       },
     ];
     expect(extractSeriesBase(series)).toEqual(-2);
+  });
+});
+
+describe('extractForecastSeriesContext', () => {
+  it('should extract the correct series name and type', () => {
+    expect(extractForecastSeriesContext('abcd')).toEqual({
+      name: 'abcd',
+      type: ForecastSeriesEnum.Observation,
+    });
+    expect(extractForecastSeriesContext('qwerty__yhat')).toEqual({
+      name: 'qwerty',
+      type: ForecastSeriesEnum.ForecastTrend,
+    });
+    expect(extractForecastSeriesContext('X Y Z___yhat_upper')).toEqual({
+      name: 'X Y Z_',
+      type: ForecastSeriesEnum.ForecastUpper,
+    });
+    expect(extractForecastSeriesContext('1 2 3__yhat_lower')).toEqual({
+      name: '1 2 3',
+      type: ForecastSeriesEnum.ForecastLower,
+    });
+  });
+});
+
+describe('rebaseTimeseriesDatum', () => {
+  it('should subtract lower confidence level from upper value', () => {
+    expect(
+      rebaseTimeseriesDatum([
+        {
+          __timestamp: new Date('2001-01-01'),
+          abc: 10,
+          abc__yhat_lower: 1,
+          abc__yhat_upper: 20,
+        },
+        {
+          __timestamp: new Date('2002-01-01'),
+          abc: 10,
+          abc__yhat_lower: null,
+          abc__yhat_upper: 20,
+        },
+        {
+          __timestamp: new Date('2003-01-01'),
+          abc: 10,
+          abc__yhat_lower: 1,
+          abc__yhat_upper: null,
+        },
+      ]),
+    ).toEqual([
+      {
+        __timestamp: new Date('2001-01-01'),
+        abc: 10,
+        abc__yhat_lower: 1,
+        abc__yhat_upper: 19,
+      },
+      {
+        __timestamp: new Date('2002-01-01'),
+        abc: 10,
+        abc__yhat_lower: null,
+        abc__yhat_upper: 20,
+      },
+      {
+        __timestamp: new Date('2003-01-01'),
+        abc: 10,
+        abc__yhat_lower: 1,
+        abc__yhat_upper: null,
+      },
+    ]);
   });
 });

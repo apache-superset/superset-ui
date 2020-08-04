@@ -20,7 +20,12 @@ import { ChartProps } from '@superset-ui/chart';
 import { CategoricalColorNamespace } from '@superset-ui/color';
 import { getNumberFormatter } from '@superset-ui/number-format';
 import { EchartsTimeseriesProps } from './types';
-import { extractTimeseriesSeries } from '../utils';
+import { ForecastSeriesEnum } from '../types';
+import {
+  extractForecastSeriesContext,
+  extractTimeseriesSeries,
+  rebaseTimeseriesDatum,
+} from '../utils';
 
 export default function transformProps(chartProps: ChartProps): EchartsTimeseriesProps {
   const { width, height, formData, queryData } = chartProps;
@@ -41,19 +46,53 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  const rawSeries = extractTimeseriesSeries(queryData.data);
+  const rebasedData = rebaseTimeseriesDatum(queryData.data);
+  const rawSeries = extractTimeseriesSeries(rebasedData);
+
   const series: echarts.EChartOption.Series[] = [];
+
   rawSeries.forEach(entry => {
+    const forecastSeries = extractForecastSeriesContext(entry.name || '');
+    let stackId;
+    if (forecastSeries.type === ForecastSeriesEnum.Observation) {
+      stackId = 'Total';
+    } else {
+      stackId = forecastSeries.name;
+    }
+    let plotType;
+    if (forecastSeries.type === ForecastSeriesEnum.Observation) {
+      plotType = 'scatter';
+    } else {
+      plotType = seriesType === 'bar' ? 'bar' : 'line';
+    }
+    const lineStyle = [ForecastSeriesEnum.ForecastLower, ForecastSeriesEnum.ForecastUpper].includes(
+      forecastSeries.type,
+    )
+      ? { opacity: 0 }
+      : {};
+
     series.push({
       ...entry,
+      itemStyle: {
+        color: colorFn(forecastSeries.name),
+      },
+      type: plotType,
       // @ts-ignore
-      color: colorFn(entry.name),
-      type: seriesType === 'bar' ? 'bar' : 'line',
       smooth: seriesType === 'smooth',
       step: ['start', 'middle', 'end'].includes(seriesType as string) ? seriesType : undefined,
-      stack: stack ? 'Total' : undefined,
-      areaStyle: { opacity: area ? opacity : 0 },
-      symbolSize: markerEnabled ? markerSize : 0,
+      stack:
+        stack ||
+        [ForecastSeriesEnum.ForecastLower, ForecastSeriesEnum.ForecastUpper].includes(
+          forecastSeries.type,
+        )
+          ? stackId
+          : undefined,
+      lineStyle,
+      areaStyle: {
+        opacity: forecastSeries.type === ForecastSeriesEnum.ForecastUpper || area ? opacity : 0,
+      },
+      symbolSize:
+        forecastSeries.type === ForecastSeriesEnum.Observation || markerEnabled ? markerSize : 0,
     });
   });
   const xAxis: echarts.EChartOption.XAxis = { type: 'time' };
@@ -82,7 +121,12 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
     yAxis,
     tooltip,
     legend: {
-      data: rawSeries.map(entry => entry.name || ''),
+      data: rawSeries
+        .filter(
+          entry =>
+            extractForecastSeriesContext(entry.name || '').type === ForecastSeriesEnum.Observation,
+        )
+        .map(entry => entry.name || ''),
       right: zoomable ? 80 : 'auto',
     },
     series,
