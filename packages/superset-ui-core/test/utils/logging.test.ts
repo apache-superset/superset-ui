@@ -16,16 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-const logger = window.console || {
-  debug() {},
-  log() {},
-  info() {},
-  warn() {},
-  error() {},
-  trace() {},
-};
+import { logging } from '../../src';
 
-/**
- * Superset frontend logger, currently just an alias to console.
- */
-export default logger;
+describe('logging', () => {
+  it('should have logging methods', () => {
+    expect(() => {
+      logging.debug();
+      logging.log();
+      logging.info();
+    }).not.toThrow();
+    expect(() => {
+      logging.warn('warn');
+    }).toThrow('warn');
+    expect(() => {
+      logging.error('error');
+    }).toThrow('error');
+    expect(() => {
+      logging.trace();
+    }).toThrow('Trace:');
+  });
+});
