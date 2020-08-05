@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,7 +17,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 describe('logging', () => {
   beforeEach(() => {
     jest.resetModules();
@@ -40,9 +40,9 @@ describe('logging', () => {
     }).toThrow('Trace:');
   });
   it('should use noop functions when console unavailable', () => {
-    const console = window.console;
+    const { console } = window;
     Object.assign(window, { console: undefined });
-    const logging = require('../../src').logging;
+    const { logging } = require('../../src');
 
     afterAll(() => {
       Object.assign(window, { console });
