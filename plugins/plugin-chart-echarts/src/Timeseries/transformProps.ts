@@ -96,7 +96,8 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
           opacity: forecastSeries.type === ForecastSeriesEnum.ForecastUpper || area ? opacity : 0,
         },
         symbolSize:
-          !isConfidenceBand && (plotType === 'scatter' || isObservation || markerEnabled)
+          !isConfidenceBand &&
+          (plotType === 'scatter' || (forecastEnabled && isObservation) || markerEnabled)
             ? markerSize
             : 0,
       });
