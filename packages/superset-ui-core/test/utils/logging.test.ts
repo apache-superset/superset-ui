@@ -16,10 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { logging } from '../../src';
 
 describe('logging', () => {
-  it('should have logging methods', () => {
+  beforeEach(() => {
+    jest.resetModules();
+  });
+  it('should pipe to `console` methods', () => {
+    const { logging } = require('../../src');
+
     expect(() => {
       logging.debug();
       logging.log();
@@ -34,5 +38,23 @@ describe('logging', () => {
     expect(() => {
       logging.trace();
     }).toThrow('Trace:');
+  });
+  it('should use noop functions when console unavailable', () => {
+    const console = window.console;
+    Object.assign(window, { console: undefined });
+    const logging = require('../../src').logging;
+
+    afterAll(() => {
+      Object.assign(window, { console });
+    });
+
+    expect(() => {
+      logging.debug();
+      logging.log();
+      logging.info();
+      logging.warn('warn');
+      logging.error('error');
+      logging.trace();
+    }).not.toThrow();
   });
 });

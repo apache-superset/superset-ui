@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import UntyppedJed from 'jed';
+import UntypedJed from 'jed';
 import { logging } from '@superset-ui/core';
 import { Jed, TranslatorConfig, Locale, Translations, LocaleData, LanguagePack } from './types';
 
@@ -41,7 +41,7 @@ export default class Translator {
   constructor(config: TranslatorConfig = {}) {
     const { languagePack = DEFAULT_LANGUAGE_PACK } = config;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    this.i18n = new UntyppedJed(languagePack) as Jed;
+    this.i18n = new UntypedJed(languagePack) as Jed;
     this.locale = this.i18n.options.locale_data.superset[''].lang as Locale;
   }
 
