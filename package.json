@@ -6,9 +6,7 @@
   "scripts": {
     "build": "node ./scripts/build.js",
     "build:assets": "node ./scripts/copyAssets.js",
-    "babel": "yarn babel:cjs && yarn babel:esm",
-    "babel:cjs": "nimbus babel --clean --workspaces=\"@superset-ui/!(demo|generator-superset)\" --config-file=../../babel.config.js",
-    "babel:esm": "nimbus babel --clean --workspaces=\"@superset-ui/!(demo|generator-superset)\" --esm --config-file=../../babel.config.js",
+    "babel": "nimbus babel --clean --workspaces=\"@superset-ui/!(demo|generator-superset)\" --config-file=../../babel.config.js",
     "demo": "cd packages/superset-ui-demo && yarn demo:build",
     "demo:clean": "cd packages/superset-ui-demo && yarn demo:clean",
     "demo:build": "cd packages/superset-ui-demo && yarn demo:build",
@@ -115,7 +113,7 @@
       },
       {
         "driver": "typescript",
-        "strategy": "none"
+        "strategy": "native"
       }
     ],
     "settings": {
