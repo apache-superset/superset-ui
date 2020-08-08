@@ -21,7 +21,7 @@
     "jest": "NODE_ENV=test nimbus jest --coverage --verbose",
     "lint": "nimbus eslint",
     "lint:fix": "nimbus eslint --fix",
-    "prettier": "nimbus prettier",
+    "prettier": "nimbus prettier --graph",
     "test": "yarn jest",
     "test:watch": "yarn lint:fix && yarn jest --watch",
     "type": "nimbus typescript --build --reference-workspaces",
@@ -235,8 +235,21 @@
     "./{packages,plugins}/*/{src,test,storybook}/**/*.{js,jsx,ts,tsx,json,md}": [
       "yarn prettier"
     ],
-    "./{packages,plugins}/*.md": [
+    "./{packages,plugins}/*/*.md": [
       "yarn prettier"
     ]
+  },
+  "prettier": {
+    "arrowParens": "avoid",
+    "bracketSpacing": true,
+    "jsxBracketSameLine": false,
+    "printWidth": 100,
+    "proseWrap": "always",
+    "requirePragma": false,
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "all",
+    "useTabs": false
   }
 }

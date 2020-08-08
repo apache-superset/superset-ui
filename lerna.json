@@ -1,18 +1,10 @@
 {
   "lerna": "3.2.1",
   "npmClient": "yarn",
-  "packages": [
-    "packages/*",
-    "plugins/*"
-  ],
+  "packages": ["packages/*", "plugins/*"],
   "useWorkspaces": true,
   "version": "0.14.20",
-  "ignoreChanges": [
-    "**/*.md",
-    "**/*.spec.tsx?",
-    "**/*.spec.jsx?",
-    "**/__mocks__/**"
-  ],
+  "ignoreChanges": ["**/*.md", "**/*.spec.tsx?", "**/*.spec.jsx?", "**/__mocks__/**"],
   "command": {
     "publish": {
       "message": "chore: publish %s",

@@ -6,11 +6,5 @@ lib/
 tmp/
 dist/
 *.d.ts
-lerna.json
 npm-shrinkwrap.json
-package.json
-package-lock.json
-tsconfig.json
-tsconfig.eslint.json
-tsconfig.options.json
 CHANGELOG.md
