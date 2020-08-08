@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { Preset } from '@superset-ui/core';
+import { Preset } from 'superset-ui/lib/core';
 import AreaChartPlugin from './Area';
 import BarChartPlugin from './Bar';
 import BoxPlotChartPlugin from './BoxPlot';

@@ -1,4 +1,4 @@
-import { ExtensibleFunction } from '@superset-ui/core';
+import { ExtensibleFunction } from 'superset-ui/lib/core';
 import { TimeRangeFormatFunction } from './types';
 
 // Use type augmentation to indicate that

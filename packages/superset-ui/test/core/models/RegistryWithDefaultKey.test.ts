@@ -1,4 +1,4 @@
-import { Registry, RegistryWithDefaultKey } from '../../src';
+import { Registry, RegistryWithDefaultKey } from 'superset-ui/src/core';
 
 describe('RegistryWithDefaultKey', () => {
   let registry: RegistryWithDefaultKey<number>;

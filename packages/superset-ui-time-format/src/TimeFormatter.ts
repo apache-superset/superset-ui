@@ -1,4 +1,4 @@
-import { ExtensibleFunction, isRequired } from '@superset-ui/core';
+import { ExtensibleFunction, isRequired } from 'superset-ui/lib/core';
 import { TimeFormatFunction } from './types';
 import stringifyTimeInput from './utils/stringifyTimeInput';
 

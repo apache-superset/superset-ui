@@ -17,7 +17,7 @@
  * under the License.
  */
 import UntypedJed from 'jed';
-import { logging } from '@superset-ui/core';
+import { logging } from 'superset-ui/lib/core';
 import { Jed, TranslatorConfig, Locale, Translations, LocaleData, LanguagePack } from './types';
 
 const DEFAULT_LANGUAGE_PACK: LanguagePack = {

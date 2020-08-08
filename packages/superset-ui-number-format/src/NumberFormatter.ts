@@ -1,4 +1,4 @@
-import { ExtensibleFunction, isRequired } from '@superset-ui/core';
+import { ExtensibleFunction, isRequired } from 'superset-ui/lib/core';
 import { NumberFormatFunction } from './types';
 
 export const PREVIEW_VALUE = 12345.432;

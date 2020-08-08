@@ -1,4 +1,4 @@
-import { Registry, makeSingleton, OverwritePolicy } from '@superset-ui/core';
+import { Registry, makeSingleton, OverwritePolicy } from 'superset-ui/lib/core';
 import { TransformProps } from '../types/TransformFunction';
 
 class ChartTransformPropsRegistry extends Registry<TransformProps> {

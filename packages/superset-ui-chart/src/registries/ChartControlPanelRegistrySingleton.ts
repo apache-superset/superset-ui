@@ -1,4 +1,4 @@
-import { Registry, makeSingleton } from '@superset-ui/core';
+import { Registry, makeSingleton } from 'superset-ui/lib/core';
 import { ChartControlPanel } from '../models/ChartControlPanel';
 
 class ChartControlPanelRegistry extends Registry<ChartControlPanel, ChartControlPanel> {

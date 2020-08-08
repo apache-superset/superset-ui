@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { convertKeysToCamelCase } from '@superset-ui/core';
+import { convertKeysToCamelCase } from 'superset-ui/lib/core';
 import { Datasource } from '@superset-ui/query';
 import { HandlerFunction, PlainObject } from '../types/Base';
 import { QueryData, DataRecordFilters } from '../types/QueryResponse';

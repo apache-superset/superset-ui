@@ -1,5 +1,5 @@
 /* eslint-disable no-dupe-class-members */
-import { ExtensibleFunction } from '@superset-ui/core';
+import { ExtensibleFunction } from 'superset-ui/lib/core';
 import { scaleOrdinal, ScaleOrdinal } from 'd3-scale';
 import { ColorsLookup } from './types';
 import stringifyAndTrim from './stringifyAndTrim';

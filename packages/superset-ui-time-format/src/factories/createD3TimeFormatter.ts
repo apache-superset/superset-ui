@@ -1,5 +1,5 @@
 import { utcFormat, timeFormat, timeFormatLocale, TimeLocaleDefinition } from 'd3-time-format';
-import { isRequired } from '@superset-ui/core';
+import { isRequired } from 'superset-ui/lib/core';
 import TimeFormatter from '../TimeFormatter';
 import { LOCAL_PREFIX } from '../TimeFormats';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { isDefined } from '@superset-ui/core';
+import { isDefined } from 'superset-ui/lib/core';
 import { TooltipFrame, TooltipTable } from '@superset-ui/chart-composition';
 import { BoxPlotEncoder } from './Encoder';
 import { BoxPlotDataRow } from './types';

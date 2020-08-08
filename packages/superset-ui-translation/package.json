@@ -29,7 +29,7 @@
     "jed": "^1.1.1"
   },
   "peerDependencies": {
-    "@superset-ui/core": "^0.14.18"
+    "superset-ui": "^0.14.18"
   },
   "publishConfig": {
     "access": "public"

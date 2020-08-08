@@ -31,6 +31,6 @@
     "pretty-ms": "^7.0.0"
   },
   "peerDependencies": {
-    "@superset-ui/core": "^0.14.0"
+    "superset-ui": "^0.15.0"
   }
 }

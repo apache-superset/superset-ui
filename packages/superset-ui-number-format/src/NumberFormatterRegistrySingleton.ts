@@ -1,4 +1,4 @@
-import { makeSingleton } from '@superset-ui/core';
+import { makeSingleton } from 'superset-ui/lib/core';
 import NumberFormatterRegistry from './NumberFormatterRegistry';
 
 const getInstance = makeSingleton(NumberFormatterRegistry);

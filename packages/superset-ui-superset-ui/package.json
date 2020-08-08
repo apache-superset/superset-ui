@@ -31,7 +31,7 @@
     "@superset-ui/chart-controls": "0.14.9",
     "@superset-ui/color": "0.14.9",
     "@superset-ui/connection": "0.14.19",
-    "@superset-ui/core": "0.14.20",
+    "superset-ui": "0.14.20",
     "@superset-ui/dimension": "0.14.9",
     "@superset-ui/number-format": "0.14.9",
     "@superset-ui/query": "0.14.15",

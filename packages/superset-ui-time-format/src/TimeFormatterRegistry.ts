@@ -1,4 +1,4 @@
-import { RegistryWithDefaultKey, OverwritePolicy } from '@superset-ui/core';
+import { RegistryWithDefaultKey, OverwritePolicy } from 'superset-ui/lib/core';
 import TimeFormats, { LOCAL_PREFIX } from './TimeFormats';
 import createD3TimeFormatter from './factories/createD3TimeFormatter';
 import TimeFormatter from './TimeFormatter';

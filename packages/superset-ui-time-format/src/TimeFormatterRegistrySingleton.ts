@@ -1,4 +1,4 @@
-import { makeSingleton } from '@superset-ui/core';
+import { makeSingleton } from 'superset-ui/lib/core';
 import TimeFormatterRegistry from './TimeFormatterRegistry';
 import TimeFormatter from './TimeFormatter';
 import TimeFormatsForGranularity from './TimeFormatsForGranularity';

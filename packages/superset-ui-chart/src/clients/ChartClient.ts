@@ -1,4 +1,4 @@
-import { isDefined } from '@superset-ui/core';
+import { isDefined } from 'superset-ui/lib/core';
 import {
   SupersetClient,
   SupersetClientInterface,

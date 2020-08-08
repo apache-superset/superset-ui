@@ -42,7 +42,7 @@
   },
   "peerDependencies": {
     "@superset-ui/connection": "^0.14.0",
-    "@superset-ui/core": "^0.14.0",
+    "superset-ui": "^0.15.0",
     "@superset-ui/dimension": "^0.14.0",
     "@superset-ui/query": "^0.14.0",
     "react": "^16.13.1"

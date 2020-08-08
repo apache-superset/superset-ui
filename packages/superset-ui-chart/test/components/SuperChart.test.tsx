@@ -8,7 +8,7 @@ jest.mock('resize-observer-polyfill');
 // @ts-ignore
 import { triggerResizeObserver } from 'resize-observer-polyfill';
 import ErrorBoundary from 'react-error-boundary';
-import { promiseTimeout } from '@superset-ui/core';
+import { promiseTimeout } from 'superset-ui/lib/core';
 import { SuperChart } from '../../src';
 import RealSuperChart, { WrapperProps } from '../../src/components/SuperChart';
 import { ChartKeys, DiligentChartPlugin, BuggyChartPlugin } from './MockChartPlugins';

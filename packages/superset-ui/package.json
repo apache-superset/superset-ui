@@ -1,7 +1,7 @@
 {
-  "name": "@superset-ui/core",
+  "name": "superset-ui",
   "version": "0.14.20",
-  "description": "Superset UI core",
+  "description": "UI fondation and utilities for Apache Superset.",
   "sideEffects": false,
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -25,11 +25,11 @@
   "publishConfig": {
     "access": "public"
   },
-  "devDependencies": {
-    "jest-mock-console": "^1.0.0"
-  },
   "dependencies": {
     "@types/lodash": "^4.14.149",
     "lodash": "^4.17.11"
+  },
+  "devDependencies": {
+    "jest-mock-console": "^1.0.0"
   }
 }

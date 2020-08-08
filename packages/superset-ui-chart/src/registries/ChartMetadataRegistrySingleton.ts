@@ -1,4 +1,4 @@
-import { Registry, makeSingleton, OverwritePolicy } from '@superset-ui/core';
+import { Registry, makeSingleton, OverwritePolicy } from 'superset-ui/lib/core';
 import ChartMetadata from '../models/ChartMetadata';
 
 class ChartMetadataRegistry extends Registry<ChartMetadata, ChartMetadata> {

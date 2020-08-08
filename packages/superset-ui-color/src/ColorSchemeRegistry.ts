@@ -1,4 +1,4 @@
-import { RegistryWithDefaultKey, OverwritePolicy } from '@superset-ui/core';
+import { RegistryWithDefaultKey, OverwritePolicy } from 'superset-ui/lib/core';
 
 export default class ColorSchemeRegistry<T> extends RegistryWithDefaultKey<T> {
   constructor() {

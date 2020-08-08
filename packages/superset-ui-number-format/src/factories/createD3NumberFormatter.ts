@@ -1,5 +1,5 @@
 import { format as d3Format, formatLocale, FormatLocaleDefinition } from 'd3-format';
-import { isRequired } from '@superset-ui/core';
+import { isRequired } from 'superset-ui/lib/core';
 import NumberFormatter from '../NumberFormatter';
 import { NumberFormatFunction } from '../types';
 

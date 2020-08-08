@@ -1,5 +1,5 @@
 import { ComponentType } from 'react';
-import { isRequired, Plugin } from '@superset-ui/core';
+import { isRequired, Plugin } from 'superset-ui/lib/core';
 import { QueryFormData } from '@superset-ui/query';
 import ChartMetadata from './ChartMetadata';
 import getChartMetadataRegistry from '../registries/ChartMetadataRegistrySingleton';

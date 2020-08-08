@@ -1,4 +1,4 @@
-import { RegistryWithDefaultKey, OverwritePolicy } from '@superset-ui/core';
+import { RegistryWithDefaultKey, OverwritePolicy } from 'superset-ui/lib/core';
 import createD3NumberFormatter from './factories/createD3NumberFormatter';
 import createSmartNumberFormatter from './factories/createSmartNumberFormatter';
 import NumberFormats from './NumberFormats';
