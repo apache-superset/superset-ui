@@ -1,0 +1,58 @@
+{
+  "compilerOptions": {
+    "declarationDir": "lib",
+    "outDir": "lib",
+    "rootDir": "src"
+  },
+  "exclude": [
+    "lib",
+    "test"
+  ],
+  "extends": "../../tsconfig.options.json",
+  "include": [
+    "src/**/*",
+    "types/**/*",
+    "../../types/**/*"
+  ],
+  "references": [
+    {
+      "path": "../superset-ui-chart"
+    },
+    {
+      "path": "../superset-ui-chart-composition"
+    },
+    {
+      "path": "../superset-ui-chart-controls"
+    },
+    {
+      "path": "../superset-ui-color"
+    },
+    {
+      "path": "../superset-ui-connection"
+    },
+    {
+      "path": "../superset-ui-core"
+    },
+    {
+      "path": "../superset-ui-dimension"
+    },
+    {
+      "path": "../superset-ui-number-format"
+    },
+    {
+      "path": "../superset-ui-query"
+    },
+    {
+      "path": "../superset-ui-style"
+    },
+    {
+      "path": "../superset-ui-time-format"
+    },
+    {
+      "path": "../superset-ui-translation"
+    },
+    {
+      "path": "../superset-ui-validator"
+    }
+  ]
+}

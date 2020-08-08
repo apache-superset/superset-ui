@@ -101,10 +101,22 @@
         "driver": "babel",
         "strategy": "none"
       },
-      "eslint",
-      "jest",
-      "prettier",
-      "typescript"
+      {
+        "driver": "eslint",
+        "strategy": "none"
+      },
+      {
+        "driver": "jest",
+        "strategy": "none"
+      },
+      {
+        "driver": "prettier",
+        "strategy": "none"
+      },
+      {
+        "driver": "typescript",
+        "strategy": "none"
+      }
     ],
     "settings": {
       "library": true,
