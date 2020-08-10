@@ -1,4 +1,4 @@
-import { promiseTimeout } from 'superset-ui/lib/core';
+import { promiseTimeout } from 'superset-ui/src/core';
 import { getTextDimension } from '../src';
 import { addDummyFill, removeDummyFill, SAMPLE_TEXT } from './getBBoxDummyFill';
 

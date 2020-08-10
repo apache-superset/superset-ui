@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { promiseTimeout } from 'superset-ui/lib/core';
+import { promiseTimeout } from 'superset-ui/src/core';
 import mockConsole, { RestoreConsole } from 'jest-mock-console';
 
 import { ChartProps } from '../../src';

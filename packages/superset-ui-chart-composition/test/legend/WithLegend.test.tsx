@@ -5,7 +5,7 @@ import { mount, shallow } from 'enzyme';
 jest.mock('resize-observer-polyfill');
 // @ts-ignore
 import { triggerResizeObserver } from 'resize-observer-polyfill';
-import { promiseTimeout } from 'superset-ui/lib/core';
+import { promiseTimeout } from 'superset-ui/src/core';
 import { WithLegend } from '../../src';
 
 let renderChart = jest.fn();
