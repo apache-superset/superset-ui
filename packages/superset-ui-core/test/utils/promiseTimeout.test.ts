@@ -1,4 +1,4 @@
-import { promiseTimeout } from '../../src';
+import { promiseTimeout } from '@superset-ui/core';
 
 describe('promiseTimeout(func, delay)', () => {
   beforeEach(() => {

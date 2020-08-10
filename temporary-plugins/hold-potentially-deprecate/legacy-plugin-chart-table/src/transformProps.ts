@@ -17,7 +17,7 @@
  * under the License.
  */
 import { ChartProps, DataRecord, DataRecordFilters } from '@superset-ui/chart';
-import { QueryFormDataMetric } from '@superset-ui/query';
+import { QueryFormDataMetric } from '@superset-ui/core';
 
 interface DataColumnMeta {
   // `key` is what is called `label` in the input props

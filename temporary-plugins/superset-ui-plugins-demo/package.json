@@ -55,9 +55,8 @@
     "@superset-ui/chart": "^0.14.0",
     "@superset-ui/chart-composition": "^0.14.0",
     "@superset-ui/color": "^0.14.0",
-    "@superset-ui/connection": "^0.14.0",
+    "@superset-ui/core": "^0.15.0",
     "@superset-ui/number-format": "^0.14.0",
-    "@superset-ui/time-format": "^0.14.0",
-    "@superset-ui/translation": "^0.14.0"
+    "@superset-ui/time-format": "^0.14.0"
   }
 }

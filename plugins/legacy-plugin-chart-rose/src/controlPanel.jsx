@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { t } from '@superset-ui/translation';
+import { t } from '@superset-ui/core';
 import {
   D3_TIME_FORMAT_OPTIONS,
   D3_FORMAT_OPTIONS,

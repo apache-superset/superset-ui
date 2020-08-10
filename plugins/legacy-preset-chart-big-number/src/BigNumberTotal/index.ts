@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { t } from '@superset-ui/translation';
+import { t } from '@superset-ui/core';
 import { ChartMetadata, ChartPlugin } from '@superset-ui/chart';
 import controlPanel from './controlPanel';
 import transformProps from '../BigNumber/transformProps';

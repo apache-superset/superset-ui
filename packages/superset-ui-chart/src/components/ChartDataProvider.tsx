@@ -1,7 +1,11 @@
 /* eslint react/sort-comp: 'off' */
 import React, { ReactNode } from 'react';
-import { SupersetClientInterface, RequestConfig } from '@superset-ui/connection';
-import { QueryFormData, Datasource } from '@superset-ui/query';
+import {
+  SupersetClientInterface,
+  RequestConfig,
+  QueryFormData,
+  Datasource,
+} from '@superset-ui/core';
 import ChartClient, { SliceIdAndOrFormData } from '../clients/ChartClient';
 import { QueryData } from '../types/QueryResponse';
 

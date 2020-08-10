@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { DatasourceType } from '@superset-ui/query';
+import { DatasourceType } from '@superset-ui/core';
 import { TimeGranularity } from '@superset-ui/time-format';
 import transformProps, {
   BignumberChartProps,

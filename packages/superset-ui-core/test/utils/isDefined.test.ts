@@ -1,4 +1,4 @@
-import { isDefined } from '../../src';
+import { isDefined } from '@superset-ui/core';
 
 describe('isDefined(value)', () => {
   it('returns true if value is not null and not undefined', () => {

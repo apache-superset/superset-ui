@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { t } from '@superset-ui/translation';
+import { t } from '@superset-ui/core';
 import React, { useEffect, createRef } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { formatNumber, NumberFormats } from '@superset-ui/number-format';

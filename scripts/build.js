@@ -4,11 +4,15 @@
  */
 const rimraf = require('rimraf');
 const { spawnSync } = require('child_process');
+const fastGlob = require('fast-glob');
 
 const glob = process.argv[2];
 const extraArgs = process.argv.slice(2);
 
 process.env.PATH = `./node_modules/.bin:${process.env.PATH}`;
+
+// packages that do not need tsc
+const metaPackages = new Set(['demo', 'generator-superset']);
 
 const run = cmd => {
   // eslint-disable-next-line no-console
@@ -31,9 +35,20 @@ if (glob) {
   rimraf.sync(
     `./{packages,plugins}/${glob}/{lib,esm,tsconfig.tsbuildinfo,node_modules/@types/react}`,
   );
-  const packageName = glob.replace(/^superset-ui-/, '');
-  run(`nimbus babel --clean --workspaces="@superset-ui/${packageName}" ${BABEL_CONFIG}`);
-  run(`nimbus babel --clean --workspaces="@superset-ui/${packageName}" --esm ${BABEL_CONFIG}`);
+  let packageName = glob.replace(/^superset-ui-/, '');
+  if (!extraArgs.includes('--type-only')) {
+    run(`nimbus babel --clean --workspaces="@superset-ui/${packageName}" ${BABEL_CONFIG}`);
+    run(`nimbus babel --clean --workspaces="@superset-ui/${packageName}" --esm ${BABEL_CONFIG}`);
+  }
+  // only build for packages with ts files
+  packageName = `(${[
+    ...new Set(
+      fastGlob
+        .sync([`./node_modules/@superset-ui/${glob}/src/**/*.ts`])
+        .map(x => x.split('/')[3])
+        .filter(x => !metaPackages.has(x)),
+    ),
+  ].join('|')})`;
   run(`nimbus typescript --build --workspaces="@superset-ui/${packageName}"`);
   // eslint-disable-next-line global-require
   require('./copyAssets');

@@ -18,7 +18,7 @@
  */
 import memoizeOne from 'memoize-one';
 import { DataRecord } from '@superset-ui/chart';
-import { QueryFormDataMetric } from '@superset-ui/query';
+import { QueryFormDataMetric } from '@superset-ui/core';
 import { getNumberFormatter, NumberFormats } from '@superset-ui/number-format';
 import {
   getTimeFormatter,
