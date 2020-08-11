@@ -18,7 +18,7 @@
  * under the License.
  */
 import React from 'react';
-import { t, addLocaleData } from '@superset-ui/translation';
+import { t, addLocaleData } from '@superset-ui/core';
 import {
   formatSelectOptions,
   D3_TIME_FORMAT_OPTIONS,

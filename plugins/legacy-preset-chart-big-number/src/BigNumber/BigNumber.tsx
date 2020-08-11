@@ -18,7 +18,7 @@
  */
 import React from 'react';
 import shortid from 'shortid';
-import { t } from '@superset-ui/translation';
+import { t } from '@superset-ui/core';
 import { getNumberFormatter, NumberFormatter } from '@superset-ui/number-format';
 import { XYChart, AreaSeries, CrossHair, LinearGradient } from '@data-ui/xy-chart';
 import { BRAND_COLOR } from '@superset-ui/color';

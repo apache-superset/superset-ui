@@ -1,4 +1,4 @@
-import { t } from '@superset-ui/translation';
+import { t } from '@superset-ui/core';
 
 export default function validateNonEmpty(v: unknown) {
   if (v === null || typeof v === 'undefined' || v === '' || (Array.isArray(v) && v.length === 0)) {

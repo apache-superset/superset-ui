@@ -17,7 +17,7 @@
  * under the License.
  */
 import { ChartProps } from '@superset-ui/chart';
-import { DatasourceType } from '@superset-ui/query';
+import { DatasourceType } from '@superset-ui/core';
 import { TableChartProps } from '../src/transformProps';
 
 const basicFormData = {

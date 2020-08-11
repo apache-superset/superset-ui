@@ -2,11 +2,10 @@ import React from 'react';
 import { text, select, withKnobs } from '@storybook/addon-knobs';
 
 import { SuperChart, ChartDataProvider } from '@superset-ui/chart';
-import { SupersetClient } from '@superset-ui/connection';
+import { SupersetClient } from '@superset-ui/core';
 import { BigNumberChartPlugin as LegacyBigNumberPlugin } from '@superset-ui/legacy-preset-chart-big-number';
 import LegacySankeyPlugin from '@superset-ui/legacy-plugin-chart-sankey';
 import LegacySunburstPlugin from '@superset-ui/legacy-plugin-chart-sunburst';
-import LegacyWordCloudPlugin from '@superset-ui/legacy-plugin-chart-word-cloud';
 import { WordCloudChartPlugin } from '@superset-ui/plugin-chart-word-cloud';
 
 import {
@@ -31,7 +30,6 @@ new LegacySankeyPlugin().configure({ key: SANKEY }).register();
 // eslint-disable-next-line
 new LegacySunburstPlugin().configure({ key: SUNBURST }).register();
 // eslint-disable-next-line
-new LegacyWordCloudPlugin().configure({ key: WORD_CLOUD_LEGACY }).register();
 new WordCloudChartPlugin().configure({ key: WORD_CLOUD }).register();
 
 const VIS_TYPES = [BIG_NUMBER, SANKEY, SUNBURST, WORD_CLOUD, WORD_CLOUD_LEGACY];

@@ -1,4 +1,4 @@
-import { QueryFormData, QueryContext } from '@superset-ui/query';
+import { QueryFormData, QueryContext } from '@superset-ui/core';
 import ChartProps from '../models/ChartProps';
 
 export interface PlainProps {
