@@ -10,6 +10,6 @@ npm-shrinkwrap.json
 package.json
 package-lock.json
 tsconfig.json
-tsconfig.option.json
+tsconfig.options.json
 tsconfig.eslint.json
 CHANGELOG.md

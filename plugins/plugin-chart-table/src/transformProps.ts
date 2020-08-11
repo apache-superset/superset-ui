@@ -18,14 +18,15 @@
  */
 import memoizeOne from 'memoize-one';
 import { DataRecord } from '@superset-ui/chart';
-import { QueryFormDataMetric } from '@superset-ui/core';
-import { getNumberFormatter, NumberFormats } from '@superset-ui/number-format';
 import {
+  QueryFormDataMetric,
+  getNumberFormatter,
+  NumberFormats,
   getTimeFormatter,
   smartDateFormatter,
   getTimeFormatterForGranularity,
   TimeFormatter,
-} from '@superset-ui/time-format';
+} from '@superset-ui/core';
 
 import isEqualArray from './utils/isEqualArray';
 import DateWithFormatter from './utils/DateWithFormatter';

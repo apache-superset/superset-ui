@@ -19,9 +19,9 @@
 import { t } from '@superset-ui/core';
 import React, { useEffect, createRef } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { formatNumber, NumberFormats } from '@superset-ui/number-format';
+import { formatNumber, NumberFormats } from '@superset-ui/core';
 import { DataRecordValue } from '@superset-ui/chart';
-import { getTimeFormatter } from '@superset-ui/time-format';
+import { getTimeFormatter } from '@superset-ui/core';
 import { filterXSS } from 'xss';
 
 // initialize datatables.net

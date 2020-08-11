@@ -11,8 +11,12 @@ import {
   getCategoricalSchemeRegistry,
   getSequentialSchemeRegistry,
 } from '@superset-ui/color';
-import { getNumberFormatter } from '@superset-ui/number-format';
-import { getTimeFormatter, LOCAL_PREFIX, getTimeFormatterRegistry } from '@superset-ui/time-format';
+import {
+  getNumberFormatter,
+  getTimeFormatter,
+  LOCAL_PREFIX,
+  getTimeFormatterRegistry,
+} from '@superset-ui/core';
 
 const timeFormat: TimeFormatResolver = ({ format, formatInLocalTime = false } = {}) => {
   const formatString = formatInLocalTime

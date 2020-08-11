@@ -32,7 +32,6 @@
     "@superset-ui/chart-controls": "^0.14.0",
     "@superset-ui/color": "^0.14.9",
     "@superset-ui/core": "^0.15.0",
-    "@superset-ui/number-format": "^0.14.0",
     "@superset-ui/style": "^0.14.3",
     "d3": "^3.5.17",
     "d3-array": "^2.4.0",

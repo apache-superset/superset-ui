@@ -19,7 +19,7 @@
 /* eslint-disable react/sort-prop-types */
 import dt from 'datatables.net-bs';
 import PropTypes from 'prop-types';
-import { formatNumber } from '@superset-ui/number-format';
+import { formatNumber } from '@superset-ui/core';
 import fixTableHeight from './utils/fixTableHeight';
 import 'datatables.net-bs/css/dataTables.bootstrap.css';
 

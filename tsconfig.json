@@ -38,22 +38,10 @@
       "path": "packages/superset-ui-dimension/test"
     },
     {
-      "path": "packages/superset-ui-number-format"
-    },
-    {
-      "path": "packages/superset-ui-number-format/test"
-    },
-    {
       "path": "packages/superset-ui-style"
     },
     {
       "path": "packages/superset-ui-style/test"
-    },
-    {
-      "path": "packages/superset-ui-time-format"
-    },
-    {
-      "path": "packages/superset-ui-time-format/test"
     },
     {
       "path": "packages/superset-ui-validator"

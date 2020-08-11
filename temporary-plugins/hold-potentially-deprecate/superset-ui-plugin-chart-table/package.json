@@ -30,8 +30,6 @@
     "@airbnb/lunar-icons": "^2.1.4",
     "@superset-ui/chart": "^0.14.0",
     "@superset-ui/core": "^0.15.0",
-    "@superset-ui/number-format": "^0.14.0",
-    "@superset-ui/time-format": "^0.14.0",
     "@types/dompurify": "^2.0.0",
     "dompurify": "^2.0.6",
     "reselect": "^4.0.0"

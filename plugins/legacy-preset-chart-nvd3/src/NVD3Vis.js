@@ -23,10 +23,15 @@ import nv from 'nvd3-fork';
 import mathjs from 'mathjs';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { isDefined, t } from '@superset-ui/core';
+import {
+  isDefined,
+  t,
+  getTimeFormatter,
+  smartDateVerboseFormatter,
+  getNumberFormatter,
+  NumberFormats,
+} from '@superset-ui/core';
 import { CategoricalColorNamespace } from '@superset-ui/color';
-import { getNumberFormatter, NumberFormats } from '@superset-ui/number-format';
-import { getTimeFormatter, smartDateVerboseFormatter } from '@superset-ui/time-format';
 import 'nvd3-fork/build/nv.d3.min.css';
 /* eslint-disable-next-line */
 import ANNOTATION_TYPES, { applyNativeColumns } from './vendor/superset/AnnotationTypes';

@@ -32,12 +32,6 @@
     },
     {
       "path": "../../packages/superset-ui-dimension"
-    },
-    {
-      "path": "../../packages/superset-ui-number-format"
-    },
-    {
-      "path": "../../packages/superset-ui-time-format"
     }
   ]
 }

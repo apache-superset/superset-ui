@@ -3,11 +3,10 @@ import { jsxDecorator } from 'storybook-addon-jsx';
 import categoricalD3 from '@superset-ui/color/lib/colorSchemes/categorical/d3';
 import sequentialCommon from '@superset-ui/color/lib/colorSchemes/sequential/common';
 import sequentialD3 from '@superset-ui/color/lib/colorSchemes/sequential/d3';
-import { configure } from '@superset-ui/core';
+import { configure, getTimeFormatterRegistry, smartDateFormatter } from '@superset-ui/core';
 import { getCategoricalSchemeRegistry, getSequentialSchemeRegistry } from '@superset-ui/color';
-import { getTimeFormatterRegistry, smartDateFormatter } from '@superset-ui/time-format';
 import { configureEncodable } from '@superset-ui/preset-chart-xy';
-import themeDecorator from "./themeDecorator"
+import themeDecorator from './themeDecorator';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './storybook.css';
@@ -31,7 +30,7 @@ addParameters({
     sortStoriesByKind: false,
     url: '#',
     storySort: (a, b) => {
-      if (a[1].kind === b[1].kind ) {
+      if (a[1].kind === b[1].kind) {
         return 0;
       }
       if (a[1].id.startsWith('core-packages') && !b[1].id.startsWith('core-packages')) {

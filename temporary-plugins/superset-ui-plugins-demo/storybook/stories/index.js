@@ -7,7 +7,7 @@ import sequentialCommon from '@superset-ui/color/lib/colorSchemes/sequential/com
 import sequentialD3 from '@superset-ui/color/lib/colorSchemes/sequential/d3';
 import { configure } from '@superset-ui/core';
 import { getCategoricalSchemeRegistry, getSequentialSchemeRegistry } from '@superset-ui/color';
-import { getTimeFormatterRegistry, smartDateFormatter } from '@superset-ui/time-format';
+import { getTimeFormatterRegistry, smartDateFormatter } from '@superset-ui/core';
 
 setAddon(JSXAddon);
 

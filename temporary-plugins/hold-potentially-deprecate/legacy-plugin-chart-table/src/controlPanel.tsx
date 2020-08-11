@@ -30,7 +30,7 @@ import {
   sharedControls,
 } from '@superset-ui/chart-controls';
 import { validateNonEmpty } from '@superset-ui/validator';
-import { smartDateFormatter } from '@superset-ui/time-format';
+import { smartDateFormatter } from '@superset-ui/core';
 
 export const PAGE_SIZE_OPTIONS = formatSelectOptions<number>([[0, t('All')], 10, 20, 50, 100, 200]);
 

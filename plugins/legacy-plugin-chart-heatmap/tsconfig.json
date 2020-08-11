@@ -28,9 +28,6 @@
       "path": "../../packages/superset-ui-core"
     },
     {
-      "path": "../../packages/superset-ui-number-format"
-    },
-    {
       "path": "../../packages/superset-ui-validator"
     }
   ]

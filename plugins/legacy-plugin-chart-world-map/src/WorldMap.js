@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 import { extent as d3Extent } from 'd3-array';
 import { getSequentialSchemeRegistry } from '@superset-ui/color';
 import Datamap from 'datamaps/dist/datamaps.world.min';
-import { getNumberFormatter } from '@superset-ui/number-format';
+import { getNumberFormatter } from '@superset-ui/core';
 
 const propTypes = {
   data: PropTypes.arrayOf(

@@ -16,10 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { QueryFormDataMetric } from '@superset-ui/core';
+import {
+  NumberFormatter,
+  TimeFormatter,
+  TimeGranularity,
+  QueryFormDataMetric,
+} from '@superset-ui/core';
 import { ChartProps, DataRecord, DataRecordValue, DataRecordFilters } from '@superset-ui/chart';
-import { TimeFormatter, TimeGranularity } from '@superset-ui/time-format';
-import { NumberFormatter } from '@superset-ui/number-format';
 
 export enum DataType {
   Number = 'number',

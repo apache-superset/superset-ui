@@ -89,12 +89,12 @@ if (shouldCleanup) {
 }
 
 if (shouldRunBabel) {
-  console.log('\n>>> Run babel --------');
+  console.log('--- Run babel --------');
   const babelCommand = `lerna exec --stream --concurrency 10 --scope ${scope}
          -- babel ${BABEL_CONFIG} src --extensions ".ts,.tsx,.js,.jsx" --copy-files`;
   run(`${babelCommand} --out-dir lib`);
 
-  console.log('\n>>> Run babel esm ----');
+  console.log('--- Run babel esm ---');
   // run again with
   run(`${babelCommand} --out-dir esm`, { env: { ...process.env, BABEL_OUTPUT: 'esm' } });
 }

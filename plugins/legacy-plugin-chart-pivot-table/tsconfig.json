@@ -23,9 +23,6 @@
     },
     {
       "path": "../../packages/superset-ui-core"
-    },
-    {
-      "path": "../../packages/superset-ui-number-format"
     }
   ]
 }
