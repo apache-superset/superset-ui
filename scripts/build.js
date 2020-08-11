@@ -44,11 +44,11 @@ const BABEL_CONFIG = '--config-file=../../babel.config.js';
 // packages that do not need tsc
 const META_PACKAGES = new Set(['demo', 'generator-superset']);
 
-function run(cmd) {
+function run(cmd, options) {
   console.log(`\n>> ${cmd}\n`);
   const [p, ...args] = cmd.split(' ');
   const runner = spawnSync;
-  const { status } = runner(p, args, { stdio: 'inherit' });
+  const { status } = runner(p, args, { stdio: 'inherit', ...options });
   if (status !== 0) {
     process.exit(status);
   }
@@ -89,8 +89,14 @@ if (shouldCleanup) {
 }
 
 if (shouldRunBabel) {
-  run(`lerna exec --stream --concurrency 10 --scope ${scope}
-         -- babel ${BABEL_CONFIG} src --extensions ".ts,.tsx,.js,.jsx" --out-dir lib --copy-files`);
+  console.log('--- Run babel --------');
+  const babelCommand = `lerna exec --stream --concurrency 10 --scope ${scope}
+         -- babel ${BABEL_CONFIG} src --extensions ".ts,.tsx,.js,.jsx" --copy-files`;
+  run(`${babelCommand} --out-dir lib`);
+
+  console.log('--- Run babel esm ---');
+  // run again with
+  run(`${babelCommand} --out-dir esm`, { env: { ...process.env, BABEL_OUTPUT: 'esm' } });
 }
 
 if (shouldRunTyping) {

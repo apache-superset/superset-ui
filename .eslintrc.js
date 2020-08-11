@@ -57,7 +57,7 @@ module.exports = {
       },
     },
     {
-      files: './scripts/*',
+      files: ['./scripts/*', './*.config.js'],
       rules: {
         'no-console': 0,
       },
