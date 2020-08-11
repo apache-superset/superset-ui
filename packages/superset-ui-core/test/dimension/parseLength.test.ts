@@ -1,4 +1,4 @@
-import parseLength from '../src/parseLength';
+import { parseLength } from '@superset-ui/core/src';
 
 describe('parseLength(input)', () => {
   it('handles string "auto"', () => {

@@ -17,9 +17,6 @@
   "references": [
     {
       "path": "../superset-ui-core"
-    },
-    {
-      "path": "../superset-ui-dimension"
     }
   ]
 }

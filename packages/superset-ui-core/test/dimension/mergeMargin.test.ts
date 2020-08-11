@@ -1,4 +1,4 @@
-import { mergeMargin } from '../src';
+import { mergeMargin } from '@superset-ui/core/src';
 
 describe('mergeMargin(margin1, margin2, mode?)', () => {
   it('combines two given margin', () => {

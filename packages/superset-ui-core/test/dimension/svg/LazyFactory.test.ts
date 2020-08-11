@@ -1,4 +1,4 @@
-import LazyFactory from '../../src/svg/LazyFactory';
+import LazyFactory from '@superset-ui/core/src/dimension/svg/LazyFactory';
 
 describe('LazyFactory', () => {
   describe('createInContainer()', () => {

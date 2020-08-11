@@ -32,12 +32,6 @@
       "path": "packages/superset-ui-core/test"
     },
     {
-      "path": "packages/superset-ui-dimension"
-    },
-    {
-      "path": "packages/superset-ui-dimension/test"
-    },
-    {
       "path": "packages/superset-ui-style"
     },
     {

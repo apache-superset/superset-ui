@@ -24,10 +24,10 @@ import {
   NumberFormatter,
   smartDateVerboseFormatter,
   TimeFormatter,
+  computeMaxFontSize,
 } from '@superset-ui/core';
 import { XYChart, AreaSeries, CrossHair, LinearGradient } from '@data-ui/xy-chart';
 import { BRAND_COLOR } from '@superset-ui/color';
-import { computeMaxFontSize } from '@superset-ui/dimension';
 
 import styled from '@superset-ui/style';
 

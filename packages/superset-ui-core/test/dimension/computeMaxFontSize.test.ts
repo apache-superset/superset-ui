@@ -1,4 +1,4 @@
-import { computeMaxFontSize } from '../src';
+import { computeMaxFontSize } from '@superset-ui/core/src';
 import { addDummyFill, removeDummyFill, SAMPLE_TEXT } from './getBBoxDummyFill';
 
 describe('computeMaxFontSize(input)', () => {
@@ -7,11 +7,11 @@ describe('computeMaxFontSize(input)', () => {
     afterEach(removeDummyFill);
 
     it('requires either idealFontSize or maxHeight', () => {
-      expect(() =>
+      expect(() => {
         computeMaxFontSize({
           text: SAMPLE_TEXT[0],
-        }),
-      ).toThrow();
+        });
+      }).toThrow();
     });
     it('computes maximum font size for given maxWidth and maxHeight', () => {
       expect(

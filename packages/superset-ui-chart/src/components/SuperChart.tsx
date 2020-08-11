@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import ErrorBoundary, { ErrorBoundaryProps, FallbackProps } from 'react-error-boundary';
-import { parseLength, Dimension } from '@superset-ui/dimension';
+import { parseLength, Dimension } from '@superset-ui/core';
 import { ParentSize } from '@vx/responsive';
 import { createSelector } from 'reselect';
 import SuperChartCore, { Props as SuperChartCoreProps } from './SuperChartCore';

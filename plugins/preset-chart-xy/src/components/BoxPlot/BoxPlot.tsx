@@ -1,7 +1,7 @@
 import React from 'react';
 import { BoxPlotSeries, XYChart } from '@data-ui/xy-chart';
 import { chartTheme, ChartTheme } from '@data-ui/theme';
-import { Margin, Dimension } from '@superset-ui/dimension';
+import { Margin, Dimension } from '@superset-ui/core';
 import { WithLegend } from '@superset-ui/chart-composition';
 import { Dataset, PlainObject, isFieldDef } from 'encodable';
 import DefaultTooltipRenderer from './DefaultTooltipRenderer';
@@ -85,9 +85,9 @@ export default class BoxPlot extends React.PureComponent<Props> {
           <TooltipRenderer datum={datum} color={color} encoder={encoder} />
         )}
         theme={theme}
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         xScale={convertScaleToDataUIScale(channels.x.definition.scale as any)}
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         yScale={convertScaleToDataUIScale(channels.y.definition.scale as any)}
       >
         {layout.renderXAxis()}

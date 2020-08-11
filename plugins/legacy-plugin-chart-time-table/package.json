@@ -33,7 +33,6 @@
     "@superset-ui/chart-controls": "^0.14.3",
     "@superset-ui/color": "^0.14.0",
     "@superset-ui/core": "^0.15.0",
-    "@superset-ui/dimension": "^0.14.0",
     "@superset-ui/style": "^0.14.0",
     "@superset-ui/validator": "^0.14.0",
     "@types/d3-scale": "^2.0.2",
