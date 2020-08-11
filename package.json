@@ -24,7 +24,7 @@
     "prettier": "nimbus prettier",
     "test": "yarn jest",
     "test:watch": "yarn lint:fix && yarn jest --watch",
-    "type": "yarn build \"*\" --type-only",
+    "type": "yarn build --no-babel",
     "prepare-release": "git checkout master && git pull --rebase origin master && yarn install && yarn test",
     "prerelease": "yarn build",
     "release": "yarn prepare-release && lerna publish && yarn postrelease",
@@ -78,7 +78,8 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-test-renderer": "^16.13.1",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "yargs": "^15.4.1"
   },
   "engines": {
     "node": ">=10.10.0",

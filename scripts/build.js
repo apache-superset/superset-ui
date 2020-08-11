@@ -2,14 +2,42 @@
 /**
  * Build plugins specified by globs
  */
+process.env.PATH = `./node_modules/.bin:${process.env.PATH}`;
+
 const rimraf = require('rimraf');
 const { spawnSync } = require('child_process');
 const fastGlob = require('fast-glob');
+const { argv } = require('yargs')
+  .option('lint', {
+    describe: 'whether to run ESLint',
+    type: 'boolean',
+    // lint is slow, so not turning it on by default
+    default: false,
+  })
+  .option('babel', {
+    describe: 'Whether to run Babel',
+    type: 'boolean',
+    default: true,
+  })
+  .option('clean', {
+    describe: 'Whether to clean cache',
+    type: 'boolean',
+    default: true,
+  })
+  .option('type', {
+    describe: 'Whether to run tsc',
+    type: 'boolean',
+    default: true,
+  });
 
-const glob = process.argv[2];
-const extraArgs = process.argv.slice(2);
-
-process.env.PATH = `./node_modules/.bin:${process.env.PATH}`;
+const {
+  _: globs,
+  lint: shouldLint,
+  babel: shouldRunBabel,
+  clean: shouldCleanup,
+  type: shouldRunTyping,
+} = argv;
+const glob = globs.length > 1 ? `{${globs.join(',')}}` : globs[0] || '*';
 
 const BABEL_CONFIG = '--config-file=../../babel.config.js';
 
@@ -17,7 +45,7 @@ const BABEL_CONFIG = '--config-file=../../babel.config.js';
 const META_PACKAGES = new Set(['demo', 'generator-superset']);
 
 function run(cmd) {
-  console.log(`>> ${cmd}`);
+  console.log(`\n>> ${cmd}\n`);
   const [p, ...args] = cmd.split(' ');
   const runner = spawnSync;
   const { status } = runner(p, args, { stdio: 'inherit' });
@@ -48,26 +76,26 @@ function getPackages(pattern, tsOnly = false) {
   return `@superset-ui/${packages.length > 1 ? `{${packages.join(',')}}` : packages[0]}`;
 }
 
-if (glob) {
-  // lint is slow, so not turning it on by default
-  if (extraArgs.includes('--lint')) {
-    run(`nimbus eslint {packages,plugins}/${glob}/{src,test}`);
-  }
-  let scope = getPackages(glob);
+let scope = getPackages(glob);
 
-  // Clean up
+if (shouldLint) {
+  run(`nimbus eslint {packages,plugins}/${scope}/{src,test}`);
+}
+
+if (shouldCleanup) {
   const cachePath = `./node_modules/${scope}/{lib,esm,tsconfig.tsbuildinfo,node_modules/@types/react}`;
-  console.log(`Cleaning up ${cachePath}`);
+  console.log(`\n>> Cleaning up ${cachePath}`);
   rimraf.sync(cachePath);
+}
 
-  if (!extraArgs.includes('--type-only')) {
-    run(`lerna exec --stream --concurrency 10 --scope ${scope}
+if (shouldRunBabel) {
+  run(`lerna exec --stream --concurrency 10 --scope ${scope}
          -- babel ${BABEL_CONFIG} src --extensions ".ts,.tsx,.js,.jsx" --out-dir lib --copy-files`);
-  }
+}
+
+if (shouldRunTyping) {
   // only run tsc for packages with ts files
   scope = getPackages(glob, true);
   run(`lerna exec --stream --concurrency 3 --scope ${scope} \
        -- tsc --build`);
-} else {
-  run('yarn build *');
 }
