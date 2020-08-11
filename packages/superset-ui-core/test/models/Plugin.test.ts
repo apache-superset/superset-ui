@@ -1,4 +1,4 @@
-import { Plugin } from '@superset-ui/core';
+import { Plugin } from '@superset-ui/core/src';
 
 describe('Plugin', () => {
   it('exists', () => {

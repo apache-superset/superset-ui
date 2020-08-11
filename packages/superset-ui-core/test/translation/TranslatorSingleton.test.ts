@@ -2,6 +2,7 @@
 import mockConsole from 'jest-mock-console';
 import Translator from '@superset-ui/core/src/translation/Translator';
 import { configure, t, tn } from '@superset-ui/core/src/translation/TranslatorSingleton';
+
 import languagePackEn from './languagePacks/en';
 import languagePackZh from './languagePacks/zh';
 

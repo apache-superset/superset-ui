@@ -1,4 +1,4 @@
-import { convertKeysToCamelCase } from '@superset-ui/core';
+import { convertKeysToCamelCase } from '@superset-ui/core/src';
 
 describe('convertKeysToCamelCase(object)', () => {
   it('returns undefined for undefined input', () => {
