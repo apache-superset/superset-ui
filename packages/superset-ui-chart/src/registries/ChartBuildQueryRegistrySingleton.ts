@@ -1,5 +1,4 @@
-import { Registry, makeSingleton, OverwritePolicy } from '@superset-ui/core';
-import { QueryContext } from '@superset-ui/query';
+import { Registry, makeSingleton, OverwritePolicy, QueryContext } from '@superset-ui/core';
 
 // Ideally this would be <T extends QueryFormData>
 type BuildQuery = (formData: any) => QueryContext;

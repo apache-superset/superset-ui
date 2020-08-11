@@ -17,8 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { t } from '@superset-ui/translation';
-import { supersetTheme } from '@superset-ui/style';
+import { t, supersetTheme } from '@superset-ui/core';
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { kebabCase } from 'lodash';
 
