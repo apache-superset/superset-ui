@@ -26,13 +26,13 @@ a high-level it supports:
 
 ```javascript
 // appSetup.js
-import { SupersetClient } from `@superset-ui/connection`;
+import { SupersetClient } from `@superset-ui/core`;
 
 SupersetClient.configure(...clientConfig);
 SupersetClient.init(); // CSRF auth, can also chain `.configure().init();
 
 // anotherFile.js
-import { SupersetClient } from `@superset-ui/connection`;
+import { SupersetClient } from `@superset-ui/core`;
 
 SupersetClient.post(...requestConfig)
   .then(({ request, json }) => ...)
