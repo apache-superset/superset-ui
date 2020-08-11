@@ -34,7 +34,7 @@
  * control interface.
  */
 import React from 'react';
-import { t } from '@superset-ui/translation';
+import { t } from '@superset-ui/core';
 import {
   getCategoricalSchemeRegistry,
   getSequentialSchemeRegistry,

@@ -18,7 +18,7 @@
  * under the License.
  */
 import React, { ReactNode, ReactText, ReactElement } from 'react';
-import { QueryFormData } from '@superset-ui/query';
+import { QueryFormData } from '@superset-ui/core';
 import sharedControls from './shared-controls';
 import sharedControlComponents from './shared-controls/components';
 

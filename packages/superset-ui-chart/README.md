@@ -44,7 +44,7 @@ requests from domains outside your `Apache Superset` instance:
    configuration in the `@superset-ui` storybook.
 
    ```javascript
-   import { SupersetClient } from '@superset-ui/connection';
+   import { SupersetClient } from '@superset-ui/core';
 
    SupersetClient.configure({
      credentials: 'include',

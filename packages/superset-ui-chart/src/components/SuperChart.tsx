@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import ErrorBoundary, { ErrorBoundaryProps, FallbackProps } from 'react-error-boundary';
-import { parseLength, Dimension } from '@superset-ui/dimension';
+import { parseLength, Dimension } from '@superset-ui/core';
 import { ParentSize } from '@vx/responsive';
 import { createSelector } from 'reselect';
 import SuperChartCore, { Props as SuperChartCoreProps } from './SuperChartCore';
@@ -127,7 +127,6 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
     if (
       queryData == null ||
       queryData.data === null ||
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       (Array.isArray(queryData.data) && queryData.data.length === 0)
     ) {
       chart = <NoResultsComponent id={id} className={className} height={height} width={width} />;

@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 import 'd3-svg-legend';
 import d3tip from 'd3-tip';
 import { getSequentialSchemeRegistry } from '@superset-ui/color';
-import { getNumberFormatter, NumberFormats } from '@superset-ui/number-format';
+import { getNumberFormatter, NumberFormats } from '@superset-ui/core';
 
 import './vendor/d3tip.css';
 import './Heatmap.css';

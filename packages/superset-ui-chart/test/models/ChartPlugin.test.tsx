@@ -1,5 +1,5 @@
 import React from 'react';
-import { QueryFormData, DatasourceType } from '@superset-ui/query';
+import { QueryFormData, DatasourceType } from '@superset-ui/core';
 import {
   ChartPlugin,
   ChartMetadata,

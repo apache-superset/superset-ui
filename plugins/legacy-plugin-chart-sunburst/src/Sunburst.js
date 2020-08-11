@@ -20,7 +20,7 @@
 import d3 from 'd3';
 import PropTypes from 'prop-types';
 import { CategoricalColorNamespace, getSequentialSchemeRegistry } from '@superset-ui/color';
-import { getNumberFormatter, NumberFormats } from '@superset-ui/number-format';
+import { getNumberFormatter, NumberFormats } from '@superset-ui/core';
 import wrapSvgText from './utils/wrapSvgText';
 import './Sunburst.css';
 
