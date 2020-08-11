@@ -1,4 +1,4 @@
-import { t } from '@superset-ui/translation';
+import { t } from '@superset-ui/core';
 import { ChartMetadata, ChartPlugin } from '@superset-ui/chart';
 import transformProps from '../legacyPlugin/transformProps';
 import buildQuery from './buildQuery';

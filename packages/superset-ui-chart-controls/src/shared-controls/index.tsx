@@ -34,13 +34,14 @@
  * control interface.
  */
 import React from 'react';
-import { t } from '@superset-ui/translation';
 import {
+  t,
   getCategoricalSchemeRegistry,
   getSequentialSchemeRegistry,
   SequentialScheme,
-} from '@superset-ui/color';
-import { legacyValidateInteger, validateNonEmpty } from '@superset-ui/validator';
+  legacyValidateInteger,
+  validateNonEmpty,
+} from '@superset-ui/core';
 
 import { formatSelectOptions } from '../utils/selectOptions';
 import mainMetric from '../utils/mainMetric';

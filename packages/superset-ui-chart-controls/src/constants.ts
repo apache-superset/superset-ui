@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { t } from '@superset-ui/translation';
+import { t } from '@superset-ui/core';
 
 // eslint-disable-next-line import/prefer-default-export
 export const TIME_FILTER_LABELS = {

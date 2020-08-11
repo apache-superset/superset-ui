@@ -4,7 +4,6 @@ import React from 'react';
 import { mount } from 'enzyme';
 import mockConsole, { RestoreConsole } from 'jest-mock-console';
 
-jest.mock('resize-observer-polyfill');
 // @ts-ignore
 import { triggerResizeObserver } from 'resize-observer-polyfill';
 import ErrorBoundary from 'react-error-boundary';
@@ -225,7 +224,6 @@ describe('SuperChart', () => {
           height="100%"
         />,
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       triggerResizeObserver();
 
       return promiseTimeout(() => {
@@ -244,7 +242,6 @@ describe('SuperChart', () => {
           height="125"
         />,
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       triggerResizeObserver([{ contentRect: { height: 125, width: 150 } }]);
 
       return promiseTimeout(() => {
@@ -266,7 +263,6 @@ describe('SuperChart', () => {
           height="25%"
         />,
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       triggerResizeObserver([{ contentRect: { height: 75, width: 50 } }]);
 
       return promiseTimeout(() => {
@@ -286,7 +282,6 @@ describe('SuperChart', () => {
           debounceTime={1}
         />,
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       triggerResizeObserver();
 
       return promiseTimeout(() => {
@@ -340,7 +335,6 @@ describe('SuperChart', () => {
           Wrapper={MyWrapper}
         />,
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       triggerResizeObserver();
 
       return promiseTimeout(() => {
