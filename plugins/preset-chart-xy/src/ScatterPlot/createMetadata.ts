@@ -1,4 +1,4 @@
-import { t } from '@superset-ui/translation';
+import { t } from '@superset-ui/core';
 import { ChartMetadata } from '@superset-ui/chart';
 import thumbnail from './images/thumbnail.png';
 

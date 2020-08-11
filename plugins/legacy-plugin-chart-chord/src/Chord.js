@@ -20,7 +20,7 @@
 import d3 from 'd3';
 import PropTypes from 'prop-types';
 import { CategoricalColorNamespace } from '@superset-ui/color';
-import { getNumberFormatter } from '@superset-ui/number-format';
+import { getNumberFormatter } from '@superset-ui/core';
 
 const propTypes = {
   data: PropTypes.shape({

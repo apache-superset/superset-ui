@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "declarationDir": "lib",
+    "outDir": "lib",
+    "rootDir": "src"
+  },
+  "exclude": [
+    "lib",
+    "test"
+  ],
+  "extends": "../../tsconfig.options.json",
+  "include": [
+    "src/**/*",
+    "types/**/*",
+    "../../types/**/*"
+  ],
+  "references": [
+    {
+      "path": "../../packages/superset-ui-chart"
+    },
+    {
+      "path": "../../packages/superset-ui-chart-composition"
+    },
+    {
+      "path": "../../packages/superset-ui-chart-controls"
+    },
+    {
+      "path": "../../packages/superset-ui-color"
+    },
+    {
+      "path": "../../packages/superset-ui-core"
+    },
+    {
+      "path": "../../packages/superset-ui-dimension"
+    }
+  ]
+}

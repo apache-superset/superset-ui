@@ -1,4 +1,4 @@
-import { t } from '@superset-ui/translation';
+import { t } from '@superset-ui/core';
 
 export default function validateInteger(v: unknown) {
   if (
