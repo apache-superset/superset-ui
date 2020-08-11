@@ -27,7 +27,6 @@ a high-level it supports:
 ```javascript
 // appSetup.js
 import { SupersetClient } from `@superset-ui/connection`;
-// or import SupersetClient from `@superset-ui/connection/lib|esm/SupersetClient`;
 
 SupersetClient.configure(...clientConfig);
 SupersetClient.init(); // CSRF auth, can also chain `.configure().init();
