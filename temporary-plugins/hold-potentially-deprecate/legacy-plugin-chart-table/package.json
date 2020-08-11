@@ -28,12 +28,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@types/datatables.net": "^1.10.18",
-    "@types/react-dom": "^16.9.8",
-    "datatables.net-bs": "^1.10.20",
-    "xss": "^1.0.6"
-  },
-  "peerDependencies": {
     "@superset-ui/chart": "^0.14.0",
     "@superset-ui/chart-controls": "^0.14.0",
     "@superset-ui/core": "^0.15.0",
@@ -41,6 +35,12 @@
     "@superset-ui/style": "^0.14.0",
     "@superset-ui/time-format": "^0.14.0",
     "@superset-ui/validator": "^0.14.0",
+    "@types/datatables.net": "^1.10.18",
+    "@types/react-dom": "^16.9.8",
+    "datatables.net-bs": "^1.10.20",
+    "xss": "^1.0.6"
+  },
+  "peerDependencies": {
     "jquery": "^3.4.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"

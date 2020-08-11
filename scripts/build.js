@@ -12,11 +12,11 @@ const extraArgs = process.argv.slice(2);
 process.env.PATH = `./node_modules/.bin:${process.env.PATH}`;
 
 const BABEL_CONFIG = '--config-file=../../babel.config.js';
+
 // packages that do not need tsc
 const META_PACKAGES = new Set(['demo', 'generator-superset']);
 
 function run(cmd) {
-  // eslint-disable-next-line no-console
   console.log(`>> ${cmd}`);
   const [p, ...args] = cmd.split(' ');
   const runner = spawnSync;
@@ -27,7 +27,10 @@ function run(cmd) {
 }
 
 function getPackages(pattern, tsOnly = false) {
-  return `(${[
+  if (pattern === '*' && !tsOnly) {
+    return `@superset-ui/!(${[...META_PACKAGES].join('|')})`;
+  }
+  const packages = [
     ...new Set(
       fastGlob
         .sync([
@@ -38,7 +41,11 @@ function getPackages(pattern, tsOnly = false) {
         .map(x => x.split('/')[3])
         .filter(x => !META_PACKAGES.has(x)),
     ),
-  ].join('|')})`;
+  ];
+  if (packages.length === 0) {
+    throw new Error('No matching packages');
+  }
+  return `@superset-ui/${packages.length > 1 ? `{${packages.join(',')}}` : packages[0]}`;
 }
 
 if (glob) {
@@ -46,19 +53,21 @@ if (glob) {
   if (extraArgs.includes('--lint')) {
     run(`nimbus eslint {packages,plugins}/${glob}/{src,test}`);
   }
-  rimraf.sync(
-    `./{packages,plugins}/${glob}/{lib,esm,tsconfig.tsbuildinfo,node_modules/@types/react}`,
-  );
-  let packageNames = getPackages(glob);
+  let scope = getPackages(glob);
+
+  // Clean up
+  const cachePath = `./node_modules/${scope}/{lib,esm,tsconfig.tsbuildinfo,node_modules/@types/react}`;
+  console.log(`Cleaning up ${cachePath}`);
+  rimraf.sync(cachePath);
+
   if (!extraArgs.includes('--type-only')) {
-    run(`nimbus babel --clean --workspaces="@superset-ui/${packageNames}" ${BABEL_CONFIG}`);
-    run(`nimbus babel --clean --workspaces="@superset-ui/${packageNames}" --esm ${BABEL_CONFIG}`);
+    run(`lerna exec --stream --concurrency 10 --scope ${scope}
+         -- babel ${BABEL_CONFIG} src --extensions ".ts,.tsx,.js,.jsx" --out-dir lib --copy-files`);
   }
   // only run tsc for packages with ts files
-  packageNames = getPackages(glob, true);
-  run(`nimbus typescript --build --workspaces="@superset-ui/${packageNames}"`);
-  // eslint-disable-next-line global-require
-  require('./copyAssets');
+  scope = getPackages(glob, true);
+  run(`lerna exec --stream --concurrency 3 --scope ${scope} \
+       -- tsc --build`);
 } else {
   run('yarn build *');
 }

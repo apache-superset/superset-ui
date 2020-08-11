@@ -19,7 +19,7 @@
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 10",
     "format": "yarn prettier --write",
     "jest": "NODE_ENV=test nimbus jest --coverage --verbose",
-    "lint": "nimbus create-config eslint prettier && esprint check --workers=2",
+    "lint": "esprint check --workers=2",
     "lint:fix": "yarn lint --fix",
     "prettier": "nimbus prettier",
     "test": "yarn jest",
@@ -101,9 +101,18 @@
         "driver": "babel",
         "strategy": "none"
       },
-      "eslint",
-      "jest",
-      "prettier",
+      {
+        "driver": "eslint",
+        "strategy": "none"
+      },
+      {
+        "driver": "jest",
+        "strategy": "none"
+      },
+      {
+        "driver": "prettier",
+        "strategy": "none"
+      },
       "typescript"
     ],
     "settings": {
@@ -154,54 +163,6 @@
     },
     "prettier": {
       "arrowParens": "avoid"
-    },
-    "eslint": {
-      "rules": {
-        "arrow-parens": [
-          "warn",
-          "as-needed"
-        ]
-      },
-      "overrides": [
-        {
-          "files": "./packages/generator-superset/**/*.test.{js,jsx,ts,tsx}",
-          "rules": {
-            "jest/expect-expect": "off"
-          }
-        },
-        {
-          "files": "**/test/**/*",
-          "rules": {
-            "import/no-extraneous-dependencies": "off",
-            "promise/param-names": "off",
-            "jest/require-to-throw-message": "off",
-            "jest/no-test-return-statement": "off",
-            "jest/no-expect-resolves": "off",
-            "@typescript-eslint/no-require-imports": "off",
-            "global-require": "off"
-          }
-        },
-        {
-          "files": "*.{js,jsx,ts,tsx}",
-          "rules": {
-            "import/extensions": "off",
-            "no-plusplus": "off",
-            "react/jsx-no-literals": "off",
-            "@typescript-eslint/no-explicit-any": [
-              "warn",
-              {
-                "fixToUnknown": false
-              }
-            ]
-          }
-        },
-        {
-          "files": "./scripts/*",
-          "env": {
-            "node": true
-          }
-        }
-      ]
     },
     "typescript": {
       "compilerOptions": {

@@ -56,7 +56,7 @@ jobs:
     - name: Build packages
       run: yarn build
     - name: Run ESLint
-      run: yarn lint
+      run: yarn lint --quiet
     - name: Run unit tests
       run: yarn test
 

@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "declarationDir": "lib",
+    "outDir": "lib",
+    "rootDir": "src"
+  },
+  "exclude": [
+    "lib",
+    "test"
+  ],
+  "extends": "../../tsconfig.options.json",
+  "include": [
+    "src/**/*",
+    "types/**/*",
+    "../../types/**/*"
+  ],
+  "references": [
+    {
+      "path": "../superset-ui-color"
+    },
+    {
+      "path": "../superset-ui-core"
+    },
+    {
+      "path": "../superset-ui-style"
+    },
+    {
+      "path": "../superset-ui-validator"
+    }
+  ]
+}

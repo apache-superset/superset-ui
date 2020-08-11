@@ -29,6 +29,14 @@
     "access": "public"
   },
   "dependencies": {
+    "@superset-ui/chart": "^0.14.0",
+    "@superset-ui/chart-composition": "^0.14.0",
+    "@superset-ui/chart-controls": "^0.14.0",
+    "@superset-ui/color": "^0.14.0",
+    "@superset-ui/core": "^0.15.0",
+    "@superset-ui/dimension": "^0.14.0",
+    "@superset-ui/number-format": "^0.14.0",
+    "@superset-ui/time-format": "^0.14.0",
     "@data-ui/theme": "^0.0.84",
     "@data-ui/xy-chart": "^0.0.84",
     "@vx/axis": "^0.0.198",
@@ -40,14 +48,6 @@
     "reselect": "^4.0.0"
   },
   "peerDependencies": {
-    "@superset-ui/chart": "^0.14.0",
-    "@superset-ui/chart-composition": "^0.14.0",
-    "@superset-ui/chart-controls": "^0.14.0",
-    "@superset-ui/color": "^0.14.0",
-    "@superset-ui/core": "^0.15.0",
-    "@superset-ui/dimension": "^0.14.0",
-    "@superset-ui/number-format": "^0.14.0",
-    "@superset-ui/time-format": "^0.14.0",
     "react": "^16.2"
   }
 }
