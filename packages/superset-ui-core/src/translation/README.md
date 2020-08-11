@@ -7,7 +7,7 @@
 #### Example usage
 
 ```js
-import { configure, t, tn } from '@superset-ui/core/src/translation';
+import { configure, t, tn } from '@superset-ui/core';
 
 configure({
   languagePack: {...},
