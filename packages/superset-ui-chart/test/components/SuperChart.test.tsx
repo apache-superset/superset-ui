@@ -225,7 +225,6 @@ describe('SuperChart', () => {
           height="100%"
         />,
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       triggerResizeObserver();
 
       return promiseTimeout(() => {
@@ -244,7 +243,6 @@ describe('SuperChart', () => {
           height="125"
         />,
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       triggerResizeObserver([{ contentRect: { height: 125, width: 150 } }]);
 
       return promiseTimeout(() => {
@@ -266,7 +264,6 @@ describe('SuperChart', () => {
           height="25%"
         />,
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       triggerResizeObserver([{ contentRect: { height: 75, width: 50 } }]);
 
       return promiseTimeout(() => {
@@ -286,7 +283,6 @@ describe('SuperChart', () => {
           debounceTime={1}
         />,
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       triggerResizeObserver();
 
       return promiseTimeout(() => {
@@ -340,7 +336,6 @@ describe('SuperChart', () => {
           Wrapper={MyWrapper}
         />,
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       triggerResizeObserver();
 
       return promiseTimeout(() => {

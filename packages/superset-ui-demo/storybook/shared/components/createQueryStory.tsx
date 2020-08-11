@@ -1,7 +1,7 @@
 import React from 'react';
 import { text, select } from '@storybook/addon-knobs';
 import { SuperChart, ChartDataProvider } from '@superset-ui/chart';
-import { SupersetClient } from '@superset-ui/connection';
+import { SupersetClient } from '@superset-ui/core';
 import Expandable from './Expandable';
 import VerifyCORS, { renderError } from './VerifyCORS';
 

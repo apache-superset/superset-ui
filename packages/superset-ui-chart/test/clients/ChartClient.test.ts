@@ -1,6 +1,10 @@
 import fetchMock from 'fetch-mock';
-import { SupersetClientClass, SupersetClient } from '@superset-ui/connection';
-import { buildQueryContext, QueryFormData } from '@superset-ui/query';
+import {
+  SupersetClientClass,
+  SupersetClient,
+  buildQueryContext,
+  QueryFormData,
+} from '@superset-ui/core';
 import {
   ChartClient,
   getChartBuildQueryRegistry,

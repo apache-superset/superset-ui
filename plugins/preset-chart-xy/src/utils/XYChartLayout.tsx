@@ -1,6 +1,6 @@
 import React, { ReactNode, CSSProperties } from 'react';
 import { XAxis, YAxis } from '@data-ui/xy-chart';
-import { Margin, mergeMargin, Dimension } from '@superset-ui/dimension';
+import { Margin, mergeMargin, Dimension } from '@superset-ui/core';
 import { ChartFrame } from '@superset-ui/chart-composition';
 import { ChannelEncoder, PlainObject, Value, XFieldDef, YFieldDef } from 'encodable';
 import createTickComponent from './createTickComponent';

@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { t } from '@superset-ui/translation';
+import { t } from '@superset-ui/core';
 import { validateNonEmpty } from '@superset-ui/validator';
 import { sections } from '@superset-ui/chart-controls';
 import {

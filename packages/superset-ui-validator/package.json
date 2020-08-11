@@ -25,7 +25,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "peerDependencies": {
-    "@superset-ui/translation": "^0.14.0"
+  "dependencies": {
+    "@superset-ui/core": "^0.15.0"
   }
 }

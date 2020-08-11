@@ -1,11 +1,12 @@
-import { isDefined } from '@superset-ui/core';
 import {
+  isDefined,
   SupersetClient,
   SupersetClientInterface,
   RequestConfig,
   SupersetClientClass,
-} from '@superset-ui/connection';
-import { QueryFormData, Datasource } from '@superset-ui/query';
+  QueryFormData,
+  Datasource,
+} from '@superset-ui/core';
 import getChartBuildQueryRegistry from '../registries/ChartBuildQueryRegistrySingleton';
 import getChartMetadataRegistry from '../registries/ChartMetadataRegistrySingleton';
 import { QueryData } from '../types/QueryResponse';

@@ -17,7 +17,7 @@
  * under the License.
  */
 import { ChartProps, DataRecord } from '@superset-ui/chart';
-import { QueryObjectMetric } from '@superset-ui/query';
+import { QueryObjectMetric } from '@superset-ui/core';
 
 interface FormData {
   groupby: string[];

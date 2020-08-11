@@ -29,7 +29,6 @@ describe('WithLegend', () => {
       <WithLegend debounceTime={1} width={500} height={500} renderChart={renderChart} />,
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     triggerResizeObserver();
     // Have to delay more than debounceTime (1ms)
     return promiseTimeout(() => {
@@ -50,7 +49,6 @@ describe('WithLegend', () => {
       />,
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     triggerResizeObserver();
     // Have to delay more than debounceTime (1ms)
     return promiseTimeout(() => {
@@ -66,7 +64,6 @@ describe('WithLegend', () => {
       <WithLegend debounceTime={1} renderChart={renderChart} renderLegend={renderLegend} />,
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     triggerResizeObserver();
     // Have to delay more than debounceTime (1ms)
     return promiseTimeout(() => {
@@ -87,7 +84,6 @@ describe('WithLegend', () => {
       />,
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     triggerResizeObserver();
     // Have to delay more than debounceTime (1ms)
     return promiseTimeout(() => {
@@ -108,7 +104,6 @@ describe('WithLegend', () => {
       />,
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     triggerResizeObserver();
     // Have to delay more than debounceTime (1ms)
     return promiseTimeout(() => {
@@ -129,7 +124,6 @@ describe('WithLegend', () => {
       />,
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     triggerResizeObserver();
     // Have to delay more than debounceTime (1ms)
     return promiseTimeout(() => {
@@ -150,7 +144,6 @@ describe('WithLegend', () => {
       />,
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     triggerResizeObserver();
     // Have to delay more than debounceTime (1ms)
     return promiseTimeout(() => {
@@ -172,7 +165,6 @@ describe('WithLegend', () => {
       />,
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     triggerResizeObserver();
     // Have to delay more than debounceTime (1ms)
     return promiseTimeout(() => {
