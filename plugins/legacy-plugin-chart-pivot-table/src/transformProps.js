@@ -18,7 +18,7 @@
  */
 export default function transformProps(chartProps) {
   const { height, datasource, formData, queryData } = chartProps;
-  const { groupby, numberFormat } = formData;
+  const { groupby, numberFormat, dateFormat } = formData;
   const { columnFormats, verboseMap } = datasource;
 
   return {
@@ -26,6 +26,7 @@ export default function transformProps(chartProps) {
     data: queryData.data,
     columnFormats,
     numGroups: groupby.length,
+    dateFormat,
     numberFormat,
     verboseMap,
   };

@@ -20,6 +20,7 @@
 import dt from 'datatables.net-bs';
 import PropTypes from 'prop-types';
 import { formatNumber } from '@superset-ui/number-format';
+import { smartDateFormatter, getTimeFormatter } from '@superset-ui/time-format';
 import fixTableHeight from './utils/fixTableHeight';
 import 'datatables.net-bs/css/dataTables.bootstrap.css';
 
@@ -44,25 +45,37 @@ const propTypes = {
 };
 
 function PivotTable(element, props) {
-  const { data, height, columnFormats, numberFormat, numGroups, verboseMap } = props;
+  const { data, height, columnFormats, dateFormat, numberFormat, numGroups, verboseMap } = props;
 
   const { html, columns } = data;
   const container = element;
   const $container = $(element);
+  const dateFormatter =
+    dateFormat === 'smart_date' ? smartDateFormatter : getTimeFormatter(dateFormat);
 
   // queryData data is a string of html with a single table element
   container.innerHTML = html;
 
   const cols = Array.isArray(columns[0]) ? columns.map(col => col[0]) : columns;
+  // regex to parse dates
+  const dateRegex = /^__timestamp:(-?\d*\.?\d*)$/;
 
   // jQuery hack to set verbose names in headers
   // eslint-disable-next-line func-name-matching
   const replaceCell = function replace() {
     const s = $(this)[0].textContent;
-    $(this)[0].textContent = verboseMap[s] || s;
+    const regexMatch = dateRegex.exec(s);
+    let cellValue;
+    if (regexMatch) {
+      const date = new Date(parseFloat(regexMatch[1]));
+      cellValue = dateFormatter(date);
+    } else {
+      cellValue = verboseMap[s] || s;
+    }
+    $(this)[0].textContent = cellValue;
   };
-  $container.find('thead tr:first th').each(replaceCell);
-  $container.find('thead tr th:first-child').each(replaceCell);
+  $container.find('thead tr th').each(replaceCell);
+  $container.find('tbody tr th').each(replaceCell);
 
   // jQuery hack to format number
   $container.find('tbody tr').each(function eachRow() {
@@ -72,9 +85,10 @@ function PivotTable(element, props) {
         const metric = cols[i];
         const format = columnFormats[metric] || numberFormat || '.3s';
         const tdText = $(this)[0].textContent;
-        if (!Number.isNaN(parseFloat(tdText))) {
-          $(this)[0].textContent = formatNumber(format, tdText);
-          $(this).attr('data-sort', tdText);
+        const parsedValue = parseFloat(tdText);
+        if (!Number.isNaN(parsedValue)) {
+          $(this)[0].textContent = formatNumber(format, parsedValue);
+          $(this).attr('data-sort', parsedValue);
         }
       });
   });
