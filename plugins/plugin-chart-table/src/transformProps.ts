@@ -49,13 +49,12 @@ function isTimeColumn(key: string) {
   return key === TIME_COLUMN;
 }
 
-const REGEXP_DATETIME = /^\d{4}-[01]\d-[03]\d/;
 function isTimeType(key: string, data: DataRecord[] = []) {
   return (
     isTimeColumn(key) ||
     data.some(x => {
       const value = x[key];
-      return value instanceof Date || (typeof value === 'string' && REGEXP_DATETIME.test(value));
+      return value instanceof Date;
     })
   );
 }
