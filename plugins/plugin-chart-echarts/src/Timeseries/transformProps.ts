@@ -19,6 +19,7 @@
 import { ChartProps } from '@superset-ui/chart';
 import { CategoricalColorNamespace } from '@superset-ui/color';
 import { getNumberFormatter } from '@superset-ui/number-format';
+import { smartDateVerboseFormatter } from '@superset-ui/time-format';
 import { EchartsTimeseriesProps } from './types';
 import { ForecastSeriesEnum } from '../types';
 import {
@@ -41,6 +42,7 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
     markerEnabled,
     markerSize,
     minorSplitLine,
+    yAxisFormat,
     zoomable,
   } = formData;
 
@@ -51,6 +53,8 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
   const rawSeries = extractTimeseriesSeries(rebasedData);
 
   const series: echarts.EChartOption.Series[] = [];
+  const formatter = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormat);
+  console.log(smartDateVerboseFormatter(new Date()));
 
   rawSeries.forEach(entry => {
     const forecastSeries = extractForecastSeriesContext(entry.name || '');
@@ -83,9 +87,11 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
     if (!((stack || area) && isConfidenceBand))
       series.push({
         ...entry,
+        name: forecastSeries.name,
         itemStyle: {
           color: colorFn(forecastSeries.name),
         },
+        formatter,
         type: plotType,
         // @ts-ignore
         smooth: seriesType === 'smooth',
@@ -109,12 +115,46 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
     max: contributionMode === 'row' && stack ? 1 : undefined,
     minorTick: { show: true },
     minorSplitLine: { show: minorSplitLine },
-    axisLabel: contributionMode ? { formatter: getNumberFormatter(',.0%') } : {},
+    axisLabel: { formatter },
   };
   const tooltip: {
     trigger?: 'none' | 'item' | 'axis';
   } = {
     trigger: 'axis',
+    formatter: (params: Record<string, any>, ticket, callback) => {
+      let res = `${smartDateVerboseFormatter(params[0].value[0])}<br />`;
+      const processedSeries: string[] = [];
+      params.forEach((item, idx) => {
+        if (!processedSeries.includes(item.seriesName)) {
+          processedSeries.push(item.seriesName);
+          res += `${params[idx].marker}`;
+          if (
+            idx === params.length - 1 ||
+            (idx + 1 < params.length && params[idx + 1].seriesName !== item.seriesName)
+          ) {
+            // only observation
+            res += `${params[idx].seriesName}: ${formatter(params[idx].value[1])}<br/>`;
+          } else if (idx + 3 <= params.length && params[idx + 3].seriesName === item.seriesName) {
+            // observation, prediction and confidence band
+            res += `${params[idx].seriesName}: `;
+            if (params[idx + 3].value[1]) res += `${formatter(params[idx + 3].value[1])}, `;
+            res += `ŷ = ${formatter(params[idx].value[1])} `;
+            res += `(${formatter(params[idx + 1].value[1])}, ${formatter(
+              params[idx + 1].value[1] + params[idx + 2].value[1],
+            )})<br/>`;
+          } else if (idx + 1 <= params.length && params[idx + 1].seriesName === item.seriesName) {
+            // prediction and observation
+            res += `${params[idx].seriesName}: ${formatter(
+              params[idx + 1].value[1],
+            )}, ŷ = ${formatter(params[idx].value[1])}<br/>`;
+          }
+        }
+      });
+      setTimeout(() => {
+        callback(ticket, res);
+      }, 100);
+      return 'loading';
+    },
   };
 
   const echartOptions = {
