@@ -16,23 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { HTMLProps } from 'react';
-import { Hooks, Cell, TableCellProps, ColumnInstance } from 'react-table';
-
-export interface UseColumnCellPropsColumnOption<D extends object, V = unknown> {
-  cellProps?: (
-    cell: Cell<D, V>,
-    props: Partial<TableCellProps>,
-  ) => Partial<HTMLProps<HTMLTableDataCellElement>> | undefined;
-}
+const logger = window.console || {
+  debug() {},
+  log() {},
+  info() {},
+  warn() {},
+  error() {},
+  trace() {},
+};
 
 /**
- * Configure cell props in column options.
+ * Superset frontend logger, currently just an alias to console.
  */
-export default function useColumnCellProps<D extends object>(hooks: Hooks<D>) {
-  hooks.getCellProps.push((props, { cell }) => {
-    const column = cell.column as ColumnInstance<D>;
-    return (column.cellProps && column.cellProps(cell, props)) || [];
-  });
-}
-useColumnCellProps.pluginName = 'useColumnCellProps';
+export default logger;

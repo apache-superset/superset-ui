@@ -23,7 +23,6 @@ import {
   useSortBy,
   useGlobalFilter,
   PluginHook,
-  TableCellProps,
   TableOptions,
   FilterType,
   IdType,
@@ -31,21 +30,21 @@ import {
 } from 'react-table';
 import matchSorter from 'match-sorter';
 import GlobalFilter, { GlobalFilterProps } from './components/GlobalFilter';
-import SelectPageSize, { SizeOption } from './components/SelectPageSize';
+import SelectPageSize, { SelectPageSizeProps, SizeOption } from './components/SelectPageSize';
 import SimplePagination from './components/Pagination';
 import useSticky from './hooks/useSticky';
-import useColumnCellProps from './hooks/useColumnCellProps';
 
 export interface DataTableProps<D extends object> extends TableOptions<D> {
   tableClassName?: string;
   searchInput?: boolean | GlobalFilterProps<D>['searchInput'];
+  selectPageSize?: boolean | SelectPageSizeProps['selectRenderer'];
   pageSizeOptions?: SizeOption[]; // available page size options
   maxPageItemCount?: number;
   hooks?: PluginHook<D>[]; // any additional hooks
   width?: string | number;
   height?: string | number;
   pageSize?: number;
-  noResultsText?: string | ((filterString: string) => ReactNode);
+  noResults?: string | ((filterString: string) => ReactNode);
   sticky?: boolean;
   wrapperRef?: MutableRefObject<HTMLDivElement>;
 }
@@ -67,7 +66,8 @@ export default function DataTable<D extends object>({
   maxPageItemCount = 9,
   sticky: doSticky,
   searchInput = true,
-  noResultsText = 'No data found',
+  selectPageSize,
+  noResults = 'No data found',
   hooks,
   wrapperRef: userWrapperRef,
   ...moreUseTableOptions
@@ -76,7 +76,6 @@ export default function DataTable<D extends object>({
     useGlobalFilter,
     useSortBy,
     usePagination,
-    useColumnCellProps,
     doSticky ? useSticky : [],
     hooks || [],
   ].flat();
@@ -166,19 +165,10 @@ export default function DataTable<D extends object>({
           return (
             <tr key={headerGroupKey || headerGroup.id} {...headerGroupProps}>
               {headerGroup.headers.map(column => {
-                const { key: headerKey, className, ...props } = column.getHeaderProps(
-                  column.getSortByToggleProps(),
-                );
-                return (
-                  <th
-                    key={headerKey || column.id}
-                    className={column.isSorted ? `${className || ''} is-sorted` : className}
-                    {...props}
-                  >
-                    {column.render('Header')}
-                    {column.render('SortIcon')}
-                  </th>
-                );
+                return column.render('Header', {
+                  key: column.id,
+                  ...column.getSortByToggleProps(),
+                });
               })}
             </tr>
           );
@@ -191,30 +181,14 @@ export default function DataTable<D extends object>({
             const { key: rowKey, ...rowProps } = row.getRowProps();
             return (
               <tr key={rowKey || row.id} {...rowProps}>
-                {row.cells.map(cell => {
-                  const cellProps = cell.getCellProps() as TableCellProps & RenderHTMLCellProps;
-                  const { key: cellKey, cellContent, ...restProps } = cellProps;
-                  const key = cellKey || cell.column.id;
-                  if (cellProps.dangerouslySetInnerHTML) {
-                    return <td key={key} {...restProps} />;
-                  }
-                  // If cellProps renderes textContent already, then we don't have to
-                  // render `Cell`. This saves some time for large tables.
-                  return (
-                    <td key={key} {...restProps}>
-                      {cellContent || cell.render('Cell')}
-                    </td>
-                  );
-                })}
+                {row.cells.map(cell => cell.render('Cell', { key: cell.column.id }))}
               </tr>
             );
           })
         ) : (
           <tr>
             <td className="dt-no-results" colSpan={columns.length}>
-              {typeof noResultsText === 'function'
-                ? noResultsText(filterValue as string)
-                : noResultsText}
+              {typeof noResults === 'function' ? noResults(filterValue as string) : noResults}
             </td>
           </tr>
         )}
@@ -242,8 +216,9 @@ export default function DataTable<D extends object>({
               {hasPagination ? (
                 <SelectPageSize
                   total={data.length}
-                  sizeOptions={pageSizeOptions}
-                  currentSize={pageSize}
+                  current={pageSize}
+                  options={pageSizeOptions}
+                  selectRenderer={typeof selectPageSize === 'boolean' ? undefined : selectPageSize}
                   onChange={setPageSize}
                 />
               ) : null}
