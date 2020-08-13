@@ -68,7 +68,10 @@ export default function EchartsPie(props: EchartsPiePropsReceived) {
     // console.log('Plugin element', root);
     const myChart = echarts.init(root);
     myChart.setOption(echartOptions, true);
-    myChart.resize();
+    myChart.resize({
+      width,
+      height,
+    });
   });
 
   return <Styles ref={rootElem} height={height} width={width} />;

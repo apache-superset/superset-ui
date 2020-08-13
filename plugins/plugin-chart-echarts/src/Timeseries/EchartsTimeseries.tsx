@@ -41,7 +41,10 @@ export default function EchartsTimeseries(props: EchartsTimeseriesProps) {
     const root = rootElem.current as HTMLDivElement;
     const myChart = echarts.init(root);
     myChart.setOption(echartOptions, true);
-    myChart.resize();
+    myChart.resize({
+      width,
+      height,
+    });
   });
 
   return <Styles ref={rootElem} height={height} width={width} />;
