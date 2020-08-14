@@ -20,7 +20,7 @@ import { ChartProps } from '@superset-ui/chart';
 import { CategoricalColorNamespace } from '@superset-ui/color';
 import { getNumberFormatter } from '@superset-ui/number-format';
 import { smartDateVerboseFormatter } from '@superset-ui/time-format';
-import { EchartsTimeseriesProps, EchartsTooltipParams } from './types';
+import { EchartsTimeseriesProps } from './types';
 import { ForecastSeriesEnum } from '../types';
 import {
   extractForecastSeriesContext,
@@ -130,7 +130,9 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
     tooltip: {
       trigger: 'axis',
       formatter: (params, ticket, callback) => {
+        // @ts-ignore
         let res = `${smartDateVerboseFormatter(params[0].value[0])}<br />`;
+        // @ts-ignore
         const prophetValues = extractProphetValuesFromTooltipParams(params);
         Object.keys(prophetValues).forEach(key => {
           const value = prophetValues[key];

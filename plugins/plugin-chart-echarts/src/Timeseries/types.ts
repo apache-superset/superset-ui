@@ -40,5 +40,3 @@ export type EchartsTimeseriesProps = {
   opacity: number;
   echartOptions: echarts.EChartOption;
 };
-
-export type EchartsTooltipParams = { marker: string; seriesId: string; value: [Date, number] };

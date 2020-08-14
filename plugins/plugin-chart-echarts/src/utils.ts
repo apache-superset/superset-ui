@@ -16,14 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { DataRecordValue } from '@superset-ui/chart/lib';
-import {
-  EchartsBaseTimeseriesSeries,
-  EchartsTimeseriesDatum,
-  EchartsTooltipParams,
-} from './Timeseries/types';
-import { ForecastSeriesContext, ForecastSeriesEnum } from './types';
 import { NumberFormatter } from '@superset-ui/number-format';
+import { DataRecordValue } from '@superset-ui/chart';
+import { EchartsBaseTimeseriesSeries, EchartsTimeseriesDatum } from './Timeseries/types';
+import { ForecastSeriesContext, ForecastSeriesEnum } from './types';
 
 export const extractTimeseriesSeries = (
   data: EchartsTimeseriesDatum[],
@@ -121,18 +117,18 @@ type ProphetValue = {
 };
 
 export const extractProphetValuesFromTooltipParams = (
-  params: EchartsTooltipParams[],
+  params: (echarts.EChartOption.Tooltip.Format & { seriesId: string })[],
 ): Record<string, ProphetValue> => {
   const values: Record<string, ProphetValue> = {};
   params.forEach(param => {
     const { marker, seriesId, value } = param;
     const context = extractForecastSeriesContext(seriesId);
-    const numericValue = value[1];
+    const numericValue = (value as [Date, number])[1];
     if (numericValue) {
       if (!(context.name in values))
         values[context.name] = {
           name: context.name,
-          marker,
+          marker: marker || '',
         };
       const prophetValues = values[context.name];
       if (context.type === ForecastSeriesEnum.Observation) prophetValues.observation = numericValue;
