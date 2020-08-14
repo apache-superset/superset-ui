@@ -18,8 +18,10 @@
  */
 import {
   extractForecastSeriesContext,
+  extractProphetValuesFromTooltipParams,
   extractSeriesBase,
   extractTimeseriesSeries,
+  formatProphetTooltipSeries,
   rebaseTimeseriesDatum,
 } from '../src/utils';
 import { ForecastSeriesEnum } from '../src/types';
@@ -152,5 +154,80 @@ describe('rebaseTimeseriesDatum', () => {
         abc__yhat_upper: null,
       },
     ]);
+  });
+});
+
+describe('extractProphetValuesFromTooltipParams', () => {
+  it('should extract the proper data from tooltip params', () => {
+    expect(
+      extractProphetValuesFromTooltipParams([
+        {
+          seriesId: 'abc',
+          value: [new Date(0), 10],
+        },
+        {
+          seriesId: 'abc__yhat',
+          value: [new Date(0), 1],
+        },
+        {
+          seriesId: 'abc__yhat_lower',
+          value: [new Date(0), 5],
+        },
+        {
+          seriesId: 'abc__yhat_upper',
+          value: [new Date(0), 6],
+        },
+        {
+          seriesId: 'qwerty',
+          value: [new Date(0), 2],
+        },
+      ]),
+    ).toEqual({
+      abc: {
+        observation: 10,
+        forecastTrend: 1,
+        forecastLower: 5,
+        forecastUpper: 6,
+      },
+      qwerty: {
+        observation: 2,
+      },
+    });
+  });
+});
+
+const formatter = (val: number) => `x${val}`;
+
+describe('formatProphetTooltipSeries', () => {
+  it('should generate a proper series tooltip', () => {
+    expect(
+      formatProphetTooltipSeries({
+        seriesName: 'abc',
+        marker: '<img>',
+        observation: 10,
+        formatter,
+      }),
+    ).toEqual('<img>abc: x10');
+    expect(
+      formatProphetTooltipSeries({
+        seriesName: 'qwerty',
+        marker: '<img>',
+        observation: 10,
+        forecastTrend: 20,
+        forecastLower: 5,
+        forecastUpper: 7,
+        formatter,
+      }),
+    ).toEqual('<img>qwerty: x10, ŷ = x20 (x5, x12)');
+    expect(
+      formatProphetTooltipSeries({
+        seriesName: 'qwerty',
+        marker: '<img>',
+        forecastTrend: 20,
+        forecastLower: 5,
+        forecastUpper: 7,
+        formatter,
+      }),
+    ).toEqual('<img>qwerty: ŷ = x20 (x5, x12)');
   });
 });

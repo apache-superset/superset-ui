@@ -41,6 +41,7 @@
     "jest": "^26.0.1"
   },
   "dependencies": {
+    "@superset-ui/time-format": "^0.14.9",
     "@types/echarts": "^4.6.3",
     "echarts": "^4.8.0"
   }

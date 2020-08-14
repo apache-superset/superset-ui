@@ -17,8 +17,13 @@
  * under the License.
  */
 import { DataRecordValue } from '@superset-ui/chart/lib';
-import { EchartsBaseTimeseriesSeries, EchartsTimeseriesDatum } from './Timeseries/types';
-import { ForecastSeriesEnum, ForecastSeriesContext } from './types';
+import {
+  EchartsBaseTimeseriesSeries,
+  EchartsTimeseriesDatum,
+  EchartsTooltipParams,
+} from './Timeseries/types';
+import { ForecastSeriesContext, ForecastSeriesEnum } from './types';
+import { NumberFormatter } from '@superset-ui/number-format';
 
 export const extractTimeseriesSeries = (
   data: EchartsTimeseriesDatum[],
@@ -54,7 +59,7 @@ export const extractTimeseriesSeries = (
   return series;
 };
 
-const seriesTypeRegex = RegExp(
+const seriesTypeRegex = new RegExp(
   `(.+)(${ForecastSeriesEnum.ForecastLower}|${ForecastSeriesEnum.ForecastTrend}|${ForecastSeriesEnum.ForecastUpper})$`,
 );
 export const extractForecastSeriesContext = (seriesName: string): ForecastSeriesContext => {
@@ -104,4 +109,69 @@ export const rebaseTimeseriesDatum = (data: EchartsTimeseriesDatum[]): EchartsTi
     });
     return newRow;
   });
+};
+
+type ProphetValue = {
+  name: string;
+  marker: string;
+  observation?: number;
+  forecastTrend?: number;
+  forecastLower?: number;
+  forecastUpper?: number;
+};
+
+export const extractProphetValuesFromTooltipParams = (
+  params: EchartsTooltipParams[],
+): Record<string, ProphetValue> => {
+  const values: Record<string, ProphetValue> = {};
+  params.forEach(param => {
+    const { marker, seriesId, value } = param;
+    const context = extractForecastSeriesContext(seriesId);
+    const numericValue = value[1];
+    if (numericValue) {
+      if (!(context.name in values))
+        values[context.name] = {
+          name: context.name,
+          marker,
+        };
+      const prophetValues = values[context.name];
+      if (context.type === ForecastSeriesEnum.Observation) prophetValues.observation = numericValue;
+      if (context.type === ForecastSeriesEnum.ForecastTrend)
+        prophetValues.forecastTrend = numericValue;
+      if (context.type === ForecastSeriesEnum.ForecastLower)
+        prophetValues.forecastLower = numericValue;
+      if (context.type === ForecastSeriesEnum.ForecastUpper)
+        prophetValues.forecastUpper = numericValue;
+    }
+  });
+  return values;
+};
+
+export const formatProphetTooltipSeries = ({
+  seriesName,
+  observation,
+  forecastTrend,
+  forecastLower,
+  forecastUpper,
+  marker,
+  formatter,
+}: ProphetValue & {
+  seriesName: string;
+  marker: string;
+  formatter: NumberFormatter;
+}): string => {
+  let row = `${marker}${seriesName}: `;
+  let isObservation = false;
+  if (observation) {
+    isObservation = true;
+    row += `${formatter(observation)}`;
+  }
+  if (forecastTrend) {
+    if (isObservation) row += ', ';
+    row += `ŷ = ${formatter(forecastTrend)}`;
+    if (forecastLower && forecastUpper)
+      // the lower bound needs to be added to the upper bound
+      row += ` (${formatter(forecastLower)}, ${formatter(forecastLower + forecastUpper)})`;
+  }
+  return `${row.trim()}<br />`;
 };

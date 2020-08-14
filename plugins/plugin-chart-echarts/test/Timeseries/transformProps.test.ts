@@ -20,10 +20,12 @@ describe('EchartsTimeseries tranformProps', () => {
   });
 
   it('should tranform chart props for viz', () => {
-    expect(transformProps(chartProps)).toEqual({
-      width: 800,
-      height: 600,
-      data: [{ name: 'Hulk', sum__num: 1, __timestamp: new Date(599616000000) }],
-    });
+    expect(transformProps(chartProps)).toEqual(
+      expect.objectContaining({
+        width: 800,
+        height: 600,
+        data: [{ name: 'Hulk', sum__num: 1, __timestamp: new Date(599616000000) }],
+      }),
+    );
   });
 });

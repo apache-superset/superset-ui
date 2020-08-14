@@ -20,11 +20,13 @@ import { ChartProps } from '@superset-ui/chart';
 import { CategoricalColorNamespace } from '@superset-ui/color';
 import { getNumberFormatter } from '@superset-ui/number-format';
 import { smartDateVerboseFormatter } from '@superset-ui/time-format';
-import { EchartsTimeseriesProps } from './types';
+import { EchartsTimeseriesProps, EchartsTooltipParams } from './types';
 import { ForecastSeriesEnum } from '../types';
 import {
   extractForecastSeriesContext,
+  extractProphetValuesFromTooltipParams,
   extractTimeseriesSeries,
+  formatProphetTooltipSeries,
   rebaseTimeseriesDatum,
 } from '../utils';
 
@@ -87,11 +89,11 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
     if (!((stack || area) && isConfidenceBand))
       series.push({
         ...entry,
+        id: entry.name,
         name: forecastSeries.name,
         itemStyle: {
           color: colorFn(forecastSeries.name),
         },
-        formatter,
         type: plotType,
         // @ts-ignore
         smooth: seriesType === 'smooth',
@@ -108,66 +110,45 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
             : 0,
       });
   });
-  const xAxis: echarts.EChartOption.XAxis = { type: 'time' };
-  const yAxis: echarts.EChartOption.YAxis = {
-    type: logAxis ? 'log' : 'value',
-    min: contributionMode === 'row' && stack ? 0 : undefined,
-    max: contributionMode === 'row' && stack ? 1 : undefined,
-    minorTick: { show: true },
-    minorSplitLine: { show: minorSplitLine },
-    axisLabel: { formatter },
-  };
-  const tooltip: {
-    trigger?: 'none' | 'item' | 'axis';
-  } = {
-    trigger: 'axis',
-    formatter: (params: Record<string, any>, ticket, callback) => {
-      let res = `${smartDateVerboseFormatter(params[0].value[0])}<br />`;
-      const processedSeries: string[] = [];
-      params.forEach((item, idx) => {
-        if (!processedSeries.includes(item.seriesName)) {
-          processedSeries.push(item.seriesName);
-          res += `${params[idx].marker}`;
-          if (
-            idx === params.length - 1 ||
-            (idx + 1 < params.length && params[idx + 1].seriesName !== item.seriesName)
-          ) {
-            // only observation
-            res += `${params[idx].seriesName}: ${formatter(params[idx].value[1])}<br/>`;
-          } else if (idx + 3 <= params.length && params[idx + 3].seriesName === item.seriesName) {
-            // observation, prediction and confidence band
-            res += `${params[idx].seriesName}: `;
-            if (params[idx + 3].value[1]) res += `${formatter(params[idx + 3].value[1])}, `;
-            res += `ŷ = ${formatter(params[idx].value[1])} `;
-            res += `(${formatter(params[idx + 1].value[1])}, ${formatter(
-              params[idx + 1].value[1] + params[idx + 2].value[1],
-            )})<br/>`;
-          } else if (idx + 1 <= params.length && params[idx + 1].seriesName === item.seriesName) {
-            // prediction and observation
-            res += `${params[idx].seriesName}: ${formatter(
-              params[idx + 1].value[1],
-            )}, ŷ = ${formatter(params[idx].value[1])}<br/>`;
-          }
-        }
-      });
-      setTimeout(() => {
-        callback(ticket, res);
-      }, 100);
-      return 'loading';
-    },
-  };
-
-  const echartOptions = {
+  const echartOptions: echarts.EChartOption = {
     grid: {
-      top: 60,
-      bottom: zoomable ? 100 : 60,
-      left: 40,
-      right: 40,
+      top: 30,
+      bottom: zoomable ? 80 : 0,
+      left: 20,
+      right: 20,
+      containLabel: true,
     },
-    xAxis,
-    yAxis,
-    tooltip,
+    xAxis: { type: 'time' },
+    yAxis: {
+      type: logAxis ? 'log' : 'value',
+      min: contributionMode === 'row' && stack ? 0 : undefined,
+      max: contributionMode === 'row' && stack ? 1 : undefined,
+      minorTick: { show: true },
+      minorSplitLine: { show: minorSplitLine },
+      axisLabel: { formatter },
+    },
+    tooltip: {
+      trigger: 'axis',
+      formatter: (params, ticket, callback) => {
+        let res = `${smartDateVerboseFormatter(params[0].value[0])}<br />`;
+        const prophetValues = extractProphetValuesFromTooltipParams(params);
+        Object.keys(prophetValues).forEach(key => {
+          const value = prophetValues[key];
+          const formattedValue = formatProphetTooltipSeries({
+            ...value,
+            seriesName: key,
+            formatter,
+          });
+          res += `${formattedValue}`;
+        });
+        setTimeout(() => {
+          callback(ticket, res);
+        }, 100);
+        return 'loading';
+      },
+    },
     legend: {
+      type: 'scroll',
       data: rawSeries
         .filter(
           entry =>
@@ -195,7 +176,7 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
             type: 'slider',
             start: 0,
             end: 100,
-            bottom: 30,
+            bottom: 20,
           },
         ]
       : [],
@@ -205,6 +186,7 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
     area,
     colorScheme,
     contributionMode,
+    // @ts-ignore
     echartOptions,
     seriesType,
     logAxis,
