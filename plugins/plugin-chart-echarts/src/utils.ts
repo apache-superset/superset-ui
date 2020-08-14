@@ -19,7 +19,7 @@
 import { NumberFormatter } from '@superset-ui/number-format';
 import { DataRecordValue } from '@superset-ui/chart';
 import { EchartsBaseTimeseriesSeries, EchartsTimeseriesDatum } from './Timeseries/types';
-import { ForecastSeriesContext, ForecastSeriesEnum } from './types';
+import { ForecastSeriesContext, ForecastSeriesEnum, ProphetValue } from './types';
 
 export const extractTimeseriesSeries = (
   data: EchartsTimeseriesDatum[],
@@ -107,15 +107,6 @@ export const rebaseTimeseriesDatum = (data: EchartsTimeseriesDatum[]): EchartsTi
   });
 };
 
-type ProphetValue = {
-  name: string;
-  marker: string;
-  observation?: number;
-  forecastTrend?: number;
-  forecastLower?: number;
-  forecastUpper?: number;
-};
-
 export const extractProphetValuesFromTooltipParams = (
   params: (echarts.EChartOption.Tooltip.Format & { seriesId: string })[],
 ): Record<string, ProphetValue> => {
@@ -127,7 +118,6 @@ export const extractProphetValuesFromTooltipParams = (
     if (numericValue) {
       if (!(context.name in values))
         values[context.name] = {
-          name: context.name,
           marker: marker || '',
         };
       const prophetValues = values[context.name];

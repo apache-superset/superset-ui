@@ -27,3 +27,11 @@ export type ForecastSeriesContext = {
   name: string;
   type: ForecastSeriesEnum;
 };
+
+export type ProphetValue = {
+  marker: string;
+  observation?: number;
+  forecastTrend?: number;
+  forecastLower?: number;
+  forecastUpper?: number;
+};

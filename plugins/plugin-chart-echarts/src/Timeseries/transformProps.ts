@@ -56,7 +56,6 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
 
   const series: echarts.EChartOption.Series[] = [];
   const formatter = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormat);
-  console.log(smartDateVerboseFormatter(new Date()));
 
   rawSeries.forEach(entry => {
     const forecastSeries = extractForecastSeriesContext(entry.name || '');

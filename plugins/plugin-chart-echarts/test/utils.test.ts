@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { getNumberFormatter, NumberFormats } from '@superset-ui/number-format';
 import {
   extractForecastSeriesContext,
   extractProphetValuesFromTooltipParams,
@@ -196,7 +197,7 @@ describe('extractProphetValuesFromTooltipParams', () => {
   });
 });
 
-const formatter = (val: number) => `x${val}`;
+const formatter = getNumberFormatter(NumberFormats.INTEGER);
 
 describe('formatProphetTooltipSeries', () => {
   it('should generate a proper series tooltip', () => {
