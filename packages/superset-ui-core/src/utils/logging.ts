@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 const logger = window.console || {
   debug() {},
   log() {},
@@ -24,6 +25,10 @@ const logger = window.console || {
   error() {},
   trace() {},
 };
+
+const table = window.console?.table || logger.log;
+
+logger.table = table;
 
 /**
  * Superset frontend logger, currently just an alias to console.
