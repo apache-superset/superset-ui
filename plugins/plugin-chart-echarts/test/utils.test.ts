@@ -163,34 +163,41 @@ describe('extractProphetValuesFromTooltipParams', () => {
     expect(
       extractProphetValuesFromTooltipParams([
         {
+          marker: '<img>',
           seriesId: 'abc',
           value: [new Date(0), 10],
         },
         {
+          marker: '<img>',
           seriesId: 'abc__yhat',
           value: [new Date(0), 1],
         },
         {
+          marker: '<img>',
           seriesId: 'abc__yhat_lower',
           value: [new Date(0), 5],
         },
         {
+          marker: '<img>',
           seriesId: 'abc__yhat_upper',
           value: [new Date(0), 6],
         },
         {
+          marker: '<img>',
           seriesId: 'qwerty',
           value: [new Date(0), 2],
         },
       ]),
     ).toEqual({
       abc: {
+        marker: '<img>',
         observation: 10,
         forecastTrend: 1,
         forecastLower: 5,
         forecastUpper: 6,
       },
       qwerty: {
+        marker: '<img>',
         observation: 2,
       },
     });
@@ -205,21 +212,21 @@ describe('formatProphetTooltipSeries', () => {
       formatProphetTooltipSeries({
         seriesName: 'abc',
         marker: '<img>',
-        observation: 10,
+        observation: 10.1,
         formatter,
       }),
-    ).toEqual('<img>abc: x10');
+    ).toEqual('<img>abc: 10<br />');
     expect(
       formatProphetTooltipSeries({
         seriesName: 'qwerty',
         marker: '<img>',
-        observation: 10,
-        forecastTrend: 20,
-        forecastLower: 5,
-        forecastUpper: 7,
+        observation: 10.1,
+        forecastTrend: 20.1,
+        forecastLower: 5.1,
+        forecastUpper: 7.1,
         formatter,
       }),
-    ).toEqual('<img>qwerty: x10, ŷ = x20 (x5, x12)');
+    ).toEqual('<img>qwerty: 10, ŷ = 20 (5, 12)<br />');
     expect(
       formatProphetTooltipSeries({
         seriesName: 'qwerty',
