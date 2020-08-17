@@ -22,6 +22,7 @@ const log = console.log || (() => {});
 
 const logger = {
   log,
+  debug: console.debug || log,
   info: console.info || log,
   warn: console.warn || log,
   error: console.error || log,
