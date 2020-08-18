@@ -20,7 +20,11 @@
 import dt from 'datatables.net-bs';
 import PropTypes from 'prop-types';
 import { formatNumber } from '@superset-ui/number-format';
-import { smartDateFormatter, getTimeFormatter } from '@superset-ui/time-format';
+import {
+  getTimeFormatter,
+  getTimeFormatterForGranularity,
+  smartDateFormatter,
+} from '@superset-ui/time-format';
 import fixTableHeight from './utils/fixTableHeight';
 import 'datatables.net-bs/css/dataTables.bootstrap.css';
 
@@ -45,13 +49,29 @@ const propTypes = {
 };
 
 function PivotTable(element, props) {
-  const { data, height, columnFormats, dateFormat, numberFormat, numGroups, verboseMap } = props;
+  const {
+    columnFormats,
+    data,
+    dateFormat,
+    granularity,
+    height,
+    numberFormat,
+    numGroups,
+    verboseMap,
+  } = props;
 
   const { html, columns } = data;
   const container = element;
   const $container = $(element);
-  const dateFormatter =
-    dateFormat === 'smart_date' ? smartDateFormatter : getTimeFormatter(dateFormat);
+  let dateFormatter;
+
+  if (dateFormat === smartDateFormatter.id && granularity) {
+    dateFormatter = getTimeFormatterForGranularity(granularity);
+  } else if (dateFormat) {
+    dateFormatter = getTimeFormatter(dateFormat);
+  } else {
+    dateFormatter = String;
+  }
 
   // queryData data is a string of html with a single table element
   container.innerHTML = html;
@@ -89,6 +109,13 @@ function PivotTable(element, props) {
         if (!Number.isNaN(parsedValue)) {
           $(this)[0].textContent = formatNumber(format, parsedValue);
           $(this).attr('data-sort', parsedValue);
+        } else {
+          const regexMatch = dateRegex.exec(tdText);
+          if (regexMatch) {
+            const date = new Date(parseFloat(regexMatch[1]));
+            $(this)[0].textContent = dateFormatter(date);
+            $(this).attr('data-sort', date);
+          }
         }
       });
   });
