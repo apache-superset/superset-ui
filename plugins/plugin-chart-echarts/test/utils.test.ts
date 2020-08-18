@@ -215,7 +215,7 @@ describe('formatProphetTooltipSeries', () => {
         observation: 10.1,
         formatter,
       }),
-    ).toEqual('<img>abc: 10<br />');
+    ).toEqual('<img>abc: 10');
     expect(
       formatProphetTooltipSeries({
         seriesName: 'qwerty',
@@ -226,7 +226,7 @@ describe('formatProphetTooltipSeries', () => {
         forecastUpper: 7.1,
         formatter,
       }),
-    ).toEqual('<img>qwerty: 10, ŷ = 20 (5, 12)<br />');
+    ).toEqual('<img>qwerty: 10, ŷ = 20 (5, 12)');
     expect(
       formatProphetTooltipSeries({
         seriesName: 'qwerty',

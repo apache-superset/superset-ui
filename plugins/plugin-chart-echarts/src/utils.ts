@@ -159,5 +159,5 @@ export const formatProphetTooltipSeries = ({
       // the lower bound needs to be added to the upper bound
       row += ` (${formatter(forecastLower)}, ${formatter(forecastLower + forecastUpper)})`;
   }
-  return `${row.trim()}<br />`;
+  return `${row.trim()}`;
 };

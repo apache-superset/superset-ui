@@ -130,21 +130,22 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
       trigger: 'axis',
       formatter: (params, ticket, callback) => {
         // @ts-ignore
-        let res = `${smartDateVerboseFormatter(params[0].value[0])}<br />`;
+        const rows = [`${smartDateVerboseFormatter(params[0].value[0])}`];
         // @ts-ignore
         const prophetValues = extractProphetValuesFromTooltipParams(params);
         Object.keys(prophetValues).forEach(key => {
           const value = prophetValues[key];
-          const formattedValue = formatProphetTooltipSeries({
-            ...value,
-            seriesName: key,
-            formatter,
-          });
-          res += `${formattedValue}`;
+          rows.push(
+            formatProphetTooltipSeries({
+              ...value,
+              seriesName: key,
+              formatter,
+            }),
+          );
         });
         setTimeout(() => {
-          callback(ticket, res);
-        }, 100);
+          callback(ticket, rows.join('<br />'));
+        }, 50);
         return 'loading';
       },
     },
