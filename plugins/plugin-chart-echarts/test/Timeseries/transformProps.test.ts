@@ -15,7 +15,7 @@ describe('EchartsTimeseries tranformProps', () => {
     width: 800,
     height: 600,
     queryData: {
-      data: [{ name: 'Hulk', sum__num: 1, __timestamp: 599616000000 }],
+      data: [{ sum__num: 1, __timestamp: 599616000000 }],
     },
   });
 
@@ -24,7 +24,7 @@ describe('EchartsTimeseries tranformProps', () => {
       expect.objectContaining({
         width: 800,
         height: 600,
-        data: [{ name: 'Hulk', sum__num: 1, __timestamp: new Date(599616000000) }],
+        data: [{ sum__num: 1, __timestamp: new Date(599616000000) }],
       }),
     );
   });

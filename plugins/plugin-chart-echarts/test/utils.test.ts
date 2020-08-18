@@ -236,6 +236,6 @@ describe('formatProphetTooltipSeries', () => {
         forecastUpper: 7,
         formatter,
       }),
-    ).toEqual('<img>qwerty: ŷ = x20 (x5, x12)');
+    ).toEqual('<img>qwerty: ŷ = 20 (5, 12)');
   });
 });
