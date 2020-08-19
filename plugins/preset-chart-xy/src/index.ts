@@ -1,3 +1,7 @@
+import configureEncodable from './configureEncodable';
+
+configureEncodable();
+
 export { default as BoxPlotChartPlugin } from './BoxPlot';
 export { default as LegacyBoxPlotChartPlugin } from './BoxPlot/legacy';
 export { default as ScatterPlotChartPlugin } from './ScatterPlot';
