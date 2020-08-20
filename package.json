@@ -70,6 +70,7 @@
     "esprint": "^0.7.0",
     "fast-glob": "^3.2.4",
     "fs-extra": "^9.0.0",
+    "global-box": "^1.2.0",
     "husky": "^4.2.5",
     "identity-obj-proxy": "^3.0.0",
     "jest-mock-console": "^1.0.0",

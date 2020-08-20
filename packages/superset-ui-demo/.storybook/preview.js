@@ -6,6 +6,7 @@ import sequentialD3 from '@superset-ui/color/lib/colorSchemes/sequential/d3';
 import { configure } from '@superset-ui/core';
 import { getCategoricalSchemeRegistry, getSequentialSchemeRegistry } from '@superset-ui/color';
 import { getTimeFormatterRegistry, smartDateFormatter } from '@superset-ui/time-format';
+import { configureEncodable } from '@superset-ui/preset-chart-xy';
 import themeDecorator from "./themeDecorator"
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -68,3 +69,4 @@ getTimeFormatterRegistry()
   .registerValue('smart_date', smartDateFormatter)
   .setDefaultKey('smart_date');
 
+configureEncodable();
