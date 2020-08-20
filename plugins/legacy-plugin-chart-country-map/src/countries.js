@@ -27,6 +27,7 @@ import uk from 'file-loader!./countries/uk.geojson';
 import ukraine from 'file-loader!./countries/ukraine.geojson';
 import usa from 'file-loader!./countries/usa.geojson';
 import zambia from 'file-loader!./countries/zambia.geojson';
+import laos from 'file-loader!./countries/laos.geojson';
 
 const countries = {
   belgium,
@@ -57,6 +58,7 @@ const countries = {
   ukraine,
   usa,
   zambia,
+  laos,
 };
 
 export default countries;
