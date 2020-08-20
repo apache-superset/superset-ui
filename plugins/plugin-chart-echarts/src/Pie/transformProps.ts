@@ -16,48 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { ChartProps, DataRecord } from '@superset-ui/chart';
 import { EchartsPieProps } from './types';
 
-export default function transformProps(chartProps: EchartsPieProps) {
-  /**
-   * This function is called after a successful response has been
-   * received from the chart data endpoint, and is used to transform
-   * the incoming data prior to being sent to the Visualization.
-   *
-   * The transformProps function is also quite useful to return
-   * additional/modified props to your data viz component. The formData
-   * can also be accessed from your EchartsPie.tsx file, but
-   * doing supplying custom props here is often handy for integrating third
-   * party libraries that rely on specific props.
-   *
-   * A description of properties in `chartProps`:
-   * - `height`, `width`: the height/width of the DOM element in which
-   *   the chart is located
-   * - `formData`: the chart data request payload that was sent to the
-   *   backend.
-   * - `queryData`: the chart data response payload that was received
-   *   from the backend. Some notable properties of `queryData`:
-   *   - `data`: an array with data, each row with an object mapping
-   *     the column/alias to its value. Example:
-   *     `[{ col1: 'abc', metric1: 10 }, { col1: 'xyz', metric1: 20 }]`
-   *   - `rowcount`: the number of rows in `data`
-   *   - `query`: the query that was issued.
-   *
-   * Please note: the transformProps function gets cached when the
-   * application loads. When making changes to the `transformProps`
-   * function during development with hot reloading, changes won't
-   * be seen until restarting the development server.
+export default function transformProps(chartProps: ChartProps): EchartsPieProps {
+  /*
+  TODO:
+  - add support for multiple groupby (requires post transform op)
+  - add support for ad-hoc metrics (currently only supports datasource metrics)
+  - add support for superset colors
+  - add support for control values in legacy pie chart
    */
   const { width, height, formData, queryData } = chartProps;
-  const data = queryData.data || [];
+  const data: DataRecord[] = queryData.data || [];
 
   const { innerRadius = 50, outerRadius = 70, groupby = [], metrics = [] } = formData;
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const keys = Array.from(new Set(data.map(datum => datum[groupby[0]])));
 
   const transformedData = data.map(datum => {
     return {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       value: datum[metrics[0]],
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       name: datum[groupby[0]],
     };
   });
@@ -74,7 +56,6 @@ export default function transformProps(chartProps: EchartsPieProps) {
     },
     series: [
       {
-        // name: 'gender',
         type: 'pie',
         radius: [`${innerRadius}%`, `${outerRadius}%`],
         avoidLabelOverlap: false,
@@ -100,8 +81,7 @@ export default function transformProps(chartProps: EchartsPieProps) {
   return {
     width,
     height,
-    data,
-    // and now your control data, manipulated as needed, and passed through as props!
+    // @ts-ignore
     echartOptions,
   };
 }

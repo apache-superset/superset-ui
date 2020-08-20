@@ -16,6 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+export type EchartsStylesProps = {
+  height: number;
+  width: number;
+};
+
+export interface EchartsProps {
+  height: number;
+  width: number;
+  echartOptions: echarts.EChartOption;
+}
+
 export enum ForecastSeriesEnum {
   Observation = '',
   ForecastTrend = '__yhat',

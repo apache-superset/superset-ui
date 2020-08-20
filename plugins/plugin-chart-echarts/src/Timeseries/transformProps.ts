@@ -51,7 +51,7 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  const rebasedData = rebaseTimeseriesDatum(queryData.data);
+  const rebasedData = rebaseTimeseriesDatum(queryData.data || []);
   const rawSeries = extractTimeseriesSeries(rebasedData);
 
   const series: echarts.EChartOption.Series[] = [];

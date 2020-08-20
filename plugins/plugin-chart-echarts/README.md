@@ -1,19 +1,27 @@
 ## @superset-ui/plugin-chart-echarts-line
 
-[![Version](https://img.shields.io/npm/v/@superset-ui/plugin-chart-echarts-line.svg?style=flat-square)](https://img.shields.io/npm/v/@superset-ui/plugin-chart-echarts-line.svg?style=flat-square)
-[![David (path)](https://img.shields.io/david/apache-superset/superset-ui.svg?path=packages%2Fsuperset-ui-plugin-chart-echarts-line&style=flat-square)](https://david-dm.org/apache-superset/superset-ui?path=packages/superset-ui-plugin-chart-echarts-line)
+[![Version](https://img.shields.io/npm/v/@superset-ui/plugin-chart-echarts.svg?style=flat-square)](https://img.shields.io/npm/v/@superset-ui/plugin-chart-echarts.svg?style=flat-square)
+[![David (path)](https://img.shields.io/david/apache-superset/superset-ui.svg?path=packages%2Fsuperset-ui-plugin-chart-echarts&style=flat-square)](https://david-dm.org/apache-superset/superset-ui?path=packages/superset-ui-plugin-chart-echarts)
 
-This plugin provides Echarts Line for Superset.
+This plugin provides Echarts viz plugins for Superset:
+- Timeseries Chart (combined line, area bar with support for predictive analytics)
+- Pie Chart
 
 ### Usage
 
 Configure `key`, which can be any `string`, and register the plugin. This `key` will be used to lookup this chart throughout the app.
 
 ```js
-import EchartsLineChartPlugin from '@superset-ui/plugin-chart-echarts';
+import {
+  EchartsTimeseriesChartPlugin,
+  EchartsPieChartPlugin,
+} from '@superset-ui/plugin-chart-echarts';
 
-new EchartsLineChartPlugin()
-  .configure({ key: 'echarts-line' })
+new EchartsTimeseriesChartPlugin()
+  .configure({ key: 'echarts-ts' })
+  .register();
+new EchartsPieChartPlugin()
+  .configure({ key: 'echarts-pie' })
   .register();
 ```
 
@@ -21,7 +29,7 @@ Then use it via `SuperChart`. See [storybook](https://apache-superset.github.io/
 
 ```js
 <SuperChart
-  chartType="echarts-line"
+  chartType="echarts-ts"
   width={600}
   height={600}
   formData={...}
@@ -29,26 +37,4 @@ Then use it via `SuperChart`. See [storybook](https://apache-superset.github.io/
     data: {...},
   }}
 />
-```
-
-### File structure generated
-
-```
-├── README.md
-├── package.json
-├── src
-│   ├── EchartsTimeseries.tsx
-│   ├── images
-│   │   └── thumbnail.png
-│   ├── index.ts
-│   ├── plugin
-│   │   ├── buildQuery.ts
-│   │   ├── controlPanel.ts
-│   │   ├── index.ts
-│   │   └── transformProps.ts
-│   └── types.ts
-├── test
-│   └── index.test.ts
-└── types
-    └── external.d.ts
 ```

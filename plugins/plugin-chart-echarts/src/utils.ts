@@ -17,7 +17,7 @@
  * under the License.
  */
 import { NumberFormatter } from '@superset-ui/number-format';
-import { DataRecordValue } from '@superset-ui/chart';
+import { DataRecord, DataRecordValue } from '@superset-ui/chart';
 import { EchartsBaseTimeseriesSeries, EchartsTimeseriesDatum } from './Timeseries/types';
 import { ForecastSeriesContext, ForecastSeriesEnum, ProphetValue } from './types';
 
@@ -83,7 +83,7 @@ export const extractSeriesBase = (series: echarts.EChartOption.Series[]): number
   return minValue;
 };
 
-export const rebaseTimeseriesDatum = (data: EchartsTimeseriesDatum[]): EchartsTimeseriesDatum[] => {
+export const rebaseTimeseriesDatum = (data: DataRecord[]): EchartsTimeseriesDatum[] => {
   const keys = data.length > 0 ? Object.keys(data[0]) : [];
 
   return data.map(row => {

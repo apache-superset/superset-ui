@@ -16,12 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { buildQueryContext, QueryFormData } from '@superset-ui/query';
+import React, { createRef, useEffect } from 'react';
+import styled from '@superset-ui/style';
+import echarts from 'echarts';
+import { EchartsProps, EchartsStylesProps } from '../types';
 
-export default function buildQuery(formData: QueryFormData) {
-  return buildQueryContext(formData, baseQueryObject => [
-    {
-      ...baseQueryObject,
-    },
-  ]);
+const Styles = styled.div<EchartsStylesProps>`
+  height: ${({ height }) => height};
+  width: ${({ width }) => width};
+`;
+
+export default function useEchartsComponent(props: EchartsProps) {
+  const { height, width, echartOptions } = props;
+
+  const rootElem = createRef<HTMLDivElement>();
+
+  useEffect(() => {
+    const root = rootElem.current as HTMLDivElement;
+    const myChart = echarts.init(root, undefined, {
+      width,
+      height,
+    });
+    myChart.setOption(echartOptions, true);
+    myChart.resize({
+      width,
+      height,
+    });
+  });
+
+  return <Styles ref={rootElem} height={height} width={width} />;
 }

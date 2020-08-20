@@ -16,36 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useEffect, createRef } from 'react';
-import styled from '@superset-ui/style';
-import echarts from 'echarts';
 import { EchartsTimeseriesProps } from './types';
-
-interface EchartsLineStylesProps {
-  height: number;
-  width: number;
-}
-
-const Styles = styled.div<EchartsLineStylesProps>`
-  height: ${({ height }) => height};
-  width: ${({ width }) => width};
-`;
+import useEchartsComponent from '../hooks/useEchartsComponent';
 
 export default function EchartsTimeseries(props: EchartsTimeseriesProps) {
-  // height and width are the height and width of the DOM element as it exists in the dashboard.
-  // There is also a `data` prop, which is, of course, your DATA 🎉
-  const { echartOptions, height, width } = props;
-  const rootElem = createRef<HTMLDivElement>();
-
-  useEffect(() => {
-    const root = rootElem.current as HTMLDivElement;
-    const myChart = echarts.init(root);
-    myChart.setOption(echartOptions, true);
-    myChart.resize({
-      width,
-      height,
-    });
-  });
-
-  return <Styles ref={rootElem} height={height} width={width} />;
+  return useEchartsComponent(props);
 }
