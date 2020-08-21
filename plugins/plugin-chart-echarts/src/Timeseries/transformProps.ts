@@ -22,13 +22,13 @@ import { getNumberFormatter } from '@superset-ui/number-format';
 import { smartDateVerboseFormatter } from '@superset-ui/time-format';
 import { EchartsTimeseriesProps } from './types';
 import { ForecastSeriesEnum } from '../types';
+import { extractTimeseriesSeries } from '../utils/series';
 import {
   extractForecastSeriesContext,
   extractProphetValuesFromTooltipParams,
-  extractTimeseriesSeries,
   formatProphetTooltipSeries,
   rebaseTimeseriesDatum,
-} from '../utils';
+} from '../utils/prophet';
 
 export default function transformProps(chartProps: ChartProps): EchartsTimeseriesProps {
   const { width, height, formData, queryData } = chartProps;

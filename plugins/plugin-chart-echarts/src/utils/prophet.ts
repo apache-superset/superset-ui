@@ -16,44 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { DataRecord } from '@superset-ui/chart';
 import { NumberFormatter } from '@superset-ui/number-format';
-import { DataRecord, DataRecordValue } from '@superset-ui/chart';
-import { EchartsBaseTimeseriesSeries, EchartsTimeseriesDatum } from './Timeseries/types';
-import { ForecastSeriesContext, ForecastSeriesEnum, ProphetValue } from './types';
-
-export const extractTimeseriesSeries = (
-  data: EchartsTimeseriesDatum[],
-): Partial<echarts.EChartOption.Series>[] => {
-  const series = [] as EchartsBaseTimeseriesSeries[];
-
-  const keys = data.length > 0 ? Object.keys(data[0]).filter(key => key !== '__timestamp') : [];
-
-  const rawSeries: Record<string, [Date, DataRecordValue][]> = keys.reduce(
-    (obj, key) => ({
-      ...obj,
-      [key]: [],
-    }),
-    {},
-  );
-
-  data.forEach(row => {
-    // eslint-disable-next-line no-underscore-dangle
-    const timestamp = new Date(row.__timestamp);
-    keys.forEach(key => {
-      rawSeries[key].push([timestamp, row[key]]);
-    });
-  });
-
-  Object.entries(rawSeries).forEach(([key, value]) => {
-    series.push({
-      name: key,
-      data: value,
-    });
-  });
-
-  // @ts-ignore
-  return series;
-};
+import { ForecastSeriesContext, ForecastSeriesEnum, ProphetValue } from '../types';
+import { EchartsTimeseriesDatum } from '../Timeseries/types';
 
 const seriesTypeRegex = new RegExp(
   `(.+)(${ForecastSeriesEnum.ForecastLower}|${ForecastSeriesEnum.ForecastTrend}|${ForecastSeriesEnum.ForecastUpper})$`,
@@ -65,46 +31,6 @@ export const extractForecastSeriesContext = (seriesName: string): ForecastSeries
     name: regexMatch[1],
     type: regexMatch[2] as ForecastSeriesEnum,
   };
-};
-
-export const extractSeriesBase = (series: echarts.EChartOption.Series[]): number | null => {
-  let minValue: number | null = null;
-  series
-    .filter(row => row !== undefined)
-    .forEach(seriesEntry => {
-      if (seriesEntry?.data) {
-        // @ts-ignore
-        seriesEntry.data.forEach(row => {
-          minValue =
-            minValue === null || minValue === undefined || row[1] < minValue ? row[1] : minValue;
-        });
-      }
-    });
-  return minValue;
-};
-
-export const rebaseTimeseriesDatum = (data: DataRecord[]): EchartsTimeseriesDatum[] => {
-  const keys = data.length > 0 ? Object.keys(data[0]) : [];
-
-  return data.map(row => {
-    const newRow: EchartsTimeseriesDatum = { __timestamp: '' };
-    keys.forEach(key => {
-      const forecastContext = extractForecastSeriesContext(key);
-      const lowerKey = `${forecastContext.name}${ForecastSeriesEnum.ForecastLower}`;
-      let value = row[key];
-      if (
-        forecastContext.type === ForecastSeriesEnum.ForecastUpper &&
-        keys.includes(lowerKey) &&
-        value !== null &&
-        row[lowerKey] !== null
-      ) {
-        // @ts-ignore
-        value -= row[lowerKey];
-      }
-      newRow[key] = value;
-    });
-    return newRow;
-  });
 };
 
 export const extractProphetValuesFromTooltipParams = (
@@ -160,4 +86,28 @@ export const formatProphetTooltipSeries = ({
       row += ` (${formatter(forecastLower)}, ${formatter(forecastLower + forecastUpper)})`;
   }
   return `${row.trim()}`;
+};
+
+export const rebaseTimeseriesDatum = (data: DataRecord[]): EchartsTimeseriesDatum[] => {
+  const keys = data.length > 0 ? Object.keys(data[0]) : [];
+
+  return data.map(row => {
+    const newRow: EchartsTimeseriesDatum = { __timestamp: '' };
+    keys.forEach(key => {
+      const forecastContext = extractForecastSeriesContext(key);
+      const lowerKey = `${forecastContext.name}${ForecastSeriesEnum.ForecastLower}`;
+      let value = row[key];
+      if (
+        forecastContext.type === ForecastSeriesEnum.ForecastUpper &&
+        keys.includes(lowerKey) &&
+        value !== null &&
+        row[lowerKey] !== null
+      ) {
+        // @ts-ignore
+        value -= row[lowerKey];
+      }
+      newRow[key] = value;
+    });
+    return newRow;
+  });
 };

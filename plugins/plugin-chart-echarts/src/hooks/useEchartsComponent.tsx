@@ -42,7 +42,7 @@ export default function useEchartsComponent(props: EchartsProps) {
       width,
       height,
     });
-  });
+  }, [width, height, echartOptions, rootElem]);
 
   return <Styles ref={rootElem} height={height} width={width} />;
 }
