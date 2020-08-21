@@ -19,7 +19,7 @@
 import { DataRecord } from '@superset-ui/chart';
 import { NumberFormatter } from '@superset-ui/number-format';
 import { ForecastSeriesContext, ForecastSeriesEnum, ProphetValue } from '../types';
-import { EchartsTimeseriesDatum } from '../Timeseries/types';
+import { TimeseriesDataRecord } from '../Timeseries/types';
 
 const seriesTypeRegex = new RegExp(
   `(.+)(${ForecastSeriesEnum.ForecastLower}|${ForecastSeriesEnum.ForecastTrend}|${ForecastSeriesEnum.ForecastUpper})$`,
@@ -88,11 +88,11 @@ export const formatProphetTooltipSeries = ({
   return `${row.trim()}`;
 };
 
-export const rebaseTimeseriesDatum = (data: DataRecord[]): EchartsTimeseriesDatum[] => {
+export const rebaseTimeseriesDatum = (data: DataRecord[]): TimeseriesDataRecord[] => {
   const keys = data.length > 0 ? Object.keys(data[0]) : [];
 
   return data.map(row => {
-    const newRow: EchartsTimeseriesDatum = { __timestamp: '' };
+    const newRow: TimeseriesDataRecord = { __timestamp: '' };
     keys.forEach(key => {
       const forecastContext = extractForecastSeriesContext(key);
       const lowerKey = `${forecastContext.name}${ForecastSeriesEnum.ForecastLower}`;

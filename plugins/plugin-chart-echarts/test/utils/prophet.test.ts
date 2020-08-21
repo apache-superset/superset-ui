@@ -20,76 +20,10 @@ import { getNumberFormatter, NumberFormats } from '@superset-ui/number-format';
 import {
   extractForecastSeriesContext,
   extractProphetValuesFromTooltipParams,
-  extractSeriesBase,
-  extractTimeseriesSeries,
   formatProphetTooltipSeries,
   rebaseTimeseriesDatum,
-} from '../src/utils';
-import { ForecastSeriesEnum } from '../src/types';
-
-describe('extractTimeseriesSeries', () => {
-  it('should generate a valid ECharts timeseries series object', () => {
-    const data = [
-      {
-        __timestamp: '2000-01-01',
-        Hulk: null,
-        abc: 2,
-      },
-      {
-        __timestamp: '2000-02-01',
-        Hulk: 2,
-        abc: 10,
-      },
-      {
-        __timestamp: '2000-03-01',
-        Hulk: 1,
-        abc: 5,
-      },
-    ];
-    expect(extractTimeseriesSeries(data)).toEqual([
-      {
-        name: 'Hulk',
-        data: [
-          [new Date('2000-01-01'), null],
-          [new Date('2000-02-01'), 2],
-          [new Date('2000-03-01'), 1],
-        ],
-      },
-      {
-        name: 'abc',
-        data: [
-          [new Date('2000-01-01'), 2],
-          [new Date('2000-02-01'), 10],
-          [new Date('2000-03-01'), 5],
-        ],
-      },
-    ]);
-  });
-});
-
-describe('extractSeriesBase', () => {
-  it('should find minimum value for a valid ECharts series', () => {
-    const series: echarts.EChartOption.Series[] = [
-      {
-        name: 'abc',
-        data: [
-          [1, undefined],
-          [2, 10],
-          [3, -1],
-        ],
-      },
-      {
-        name: 'qwerty',
-        data: [
-          [1, 100],
-          [2, 0],
-          [3, -2],
-        ],
-      },
-    ];
-    expect(extractSeriesBase(series)).toEqual(-2);
-  });
-});
+} from '../../src/utils/prophet';
+import { ForecastSeriesEnum } from '../../src/types';
 
 describe('extractForecastSeriesContext', () => {
   it('should extract the correct series name and type', () => {

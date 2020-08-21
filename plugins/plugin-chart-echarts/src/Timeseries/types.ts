@@ -21,7 +21,7 @@ import { EchartsProps } from '../types';
 
 export type TimestampType = string | number | Date;
 
-export interface EchartsTimeseriesDatum extends DataRecord {
+export interface TimeseriesDataRecord extends DataRecord {
   __timestamp: TimestampType;
 }
 

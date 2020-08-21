@@ -59,10 +59,9 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
 
   rawSeries.forEach(entry => {
     const forecastSeries = extractForecastSeriesContext(entry.name || '');
-    const isConfidenceBand = [
-      ForecastSeriesEnum.ForecastLower,
-      ForecastSeriesEnum.ForecastUpper,
-    ].includes(forecastSeries.type);
+    const isConfidenceBand =
+      forecastSeries.type === ForecastSeriesEnum.ForecastLower ||
+      forecastSeries.type === ForecastSeriesEnum.ForecastUpper;
     const isObservation = forecastSeries.type === ForecastSeriesEnum.Observation;
     const isTrend = forecastSeries.type === ForecastSeriesEnum.ForecastTrend;
     let stackId;
