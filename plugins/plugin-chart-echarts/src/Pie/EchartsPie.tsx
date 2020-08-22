@@ -16,9 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import React from 'react';
 import { EchartsPieProps } from './types';
-import useEchartsComponent from '../hooks/useEchartsComponent';
+import Echart from '../components/Echart';
 
 export default function EchartsPie(props: EchartsPieProps) {
-  return useEchartsComponent(props);
+  return <Echart height={props.height} width={props.width} echartOptions={props.echartOptions} />;
 }
