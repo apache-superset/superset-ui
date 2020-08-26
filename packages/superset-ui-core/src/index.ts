@@ -27,3 +27,4 @@ export * from './time-format';
 export * from './dimension';
 export * from './color';
 export * from './style';
+export * from './validator';

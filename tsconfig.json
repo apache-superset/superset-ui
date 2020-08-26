@@ -26,12 +26,6 @@
       "path": "packages/superset-ui-core/test"
     },
     {
-      "path": "packages/superset-ui-validator"
-    },
-    {
-      "path": "packages/superset-ui-validator/test"
-    },
-    {
       "path": "plugins/legacy-plugin-chart-calendar"
     },
     {

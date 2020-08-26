@@ -1,4 +1,5 @@
-import { legacyValidateInteger } from '../src';
+import { legacyValidateInteger } from '@superset-ui/core/src';
+import './setup';
 
 describe('legacyValidateInteger()', () => {
   it('returns the warning message if invalid', () => {

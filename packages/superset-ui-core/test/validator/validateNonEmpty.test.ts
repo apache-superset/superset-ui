@@ -1,4 +1,5 @@
-import { validateNonEmpty } from '../src';
+import { validateNonEmpty } from '@superset-ui/core/src';
+import './setup';
 
 describe('validateNonEmpty()', () => {
   it('returns the warning message if invalid', () => {

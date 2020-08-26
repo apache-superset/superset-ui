@@ -16,8 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { t } from '@superset-ui/core';
-import { validateNonEmpty } from '@superset-ui/validator';
+import { t, validateNonEmpty } from '@superset-ui/core';
 import { formatSelectOptions, internalSharedControls } from '@superset-ui/chart-controls';
 
 const { columnChoices } = internalSharedControls;

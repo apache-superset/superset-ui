@@ -1,4 +1,5 @@
-import { legacyValidateNumber } from '../src';
+import { legacyValidateNumber } from '@superset-ui/core/src';
+import './setup';
 
 describe('legacyValidateNumber()', () => {
   it('returns the warning message if invalid', () => {
