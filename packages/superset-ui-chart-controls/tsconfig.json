@@ -19,9 +19,6 @@
       "path": "../superset-ui-core"
     },
     {
-      "path": "../superset-ui-style"
-    },
-    {
       "path": "../superset-ui-validator"
     }
   ]

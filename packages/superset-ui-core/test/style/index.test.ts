@@ -1,4 +1,4 @@
-import styled, { supersetTheme, SupersetThemeProps } from '../src';
+import { styled, supersetTheme, SupersetThemeProps } from '@superset-ui/core/src/style';
 
 describe('@superset-ui/style package', () => {
   it('exports a theme', () => {

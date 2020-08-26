@@ -26,12 +26,6 @@
       "path": "packages/superset-ui-core/test"
     },
     {
-      "path": "packages/superset-ui-style"
-    },
-    {
-      "path": "packages/superset-ui-style/test"
-    },
-    {
       "path": "packages/superset-ui-validator"
     },
     {

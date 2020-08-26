@@ -26,10 +26,9 @@ import {
   TimeFormatter,
   computeMaxFontSize,
   BRAND_COLOR,
+  styled,
 } from '@superset-ui/core';
 import { XYChart, AreaSeries, CrossHair, LinearGradient } from '@data-ui/xy-chart';
-
-import styled from '@superset-ui/style';
 
 const defaultNumberFormatter = getNumberFormatter();
 

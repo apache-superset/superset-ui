@@ -34,7 +34,6 @@
   "dependencies": {
     "@types/react-bootstrap": "0.32.21",
     "@superset-ui/core": "^0.15.0",
-    "@superset-ui/style": "^0.14.0",
     "@superset-ui/validator": "^0.14.0",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
