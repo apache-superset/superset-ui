@@ -19,9 +19,6 @@
       "path": "../../packages/superset-ui-chart"
     },
     {
-      "path": "../../packages/superset-ui-chart-composition"
-    },
-    {
       "path": "../../packages/superset-ui-chart-controls"
     },
     {

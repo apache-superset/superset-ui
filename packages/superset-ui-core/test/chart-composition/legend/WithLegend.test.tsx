@@ -1,12 +1,8 @@
-/* eslint-disable import/imports-first, import/first */
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-
-jest.mock('resize-observer-polyfill');
-// @ts-ignore
 import { triggerResizeObserver } from 'resize-observer-polyfill';
-import { promiseTimeout } from '@superset-ui/core';
-import { WithLegend } from '../../src';
+import { promiseTimeout } from '@superset-ui/core/src';
+import { WithLegend } from '@superset-ui/core/src/chart-composition';
 
 let renderChart = jest.fn();
 let renderLegend = jest.fn();

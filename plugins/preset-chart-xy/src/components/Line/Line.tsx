@@ -9,8 +9,7 @@ import {
   WithTooltip,
 } from '@data-ui/xy-chart';
 import { chartTheme } from '@data-ui/theme';
-import { Margin, Dimension } from '@superset-ui/core';
-import { WithLegend } from '@superset-ui/chart-composition';
+import { WithLegend, Margin, Dimension } from '@superset-ui/core';
 import { createSelector } from 'reselect';
 import { Dataset, PlainObject } from 'encodable';
 import DefaultTooltipRenderer from './DefaultTooltipRenderer';

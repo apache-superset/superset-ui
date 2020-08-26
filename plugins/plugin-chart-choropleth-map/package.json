@@ -28,11 +28,10 @@
   },
   "dependencies": {
     "@superset-ui/chart": "^0.14.0",
-    "@superset-ui/chart-composition": "^0.14.0",
     "@superset-ui/core": "^0.15.0",
     "@types/d3-geo": "^1.11.1",
     "@types/geojson": "^7946.0.3",
-    "@types/react": "^16.9.43",
+    "@types/react": "*",
     "@types/topojson-client": "^3.0.0",
     "@types/topojson-specification": "^1.0.0",
     "@vx/clip-path": "^0.0.197",

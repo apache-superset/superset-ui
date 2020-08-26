@@ -27,7 +27,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@types/react": "^16.9.43",
+    "@types/react": "*",
     "@types/react-loadable": "^5.4.2",
     "@vx/responsive": "^0.0.197",
     "@superset-ui/core": "^0.15.0",

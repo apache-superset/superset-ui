@@ -8,12 +8,6 @@
       "path": "packages/superset-ui-chart/test"
     },
     {
-      "path": "packages/superset-ui-chart-composition"
-    },
-    {
-      "path": "packages/superset-ui-chart-composition/test"
-    },
-    {
       "path": "packages/superset-ui-chart-controls"
     },
     {

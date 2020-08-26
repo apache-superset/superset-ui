@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { isDefined } from '@superset-ui/core';
+import { isDefined } from '../utils';
 
 function checkNumber(input: unknown): input is number {
   return isDefined(input) && typeof input === 'number';

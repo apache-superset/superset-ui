@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import { XYChart, PointSeries } from '@data-ui/xy-chart';
 import { chartTheme, ChartTheme } from '@data-ui/theme';
-import { Margin, Dimension } from '@superset-ui/core';
-import { WithLegend } from '@superset-ui/chart-composition';
+import { WithLegend, Margin, Dimension } from '@superset-ui/core';
 import { isFieldDef, Dataset, PlainObject } from 'encodable';
 
 import {

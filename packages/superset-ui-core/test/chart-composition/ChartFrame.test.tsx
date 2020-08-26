@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { ChartFrame } from '../src';
+import { ChartFrame } from '@superset-ui/core/src';
 
 describe('TooltipFrame', () => {
   it('renders content that requires smaller space than frame', () => {

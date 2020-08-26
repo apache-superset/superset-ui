@@ -1,8 +1,7 @@
 import React from 'react';
 import { BoxPlotSeries, XYChart } from '@data-ui/xy-chart';
 import { chartTheme, ChartTheme } from '@data-ui/theme';
-import { Margin, Dimension } from '@superset-ui/core';
-import { WithLegend } from '@superset-ui/chart-composition';
+import { WithLegend, Margin, Dimension } from '@superset-ui/core';
 import { Dataset, PlainObject, isFieldDef } from 'encodable';
 import DefaultTooltipRenderer from './DefaultTooltipRenderer';
 import {

@@ -4,7 +4,6 @@ import React from 'react';
 import { mount } from 'enzyme';
 import mockConsole, { RestoreConsole } from 'jest-mock-console';
 
-jest.mock('resize-observer-polyfill');
 // @ts-ignore
 import { triggerResizeObserver } from 'resize-observer-polyfill';
 import ErrorBoundary from 'react-error-boundary';

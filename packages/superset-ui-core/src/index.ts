@@ -28,3 +28,4 @@ export * from './dimension';
 export * from './color';
 export * from './style';
 export * from './validator';
+export * from './chart-composition';
