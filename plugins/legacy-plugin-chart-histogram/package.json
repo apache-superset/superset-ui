@@ -33,7 +33,6 @@
     "@superset-ui/chart": "^0.14.0",
     "@superset-ui/chart-controls": "^0.14.0",
     "@superset-ui/core": "^0.15.0",
-    "@superset-ui/validator": "^0.14.0",
     "@vx/legend": "^0.0.198",
     "@vx/responsive": "^0.0.197",
     "@vx/scale": "^0.0.197",

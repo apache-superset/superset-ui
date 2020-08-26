@@ -1,4 +1,5 @@
-import { validateInteger } from '../src';
+import { validateInteger } from '@superset-ui/core/src';
+import './setup';
 
 describe('validateInteger()', () => {
   it('returns the warning message if invalid', () => {

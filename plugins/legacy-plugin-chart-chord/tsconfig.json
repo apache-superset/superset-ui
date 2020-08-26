@@ -20,9 +20,6 @@
     },
     {
       "path": "../../packages/superset-ui-chart"
-    },
-    {
-      "path": "../../packages/superset-ui-validator"
     }
   ]
 }

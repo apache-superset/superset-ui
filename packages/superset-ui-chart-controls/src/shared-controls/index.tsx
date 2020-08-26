@@ -39,8 +39,9 @@ import {
   getCategoricalSchemeRegistry,
   getSequentialSchemeRegistry,
   SequentialScheme,
+  legacyValidateInteger,
+  validateNonEmpty,
 } from '@superset-ui/core';
-import { legacyValidateInteger, validateNonEmpty } from '@superset-ui/validator';
 
 import { formatSelectOptions } from '../utils/selectOptions';
 import mainMetric from '../utils/mainMetric';

@@ -1,4 +1,5 @@
-import { validateNumber } from '../src';
+import { validateNumber } from '@superset-ui/core/src';
+import './setup';
 
 describe('validateNumber()', () => {
   it('returns the warning message if invalid', () => {
