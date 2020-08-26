@@ -22,8 +22,7 @@
 import d3 from 'd3';
 import PropTypes from 'prop-types';
 import nv from 'nvd3';
-import { CategoricalColorNamespace } from '@superset-ui/color';
-import { getTimeFormatter, getNumberFormatter } from '@superset-ui/core';
+import { getTimeFormatter, getNumberFormatter, CategoricalColorNamespace } from '@superset-ui/core';
 import './Rose.css';
 
 const propTypes = {

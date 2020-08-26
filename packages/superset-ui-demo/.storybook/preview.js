@@ -1,10 +1,10 @@
 import { addParameters, addDecorator } from '@storybook/react';
 import { jsxDecorator } from 'storybook-addon-jsx';
-import categoricalD3 from '@superset-ui/color/lib/colorSchemes/categorical/d3';
-import sequentialCommon from '@superset-ui/color/lib/colorSchemes/sequential/common';
-import sequentialD3 from '@superset-ui/color/lib/colorSchemes/sequential/d3';
+import categoricalD3 from '@superset-ui/core/lib/color/colorSchemes/categorical/d3';
+import sequentialCommon from '@superset-ui/core/lib/color/colorSchemes/sequential/common';
+import sequentialD3 from '@superset-ui/core/lib/color/colorSchemes/sequential/d3';
 import { configure, getTimeFormatterRegistry, smartDateFormatter } from '@superset-ui/core';
-import { getCategoricalSchemeRegistry, getSequentialSchemeRegistry } from '@superset-ui/color';
+import { getCategoricalSchemeRegistry, getSequentialSchemeRegistry } from '@superset-ui/core';
 import { configureEncodable } from '@superset-ui/preset-chart-xy';
 import themeDecorator from './themeDecorator';
 

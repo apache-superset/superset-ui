@@ -1,4 +1,4 @@
-import SequentialScheme from '../src/SequentialScheme';
+import SequentialScheme from '@superset-ui/core/src/color/SequentialScheme';
 
 describe('SequentialScheme', () => {
   const scheme = new SequentialScheme({

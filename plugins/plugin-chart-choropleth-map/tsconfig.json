@@ -26,9 +26,6 @@
     },
     {
       "path": "../../packages/superset-ui-style"
-    },
-    {
-      "path": "../../packages/superset-ui-color"
     }
   ]
 }

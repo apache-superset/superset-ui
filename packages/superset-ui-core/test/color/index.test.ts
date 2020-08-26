@@ -6,7 +6,7 @@ import {
   getCategoricalSchemeRegistry,
   getSequentialSchemeRegistry,
   SequentialScheme,
-} from '../src';
+} from '@superset-ui/core/src/color';
 
 describe('index', () => {
   it('exports modules', () => {

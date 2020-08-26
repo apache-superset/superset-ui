@@ -16,9 +16,6 @@
   ],
   "references": [
     {
-      "path": "../superset-ui-color"
-    },
-    {
       "path": "../superset-ui-core"
     },
     {

@@ -30,7 +30,6 @@
   "dependencies": {
     "@superset-ui/chart": "^0.14.0",
     "@superset-ui/chart-controls": "^0.14.0",
-    "@superset-ui/color": "^0.14.0",
     "@superset-ui/core": "^0.15.0",
     "d3-hierarchy": "^1.1.8",
     "d3-selection": "^1.4.0",

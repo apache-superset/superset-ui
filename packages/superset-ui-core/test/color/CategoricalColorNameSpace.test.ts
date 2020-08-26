@@ -3,9 +3,9 @@ import CategoricalColorNamespace, {
   getScale,
   getColor,
   DEFAULT_NAMESPACE,
-} from '../src/CategoricalColorNamespace';
-import getCategoricalSchemeRegistry from '../src/CategoricalSchemeRegistrySingleton';
-import CategoricalScheme from '../src/CategoricalScheme';
+} from '@superset-ui/core/src/color/CategoricalColorNamespace';
+import getCategoricalSchemeRegistry from '@superset-ui/core/src/color/CategoricalSchemeRegistrySingleton';
+import CategoricalScheme from '@superset-ui/core/src/color/CategoricalScheme';
 
 describe('CategoricalColorNamespace', () => {
   beforeAll(() => {

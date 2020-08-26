@@ -1,4 +1,4 @@
-import { makeSingleton } from '@superset-ui/core';
+import makeSingleton from '../utils/makeSingleton';
 import ColorSchemeRegistry from './ColorSchemeRegistry';
 import SequentialScheme from './SequentialScheme';
 import schemes from './colorSchemes/sequential/d3';

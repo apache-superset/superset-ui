@@ -1,4 +1,4 @@
-import ColorSchemeRegistry from '../src/ColorSchemeRegistry';
+import ColorSchemeRegistry from '@superset-ui/core/src/color/ColorSchemeRegistry';
 
 describe('ColorSchemeRegistry', () => {
   it('exists', () => {

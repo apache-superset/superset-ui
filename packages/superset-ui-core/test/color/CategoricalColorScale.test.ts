@@ -1,5 +1,5 @@
 import { ScaleOrdinal } from 'd3-scale';
-import CategoricalColorScale from '../src/CategoricalColorScale';
+import CategoricalColorScale from '@superset-ui/core/src/color/CategoricalColorScale';
 
 describe('CategoricalColorScale', () => {
   it('exists', () => {

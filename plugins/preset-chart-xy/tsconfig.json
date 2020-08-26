@@ -25,9 +25,6 @@
       "path": "../../packages/superset-ui-chart-controls"
     },
     {
-      "path": "../../packages/superset-ui-color"
-    },
-    {
       "path": "../../packages/superset-ui-core"
     }
   ]

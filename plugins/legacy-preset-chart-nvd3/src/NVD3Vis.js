@@ -30,9 +30,8 @@ import {
   smartDateVerboseFormatter,
   getNumberFormatter,
   NumberFormats,
+  CategoricalColorNamespace,
 } from '@superset-ui/core';
-import { CategoricalColorNamespace } from '@superset-ui/color';
-import 'nvd3-fork/build/nv.d3.min.css';
 /* eslint-disable-next-line */
 import ANNOTATION_TYPES, { applyNativeColumns } from './vendor/superset/AnnotationTypes';
 import isTruthy from './utils/isTruthy';

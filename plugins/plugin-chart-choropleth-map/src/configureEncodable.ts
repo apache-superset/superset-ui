@@ -10,8 +10,6 @@ import {
   CategoricalColorNamespace,
   getCategoricalSchemeRegistry,
   getSequentialSchemeRegistry,
-} from '@superset-ui/color';
-import {
   getNumberFormatter,
   getTimeFormatter,
   LOCAL_PREFIX,

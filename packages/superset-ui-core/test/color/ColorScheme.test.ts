@@ -1,4 +1,4 @@
-import ColorScheme from '../src/ColorScheme';
+import ColorScheme from '@superset-ui/core/src/color/ColorScheme';
 
 describe('ColorScheme', () => {
   describe('new ColorScheme()', () => {

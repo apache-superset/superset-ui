@@ -21,8 +21,7 @@
 import d3 from 'd3';
 import PropTypes from 'prop-types';
 import { hierarchy } from 'd3-hierarchy';
-import { CategoricalColorNamespace } from '@superset-ui/color';
-import { getNumberFormatter, getTimeFormatter } from '@superset-ui/core';
+import { getNumberFormatter, getTimeFormatter, CategoricalColorNamespace } from '@superset-ui/core';
 import './Partition.css';
 
 // Compute dx, dy, x, y for each node and
