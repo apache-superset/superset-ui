@@ -3,7 +3,7 @@ import CategoricalScheme from '../../CategoricalScheme';
 const schemes = [
   {
     id: 'echarts4Colors',
-    label: 'ECharts 4 Colors',
+    label: 'ECharts v4.x Colors',
     colors: [
       '#c23531',
       '#2f4554',
@@ -20,7 +20,7 @@ const schemes = [
   },
   {
     id: 'echarts5Colors',
-    label: 'ECharts 5 Colors',
+    label: 'ECharts v5.x Colors',
     colors: [
       '#5470C6',
       '#91CC75',
