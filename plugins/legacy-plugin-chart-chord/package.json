@@ -28,7 +28,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@superset-ui/style": "0.14.20",
     "@superset-ui/core": "^0.15.0",
     "@superset-ui/chart": "^0.14.0",
     "@superset-ui/validator": "^0.14.0",
