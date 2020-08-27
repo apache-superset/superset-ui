@@ -21,8 +21,8 @@ import Mustache from 'mustache';
 import { scaleLinear } from 'd3-scale';
 import { Table, Thead, Th, Tr, Td } from 'reactable-arc';
 import { formatNumber, formatTime, styled } from '@superset-ui/core';
-import moment from 'moment';
 import { InfoTooltipWithTrigger, MetricOption, Metric } from '@superset-ui/chart-controls';
+import moment from 'moment';
 
 import FormattedNumber from './FormattedNumber';
 import SparklineCell from './SparklineCell';

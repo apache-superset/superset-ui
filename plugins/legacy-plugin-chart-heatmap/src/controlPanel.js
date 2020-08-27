@@ -18,12 +18,10 @@
  */
 import { t, validateNonEmpty } from '@superset-ui/core';
 import {
-  internalSharedControls,
-  formatSelectOptionsForRange,
   formatSelectOptions,
+  columnChoices,
+  formatSelectOptionsForRange,
 } from '@superset-ui/chart-controls';
-
-const { columnChoices } = internalSharedControls;
 
 const sortAxisChoices = [
   ['alpha_asc', t('Axis ascending')],

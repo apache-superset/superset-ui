@@ -18,8 +18,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { styled } from '@superset-ui/core';
-import { reactify } from '@superset-ui/chart';
+import { styled, reactify } from '@superset-ui/core';
 import WorldMap from './WorldMap';
 
 const ReactWorldMap = reactify(WorldMap);

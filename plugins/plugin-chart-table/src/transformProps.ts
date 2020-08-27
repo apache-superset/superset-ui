@@ -17,8 +17,8 @@
  * under the License.
  */
 import memoizeOne from 'memoize-one';
-import { DataRecord } from '@superset-ui/chart';
 import {
+  DataRecord,
   QueryFormDataMetric,
   getNumberFormatter,
   NumberFormats,

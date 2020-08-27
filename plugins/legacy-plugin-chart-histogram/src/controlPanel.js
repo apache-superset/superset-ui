@@ -17,9 +17,7 @@
  * under the License.
  */
 import { t, validateNonEmpty } from '@superset-ui/core';
-import { formatSelectOptions, internalSharedControls } from '@superset-ui/chart-controls';
-
-const { columnChoices } = internalSharedControls;
+import { formatSelectOptions, columnChoices } from '@superset-ui/chart-controls';
 
 export default {
   controlPanelSections: [

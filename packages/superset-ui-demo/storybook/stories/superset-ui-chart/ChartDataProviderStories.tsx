@@ -1,8 +1,7 @@
 import React from 'react';
 import { text, select, withKnobs } from '@storybook/addon-knobs';
 
-import { SuperChart, ChartDataProvider } from '@superset-ui/chart';
-import { SupersetClient } from '@superset-ui/core';
+import { SuperChart, ChartDataProvider, SupersetClient } from '@superset-ui/core';
 import { BigNumberChartPlugin as LegacyBigNumberPlugin } from '@superset-ui/legacy-preset-chart-big-number';
 import LegacySankeyPlugin from '@superset-ui/legacy-plugin-chart-sankey';
 import LegacySunburstPlugin from '@superset-ui/legacy-plugin-chart-sunburst';
@@ -13,7 +12,7 @@ import {
   sankeyFormData,
   sunburstFormData,
   wordCloudFormData,
-} from '@superset-ui/chart/test/fixtures/formData';
+} from '@superset-ui/core/test/chart/fixtures/formData';
 
 import Expandable from '../../shared/components/Expandable';
 import VerifyCORS, { renderError } from '../../shared/components/VerifyCORS';
@@ -42,7 +41,7 @@ const FORM_DATA_LOOKUP = {
 };
 
 export default {
-  title: 'Core Packages|@superset-ui/chart',
+  title: 'Core / chart',
   decorators: [
     withKnobs({
       escapeHTML: false,

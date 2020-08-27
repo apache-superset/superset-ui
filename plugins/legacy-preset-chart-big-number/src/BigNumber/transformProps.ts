@@ -22,8 +22,8 @@ import {
   getTimeFormatterForGranularity,
   getNumberFormatter,
   NumberFormats,
+  ChartProps,
 } from '@superset-ui/core';
-import { ChartProps } from '@superset-ui/chart';
 
 const TIME_COLUMN = '__timestamp';
 const formatPercentChange = getNumberFormatter(NumberFormats.PERCENT_SIGNED_1_POINT);

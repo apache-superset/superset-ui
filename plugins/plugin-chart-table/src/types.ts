@@ -21,8 +21,11 @@ import {
   TimeFormatter,
   TimeGranularity,
   QueryFormDataMetric,
+  ChartProps,
+  DataRecord,
+  DataRecordValue,
+  DataRecordFilters,
 } from '@superset-ui/core';
-import { ChartProps, DataRecord, DataRecordValue, DataRecordFilters } from '@superset-ui/chart';
 
 export enum DataType {
   Number = 'number',

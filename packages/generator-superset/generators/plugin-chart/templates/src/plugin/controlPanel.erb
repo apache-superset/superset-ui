@@ -17,7 +17,7 @@
  * under the License.
  */
 import { t, validateNonEmpty } from '@superset-ui/core';
-import { ControlPanelConfig } from '@superset-ui/chart-controls';
+import { ControlPanelConfig } from '@superset-ui/chart-controls'
 
 const config: ControlPanelConfig = {
   /**
@@ -52,7 +52,11 @@ const config: ControlPanelConfig = {
    * of the `Query` section instead of a predefined control.
    *
    * import { validateNonEmpty } from '@superset-ui/core';
-   * import { sharedControls, ControlConfig, ControlPanelConfig } from '@superset-ui/chart-controls'; 
+   * import {
+   *   sharedControls,
+   *   ControlConfig,
+   *   ControlPanelConfig,
+   * } from '@superset-ui/chart-controls';
    *
    * const myControl: ControlConfig<'SelectControl'> = {
    *   name: 'secondary_entity',

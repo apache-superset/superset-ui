@@ -83,7 +83,9 @@ if (shouldLint) {
 }
 
 if (shouldCleanup) {
-  const cachePath = `./node_modules/${scope}/{lib,esm,tsconfig.tsbuildinfo,node_modules/@types/react}`;
+  const cachePath = shouldRunBabel
+    ? `./node_modules/${scope}/{lib,esm,tsconfig.tsbuildinfo,node_modules/@types/react}`
+    : `./node_modules/${scope}/{lib/**/*.d.ts,tsconfig.tsbuildinfo,node_modules/@types/react}`;
   console.log(`\n>> Cleaning up ${cachePath}`);
   rimraf.sync(cachePath);
 }

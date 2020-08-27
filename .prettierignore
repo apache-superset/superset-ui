@@ -7,7 +7,6 @@ tmp/
 dist/
 lerna.json
 npm-shrinkwrap.json
-package.json
 package-lock.json
 tsconfig.json
 tsconfig.options.json

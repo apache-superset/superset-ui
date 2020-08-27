@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartProps } from '@superset-ui/chart';
 import {
+  ChartProps,
   CategoricalColorNamespace,
   getNumberFormatter,
   smartDateVerboseFormatter,

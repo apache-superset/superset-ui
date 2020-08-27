@@ -2,12 +2,6 @@
   "files": [],
   "references": [
     {
-      "path": "packages/superset-ui-chart"
-    },
-    {
-      "path": "packages/superset-ui-chart/test"
-    },
-    {
       "path": "packages/superset-ui-chart-controls"
     },
     {

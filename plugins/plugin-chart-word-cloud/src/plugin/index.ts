@@ -1,5 +1,4 @@
-import { t } from '@superset-ui/core';
-import { ChartMetadata, ChartPlugin } from '@superset-ui/chart';
+import { t, ChartMetadata, ChartPlugin } from '@superset-ui/core';
 import transformProps from '../legacyPlugin/transformProps';
 import buildQuery from './buildQuery';
 import { WordCloudFormData } from '../types';

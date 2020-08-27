@@ -29,6 +29,7 @@ import {
   ControlPanelsContainerProps,
   sharedControls,
 } from '@superset-ui/chart-controls';
+
 import i18n from './i18n';
 
 addLocaleData(i18n);
