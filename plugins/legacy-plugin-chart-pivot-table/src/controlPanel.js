@@ -42,6 +42,18 @@ export default {
       controlSetRows: [
         [
           {
+            name: 'zero_out',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Fill missing timestamps with zero'),
+              renderTrigger: false,
+              default: false,
+              description: t('Fill missing values with zero based on time grain'),
+            },
+          },
+        ],
+        [
+          {
             name: 'pandas_aggfunc',
             config: {
               type: 'SelectControl',

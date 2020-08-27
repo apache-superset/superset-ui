@@ -342,6 +342,20 @@ export const timeSeriesSection = [
     ),
     controlSetRows: [
       // eslint-disable-next-line react/jsx-key
+      [<h1 className="section-header">{t('Data imputation')}</h1>],
+      [
+        {
+          name: 'zero_out',
+          config: {
+            type: 'CheckboxControl',
+            label: t('Fill missing timestamps with zero'),
+            renderTrigger: false,
+            default: false,
+            description: t('Fill missing values with zero based on time grain'),
+          },
+        },
+      ],
+      // eslint-disable-next-line react/jsx-key
       [<h1 className="section-header">{t('Rolling Window')}</h1>],
       [
         {
