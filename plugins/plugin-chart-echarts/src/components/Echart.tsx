@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { createRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from '@superset-ui/style';
 import echarts from 'echarts';
 import { EchartsProps, EchartsStylesProps } from '../types';
@@ -26,38 +26,23 @@ const Styles = styled.div<EchartsStylesProps>`
   width: ${({ width }) => width};
 `;
 
-export default function Echart(props: EchartsProps) {
-  const { height, width, echartOptions } = props;
-  const [rootElem, setRootElem] = useState({ obj: undefined } as {
-    obj?: React.RefObject<HTMLDivElement>;
-  });
-  const [chart, setChart] = useState({ obj: undefined } as { obj?: echarts.ECharts });
+export default function Echart({ width, height, echartOptions }: EchartsProps) {
+  const divRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<echarts.ECharts>();
 
   useEffect(() => {
-    setRootElem({ obj: createRef<HTMLDivElement>() });
-  }, []);
-
-  useEffect(() => {
-    if (rootElem.obj) {
-      const root = rootElem.obj.current as HTMLDivElement;
-      setChart({ obj: echarts.init(root) });
+    if (!divRef.current) return;
+    if (!chartRef.current) {
+      chartRef.current = echarts.init(divRef.current);
     }
-  }, [rootElem]);
+    chartRef.current.setOption(echartOptions, true);
+  }, [echartOptions]);
 
   useEffect(() => {
-    if (chart.obj) {
-      chart.obj.setOption(echartOptions, true);
+    if (chartRef.current) {
+      chartRef.current.resize({ width, height });
     }
-  }, [chart, echartOptions]);
+  }, [width, height]);
 
-  useEffect(() => {
-    if (chart.obj) {
-      chart.obj.resize({
-        width,
-        height,
-      });
-    }
-  }, [chart, width, height]);
-
-  return <Styles ref={rootElem.obj} height={height} width={width} />;
+  return <Styles ref={divRef} height={height} width={width} />;
 }
