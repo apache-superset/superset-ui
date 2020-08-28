@@ -16,25 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+/* eslint-disable camelcase */
 import React from 'react';
+import styled from '@superset-ui/style';
 import InfoTooltipWithTrigger from './InfoTooltipWithTrigger';
 import { ColumnTypeLabel } from './ColumnTypeLabel';
+import CertifiedIconWithTooltip from './CertifiedIconWithTooltip';
+import { Metric } from '../types';
+
+const FlexRowContainer = styled.div`
+  align-items: center;
+  display: flex;
+
+  > svg {
+    margin-right: ${({ theme }) => theme.gridUnit}px;
+  }
+`;
 
 export interface MetricOptionProps {
-  metric: {
-    // eslint-disable-next-line camelcase
-    verbose_name: string;
-    // eslint-disable-next-line camelcase
-    metric_name: string;
-    label: string;
-    description: string;
-    // eslint-disable-next-line camelcase
-    warning_text: string;
-    expression: string;
-  };
-  openInNewWindow: boolean;
-  showFormula: boolean;
-  showType: boolean;
+  metric: Metric;
+  openInNewWindow?: boolean;
+  showFormula?: boolean;
+  showType?: boolean;
   url: string;
 }
 
@@ -54,8 +57,15 @@ export function MetricOption({
     verbose
   );
   return (
-    <div className="metric-option">
+    <FlexRowContainer className="metric-option">
       {showType && <ColumnTypeLabel type="expression" />}
+      {metric.is_certified && (
+        <CertifiedIconWithTooltip
+          metricName={metric.metric_name}
+          certifiedBy={metric.certified_by}
+          details={metric.certification_details}
+        />
+      )}
       <span className="option-label">{link}</span>
       {metric.description && (
         <InfoTooltipWithTrigger
@@ -81,6 +91,6 @@ export function MetricOption({
           label={`warn-${metric.metric_name}`}
         />
       )}
-    </div>
+    </FlexRowContainer>
   );
 }
