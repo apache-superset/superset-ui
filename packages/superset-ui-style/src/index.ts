@@ -23,7 +23,7 @@ export { ThemeProvider, withTheme } from 'emotion-theming';
 export { css } from '@emotion/core';
 
 export function useTheme() {
-  const theme = useThemeBasic();
+  const theme = useThemeBasic<SupersetTheme | null>();
   if (!theme) {
     throw new Error(
       'useTheme() could not find a ThemeContext. The <ThemeProvider/> component is likely missing from the app.',
@@ -137,6 +137,8 @@ const defaultTheme = {
   transitionTiming: 0.3,
   gridUnit: 4,
 };
+
+export type SupersetTheme = typeof defaultTheme;
 
 export interface SupersetThemeProps {
   theme: typeof defaultTheme;
