@@ -1,6 +1,6 @@
 import React from 'react';
 import { SuperChart, getChartTransformPropsRegistry } from '@superset-ui/chart';
-import { number, radios, select, withKnobs } from '@storybook/addon-knobs';
+import { boolean, number, select, withKnobs } from '@storybook/addon-knobs';
 import { EchartsTimeseriesChartPlugin } from '@superset-ui/plugin-chart-echarts';
 import transformProps from '@superset-ui/plugin-chart-echarts/lib/Timeseries/transformProps';
 import { withResizableChartDemo } from '../../../shared/components/ResizableChartDemo';
@@ -16,8 +16,7 @@ export default {
 };
 
 export const Timeseries = ({ width, height }) => {
-  const enableForecast = radios('Enable forecast', { Yes: 'yes', No: 'no' }, 'yes');
-  const forecastEnabled = enableForecast === 'yes';
+  const forecastEnabled = boolean('Enable forecast', true);
   const queryData = data
     .map(row =>
       forecastEnabled
@@ -45,15 +44,15 @@ export const Timeseries = ({ width, height }) => {
           ['line', 'scatter', 'smooth', 'bar', 'start', 'middle', 'end'],
           'line',
         ),
-        logAxis: radios('Log axis', { Yes: 'yes', No: 'no' }, 'no') === 'yes',
+        logAxis: boolean('Log axis', false),
         yAxisFormat: 'SMART_NUMBER',
-        stack: radios('Stack', { Yes: 'yes', No: 'no' }, 'no') === 'yes',
-        area: radios('Area chart', { Yes: 'yes', No: 'no' }, 'no') === 'yes',
-        markerEnabled: radios('Enable markers', { Yes: 'yes', No: 'no' }, 'no') === 'yes',
+        stack: boolean('Stack', false),
+        area: boolean('Area chart', false),
+        markerEnabled: boolean('Enable markers', false),
         markerSize: number('Marker Size', 6),
-        minorSplitLine: radios('Minor splitline', { Yes: 'yes', No: 'no' }, 'no') === 'yes',
+        minorSplitLine: boolean('Minor splitline', false),
         opacity: number('Opacity', 0.2),
-        zoomable: radios('Zoomable', { Yes: 'yes', No: 'no' }, 'no') === 'yes',
+        zoomable: boolean('Zoomable', false),
       }}
     />
   );
