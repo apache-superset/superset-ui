@@ -17,9 +17,20 @@
  * under the License.
  */
 import emotionStyled, { CreateStyled } from '@emotion/styled';
+import { useTheme as useThemeBasic } from 'emotion-theming';
 
-export { useTheme, ThemeProvider, withTheme } from 'emotion-theming';
+export { ThemeProvider, withTheme } from 'emotion-theming';
 export { css } from '@emotion/core';
+
+export function useTheme() {
+  const theme = useThemeBasic();
+  if (!theme) {
+    throw new Error(
+      'useTheme() could not find a ThemeContext. The <ThemeProvider/> component is likely missing from the app.',
+    );
+  }
+  return theme;
+}
 
 const defaultTheme = {
   borderRadius: 4,
