@@ -1,0 +1,60 @@
+import React from 'react';
+import { SuperChart, getChartTransformPropsRegistry } from '@superset-ui/chart';
+import { number, radios, select, withKnobs } from '@storybook/addon-knobs';
+import { EchartsTimeseriesChartPlugin } from '@superset-ui/plugin-chart-echarts';
+import transformProps from '@superset-ui/plugin-chart-echarts/lib/Timeseries/transformProps';
+import { withResizableChartDemo } from '../../../shared/components/ResizableChartDemo';
+import data from './data';
+
+new EchartsTimeseriesChartPlugin().configure({ key: 'echarts-timeseries' }).register();
+
+getChartTransformPropsRegistry().registerValue('echarts-timeseries', transformProps);
+
+export default {
+  title: 'Chart Plugins|plugin-chart-echarts',
+  decorators: [withKnobs, withResizableChartDemo],
+};
+
+export const Timeseries = ({ width, height }) => {
+  const enableForecast = radios('Enable forecast', { Yes: 'yes', No: 'no' }, 'yes');
+  const forecastEnabled = enableForecast === 'yes';
+  const queryData = data
+    .map(row =>
+      forecastEnabled
+        ? row
+        : {
+            __timestamp: row.__timestamp,
+            Boston: row.Boston,
+            California: row.California,
+            WestTexNewMexico: row.WestTexNewMexico,
+          },
+    )
+    .filter(row => forecastEnabled || !!row.Boston);
+  return (
+    <SuperChart
+      chartType="echarts-timeseries"
+      width={width}
+      height={height}
+      queryData={{ data: queryData }}
+      formData={{
+        contributionMode: undefined,
+        forecastEnabled,
+        colorScheme: 'supersetColors',
+        seriesType: select(
+          'Line type',
+          ['line', 'scatter', 'smooth', 'bar', 'start', 'middle', 'end'],
+          'line',
+        ),
+        logAxis: radios('Log axis', { Yes: 'yes', No: 'no' }, 'no') === 'yes',
+        yAxisFormat: 'SMART_NUMBER',
+        stack: radios('Stack', { Yes: 'yes', No: 'no' }, 'no') === 'yes',
+        area: radios('Area chart', { Yes: 'yes', No: 'no' }, 'no') === 'yes',
+        markerEnabled: radios('Enable markers', { Yes: 'yes', No: 'no' }, 'no') === 'yes',
+        markerSize: number('Marker Size', 6),
+        minorSplitLine: radios('Minor splitline', { Yes: 'yes', No: 'no' }, 'no') === 'yes',
+        opacity: number('Opacity', 0.2),
+        zoomable: radios('Zoomable', { Yes: 'yes', No: 'no' }, 'no') === 'yes',
+      }}
+    />
+  );
+};

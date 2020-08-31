@@ -1,4 +1,4 @@
-## @superset-ui/plugin-chart-echarts-line
+## @superset-ui/plugin-chart-echarts
 
 [![Version](https://img.shields.io/npm/v/@superset-ui/plugin-chart-echarts.svg?style=flat-square)](https://img.shields.io/npm/v/@superset-ui/plugin-chart-echarts.svg?style=flat-square)
 [![David (path)](https://img.shields.io/david/apache-superset/superset-ui.svg?path=packages%2Fsuperset-ui-plugin-chart-echarts&style=flat-square)](https://david-dm.org/apache-superset/superset-ui?path=packages/superset-ui-plugin-chart-echarts)
@@ -25,7 +25,7 @@ new EchartsPieChartPlugin()
   .register();
 ```
 
-Then use it via `SuperChart`. See [storybook](https://apache-superset.github.io/superset-ui/?selectedKind=plugin-chart-echarts-line) for more details.
+Then use it via `SuperChart`. See [storybook](https://apache-superset.github.io/superset-ui/?selectedKind=chart-plugins-plugin-chart-echarts) for more details.
 
 ```js
 <SuperChart
