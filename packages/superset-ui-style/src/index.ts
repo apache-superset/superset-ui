@@ -141,10 +141,10 @@ const defaultTheme = {
 export type SupersetTheme = typeof defaultTheme;
 
 export interface SupersetThemeProps {
-  theme: typeof defaultTheme;
+  theme: SupersetTheme;
 }
 
-export const styled: CreateStyled<typeof defaultTheme> = emotionStyled;
+export const styled: CreateStyled<SupersetTheme> = emotionStyled;
 export const supersetTheme = defaultTheme;
 
 export default styled;
