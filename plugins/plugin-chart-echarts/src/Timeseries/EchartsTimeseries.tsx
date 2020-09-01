@@ -20,6 +20,10 @@ import React from 'react';
 import { EchartsTimeseriesProps } from './types';
 import Echart from '../components/Echart';
 
-export default function EchartsTimeseries(props: EchartsTimeseriesProps) {
-  return <Echart height={props.height} width={props.width} echartOptions={props.echartOptions} />;
+export default function EchartsTimeseries({
+  height,
+  width,
+  echartOptions,
+}: EchartsTimeseriesProps) {
+  return <Echart height={height} width={width} echartOptions={echartOptions} />;
 }

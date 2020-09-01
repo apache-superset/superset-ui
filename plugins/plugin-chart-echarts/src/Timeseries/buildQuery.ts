@@ -49,15 +49,9 @@ export default function buildQuery(formData: QueryFormData) {
               index: ['__timestamp'],
               columns: formData.groupby,
               // Create 'dummy' sum aggregates to assign cell values in pivot table
-              aggregates: baseQueryMetrics
-                .map(metric => metric.label)
-                .reduce(
-                  (obj, cur) => ({
-                    ...obj,
-                    [cur]: { operator: 'sum' },
-                  }),
-                  {},
-                ),
+              aggregates: Object.fromEntries(
+                baseQueryMetrics.map(metric => [metric.label, { operator: 'sum' }]),
+              ),
             },
           },
           formData.contributionMode

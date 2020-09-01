@@ -20,6 +20,6 @@ import React from 'react';
 import { EchartsPieProps } from './types';
 import Echart from '../components/Echart';
 
-export default function EchartsPie(props: EchartsPieProps) {
-  return <Echart height={props.height} width={props.width} echartOptions={props.echartOptions} />;
+export default function EchartsPie({ height, width, echartOptions }: EchartsPieProps) {
+  return <Echart height={height} width={width} echartOptions={echartOptions} />;
 }
