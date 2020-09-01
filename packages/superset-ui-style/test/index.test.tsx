@@ -1,12 +1,6 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import styled, {
-  supersetTheme,
-  SupersetThemeProps,
-  useTheme,
-  ThemeProvider,
-  SupersetTheme,
-} from '../src';
+import { mount } from 'enzyme';
+import styled, { supersetTheme, SupersetThemeProps, useTheme, ThemeProvider } from '../src';
 
 describe('@superset-ui/style package', () => {
   it('exports a theme', () => {
@@ -25,18 +19,16 @@ describe('@superset-ui/style package', () => {
   });
 
   describe('useTheme()', () => {
-    let theme: SupersetTheme | null = null;
     it('returns the theme', () => {
       function ThemeUser() {
-        theme = useTheme();
+        expect(useTheme()).toStrictEqual(supersetTheme);
         return <div>test</div>;
       }
-      shallow(
-        <ThemeProvider theme={supersetTheme}>
-          <ThemeUser />
-        </ThemeProvider>,
-      );
-      expect(theme).toBe(supersetTheme);
+      mount(<ThemeUser />, {
+        wrappingComponent: ({ children }) => (
+          <ThemeProvider theme={supersetTheme}>{children}</ThemeProvider>
+        ),
+      });
     });
 
     it('throws when a theme is not present', () => {
@@ -44,7 +36,9 @@ describe('@superset-ui/style package', () => {
         expect(useTheme).toThrow(/could not find a ThemeContext/);
         return <div>test</div>;
       }
-      shallow(<ThemeUser />);
+      mount(<ThemeUser />, {
+        wrappingComponent: ({ children }) => <div>{children}</div>,
+      });
     });
   });
 });

@@ -23,8 +23,9 @@ export { ThemeProvider, withTheme } from 'emotion-theming';
 export { css } from '@emotion/core';
 
 export function useTheme() {
-  const theme = useThemeBasic<SupersetTheme | null>();
-  if (!theme) {
+  const theme = useThemeBasic<SupersetTheme>();
+  // in the case there is no theme, useTheme returns an empty object
+  if (Object.keys(theme).length === 0 && theme.constructor === Object) {
     throw new Error(
       'useTheme() could not find a ThemeContext. The <ThemeProvider/> component is likely missing from the app.',
     );
