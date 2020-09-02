@@ -16,62 +16,92 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { EchartsPieProps, PieChartFormData } from './types';
+import { extractGroupbyLabel } from '../utils/series';
 import { ChartProps, DataRecord } from '@superset-ui/chart';
-import { EchartsPieProps } from './types';
+import { convertMetric } from '@superset-ui/query';
+import { CategoricalColorNamespace } from '@superset-ui/color';
+import { getNumberFormatter } from '@superset-ui/number-format';
+import { formatPieLabel } from '../utils/formatters';
 
 export default function transformProps(chartProps: ChartProps): EchartsPieProps {
-  /*
-  TODO:
-  - add support for multiple groupby (requires post transform op)
-  - add support for ad-hoc metrics (currently only supports datasource metrics)
-  - add support for superset colors
-  - add support for control values in legacy pie chart
-   */
   const { width, height, formData, queryData } = chartProps;
   const data: DataRecord[] = queryData.data || [];
 
-  const { innerRadius = 50, outerRadius = 70, groupby = [], metrics = [] } = formData;
+  const {
+    colorScheme,
+    donut = false,
+    groupby = [],
+    innerRadius = 40,
+    labelsOutside = true,
+    metric = undefined,
+    numberFormat,
+    outerRadius = 80,
+    pieLabelType = 'value',
+    showLabels = true,
+    showLegend = false,
+  } = formData as PieChartFormData;
+  if (metric === undefined) throw new Error('metric must be defined');
+  const { label: metricLabel } = convertMetric(metric);
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  const keys = Array.from(new Set(data.map(datum => datum[groupby[0]])));
+  const keys = data.map(datum => extractGroupbyLabel(datum, groupby));
+  const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
+  const numberFormatter = getNumberFormatter(numberFormat);
 
   const transformedData = data.map(datum => {
+    const name = extractGroupbyLabel(datum, groupby);
     return {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      value: datum[metrics[0]],
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      name: datum[groupby[0]],
+      value: datum[metricLabel],
+      name,
+      itemStyle: {
+        color: colorFn(name),
+      },
     };
   });
 
+  const formatter = (params: { name: string; value: number; percent: number }) =>
+    formatPieLabel({ params, numberFormatter, pieLabelType });
+
   const echartOptions = {
     tooltip: {
+      confine: true,
       trigger: 'item',
-      formatter: '{b}: {c} ({d}%)',
+      formatter: (params: { name: string; value: number; percent: number }) => {
+        return formatPieLabel({ params, numberFormatter, pieLabelType: 'key_value_percent' });
+      },
     },
-    legend: {
-      orient: 'vertical',
-      left: 10,
-      data: keys,
-    },
+    legend: showLegend
+      ? {
+          orient: 'horizontal',
+          left: 10,
+          data: keys,
+        }
+      : undefined,
     series: [
       {
         type: 'pie',
-        radius: [`${innerRadius}%`, `${outerRadius}%`],
-        avoidLabelOverlap: false,
-        label: {
-          show: false,
-          position: 'center',
-        },
+        radius: [`${donut ? innerRadius : 0}%`, `${outerRadius}%`],
+        avoidLabelOverlap: true,
+        labelLine: labelsOutside ? { show: true } : { show: false },
+        label: labelsOutside
+          ? {
+              formatter,
+              position: 'outer',
+              show: showLabels,
+              alignTo: 'none',
+              bleedMargin: 5,
+            }
+          : {
+              formatter,
+              position: 'inner',
+              show: showLabels,
+            },
         emphasis: {
           label: {
             show: true,
             fontSize: '30',
             fontWeight: 'bold',
           },
-        },
-        labelLine: {
-          show: false,
         },
         data: transformedData,
       },

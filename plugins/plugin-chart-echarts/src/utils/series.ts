@@ -18,6 +18,7 @@
  * under the License.
  */
 import { TimeseriesDataRecord } from '../Timeseries/types';
+import { DataRecord } from '@superset-ui/chart';
 
 // eslint-disable-next-line import/prefer-default-export
 export function extractTimeseriesSeries(
@@ -36,4 +37,9 @@ export function extractTimeseriesSeries(
       // @ts-ignore
       data: rows.map(datum => [datum.__timestamp, datum[key]]),
     }));
+}
+
+export function extractGroupbyLabel(datum: DataRecord, groupby: string[]): string {
+  // TODO: apply formatting to dates and numbers
+  return groupby.map(val => `${datum[val]}`).join(', ');
 }

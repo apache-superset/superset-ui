@@ -21,9 +21,15 @@ import { EchartsProps } from '../types';
 
 export type PieChartFormData = QueryFormData & {
   groupby?: string[];
-  metrics?: string[];
+  metric?: string;
   outerRadius?: number;
   innerRadius?: number;
+  colorScheme?: string;
+  donut?: boolean;
+  showLegend?: boolean;
+  showLabels?: boolean;
+  labelsOutside?: boolean;
+  numberFormat?: string;
 };
 
 export type EchartsPieProps = EchartsProps & {
@@ -31,7 +37,6 @@ export type EchartsPieProps = EchartsProps & {
   area: number;
   colorScheme: string;
   contributionMode?: string;
-  zoomable?: boolean;
   seriesType: string;
   logAxis: boolean;
   stack: boolean;
@@ -40,3 +45,11 @@ export type EchartsPieProps = EchartsProps & {
   minorSplitLine: boolean;
   opacity: number;
 };
+
+export type EchartsPieLabelType =
+  | 'key'
+  | 'value'
+  | 'percent'
+  | 'key_value'
+  | 'key_percent'
+  | 'key_value_percent';
