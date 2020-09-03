@@ -32,6 +32,10 @@ describe('columnChoices()', () => {
             column_name: 'fiz',
           },
           {
+            column_name: 'about',
+            verbose_name: 'right',
+          },
+          {
             column_name: 'foo',
             verbose_name: 'bar',
           },
@@ -40,6 +44,7 @@ describe('columnChoices()', () => {
     ).toEqual([
       ['foo', 'bar'],
       ['fiz', 'fiz'],
+      ['about', 'right'],
     ]);
   });
 
