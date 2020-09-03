@@ -23,6 +23,7 @@
     "composite": true,
     "declarationMap": true,
     "rootDir": "./src",
+    "skipLibCheck": true,
     "emitDeclarationOnly": true,
     "resolveJsonModule": true
   }
