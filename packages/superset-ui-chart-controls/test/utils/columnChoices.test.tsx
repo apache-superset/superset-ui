@@ -16,15 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { DatasourceMeta } from '../types';
+import { DatasourceType } from '@superset-ui/core';
+import { columnChoices } from '../../src';
 
-/**
- * Convert Dataource columns to column choices
- */
-export default function columnChoices(datasource?: DatasourceMeta) {
-  return (
-    datasource?.columns
-      .map(col => [col.column_name, col.verbose_name || col.column_name])
-      .sort((opt1, opt2) => (opt1[1].toLowerCase() > opt2[1].toLowerCase() ? 1 : -1)) || []
-  );
-}
+describe('columnChoices()', () => {
+  it('should convert columns to choices', () => {
+    expect(
+      columnChoices({
+        metrics: [],
+        type: DatasourceType.Table,
+        main_dttm_col: 'test',
+        time_grain_sqla: 'P1D',
+        columns: [
+          {
+            column_name: 'fiz',
+          },
+          {
+            column_name: 'foo',
+            verbose_name: 'bar',
+          },
+        ],
+      }),
+    ).toEqual([
+      ['foo', 'bar'],
+      ['fiz', 'fiz'],
+    ]);
+  });
+
+  it('should return empty array when no columns', () => {
+    expect(columnChoices(undefined)).toEqual([]);
+  });
+});
