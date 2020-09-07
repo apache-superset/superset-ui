@@ -16,21 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import buildQuery from '../../src/Timeseries/buildQuery';
+import buildQuery from '../../src/Pie/buildQuery';
 
-describe('Timeseries buildQuery', () => {
+describe('Pie buildQuery', () => {
   const formData = {
     datasource: '5__table',
     granularity_sqla: 'ds',
-    series: ['foo'],
-    metrics: ['bar', 'baz'],
+    metric: 'foo',
+    groupby: ['bar'],
     viz_type: 'my_chart',
   };
 
   it('should build groupby with series in form data', () => {
     const queryContext = buildQuery(formData);
     const [query] = queryContext.queries;
-    expect(query.groupby).toEqual(['foo']);
-    expect(query.metrics).toEqual([{ label: 'bar' }, { label: 'baz' }]);
+    expect(query.metrics).toEqual([{ label: 'foo' }]);
+    expect(query.groupby).toEqual(['bar']);
   });
 });

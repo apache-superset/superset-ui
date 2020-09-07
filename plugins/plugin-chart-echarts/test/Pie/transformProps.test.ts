@@ -18,15 +18,15 @@
  */
 import 'babel-polyfill';
 import { ChartProps } from '@superset-ui/chart';
-import transformProps from '../../src/Timeseries/transformProps';
+import transformProps from '../../src/Pie/transformProps';
 
-describe('EchartsTimeseries tranformProps', () => {
+describe('Pie tranformProps', () => {
   const formData = {
     colorScheme: 'bnbColors',
     datasource: '3__table',
     granularity_sqla: 'ds',
     metric: 'sum__num',
-    series: ['foo', 'bar'],
+    groupby: ['foo', 'bar'],
   };
   const chartProps = new ChartProps({
     formData,
@@ -34,8 +34,8 @@ describe('EchartsTimeseries tranformProps', () => {
     height: 600,
     queryData: {
       data: [
-        { 'San Francisco': 1, 'New York': 2, __timestamp: 599616000000 },
-        { 'San Francisco': 3, 'New York': 4, __timestamp: 599916000000 },
+        { foo: 'Sylvester', bar: 1, sum__num: 10 },
+        { foo: 'Arnold', bar: 2, sum__num: 2.5 },
       ],
     },
   });
@@ -46,25 +46,21 @@ describe('EchartsTimeseries tranformProps', () => {
         width: 800,
         height: 600,
         echartOptions: expect.objectContaining({
-          legend: expect.objectContaining({
-            data: ['San Francisco', 'New York'],
-          }),
-          series: expect.arrayContaining([
+          series: [
             expect.objectContaining({
-              data: [
-                [new Date(599616000000), 1],
-                [new Date(599916000000), 3],
-              ],
-              name: 'San Francisco',
+              avoidLabelOverlap: true,
+              data: expect.arrayContaining([
+                expect.objectContaining({
+                  name: 'Arnold, 2',
+                  value: 2.5,
+                }),
+                expect.objectContaining({
+                  name: 'Sylvester, 1',
+                  value: 10,
+                }),
+              ]),
             }),
-            expect.objectContaining({
-              data: [
-                [new Date(599616000000), 2],
-                [new Date(599916000000), 4],
-              ],
-              name: 'New York',
-            }),
-          ]),
+          ],
         }),
       }),
     );
