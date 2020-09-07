@@ -23,12 +23,6 @@ import controlPanel from './controlPanel';
 import transformProps from './transformProps';
 import thumbnail from './images/thumbnail.png';
 
-const metadata = new ChartMetadata({
-  description: 'ECharts Timeseries',
-  name: t('ECharts Timeseries'),
-  thumbnail,
-});
-
 export default class EchartsTimeseriesChartPlugin extends ChartPlugin {
   /**
    * The constructor is used to pass relevant metadata and callbacks that get
@@ -45,7 +39,11 @@ export default class EchartsTimeseriesChartPlugin extends ChartPlugin {
       buildQuery,
       controlPanel,
       loadChart: () => import('./EchartsTimeseries'),
-      metadata,
+      metadata: new ChartMetadata({
+        description: 'ECharts Timeseries',
+        name: t('ECharts Timeseries'),
+        thumbnail,
+      }),
       transformProps,
     });
   }
