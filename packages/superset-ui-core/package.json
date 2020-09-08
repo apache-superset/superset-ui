@@ -40,7 +40,6 @@
     "@types/d3-time": "^1.0.9",
     "@types/d3-time-format": "^2.1.0",
     "@types/lodash": "^4.14.149",
-    "@types/react": "*",
     "@types/react-bootstrap": "0.32.21",
     "@types/react-loadable": "^5.5.3",
     "@vx/responsive": "^0.0.197",
@@ -61,6 +60,7 @@
     "whatwg-fetch": "^3.0.0"
   },
   "peerDependencies": {
+    "@types/react": "*",
     "react": "^16.13.1"
   }
 }
