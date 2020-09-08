@@ -42,7 +42,7 @@ export default {
       controlSetRows: [
         [
           {
-            name: 'zero_out',
+            name: 'fill_missing_with_zero',
             config: {
               type: 'CheckboxControl',
               label: t('Fill missing timestamps with zero'),

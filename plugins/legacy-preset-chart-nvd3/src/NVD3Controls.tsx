@@ -345,7 +345,7 @@ export const timeSeriesSection = [
       [<h1 className="section-header">{t('Data imputation')}</h1>],
       [
         {
-          name: 'zero_out',
+          name: 'fill_missing_with_zero',
           config: {
             type: 'CheckboxControl',
             label: t('Fill missing timestamps with zero'),
