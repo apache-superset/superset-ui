@@ -1,6 +1,6 @@
 {
   "name": "@superset-ui/legacy-plugin-chart-calendar",
-  "version": "0.14.23",
+  "version": "0.15.0",
   "description": "Superset Legacy Chart - Calendar Heatmap",
   "sideEffects": [
     "*.css"
@@ -34,14 +34,8 @@
     "prop-types": "^15.6.2"
   },
   "peerDependencies": {
-    "@superset-ui/chart": "^0.14.0",
-    "@superset-ui/chart-controls": "^0.14.0",
-    "@superset-ui/color": "^0.14.0",
-    "@superset-ui/number-format": "^0.14.0",
-    "@superset-ui/style": "^0.14.0",
-    "@superset-ui/time-format": "^0.14.0",
-    "@superset-ui/translation": "^0.14.0",
-    "@superset-ui/validator": "^0.14.0",
+    "@superset-ui/chart-controls": "^0.14.22",
+    "@superset-ui/core": "^0.14.22",
     "react": "^16.13.1"
   }
 }

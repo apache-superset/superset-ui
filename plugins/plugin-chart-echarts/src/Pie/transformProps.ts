@@ -16,12 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import {
+  CategoricalColorNamespace,
+  ChartProps,
+  convertMetric,
+  DataRecord,
+  getNumberFormatter,
+} from '@superset-ui/core';
 import { EchartsPieProps, PieChartFormData } from './types';
 import { extractGroupbyLabel } from '../utils/series';
-import { ChartProps, DataRecord } from '@superset-ui/chart';
-import { convertMetric } from '@superset-ui/query';
-import { CategoricalColorNamespace } from '@superset-ui/color';
-import { getNumberFormatter } from '@superset-ui/number-format';
 import { formatPieLabel } from '../utils/formatters';
 
 export default function transformProps(chartProps: ChartProps): EchartsPieProps {

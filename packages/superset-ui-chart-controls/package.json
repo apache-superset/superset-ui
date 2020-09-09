@@ -1,6 +1,6 @@
 {
   "name": "@superset-ui/chart-controls",
-  "version": "0.14.23",
+  "version": "0.15.0",
   "description": "Superset UI control-utils",
   "sideEffects": false,
   "main": "lib/index.js",
@@ -26,17 +26,13 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@superset-ui/color": "^0.14.0",
-    "@superset-ui/query": "^0.14.0",
-    "@superset-ui/style": "^0.14.0",
-    "@superset-ui/translation": "^0.14.0",
-    "@superset-ui/validator": "^0.14.0",
     "react": "^16.13.1"
   },
   "devDependencies": {
     "enzyme": "^3.11.0"
   },
   "dependencies": {
+    "@superset-ui/core": "0.15.0",
     "@types/react-bootstrap": "0.32.21",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",

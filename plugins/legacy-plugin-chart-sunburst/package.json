@@ -1,6 +1,6 @@
 {
   "name": "@superset-ui/legacy-plugin-chart-sunburst",
-  "version": "0.14.23",
+  "version": "0.15.0",
   "description": "Superset Legacy Chart - Sunburst",
   "sideEffects": [
     "*.css"
@@ -28,14 +28,9 @@
     "access": "public"
   },
   "dependencies": {
+    "@superset-ui/chart-controls": "0.15.0",
+    "@superset-ui/core": "0.15.0",
     "d3": "^3.5.17",
     "prop-types": "^15.6.2"
-  },
-  "peerDependencies": {
-    "@superset-ui/chart": "^0.14.0",
-    "@superset-ui/chart-controls": "^0.14.0",
-    "@superset-ui/color": "^0.14.0",
-    "@superset-ui/number-format": "^0.14.0",
-    "@superset-ui/translation": "^0.14.0"
   }
 }
