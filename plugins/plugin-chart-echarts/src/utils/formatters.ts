@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { getNumberFormatter, NumberFormats, NumberFormatter } from '@superset-ui/number-format';
+import { getNumberFormatter, NumberFormats, NumberFormatter } from '@superset-ui/core';
 import { EchartsPieLabelType } from '../Pie/types';
 
 const percentFormatter = getNumberFormatter(NumberFormats.PERCENT_2_POINT);

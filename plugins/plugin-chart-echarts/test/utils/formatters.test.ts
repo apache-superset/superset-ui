@@ -17,7 +17,7 @@
  * under the License.
  */
 import { formatPieLabel } from '../../src/utils/formatters';
-import { getNumberFormatter } from '@superset-ui/number-format';
+import { getNumberFormatter } from '@superset-ui/core';
 
 describe('formatPieLabel', () => {
   it('should generate a valid pie chart label', () => {

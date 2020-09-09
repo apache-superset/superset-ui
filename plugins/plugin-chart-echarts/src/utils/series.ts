@@ -17,8 +17,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { DataRecord } from '@superset-ui/core';
 import { TimeseriesDataRecord } from '../Timeseries/types';
-import { DataRecord } from '@superset-ui/chart';
 
 // eslint-disable-next-line import/prefer-default-export
 export function extractTimeseriesSeries(
