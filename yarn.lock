@@ -4162,15 +4162,10 @@
   dependencies:
     "@types/lodash" "*"
 
-"@types/lodash@*":
+"@types/lodash@*", "@types/lodash@^4.14.146", "@types/lodash@^4.14.149":
   version "4.14.159"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.159.tgz#61089719dc6fdd9c5cb46efc827f2571d1517065"
   integrity sha512-gF7A72f7WQN33DpqOWw9geApQPh4M3PxluMtaHxWHXEGSN12/WbcEk/eNSqWNQcQhF66VSZ06vCF94CrHwXJDg==
-
-"@types/lodash@^4.14.146", "@types/lodash@^4.14.149":
-  version "4.14.157"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.157.tgz#fdac1c52448861dfde1a2e1515dbc46e54926dc8"
-  integrity sha512-Ft5BNFmv2pHDgxV5JDsndOWTRJ+56zte0ZpYLowp03tW+K+t8u8YMOzAnpuqPgzX6WO1XpDIUm7u04M8vdDiVQ==
 
 "@types/match-sorter@^4.0.0":
   version "4.0.0"
@@ -4797,10 +4792,10 @@
     prop-types "^15.6.1"
     resize-observer-polyfill "1.5.0"
 
-"@vx/responsive@^0.0.197":
-  version "0.0.197"
-  resolved "https://registry.yarnpkg.com/@vx/responsive/-/responsive-0.0.197.tgz#e3ef1b7c2cdf3be8f579d618df637c0615f41586"
-  integrity sha512-Qv15PJ/Hy79LjyfJ/9E8z+zacKAnD43O2Jg9wvB6PFSNs73xPEDy/mHTYxH+FZv94ruAE3scBO0330W29sQpyg==
+"@vx/responsive@^0.0.198":
+  version "0.0.198"
+  resolved "https://registry.yarnpkg.com/@vx/responsive/-/responsive-0.0.198.tgz#5030c773340d737ce47349164b94f65627718984"
+  integrity sha512-+tdDnsHq5CXdhxUNHoUkf2u4EQDyNMIVNUbCudkDnWAr3sAnl4a4FWnxrsAIWoGJMXox/oG7VJjrPRm73ZAbkg==
   dependencies:
     "@types/lodash" "^4.14.146"
     "@types/react" "*"
