@@ -1,6 +1,6 @@
 {
   "name": "@superset-ui/legacy-plugin-chart-time-table",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "description": "Superset Chart Plugin - Time Table",
   "sideEffects": [
     "*.css"
@@ -29,10 +29,9 @@
   },
   "dependencies": {
     "@data-ui/sparkline": "^0.0.84",
-    "@superset-ui/chart-controls": "0.15.0",
-    "@superset-ui/core": "0.15.0",
+    "@superset-ui/chart-controls": "0.15.1",
+    "@superset-ui/core": "0.15.1",
     "@types/d3-scale": "^2.0.2",
-    "@types/react": "*",
     "d3-scale": "^3.2.1",
     "emotion-theming": "^10.0.27",
     "moment": "^2.26.0",
@@ -41,6 +40,7 @@
     "reactable-arc": "^0.15.0"
   },
   "peerDependencies": {
+    "@types/react": "*",
     "react": "^16.3.1"
   }
 }

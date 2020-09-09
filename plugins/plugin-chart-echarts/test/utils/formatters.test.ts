@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { formatPieLabel } from '../../src/utils/formatters';
 import { getNumberFormatter } from '@superset-ui/core';
+import { formatPieLabel } from '../../src/utils/formatters';
 
 describe('formatPieLabel', () => {
   it('should generate a valid pie chart label', () => {

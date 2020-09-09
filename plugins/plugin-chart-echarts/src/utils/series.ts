@@ -17,17 +17,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { DataRecord } from '@superset-ui/core';
-import { TimeseriesDataRecord } from '../Timeseries/types';
+import { DataRecord, TimeseriesDataRecord } from '@superset-ui/core';
 
-// eslint-disable-next-line import/prefer-default-export
 export function extractTimeseriesSeries(
   data: TimeseriesDataRecord[],
 ): echarts.EChartOption.Series[] {
   if (data.length === 0) return [];
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   const rows = data.map(datum => ({
     ...datum,
-    __timestamp: new Date(datum.__timestamp),
+    __timestamp: datum.__timestamp || datum.__timestamp === 0 ? new Date(datum.__timestamp) : null,
   }));
 
   return Object.keys(rows[0])
@@ -35,6 +34,7 @@ export function extractTimeseriesSeries(
     .map(key => ({
       name: key,
       // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       data: rows.map(datum => [datum.__timestamp, datum[key]]),
     }));
 }
