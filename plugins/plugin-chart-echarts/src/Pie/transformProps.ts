@@ -22,29 +22,54 @@ import {
   convertMetric,
   DataRecord,
   getNumberFormatter,
+  NumberFormats,
+  NumberFormatter,
 } from '@superset-ui/core';
-import { EchartsPieProps, PieChartFormData } from './types';
+import { EchartsPieLabelType, PieChartFormData } from './types';
+import { EchartsProps } from '../types';
 import { extractGroupbyLabel } from '../utils/series';
-import { formatPieLabel } from '../utils/formatters';
 
-export default function transformProps(chartProps: ChartProps): EchartsPieProps {
+const percentFormatter = getNumberFormatter(NumberFormats.PERCENT_2_POINT);
+
+export function formatPieLabel({
+  params,
+  pieLabelType,
+  numberFormatter,
+}: {
+  params: echarts.EChartOption.Tooltip.Format;
+  pieLabelType: EchartsPieLabelType;
+  numberFormatter: NumberFormatter;
+}): string {
+  const { name = '', value, percent } = params;
+  const formattedValue = numberFormatter(value as number);
+  const formattedPercent = percentFormatter((percent as number) / 100);
+  if (pieLabelType === 'key') return name;
+  if (pieLabelType === 'value') return formattedValue;
+  if (pieLabelType === 'percent') return formattedPercent;
+  if (pieLabelType === 'key_value') return `${name}: ${formattedValue}`;
+  if (pieLabelType === 'key_value_percent')
+    return `${name}: ${formattedValue} (${formattedPercent})`;
+  if (pieLabelType === 'key_percent') return `${name}: ${formattedPercent}`;
+  return name;
+}
+
+export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queryData } = chartProps;
   const data: DataRecord[] = queryData.data || [];
 
   const {
     colorScheme,
     donut = false,
-    groupby = [],
+    groupby,
     innerRadius = 40,
     labelsOutside = true,
-    metric = undefined,
+    metric,
     numberFormat,
     outerRadius = 80,
     pieLabelType = 'value',
     showLabels = true,
     showLegend = false,
   } = formData as PieChartFormData;
-  if (metric === undefined) throw new Error('metric must be defined');
   const { label: metricLabel } = convertMetric(metric);
 
   const keys = data.map(datum => extractGroupbyLabel(datum, groupby));
@@ -65,12 +90,16 @@ export default function transformProps(chartProps: ChartProps): EchartsPieProps 
   const formatter = (params: { name: string; value: number; percent: number }) =>
     formatPieLabel({ params, numberFormatter, pieLabelType });
 
-  const echartOptions = {
+  const echartOptions: echarts.EChartOption<echarts.EChartOption.SeriesPie> = {
     tooltip: {
       confine: true,
       trigger: 'item',
-      formatter: (params: { name: string; value: number; percent: number }) => {
-        return formatPieLabel({ params, numberFormatter, pieLabelType: 'key_value_percent' });
+      formatter: params => {
+        return formatPieLabel({
+          params: params as echarts.EChartOption.Tooltip.Format,
+          numberFormatter,
+          pieLabelType: 'key_value_percent',
+        });
       },
     },
     legend: showLegend
@@ -102,10 +131,11 @@ export default function transformProps(chartProps: ChartProps): EchartsPieProps 
         emphasis: {
           label: {
             show: true,
-            fontSize: '30',
+            fontSize: 30,
             fontWeight: 'bold',
           },
         },
+        // @ts-ignore
         data: transformedData,
       },
     ],
@@ -114,7 +144,6 @@ export default function transformProps(chartProps: ChartProps): EchartsPieProps 
   return {
     width,
     height,
-    // @ts-ignore
     echartOptions,
   };
 }

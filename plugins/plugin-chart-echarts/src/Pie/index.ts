@@ -40,7 +40,7 @@ export default class EchartsPieChartPlugin extends ChartPlugin {
       loadChart: () => import('./EchartsPie'),
       metadata: new ChartMetadata({
         description: 'Pie chart using ECharts',
-        name: t('EchartsPie'),
+        name: t('ECharts Pie'),
         thumbnail,
       }),
       transformProps,

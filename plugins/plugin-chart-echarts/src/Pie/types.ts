@@ -17,11 +17,10 @@
  * under the License.
  */
 import { QueryFormData } from '@superset-ui/core';
-import { EchartsProps } from '../types';
 
 export type PieChartFormData = QueryFormData & {
-  groupby?: string[];
-  metric?: string;
+  groupby: string[];
+  metric: string;
   outerRadius?: number;
   innerRadius?: number;
   colorScheme?: string;
@@ -30,20 +29,6 @@ export type PieChartFormData = QueryFormData & {
   showLabels?: boolean;
   labelsOutside?: boolean;
   numberFormat?: string;
-};
-
-export type EchartsPieProps = EchartsProps & {
-  formData: PieChartFormData;
-  area: number;
-  colorScheme: string;
-  contributionMode?: string;
-  seriesType: string;
-  logAxis: boolean;
-  stack: boolean;
-  markerEnabled: boolean;
-  markerSize: number;
-  minorSplitLine: boolean;
-  opacity: number;
 };
 
 export type EchartsPieLabelType =

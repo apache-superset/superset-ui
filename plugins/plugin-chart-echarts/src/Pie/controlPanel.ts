@@ -59,7 +59,7 @@ const config: ControlPanelConfig = {
               default: 'SMART_NUMBER',
               choices: D3_FORMAT_OPTIONS,
               description: `${t('D3 format syntax: https://github.com/d3/d3-format')} ${t(
-                'Only applies when the "Label Type" is not set to a percentage.',
+                'Only applies when "Label Type" is set to show values.',
               )}`,
             },
           },
@@ -82,7 +82,7 @@ const config: ControlPanelConfig = {
               label: t('Legend'),
               renderTrigger: true,
               default: true,
-              description: t('Whether to display the legend (toggles)'),
+              description: t('Whether to display a legend for the chart'),
             },
           },
         ],
@@ -94,10 +94,7 @@ const config: ControlPanelConfig = {
               label: t('Show Labels'),
               renderTrigger: true,
               default: true,
-              description: t(
-                'Whether to display the labels. Note that the label only displays when the the 5% ' +
-                  'threshold.',
-              ),
+              description: t('Whether to display the labels.'),
             },
           },
           {
@@ -107,7 +104,7 @@ const config: ControlPanelConfig = {
               label: t('Put labels outside'),
               default: true,
               renderTrigger: true,
-              description: t('Put the labels outside the pie?'),
+              description: t('Put the labels outside of the pie?'),
             },
           },
         ],
