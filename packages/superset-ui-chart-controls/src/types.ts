@@ -60,6 +60,7 @@ export interface ColumnMeta extends AnyDict {
 }
 
 export interface DatasourceMeta {
+  id: number;
   columns: ColumnMeta[];
   metrics: Metric[];
   type: DatasourceType;
