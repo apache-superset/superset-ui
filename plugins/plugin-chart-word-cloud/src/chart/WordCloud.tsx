@@ -2,9 +2,6 @@ import React from 'react';
 import cloudLayout, { Word } from 'd3-cloud';
 import { PlainObject, createEncoderFactory, DeriveEncoding } from 'encodable';
 import { SupersetThemeProps, withTheme } from '@superset-ui/core';
-import configureEncodable from '../configureEncodable';
-
-configureEncodable();
 
 export const ROTATION = {
   flat: () => 0,
