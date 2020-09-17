@@ -88,32 +88,32 @@ describe('formatSeriesName', () => {
   const numberFormatter = getNumberFormatter();
   const timeFormatter = getTimeFormatter();
   it('should handle missing values properly', () => {
-    expect(formatSeriesName({})).toEqual('<NULL>');
-    expect(formatSeriesName({ name: null })).toEqual('<NULL>');
+    expect(formatSeriesName(undefined)).toEqual('<NULL>');
+    expect(formatSeriesName(null)).toEqual('<NULL>');
   });
 
   it('should handle string values properly', () => {
-    expect(formatSeriesName({ name: 'abc XYZ!' })).toEqual('abc XYZ!');
+    expect(formatSeriesName('abc XYZ!')).toEqual('abc XYZ!');
   });
 
   it('should handle boolean values properly', () => {
-    expect(formatSeriesName({ name: true })).toEqual('true');
+    expect(formatSeriesName(true)).toEqual('true');
   });
 
   it('should use default formatting for numeric values without formatter', () => {
-    expect(formatSeriesName({ name: 12345678.9 })).toEqual('12345678.9');
+    expect(formatSeriesName(12345678.9)).toEqual('12345678.9');
   });
 
   it('should use numberFormatter for numeric values when formatter is provided', () => {
-    expect(formatSeriesName({ name: 12345678.9, numberFormatter })).toEqual('12.3M');
+    expect(formatSeriesName(12345678.9, { numberFormatter })).toEqual('12.3M');
   });
 
   it('should use default formatting for for date values without formatter', () => {
-    expect(formatSeriesName({ name: new Date('2020-09-11') })).toEqual('2020-09-11T00:00:00.000Z');
+    expect(formatSeriesName(new Date('2020-09-11'))).toEqual('2020-09-11T00:00:00.000Z');
   });
 
   it('should use timeFormatter for date values when formatter is provided', () => {
-    expect(formatSeriesName({ name: new Date('2020-09-11'), timeFormatter })).toEqual(
+    expect(formatSeriesName(new Date('2020-09-11'), { timeFormatter })).toEqual(
       '2020-09-11 00:00:00',
     );
   });

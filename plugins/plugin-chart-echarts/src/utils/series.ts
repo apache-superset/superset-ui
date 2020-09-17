@@ -19,6 +19,7 @@
  */
 import {
   DataRecord,
+  DataRecordValue,
   NumberFormatter,
   TimeFormatter,
   TimeseriesDataRecord,
@@ -44,15 +45,16 @@ export function extractTimeseriesSeries(
     }));
 }
 
-export function formatSeriesName({
-  name,
-  numberFormatter,
-  timeFormatter,
-}: {
-  name?: string | null | number | Date | boolean;
-  numberFormatter?: NumberFormatter;
-  timeFormatter?: TimeFormatter;
-}): string {
+export function formatSeriesName(
+  name: DataRecordValue | undefined,
+  {
+    numberFormatter,
+    timeFormatter,
+  }: {
+    numberFormatter?: NumberFormatter;
+    timeFormatter?: TimeFormatter;
+  } = {},
+): string {
   if (name === undefined || name === null) {
     return NULL_STRING;
   }
@@ -79,8 +81,7 @@ export function extractGroupbyLabel({
   numberFormatter?: NumberFormatter;
   timeFormatter?: TimeFormatter;
 }): string {
-  // TODO: apply formatting to dates and numbers
   return groupby
-    .map(val => formatSeriesName({ name: datum[val], numberFormatter, timeFormatter }))
+    .map(val => formatSeriesName(datum[val], { numberFormatter, timeFormatter }))
     .join(', ');
 }
