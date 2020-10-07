@@ -39,8 +39,9 @@ export default class EchartsBoxPlotChartPlugin extends ChartPlugin {
       controlPanel,
       loadChart: () => import('./EchartsBoxPlot'),
       metadata: new ChartMetadata({
-        description: 'Box Plot using ECharts',
-        name: t('ECharts Box Plot'),
+        credits: ['https://echarts.apache.org'],
+        description: 'Box Plot (Apache ECharts)',
+        name: t('Box Plot'),
         thumbnail,
       }),
       transformProps,

@@ -39,8 +39,9 @@ export default class EchartsPieChartPlugin extends ChartPlugin {
       controlPanel,
       loadChart: () => import('./EchartsPie'),
       metadata: new ChartMetadata({
-        description: 'Pie chart using ECharts',
-        name: t('ECharts Pie'),
+        credits: ['https://echarts.apache.org'],
+        description: 'Pie Chart (Apache ECharts)',
+        name: t('Pie Chart'),
         thumbnail,
       }),
       transformProps,
