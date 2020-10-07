@@ -86,8 +86,9 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           data: outlierDatum.map(val => [name, val]),
           tooltip: {
             formatter: (param: { data: [string, number] }) => {
-              const stats = [`outlier: `, `${param.data[0]}: ${numberFormatter(param.data[1])}`];
-              return stats.join('<br/>');
+              const headline = `<p><strong>${param.data[0]}</strong></p>`;
+              const stats = `${numberFormatter(param.data[1])}`;
+              return headline + stats;
             },
           },
           itemStyle: {
@@ -147,20 +148,20 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
               value: [number, number, number, number, number, number, number, number, number[]];
               name: string;
             } = param;
+            const headline = `<p><strong>${name}</strong></p>`;
             const stats = [
-              `${name}: `,
               `upper: ${numberFormatter(value[5])}`,
               `Q3: ${numberFormatter(value[4])}`,
               `mean: ${numberFormatter(value[6])}`,
               `median: ${numberFormatter(value[3])}`,
               `Q1: ${numberFormatter(value[2])}`,
               `lower: ${numberFormatter(value[1])}`,
-              `count: ${numberFormatter(value[7])}`,
+              `observations: ${numberFormatter(value[7])}`,
             ];
             if (value[8].length > 0) {
               stats.push(`outliers: ${numberFormatter(value[8].length)}`);
             }
-            return stats.join('<br/>');
+            return headline + stats.join('<br/>');
           },
         },
       },
