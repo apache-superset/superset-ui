@@ -266,6 +266,18 @@ const config: ControlPanelConfig = {
         ],
         [
           {
+            name: 'truncateYAxis',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Truncate Y Axis'),
+              default: true,
+              renderTrigger: true,
+              description: t('Truncate Y Axis'),
+            },
+          },
+        ],
+        [
+          {
             name: 'zoomable',
             config: {
               type: 'CheckboxControl',

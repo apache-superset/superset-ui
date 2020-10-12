@@ -31,6 +31,7 @@ import {
   formatProphetTooltipSeries,
   rebaseTimeseriesDatum,
 } from '../utils/prophet';
+import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
 
 export default function transformProps(chartProps: ChartProps): EchartsTimeseriesProps {
   const { width, height, formData, queryData } = chartProps;
@@ -46,6 +47,7 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
     markerEnabled,
     markerSize,
     minorSplitLine,
+    truncateYAxis,
     yAxisFormat,
     zoomable,
   } = formData;
@@ -111,24 +113,26 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
   });
   const echartOptions: echarts.EChartOption = {
     grid: {
+      ...defaultGrid,
       top: 30,
       bottom: zoomable ? 80 : 0,
       left: 20,
       right: 20,
-      containLabel: true,
     },
     xAxis: { type: 'time' },
     yAxis: {
+      ...defaultYAxis,
       type: logAxis ? 'log' : 'value',
       min: contributionMode === 'row' && stack ? 0 : undefined,
       max: contributionMode === 'row' && stack ? 1 : undefined,
       minorTick: { show: true },
       minorSplitLine: { show: minorSplitLine },
       axisLabel: { formatter },
+      scale: truncateYAxis ? false : true,
     },
     tooltip: {
+      ...defaultTooltip,
       trigger: 'axis',
-      confine: true,
       formatter: params => {
         // @ts-ignore
         const rows = [`${smartDateVerboseFormatter(params[0].value[0])}`];
@@ -148,7 +152,6 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
       },
     },
     legend: {
-      type: 'scroll',
       data: rawSeries
         .filter(
           entry =>

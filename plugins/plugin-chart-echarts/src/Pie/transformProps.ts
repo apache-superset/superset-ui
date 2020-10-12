@@ -28,6 +28,7 @@ import {
 import { EchartsPieLabelType, PieChartFormData } from './types';
 import { EchartsProps } from '../types';
 import { extractGroupbyLabel } from '../utils/series';
+import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
 
 const percentFormatter = getNumberFormatter(NumberFormats.PERCENT_2_POINT);
 
@@ -92,14 +93,14 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
 
   const echartOptions: echarts.EChartOption<echarts.EChartOption.SeriesPie> = {
     grid: {
+      ...defaultGrid,
       top: 30,
       bottom: 30,
       left: 30,
       right: 30,
-      containLabel: true,
     },
     tooltip: {
-      confine: true,
+      ...defaultTooltip,
       trigger: 'item',
       formatter: params => {
         return formatPieLabel({
