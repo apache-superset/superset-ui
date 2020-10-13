@@ -127,6 +127,7 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
     yAxis: {
       ...defaultYAxis,
       type: logAxis ? 'log' : 'value',
+      // these might be NaN which break the y axis
       min: yAxisMin || undefined,
       max: yAxisMax || undefined,
       minorTick: { show: true },
