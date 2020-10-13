@@ -28,7 +28,7 @@ import {
 import { EchartsPieLabelType, PieChartFormData } from './types';
 import { EchartsProps } from '../types';
 import { extractGroupbyLabel } from '../utils/series';
-import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
+import { defaultGrid, defaultTooltip } from '../defaults';
 
 const percentFormatter = getNumberFormatter(NumberFormats.PERCENT_2_POINT);
 
@@ -64,11 +64,13 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     groupby,
     innerRadius = 30,
     labelsOutside = true,
+    labelLine = false,
     metric,
     numberFormat,
     outerRadius = 50,
     pieLabelType = 'value',
     showLabels = true,
+    showLabelsThreshold = 5,
     showLegend = false,
   } = formData as PieChartFormData;
   const { label: metricLabel } = convertMetric(metric);
@@ -88,8 +90,16 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     };
   });
 
-  const formatter = (params: { name: string; value: number; percent: number }) =>
-    formatPieLabel({ params, numberFormatter, pieLabelType });
+  const formatter = (params: { name: string; value: number; percent: number }) => {
+    if (params.percent < showLabelsThreshold) return '';
+    return formatPieLabel({ params, numberFormatter, pieLabelType });
+  };
+
+  const defaultLabel = {
+    formatter,
+    show: showLabels,
+    color: '#000000',
+  };
 
   const echartOptions: echarts.EChartOption<echarts.EChartOption.SeriesPie> = {
     grid: {
@@ -123,24 +133,21 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         radius: [`${donut ? innerRadius : 0}%`, `${outerRadius}%`],
         center: ['50%', '50%'],
         avoidLabelOverlap: true,
-        labelLine: labelsOutside ? { show: true } : { show: false },
+        labelLine: labelLine ? { show: true } : { show: false },
         label: labelsOutside
           ? {
-              formatter,
+              ...defaultLabel,
               position: 'outer',
-              show: showLabels,
               alignTo: 'none',
               bleedMargin: 5,
             }
           : {
-              formatter,
+              ...defaultLabel,
               position: 'inner',
-              show: showLabels,
             },
         emphasis: {
           label: {
             show: true,
-            fontSize: 30,
             fontWeight: 'bold',
           },
         },

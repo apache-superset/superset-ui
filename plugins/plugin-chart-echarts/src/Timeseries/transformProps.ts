@@ -49,6 +49,7 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
     minorSplitLine,
     truncateYAxis,
     yAxisFormat,
+    yAxisBounds,
     zoomable,
   } = formData;
 
@@ -111,6 +112,9 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
             : 0,
       });
   });
+  let [yAxisMin, yAxisMax] = yAxisBounds || [];
+  if (yAxisMin === undefined && contributionMode === 'row' && stack) yAxisMin = 0;
+  if (yAxisMax === undefined && contributionMode === 'row' && stack) yAxisMax = 1;
   const echartOptions: echarts.EChartOption = {
     grid: {
       ...defaultGrid,
@@ -123,12 +127,12 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
     yAxis: {
       ...defaultYAxis,
       type: logAxis ? 'log' : 'value',
-      min: contributionMode === 'row' && stack ? 0 : undefined,
-      max: contributionMode === 'row' && stack ? 1 : undefined,
+      min: yAxisMin || undefined,
+      max: yAxisMax || undefined,
       minorTick: { show: true },
       minorSplitLine: { show: minorSplitLine },
       axisLabel: { formatter },
-      scale: truncateYAxis ? false : true,
+      scale: truncateYAxis,
     },
     tooltip: {
       ...defaultTooltip,
