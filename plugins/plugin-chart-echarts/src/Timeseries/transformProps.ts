@@ -112,9 +112,18 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
             : 0,
       });
   });
-  let [yAxisMin, yAxisMax] = yAxisBounds || [];
-  if (yAxisMin === undefined && contributionMode === 'row' && stack) yAxisMin = 0;
-  if (yAxisMax === undefined && contributionMode === 'row' && stack) yAxisMax = 1;
+
+  // yAxisBounds sometimes starts returning NaNs, which messes up the u-axis
+  let [min, max] = (yAxisBounds || []).map((val?: number) =>
+    val !== undefined && Number.isNaN(val) ? undefined : val,
+  );
+
+  // default to 0-100% range when doing row-level contribution chart
+  if (contributionMode === 'row' && stack) {
+    if (min === undefined) min = 0;
+    if (max === undefined) max = 1;
+  }
+
   const echartOptions: echarts.EChartOption = {
     grid: {
       ...defaultGrid,
@@ -127,9 +136,8 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
     yAxis: {
       ...defaultYAxis,
       type: logAxis ? 'log' : 'value',
-      // these might be NaN which break the y axis
-      min: yAxisMin || undefined,
-      max: yAxisMax || undefined,
+      min,
+      max,
       minorTick: { show: true },
       minorSplitLine: { show: minorSplitLine },
       axisLabel: { formatter },
