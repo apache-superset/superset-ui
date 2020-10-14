@@ -114,9 +114,9 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
   });
 
   // yAxisBounds sometimes starts returning NaNs, which messes up the u-axis
-  let [min, max] = (yAxisBounds || []).map((val?: number) =>
-    val !== undefined && Number.isNaN(val) ? undefined : val,
-  );
+  let [min, max] = (yAxisBounds || [])
+    .map(Number)
+    .map((val: number) => (Number.isNaN(val) ? undefined : val));
 
   // default to 0-100% range when doing row-level contribution chart
   if (contributionMode === 'row' && stack) {
