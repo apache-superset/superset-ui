@@ -6,6 +6,7 @@ export default function extractExtras(formData: QueryFormData): Partial<QueryObj
   const partialQueryObject: Partial<QueryObject> = {
     filters: formData.filters || [],
     extras: formData.extras || {},
+    applied_time_extras: {},
   };
 
   const reservedColumnsToQueryField: Record<string, keyof QueryObject> = {
@@ -20,6 +21,8 @@ export default function extractExtras(formData: QueryFormData): Partial<QueryObj
     if (filter.col in reservedColumnsToQueryField) {
       const queryField = reservedColumnsToQueryField[filter.col];
       partialQueryObject[queryField] = filter.val;
+      // @ts-ignore
+      partialQueryObject.applied_time_extras[filter.col] = filter.val;
     } else {
       // @ts-ignore
       partialQueryObject.filters.push(filter);
