@@ -4,7 +4,6 @@ type BaseAnnotationLayer = {
   name: string;
   opacity?: '' | 'opacityLow' | 'opacityMedium' | 'opacityHigh';
   show: boolean;
-  sourceType?: '';
   style: 'dashed' | 'dotted' | 'solid' | 'longDashed';
   width?: number;
 };
@@ -55,6 +54,7 @@ export type IntervalAnnotationLayer = BaseAnnotationLayer &
 export type FormulaAnnotationLayer = BaseAnnotationLayer & {
   annotationType: 'FORMULA';
   // the mathjs parseable formula
+  sourceType?: '';
   value: string;
 };
 
@@ -70,3 +70,23 @@ export type AnnotationLayer =
   | IntervalAnnotationLayer
   | FormulaAnnotationLayer
   | TimeseriesAnnotationLayer;
+
+export function isFormulaAnnotationLayer(layer: AnnotationLayer): layer is FormulaAnnotationLayer {
+  return layer.annotationType === 'FORMULA';
+}
+
+export function isEventAnnotationLayer(layer: EventAnnotationLayer): layer is EventAnnotationLayer {
+  return layer.annotationType === 'EVENT';
+}
+
+export function isIntervalAnnotationLayer(
+  layer: IntervalAnnotationLayer,
+): layer is IntervalAnnotationLayer {
+  return layer.annotationType === 'INTERVAL';
+}
+
+export function isTimeseriesAnnotationLayer(
+  layer: AnnotationLayer,
+): layer is TimeseriesAnnotationLayer {
+  return layer.annotationType === 'TIME_SERIES';
+}
