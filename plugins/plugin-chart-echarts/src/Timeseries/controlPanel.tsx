@@ -19,6 +19,30 @@
 import React from 'react';
 import { t, legacyValidateInteger, legacyValidateNumber } from '@superset-ui/core';
 import { ControlPanelConfig } from '@superset-ui/chart-controls';
+import { DEFAULT_FORM_DATA } from './types';
+
+const {
+  area,
+  annotationLayers,
+  contributionMode,
+  forecastEnabled,
+  forecastInterval,
+  forecastPeriods,
+  forecastSeasonalityDaily,
+  forecastSeasonalityWeekly,
+  forecastSeasonalityYearly,
+  logAxis,
+  markerEnabled,
+  markerSize,
+  minorSplitLine,
+  opacity,
+  rowLimit,
+  seriesType,
+  stack,
+  truncateYAxis,
+  yAxisBounds,
+  zoomable,
+} = DEFAULT_FORM_DATA;
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
@@ -34,7 +58,7 @@ const config: ControlPanelConfig = {
             config: {
               type: 'SelectControl',
               label: t('Contribution Mode'),
-              default: null,
+              default: contributionMode,
               choices: [
                 [null, 'None'],
                 ['row', 'Total'],
@@ -70,10 +94,8 @@ const config: ControlPanelConfig = {
             config: {
               type: 'AnnotationLayerControl',
               label: '',
-              default: [],
+              default: annotationLayers,
               description: 'Annotation Layers',
-              renderTrigger: true,
-              tabOverride: 'data',
             },
           },
         ],
@@ -90,7 +112,7 @@ const config: ControlPanelConfig = {
               type: 'CheckboxControl',
               label: t('Enable forecast'),
               renderTrigger: false,
-              default: false,
+              default: forecastEnabled,
               description: t('Enable forecasting'),
             },
           },
@@ -102,7 +124,7 @@ const config: ControlPanelConfig = {
               type: 'TextControl',
               label: t('Forecast periods'),
               validators: [legacyValidateInteger],
-              default: 10,
+              default: forecastPeriods,
               description: t('How many periods into the future do we want to predict'),
             },
           },
@@ -114,7 +136,7 @@ const config: ControlPanelConfig = {
               type: 'TextControl',
               label: t('Confidence interval'),
               validators: [legacyValidateNumber],
-              default: 0.8,
+              default: forecastInterval,
               description: t('Width of the confidence interval. Should be between 0 and 1'),
             },
           },
@@ -129,7 +151,7 @@ const config: ControlPanelConfig = {
                 [true, 'Yes'],
                 [false, 'No'],
               ],
-              default: null,
+              default: forecastSeasonalityYearly,
               description: t(
                 'Should yearly seasonality be applied. An integer value will specify Fourier order of seasonality.',
               ),
@@ -148,7 +170,7 @@ const config: ControlPanelConfig = {
                 [true, 'Yes'],
                 [false, 'No'],
               ],
-              default: null,
+              default: forecastSeasonalityWeekly,
               description: t(
                 'Should weekly seasonality be applied. An integer value will specify Fourier order of seasonality.',
               ),
@@ -165,7 +187,7 @@ const config: ControlPanelConfig = {
                 [true, 'Yes'],
                 [false, 'No'],
               ],
-              default: null,
+              default: forecastSeasonalityDaily,
               description: t(
                 'Should daily seasonality be applied. An integer value will specify Fourier order of seasonality.',
               ),
@@ -186,7 +208,7 @@ const config: ControlPanelConfig = {
               type: 'SelectControl',
               label: t('Series Style'),
               renderTrigger: true,
-              default: 'line',
+              default: seriesType,
               choices: [
                 ['line', 'Line'],
                 ['scatter', 'Scatter'],
@@ -207,7 +229,7 @@ const config: ControlPanelConfig = {
               type: 'CheckboxControl',
               label: t('Stack Lines'),
               renderTrigger: true,
-              default: false,
+              default: stack,
               description: t('Stack series on top of each other'),
             },
           },
@@ -219,7 +241,7 @@ const config: ControlPanelConfig = {
               type: 'CheckboxControl',
               label: t('Area Chart'),
               renderTrigger: true,
-              default: false,
+              default: area,
               description: t('Draw area under curves. Only applicable for line types.'),
             },
           },
@@ -232,7 +254,7 @@ const config: ControlPanelConfig = {
               min: 0,
               max: 1,
               step: 0.1,
-              default: 0.2,
+              default: opacity,
               description: t('Opacity of Area Chart. Also applies to confidence band.'),
             },
           },
@@ -244,7 +266,7 @@ const config: ControlPanelConfig = {
               type: 'CheckboxControl',
               label: t('Marker'),
               renderTrigger: true,
-              default: false,
+              default: markerEnabled,
               description: t('Draw a marker on data points. Only applicable for line types.'),
             },
           },
@@ -256,7 +278,7 @@ const config: ControlPanelConfig = {
               renderTrigger: true,
               min: 0,
               max: 100,
-              default: 6,
+              default: markerSize,
               description: t('Size of marker. Also applies to forecast observations.'),
             },
           },
@@ -267,7 +289,7 @@ const config: ControlPanelConfig = {
             config: {
               type: 'CheckboxControl',
               label: t('Data Zoom'),
-              default: false,
+              default: zoomable,
               renderTrigger: true,
               description: t('Enable data zooming controls'),
             },
@@ -283,7 +305,7 @@ const config: ControlPanelConfig = {
               type: 'CheckboxControl',
               label: t('Logarithmic y-axis'),
               renderTrigger: true,
-              default: false,
+              default: logAxis,
               description: t('Logarithmic y-axis'),
             },
           },
@@ -293,7 +315,7 @@ const config: ControlPanelConfig = {
               type: 'CheckboxControl',
               label: t('Minor Split Line'),
               renderTrigger: true,
-              default: false,
+              default: minorSplitLine,
               description: t('Draw split lines for minor y-axis ticks'),
             },
           },
@@ -304,7 +326,7 @@ const config: ControlPanelConfig = {
             config: {
               type: 'CheckboxControl',
               label: t('Truncate Y Axis'),
-              default: true,
+              default: truncateYAxis,
               renderTrigger: true,
               description: t(
                 'Truncate Y Axis. Can be overridden by specifying a min or max bound.',
@@ -319,7 +341,7 @@ const config: ControlPanelConfig = {
               type: 'BoundsControl',
               label: t('Y Axis Bounds'),
               renderTrigger: true,
-              default: [undefined, undefined],
+              default: yAxisBounds,
               description: t(
                 'Bounds for the Y-axis. When left empty, the bounds are ' +
                   'dynamically defined based on the min/max of the data. Note that ' +
@@ -344,7 +366,7 @@ const config: ControlPanelConfig = {
   },
   controlOverrides: {
     row_limit: {
-      default: 10000,
+      default: rowLimit,
     },
   },
 };

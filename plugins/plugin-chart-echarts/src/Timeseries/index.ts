@@ -41,7 +41,7 @@ export default class EchartsTimeseriesChartPlugin extends ChartPlugin {
       metadata: new ChartMetadata({
         credits: ['https://echarts.apache.org'],
         description: 'Time-series (Apache ECharts)',
-        supportedAnnotationTypes: ['FORMULA'],
+        supportedAnnotationTypes: ['EVENT', 'FORMULA', 'INTERVAL', 'TIME_SERIES'],
         name: t('Time-series Chart'),
         thumbnail,
       }),

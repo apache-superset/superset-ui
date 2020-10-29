@@ -16,20 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+/* eslint-disable camelcase */
 import {
+  AnnotationData,
   AnnotationLayer,
+  isEventAnnotationLayer,
   isFormulaAnnotationLayer,
+  isIntervalAnnotationLayer,
+  isTimeseriesAnnotationLayer,
   ChartProps,
   CategoricalColorNamespace,
   getNumberFormatter,
   smartDateVerboseFormatter,
   TimeseriesDataRecord,
+  isTimeseriesAnnotationResult,
 } from '@superset-ui/core';
-import { EchartsTimeseriesProps } from './types';
-import { ForecastSeriesEnum } from '../types';
+import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
+import { EchartsProps, ForecastSeriesEnum } from '../types';
 import { parseYAxisBound } from '../utils/controls';
 import { extractTimeseriesSeries } from '../utils/series';
-import { evalFormula, parseAnnotationOpacity } from '../utils/annotation';
+import {
+  evalFormula,
+  extractAnnotations,
+  extractAnnotationLabels,
+  formatAnnotationLabel,
+  parseAnnotationOpacity,
+} from '../utils/annotation';
 import {
   extractForecastSeriesContext,
   extractProphetValuesFromTooltipParams,
@@ -38,11 +50,16 @@ import {
 } from '../utils/prophet';
 import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
 
-export default function transformProps(chartProps: ChartProps): EchartsTimeseriesProps {
+export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queryData } = chartProps;
-  const { data = [] }: { data?: TimeseriesDataRecord[] } = queryData;
+
   const {
-    annotationLayers = [],
+    annotation_data: annotationData = {},
+    data = [],
+  }: { annotation_data?: AnnotationData; data?: TimeseriesDataRecord[] } = queryData;
+
+  const {
+    annotationLayers,
     area,
     colorScheme,
     contributionMode,
@@ -58,7 +75,7 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
     yAxisFormat,
     yAxisBounds,
     zoomable,
-  } = formData;
+  }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const rebasedData = rebaseTimeseriesDatum(data);
@@ -127,24 +144,138 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
       show: annotationShow,
       style,
     } = layer;
-    if (annotationShow && isFormulaAnnotationLayer(layer)) {
-      series.push({
-        name,
-        id: name,
-        itemStyle: {
-          color: color || colorFn(name),
-        },
-        lineStyle: {
-          opacity: parseAnnotationOpacity(annotationOpacity),
-          type: style,
-          width: annotationWidth,
-        },
-        type: 'line',
-        smooth: true,
-        // @ts-ignore
-        data: evalFormula(layer, data),
-        symbolSize: 0,
-      });
+    if (annotationShow) {
+      if (isFormulaAnnotationLayer(layer)) {
+        series.push({
+          name,
+          id: name,
+          itemStyle: {
+            color: color || colorFn(name),
+          },
+          lineStyle: {
+            opacity: parseAnnotationOpacity(annotationOpacity),
+            type: style,
+            width: annotationWidth,
+          },
+          type: 'line',
+          smooth: true,
+          // @ts-ignore
+          data: evalFormula(layer, data),
+          symbolSize: 0,
+          z: 0,
+        });
+      } else if (isIntervalAnnotationLayer(layer)) {
+        const annotations = extractAnnotations(layer, annotationData);
+        annotations.forEach(annotation => {
+          const { descriptions, intervalEnd, time, title } = annotation;
+          const label = formatAnnotationLabel(name, title, descriptions);
+          const intervalData = [
+            [
+              {
+                name: label,
+                xAxis: time,
+              },
+              {
+                xAxis: intervalEnd,
+              },
+            ],
+          ];
+          series.push({
+            type: 'line',
+            animation: false,
+            markArea: {
+              silent: false,
+              itemStyle: {
+                color: color || colorFn(name),
+                opacity: parseAnnotationOpacity(annotationOpacity || 'opacityMedium'),
+                emphasis: {
+                  opacity: 0.8,
+                },
+              },
+              label: {
+                show: false,
+                color: '#000000',
+                emphasis: {
+                  fontWeight: 'bold',
+                  show: true,
+                  position: 'insideTop',
+                  verticalAlign: 'top',
+                  backgroundColor: '#ffffff',
+                },
+              },
+              // @ts-ignore
+              data: intervalData,
+            },
+          });
+        });
+      } else if (isEventAnnotationLayer(layer) && annotationShow) {
+        const annotations = extractAnnotations(layer, annotationData);
+        annotations.forEach(annotation => {
+          const { descriptions, time, title } = annotation;
+          const label = formatAnnotationLabel(name, title, descriptions);
+          const eventData = [
+            {
+              name: label,
+              xAxis: time,
+            },
+          ];
+          series.push({
+            type: 'line',
+            animation: false,
+            markLine: {
+              silent: false,
+              symbol: 'none',
+              lineStyle: {
+                width: annotationWidth,
+                type: style,
+                color: color || colorFn(name),
+                opacity: parseAnnotationOpacity(annotationOpacity),
+                emphasis: {
+                  opacity: 1,
+                },
+              },
+              label: {
+                show: false,
+                color: '#000000',
+                position: 'insideEndTop',
+                emphasis: {
+                  // @ts-ignore
+                  formatter: params => {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+                    return params.name;
+                  },
+                  // @ts-ignore
+                  fontWeight: 'bold',
+                  show: true,
+                  backgroundColor: '#ffffff',
+                },
+              },
+              // @ts-ignore
+              data: eventData,
+            },
+          });
+        });
+      } else if (isTimeseriesAnnotationLayer(layer) && annotationShow) {
+        const { showMarkers, hideLine } = layer;
+        const result = annotationData[name];
+        if (isTimeseriesAnnotationResult(result)) {
+          result.forEach(annotation => {
+            const { key, values } = annotation;
+            series.push({
+              type: 'line',
+              id: key,
+              name: key,
+              data: values.map(row => [row.x, row.y] as [number | string, number]),
+              symbolSize: showMarkers ? markerSize : 0,
+              lineStyle: {
+                opacity: parseAnnotationOpacity(annotationOpacity),
+                type: style,
+                width: hideLine ? 0 : annotationWidth,
+              },
+            });
+          });
+        }
+      }
     }
   });
 
@@ -204,7 +335,7 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
             extractForecastSeriesContext(entry.name || '').type === ForecastSeriesEnum.Observation,
         )
         .map(entry => entry.name || '')
-        .concat(annotationLayers.map((layer: AnnotationLayer) => layer.name)),
+        .concat(extractAnnotationLabels(annotationLayers, annotationData)),
       right: zoomable ? 80 : 'auto',
     },
     series,
@@ -233,18 +364,8 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
   };
 
   return {
-    area,
-    colorScheme,
-    contributionMode,
     // @ts-ignore
     echartOptions,
-    seriesType,
-    logAxis,
-    opacity,
-    stack,
-    markerEnabled,
-    markerSize,
-    minorSplitLine,
     width,
     height,
   };

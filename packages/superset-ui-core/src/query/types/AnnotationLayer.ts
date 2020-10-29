@@ -1,5 +1,7 @@
 /* eslint camelcase: 0 */
 
+import { DataRecord } from '../../chart';
+
 export type AnnotationOpacity = '' | 'opacityLow' | 'opacityMedium' | 'opacityHigh';
 
 type BaseAnnotationLayer = {
@@ -22,7 +24,7 @@ type LineSourceAnnotationLayer = {
   hideLine?: boolean;
   overrides?: AnnotationOverrides;
   sourceType: 'line';
-  titleColumn: string;
+  titleColumn?: string;
   // viz id
   value: number;
 };
@@ -54,6 +56,11 @@ export type IntervalAnnotationLayer = BaseAnnotationLayer &
     annotationType: 'INTERVAL';
   };
 
+export type TableAnnotationLayer = BaseAnnotationLayer &
+  TableSourceAnnotationLayer & {
+    annotationType: 'EVENT' | 'INTERVAL';
+  };
+
 export type FormulaAnnotationLayer = BaseAnnotationLayer & {
   annotationType: 'FORMULA';
   // the mathjs parseable formula
@@ -78,12 +85,12 @@ export function isFormulaAnnotationLayer(layer: AnnotationLayer): layer is Formu
   return layer.annotationType === 'FORMULA';
 }
 
-export function isEventAnnotationLayer(layer: EventAnnotationLayer): layer is EventAnnotationLayer {
+export function isEventAnnotationLayer(layer: AnnotationLayer): layer is EventAnnotationLayer {
   return layer.annotationType === 'EVENT';
 }
 
 export function isIntervalAnnotationLayer(
-  layer: IntervalAnnotationLayer,
+  layer: AnnotationLayer,
 ): layer is IntervalAnnotationLayer {
   return layer.annotationType === 'INTERVAL';
 }
@@ -93,3 +100,39 @@ export function isTimeseriesAnnotationLayer(
 ): layer is TimeseriesAnnotationLayer {
   return layer.annotationType === 'TIME_SERIES';
 }
+
+export function isTableAnnotationLayer(layer: AnnotationLayer): layer is TableAnnotationLayer {
+  return layer.sourceType === 'table';
+}
+
+export type RecordAnnotationResult = {
+  columns: string[];
+  records: DataRecord[];
+};
+
+export type TimeseriesAnnotationResult = [
+  { key: string; values: { x: string | number; y?: number }[] },
+];
+
+export type AnnotationResult = RecordAnnotationResult | TimeseriesAnnotationResult;
+
+export function isTimeseriesAnnotationResult(
+  result: AnnotationResult,
+): result is TimeseriesAnnotationResult {
+  return Array.isArray(result);
+}
+
+export function isRecordAnnotationResult(
+  result: AnnotationResult,
+): result is RecordAnnotationResult {
+  return 'columns' in result;
+}
+
+export type AnnotationData = { [key: string]: AnnotationResult };
+
+export type Annotation = {
+  descriptions?: string[];
+  intervalEnd?: string;
+  time?: string;
+  title?: string;
+};

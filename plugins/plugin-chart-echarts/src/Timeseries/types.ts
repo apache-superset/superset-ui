@@ -16,38 +16,53 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { DataRecordValue } from '@superset-ui/core';
-import { EchartsProps } from '../types';
+import { AnnotationLayer } from '@superset-ui/core';
 
-export type TimestampType = string | number | Date;
-
-export type EchartsBaseTimeseriesSeries = {
-  name: string;
-  data: [Date, DataRecordValue][];
-};
-
-export type EchartsTimeseriesSeries = EchartsBaseTimeseriesSeries & {
-  color: string;
-  stack?: string;
-  type: 'bar' | 'line';
-  smooth: boolean;
-  step?: 'start' | 'middle' | 'end';
-  areaStyle: {
-    opacity: number;
-  };
-  symbolSize: number;
-};
-
-export type EchartsTimeseriesProps = EchartsProps & {
-  area: number;
-  colorScheme: string;
-  contributionMode?: string;
-  zoomable?: boolean;
-  seriesType: string;
+export type EchartsTimeseriesFormData = {
+  annotationLayers: AnnotationLayer[];
+  area: boolean;
+  colorScheme?: string;
+  contributionMode?: 'row' | 'column';
+  forecastEnabled: boolean;
+  forecastPeriods: number;
+  forecastInterval: number;
+  forecastSeasonalityDaily: null;
+  forecastSeasonalityWeekly: null;
+  forecastSeasonalityYearly: null;
   logAxis: boolean;
-  stack: boolean;
   markerEnabled: boolean;
   markerSize: number;
   minorSplitLine: boolean;
   opacity: number;
+  orderDesc: boolean;
+  rowLimit: number;
+  seriesType: 'line' | 'scatter' | 'smooth' | 'bar' | 'start' | 'middle' | 'end';
+  stack: boolean;
+  truncateYAxis: boolean;
+  yAxisFormat?: string;
+  yAxisBounds: [number | undefined | null, number | undefined | null];
+  zoomable: boolean;
+};
+
+export const DEFAULT_FORM_DATA: EchartsTimeseriesFormData = {
+  annotationLayers: [],
+  area: false,
+  forecastEnabled: false,
+  forecastInterval: 0.8,
+  forecastPeriods: 10,
+  forecastSeasonalityDaily: null,
+  forecastSeasonalityWeekly: null,
+  forecastSeasonalityYearly: null,
+  seriesType: 'line',
+  logAxis: false,
+  opacity: 0.2,
+  orderDesc: true,
+  stack: false,
+  markerEnabled: false,
+  markerSize: 6,
+  minorSplitLine: false,
+  rowLimit: 10000,
+  truncateYAxis: true,
+  yAxisBounds: [null, null],
+  zoomable: false,
 };
