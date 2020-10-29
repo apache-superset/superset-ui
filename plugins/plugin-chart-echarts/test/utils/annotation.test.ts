@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,30 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { AnnotationOpacity, FormulaAnnotationLayer, TimeseriesDataRecord } from '@superset-ui/core';
-import { parse as mathjsParse } from 'mathjs';
+import { parseAnnotationOpacity } from '../../src/utils/annotation';
 
-export function evalFormula(
-  formula: FormulaAnnotationLayer,
-  data: TimeseriesDataRecord[],
-): [Date, number][] {
-  const { value } = formula;
-  const node = mathjsParse(value);
-  const func = node.compile();
-  return data.map(row => {
-    return [new Date(Number(row.__timestamp)), func.evaluate({ x: row.__timestamp }) as number];
+describe('extractForecastSeriesContext', () => {
+  it('should extract the correct series name and type', () => {
+    expect(parseAnnotationOpacity('opacityLow')).toEqual(0.2);
+    expect(parseAnnotationOpacity('opacityMedium')).toEqual(0.5);
+    expect(parseAnnotationOpacity('opacityHigh')).toEqual(0.8);
+    expect(parseAnnotationOpacity('')).toEqual(1);
+    expect(parseAnnotationOpacity(undefined)).toEqual(1);
   });
-}
-
-export function parseAnnotationOpacity(opacity?: AnnotationOpacity): number {
-  switch (opacity) {
-    case 'opacityLow':
-      return 0.2;
-    case 'opacityMedium':
-      return 0.5;
-    case 'opacityHigh':
-      return 0.8;
-    default:
-      return 1;
-  }
-}
+});

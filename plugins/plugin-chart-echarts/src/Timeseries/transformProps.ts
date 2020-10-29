@@ -127,7 +127,7 @@ export default function transformProps(chartProps: ChartProps): EchartsTimeserie
       show: annotationShow,
       style,
     } = layer;
-    if (isFormulaAnnotationLayer(layer) && annotationShow) {
+    if (annotationShow && isFormulaAnnotationLayer(layer)) {
       series.push({
         name,
         id: name,
