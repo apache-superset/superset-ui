@@ -26,11 +26,11 @@
     "access": "public"
   },
   "dependencies": {
-    "@superset-ui/core": "0.15.10",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2"
   },
   "peerDependencies": {
+    "@superset-ui/core": "0.15.10",
     "@types/react": "*",
     "@types/react-bootstrap": "*",
     "react": "^16.13.1",
