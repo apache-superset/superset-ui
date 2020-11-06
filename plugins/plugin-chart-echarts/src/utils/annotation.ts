@@ -22,7 +22,6 @@ import {
   AnnotationData,
   AnnotationLayer,
   AnnotationOpacity,
-  AnnotationResult,
   FormulaAnnotationLayer,
   isRecordAnnotationResult,
   isTableAnnotationLayer,
@@ -63,12 +62,12 @@ const NATIVE_COLUMN_NAMES = {
   titleColumn: 'short_descr',
 };
 
-export function extractAnnotations(
+export function extractRecordAnnotations(
   annotationLayer: AnnotationLayer,
   annotationData: AnnotationData,
 ): Annotation[] {
   const { name } = annotationLayer;
-  const result = annotationData[name] as AnnotationResult;
+  const result = annotationData[name];
   if (isRecordAnnotationResult(result)) {
     const { records } = result;
     const {
@@ -95,10 +94,11 @@ export function formatAnnotationLabel(
 ): string {
   const labels: string[] = [];
   const titleLabels: string[] = [];
+  const filteredDescriptions = descriptions.filter(description => !!description);
   if (name) titleLabels.push(name);
   if (title) titleLabels.push(title);
   if (titleLabels.length > 0) labels.push(titleLabels.join(' - '));
-  if (descriptions.length > 0) labels.push(descriptions.join('\n'));
+  if (filteredDescriptions.length > 0) labels.push(filteredDescriptions.join('\n'));
   return labels.join('\n\n');
 }
 

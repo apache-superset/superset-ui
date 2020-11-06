@@ -20,16 +20,16 @@
 import {
   AnnotationData,
   AnnotationLayer,
+  ChartProps,
+  CategoricalColorNamespace,
+  getNumberFormatter,
   isEventAnnotationLayer,
   isFormulaAnnotationLayer,
   isIntervalAnnotationLayer,
   isTimeseriesAnnotationLayer,
-  ChartProps,
-  CategoricalColorNamespace,
-  getNumberFormatter,
+  isTimeseriesAnnotationResult,
   smartDateVerboseFormatter,
   TimeseriesDataRecord,
-  isTimeseriesAnnotationResult,
 } from '@superset-ui/core';
 import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
 import { EchartsProps, ForecastSeriesEnum } from '../types';
@@ -37,7 +37,7 @@ import { parseYAxisBound } from '../utils/controls';
 import { extractTimeseriesSeries } from '../utils/series';
 import {
   evalFormula,
-  extractAnnotations,
+  extractRecordAnnotations,
   extractAnnotationLabels,
   formatAnnotationLabel,
   parseAnnotationOpacity,
@@ -165,7 +165,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           z: 0,
         });
       } else if (isIntervalAnnotationLayer(layer)) {
-        const annotations = extractAnnotations(layer, annotationData);
+        const annotations = extractRecordAnnotations(layer, annotationData);
         annotations.forEach(annotation => {
           const { descriptions, intervalEnd, time, title } = annotation;
           const label = formatAnnotationLabel(name, title, descriptions);
@@ -181,6 +181,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
             ],
           ];
           series.push({
+            id: `Interval - ${label}`,
             type: 'line',
             animation: false,
             markArea: {
@@ -209,7 +210,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           });
         });
       } else if (isEventAnnotationLayer(layer) && annotationShow) {
-        const annotations = extractAnnotations(layer, annotationData);
+        const annotations = extractRecordAnnotations(layer, annotationData);
         annotations.forEach(annotation => {
           const { descriptions, time, title } = annotation;
           const label = formatAnnotationLabel(name, title, descriptions);
@@ -220,6 +221,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
             },
           ];
           series.push({
+            id: `Event - ${label}`,
             type: 'line',
             animation: false,
             markLine: {
