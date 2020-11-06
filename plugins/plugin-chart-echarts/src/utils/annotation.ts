@@ -22,6 +22,7 @@ import {
   AnnotationData,
   AnnotationLayer,
   AnnotationOpacity,
+  AnnotationType,
   FormulaAnnotationLayer,
   isRecordAnnotationResult,
   isTableAnnotationLayer,
@@ -44,11 +45,11 @@ export function evalFormula(
 
 export function parseAnnotationOpacity(opacity?: AnnotationOpacity): number {
   switch (opacity) {
-    case 'opacityLow':
+    case AnnotationOpacity.Low:
       return 0.2;
-    case 'opacityMedium':
+    case AnnotationOpacity.Medium:
       return 0.5;
-    case 'opacityHigh':
+    case AnnotationOpacity.High:
       return 0.8;
     default:
       return 1;
@@ -104,10 +105,10 @@ export function formatAnnotationLabel(
 
 export function extractAnnotationLabels(layers: AnnotationLayer[], data: AnnotationData): string[] {
   const formulaAnnotationLabels = layers
-    .filter(anno => anno.annotationType === 'FORMULA' && anno.show)
+    .filter(anno => anno.annotationType === AnnotationType.Formula && anno.show)
     .map(anno => anno.name);
   const timeseriesAnnotationLabels = layers
-    .filter(anno => anno.annotationType === 'TIME_SERIES' && anno.show)
+    .filter(anno => anno.annotationType === AnnotationType.Timeseries && anno.show)
     .flatMap(anno => {
       const result = data[anno.name];
       return isTimeseriesAnnotationResult(result) ? result.map(annoSeries => annoSeries.key) : [];

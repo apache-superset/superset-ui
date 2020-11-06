@@ -17,9 +17,13 @@
  * under the License.
  */
 import React from 'react';
-import { t, legacyValidateInteger, legacyValidateNumber } from '@superset-ui/core';
+import { legacyValidateInteger, legacyValidateNumber, t } from '@superset-ui/core';
 import { ControlPanelConfig } from '@superset-ui/chart-controls';
-import { DEFAULT_FORM_DATA } from './types';
+import {
+  DEFAULT_FORM_DATA,
+  EchartsTimeseriesContributionType,
+  EchartsTimeseriesSeriesType,
+} from './types';
 
 const {
   area,
@@ -61,8 +65,8 @@ const config: ControlPanelConfig = {
               default: contributionMode,
               choices: [
                 [null, 'None'],
-                ['row', 'Total'],
-                ['column', 'Series'],
+                [EchartsTimeseriesContributionType.Row, 'Total'],
+                [EchartsTimeseriesContributionType.Column, 'Series'],
               ],
               description: t('Calculate contribution per series or total'),
             },
@@ -210,13 +214,13 @@ const config: ControlPanelConfig = {
               renderTrigger: true,
               default: seriesType,
               choices: [
-                ['line', 'Line'],
-                ['scatter', 'Scatter'],
-                ['smooth', 'Smooth Line'],
-                ['bar', 'Bar'],
-                ['start', 'Step - start'],
-                ['middle', 'Step - middle'],
-                ['end', 'Step - end'],
+                [EchartsTimeseriesSeriesType.Line, 'Line'],
+                [EchartsTimeseriesSeriesType.Scatter, 'Scatter'],
+                [EchartsTimeseriesSeriesType.Smooth, 'Smooth Line'],
+                [EchartsTimeseriesSeriesType.Bar, 'Bar'],
+                [EchartsTimeseriesSeriesType.Start, 'Step - start'],
+                [EchartsTimeseriesSeriesType.Middle, 'Step - middle'],
+                [EchartsTimeseriesSeriesType.End, 'Step - end'],
               ],
               description: t('Series chart type (line, bar etc)'),
             },

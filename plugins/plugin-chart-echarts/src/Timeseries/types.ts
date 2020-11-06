@@ -18,11 +18,26 @@
  */
 import { AnnotationLayer } from '@superset-ui/core';
 
+export enum EchartsTimeseriesContributionType {
+  Row = 'row',
+  Column = 'column',
+}
+
+export enum EchartsTimeseriesSeriesType {
+  Line = 'line',
+  Scatter = 'scatter',
+  Smooth = 'smooth',
+  Bar = 'bar',
+  Start = 'start',
+  Middle = 'middle',
+  End = 'end',
+}
+
 export type EchartsTimeseriesFormData = {
   annotationLayers: AnnotationLayer[];
   area: boolean;
   colorScheme?: string;
-  contributionMode?: 'row' | 'column';
+  contributionMode?: EchartsTimeseriesContributionType;
   forecastEnabled: boolean;
   forecastPeriods: number;
   forecastInterval: number;
@@ -36,7 +51,7 @@ export type EchartsTimeseriesFormData = {
   opacity: number;
   orderDesc: boolean;
   rowLimit: number;
-  seriesType: 'line' | 'scatter' | 'smooth' | 'bar' | 'start' | 'middle' | 'end';
+  seriesType: EchartsTimeseriesSeriesType;
   stack: boolean;
   truncateYAxis: boolean;
   yAxisFormat?: string;
@@ -53,7 +68,7 @@ export const DEFAULT_FORM_DATA: EchartsTimeseriesFormData = {
   forecastSeasonalityDaily: null,
   forecastSeasonalityWeekly: null,
   forecastSeasonalityYearly: null,
-  seriesType: 'line',
+  seriesType: EchartsTimeseriesSeriesType.Line,
   logAxis: false,
   opacity: 0.2,
   orderDesc: true,

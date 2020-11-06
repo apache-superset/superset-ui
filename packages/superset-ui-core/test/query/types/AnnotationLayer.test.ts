@@ -1,14 +1,17 @@
 import {
-  isEventAnnotationLayer,
-  isFormulaAnnotationLayer,
-  isIntervalAnnotationLayer,
-  isTimeseriesAnnotationLayer,
-  isTableAnnotationLayer,
-  isTimeseriesAnnotationResult,
-  isRecordAnnotationResult,
+  AnnotationSourceType,
+  AnnotationStyle,
+  AnnotationType,
   EventAnnotationLayer,
   FormulaAnnotationLayer,
   IntervalAnnotationLayer,
+  isEventAnnotationLayer,
+  isFormulaAnnotationLayer,
+  isIntervalAnnotationLayer,
+  isRecordAnnotationResult,
+  isTableAnnotationLayer,
+  isTimeseriesAnnotationLayer,
+  isTimeseriesAnnotationResult,
   RecordAnnotationResult,
   TableAnnotationLayer,
   TimeseriesAnnotationLayer,
@@ -17,42 +20,42 @@ import {
 
 describe('AnnotationLayer type guards', () => {
   const formulaAnnotationLayer: FormulaAnnotationLayer = {
-    annotationType: 'FORMULA',
+    annotationType: AnnotationType.Formula,
     name: 'My Formula',
     value: 'sin(2*x)',
-    style: 'solid',
+    style: AnnotationStyle.Solid,
     show: true,
   };
   const eventAnnotationLayer: EventAnnotationLayer = {
-    annotationType: 'EVENT',
+    annotationType: AnnotationType.Event,
     name: 'My Event',
     value: 1,
-    style: 'solid',
+    style: AnnotationStyle.Solid,
     show: true,
-    sourceType: 'NATIVE',
+    sourceType: AnnotationSourceType.Native,
   };
   const intervalAnnotationLayer: IntervalAnnotationLayer = {
-    annotationType: 'INTERVAL',
-    sourceType: 'table',
+    annotationType: AnnotationType.Interval,
+    sourceType: AnnotationSourceType.Table,
     name: 'My Event',
     value: 1,
-    style: 'solid',
+    style: AnnotationStyle.Solid,
     show: true,
   };
   const timeseriesAnnotationLayer: TimeseriesAnnotationLayer = {
-    annotationType: 'TIME_SERIES',
-    sourceType: 'line',
+    annotationType: AnnotationType.Timeseries,
+    sourceType: AnnotationSourceType.Line,
     name: 'My Event',
     value: 1,
-    style: 'solid',
+    style: AnnotationStyle.Solid,
     show: true,
   };
   const tableAnnotationLayer: TableAnnotationLayer = {
-    annotationType: 'INTERVAL',
-    sourceType: 'table',
+    annotationType: AnnotationType.Interval,
+    sourceType: AnnotationSourceType.Table,
     name: 'My Event',
     value: 1,
-    style: 'solid',
+    style: AnnotationStyle.Solid,
     show: true,
   };
   const timeseriesAnnotationResult: TimeseriesAnnotationResult = [

@@ -20,14 +20,13 @@
 import {
   AnnotationData,
   AnnotationLayer,
-  ChartProps,
   CategoricalColorNamespace,
+  ChartProps,
   getNumberFormatter,
   isEventAnnotationLayer,
   isFormulaAnnotationLayer,
   isIntervalAnnotationLayer,
   isTimeseriesAnnotationLayer,
-  isTimeseriesAnnotationResult,
   smartDateVerboseFormatter,
   TimeseriesDataRecord,
 } from '@superset-ui/core';
@@ -35,13 +34,7 @@ import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
 import { EchartsProps, ForecastSeriesEnum } from '../types';
 import { parseYAxisBound } from '../utils/controls';
 import { extractTimeseriesSeries } from '../utils/series';
-import {
-  evalFormula,
-  extractRecordAnnotations,
-  extractAnnotationLabels,
-  formatAnnotationLabel,
-  parseAnnotationOpacity,
-} from '../utils/annotation';
+import { extractAnnotationLabels } from '../utils/annotation';
 import {
   extractForecastSeriesContext,
   extractProphetValuesFromTooltipParams,
@@ -49,6 +42,13 @@ import {
   rebaseTimeseriesDatum,
 } from '../utils/prophet';
 import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
+import {
+  transformEventAnnotation,
+  transformFormulaAnnotation,
+  transformIntervalAnnotation,
+  transformSeries,
+  transformTimeseriesAnnotation,
+} from './transformers';
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queryData } = chartProps;
@@ -60,16 +60,10 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
 
   const {
     annotationLayers,
-    area,
     colorScheme,
     contributionMode,
-    forecastEnabled,
-    seriesType,
     logAxis,
-    opacity,
     stack,
-    markerEnabled,
-    markerSize,
     minorSplitLine,
     truncateYAxis,
     yAxisFormat,
@@ -77,209 +71,41 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     zoomable,
   }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
-  const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
+  const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
   const rebasedData = rebaseTimeseriesDatum(data);
   const rawSeries = extractTimeseriesSeries(rebasedData);
   const series: echarts.EChartOption.Series[] = [];
   const formatter = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormat);
 
   rawSeries.forEach(entry => {
-    const forecastSeries = extractForecastSeriesContext(entry.name || '');
-    const isConfidenceBand =
-      forecastSeries.type === ForecastSeriesEnum.ForecastLower ||
-      forecastSeries.type === ForecastSeriesEnum.ForecastUpper;
-    const isObservation = forecastSeries.type === ForecastSeriesEnum.Observation;
-    const isTrend = forecastSeries.type === ForecastSeriesEnum.ForecastTrend;
-    let stackId;
-    if (isConfidenceBand) {
-      stackId = forecastSeries.name;
-    } else if (stack && isObservation) {
-      // the suffix of the observation series is '' (falsy), which disables
-      // stacking. Therefore we need to set something that is truthy.
-      stackId = 'obs';
-    } else if (stack && isTrend) {
-      stackId = forecastSeries.type;
-    }
-    let plotType;
-    if (!isConfidenceBand && (seriesType === 'scatter' || (forecastEnabled && isObservation))) {
-      plotType = 'scatter';
-    } else if (isConfidenceBand) {
-      plotType = 'line';
-    } else {
-      plotType = seriesType === 'bar' ? 'bar' : 'line';
-    }
-    const lineStyle = isConfidenceBand ? { opacity: 0 } : {};
-
-    if (!((stack || area) && isConfidenceBand))
-      series.push({
-        ...entry,
-        id: entry.name,
-        name: forecastSeries.name,
-        itemStyle: {
-          color: colorFn(forecastSeries.name),
-        },
-        type: plotType,
-        // @ts-ignore
-        smooth: seriesType === 'smooth',
-        step: ['start', 'middle', 'end'].includes(seriesType as string) ? seriesType : undefined,
-        stack: stackId,
-        lineStyle,
-        areaStyle: {
-          opacity: forecastSeries.type === ForecastSeriesEnum.ForecastUpper || area ? opacity : 0,
-        },
-        symbolSize:
-          !isConfidenceBand &&
-          (plotType === 'scatter' || (forecastEnabled && isObservation) || markerEnabled)
-            ? markerSize
-            : 0,
-      });
+    const transformedSeries = transformSeries(
+      entry,
+      formData as EchartsTimeseriesFormData,
+      colorScale,
+    );
+    if (transformedSeries) series.push(transformedSeries);
   });
 
-  annotationLayers.forEach((layer: AnnotationLayer) => {
-    const {
-      name,
-      color,
-      opacity: annotationOpacity,
-      width: annotationWidth,
-      show: annotationShow,
-      style,
-    } = layer;
-    if (annotationShow) {
-      if (isFormulaAnnotationLayer(layer)) {
-        series.push({
-          name,
-          id: name,
-          itemStyle: {
-            color: color || colorFn(name),
-          },
-          lineStyle: {
-            opacity: parseAnnotationOpacity(annotationOpacity),
-            type: style,
-            width: annotationWidth,
-          },
-          type: 'line',
-          smooth: true,
-          // @ts-ignore
-          data: evalFormula(layer, data),
-          symbolSize: 0,
-          z: 0,
-        });
-      } else if (isIntervalAnnotationLayer(layer)) {
-        const annotations = extractRecordAnnotations(layer, annotationData);
-        annotations.forEach(annotation => {
-          const { descriptions, intervalEnd, time, title } = annotation;
-          const label = formatAnnotationLabel(name, title, descriptions);
-          const intervalData = [
-            [
-              {
-                name: label,
-                xAxis: time,
-              },
-              {
-                xAxis: intervalEnd,
-              },
-            ],
-          ];
-          series.push({
-            id: `Interval - ${label}`,
-            type: 'line',
-            animation: false,
-            markArea: {
-              silent: false,
-              itemStyle: {
-                color: color || colorFn(name),
-                opacity: parseAnnotationOpacity(annotationOpacity || 'opacityMedium'),
-                emphasis: {
-                  opacity: 0.8,
-                },
-              },
-              label: {
-                show: false,
-                color: '#000000',
-                emphasis: {
-                  fontWeight: 'bold',
-                  show: true,
-                  position: 'insideTop',
-                  verticalAlign: 'top',
-                  backgroundColor: '#ffffff',
-                },
-              },
-              // @ts-ignore
-              data: intervalData,
-            },
-          });
-        });
-      } else if (isEventAnnotationLayer(layer) && annotationShow) {
-        const annotations = extractRecordAnnotations(layer, annotationData);
-        annotations.forEach(annotation => {
-          const { descriptions, time, title } = annotation;
-          const label = formatAnnotationLabel(name, title, descriptions);
-          const eventData = [
-            {
-              name: label,
-              xAxis: time,
-            },
-          ];
-          series.push({
-            id: `Event - ${label}`,
-            type: 'line',
-            animation: false,
-            markLine: {
-              silent: false,
-              symbol: 'none',
-              lineStyle: {
-                width: annotationWidth,
-                type: style,
-                color: color || colorFn(name),
-                opacity: parseAnnotationOpacity(annotationOpacity),
-                emphasis: {
-                  opacity: 1,
-                },
-              },
-              label: {
-                show: false,
-                color: '#000000',
-                position: 'insideEndTop',
-                emphasis: {
-                  // @ts-ignore
-                  formatter: params => {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-                    return params.name;
-                  },
-                  // @ts-ignore
-                  fontWeight: 'bold',
-                  show: true,
-                  backgroundColor: '#ffffff',
-                },
-              },
-              // @ts-ignore
-              data: eventData,
-            },
-          });
-        });
-      } else if (isTimeseriesAnnotationLayer(layer) && annotationShow) {
-        const { showMarkers, hideLine } = layer;
-        const result = annotationData[name];
-        if (isTimeseriesAnnotationResult(result)) {
-          result.forEach(annotation => {
-            const { key, values } = annotation;
-            series.push({
-              type: 'line',
-              id: key,
-              name: key,
-              data: values.map(row => [row.x, row.y] as [number | string, number]),
-              symbolSize: showMarkers ? markerSize : 0,
-              lineStyle: {
-                opacity: parseAnnotationOpacity(annotationOpacity),
-                type: style,
-                width: hideLine ? 0 : annotationWidth,
-              },
-            });
-          });
-        }
+  annotationLayers
+    .filter((layer: AnnotationLayer) => layer.show)
+    .forEach((layer: AnnotationLayer) => {
+      if (isFormulaAnnotationLayer(layer))
+        series.push(transformFormulaAnnotation(layer, data, colorScale));
+      else if (isIntervalAnnotationLayer(layer)) {
+        series.push(...transformIntervalAnnotation(layer, data, annotationData, colorScale));
+      } else if (isEventAnnotationLayer(layer)) {
+        series.push(...transformEventAnnotation(layer, data, annotationData, colorScale));
+      } else if (isTimeseriesAnnotationLayer(layer)) {
+        series.push(
+          ...transformTimeseriesAnnotation(
+            layer,
+            formData as EchartsTimeseriesFormData,
+            data,
+            annotationData,
+          ),
+        );
       }
-    }
-  });
+    });
 
   // yAxisBounds need to be parsed to replace incompatible values with undefined
   let [min, max] = (yAxisBounds || []).map(parseYAxisBound);
