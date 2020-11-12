@@ -105,7 +105,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   else if (xTicksLayout === '90°') axisLabel = { rotate: -90 };
   else if (xTicksLayout === 'flat') axisLabel = { rotate: 0 };
   else if (xTicksLayout === 'staggered') axisLabel = { rotate: -45 };
-  else axisLabel = { show: true };
+  else axisLabel = { rotate: -45 };
 
   // @ts-ignore
   const echartOptions: echarts.EChartOption<echarts.EChartOption.SeriesBoxplot> = {
