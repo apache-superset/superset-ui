@@ -98,7 +98,7 @@ const config: ControlPanelConfig = {
             config: {
               type: 'SelectControl',
               multi: true,
-              label: t('Meta data'),
+              label: t('Metadata'),
               default: [],
               description: t('Select any columns for metadata inspection'),
               optionRenderer: c => <ColumnOption showType column={c} />,
