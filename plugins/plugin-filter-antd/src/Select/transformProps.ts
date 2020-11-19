@@ -22,15 +22,15 @@ import { DEFAULT_FORM_DATA } from './types';
 export default function transformProps(chartProps: ChartProps) {
   const { formData, height, queryData, width } = chartProps;
   const newFormData = { ...DEFAULT_FORM_DATA, ...formData };
-  const { setSelectFilter } = newFormData;
+  const { setSelectedValues } = newFormData;
   const data = queryData.data as DataRecord[];
 
-  console.log('formData via TransformProps.ts', formData);
+  // console.log('formData via TransformProps.ts', formData);
   return {
     width,
     height,
     data,
     formData: newFormData,
-    setSelectFilter,
+    setSelectedValues,
   };
 }

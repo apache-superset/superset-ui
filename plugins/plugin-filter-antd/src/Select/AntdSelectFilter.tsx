@@ -32,7 +32,7 @@ const { Option } = Select;
 export default function PluginFilterSelect(props: PluginFilterSelectProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const DELIMITER = '!^&@%#*!@';
-  const { data, formData, height, width, setSelectFilter } = props;
+  const { data, formData, height, width, setSelectedValues } = props;
   const { multiSelect, showSearch } = { ...DEFAULT_FORM_DATA, ...formData };
   let { groupby = [] } = formData;
   groupby = Array.isArray(groupby) ? groupby : [groupby];
@@ -40,7 +40,7 @@ export default function PluginFilterSelect(props: PluginFilterSelectProps) {
 
   function handleChange(value: string | string[]) {
     const values = Array.isArray(value) ? value : [value];
-    setSelectFilter(values);
+    setSelectedValues(values);
   }
 
   return (

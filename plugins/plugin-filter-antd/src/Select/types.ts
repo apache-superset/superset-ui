@@ -27,7 +27,7 @@ interface PluginFilterSelectCustomizeProps {
   fetchPredicate: string;
   multiSelect: boolean;
   showSearch: boolean;
-  setSelectFilter: SetSelectFilter;
+  setSelectedValues: SetSelectFilter;
 }
 
 export type PluginFilterSelectQueryFormData = QueryFormData &
@@ -43,5 +43,5 @@ export const DEFAULT_FORM_DATA = {
   fetchPredicate: '',
   multiSelect: true,
   showSeatch: true,
-  setSelectFilter: (values: string[]) => values,
+  setSelectedValues: (values: string[]) => values,
 };
