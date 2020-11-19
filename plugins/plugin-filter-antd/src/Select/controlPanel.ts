@@ -70,6 +70,7 @@ const config: ControlPanelConfig = {
   ],
   controlOverrides: {
     groupby: {
+      multi: false,
       validators: [validateNonEmpty],
     },
   },

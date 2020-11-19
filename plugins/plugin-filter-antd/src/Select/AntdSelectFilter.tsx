@@ -32,14 +32,15 @@ const { Option } = Select;
 export default function PluginFilterSelect(props: PluginFilterSelectProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const DELIMITER = '!^&@%#*!@';
-  const { data, formData, height, hooks, width } = props;
+  const { data, formData, height, width, setSelectFilter } = props;
+  const { multiSelect, showSearch } = { ...DEFAULT_FORM_DATA, ...formData };
+  let { groupby = [] } = formData;
+  groupby = Array.isArray(groupby) ? groupby : [groupby];
   // console.log('height width', height, width, hooks);
-  const { groupby = [], multiSelect, showSearch } = { ...DEFAULT_FORM_DATA, ...formData };
 
   function handleChange(value: string | string[]) {
     const values = Array.isArray(value) ? value : [value];
-    // console.log('vals': values.flatMap(val => val.split(DELIMITER)));
-    //hooks.onAddFilter({ name: values.flatMap(val => val.split(DELIMITER)) });
+    setSelectFilter(values);
   }
 
   return (

@@ -19,10 +19,15 @@
 import { QueryFormData, DataRecord } from '@superset-ui/core';
 import { PluginFilterStylesProps } from '../types';
 
+interface SetSelectFilter {
+  (values: string[]): void;
+}
+
 interface PluginFilterSelectCustomizeProps {
   fetchPredicate: string;
   multiSelect: boolean;
   showSearch: boolean;
+  setSelectFilter: SetSelectFilter;
 }
 
 export type PluginFilterSelectQueryFormData = QueryFormData &
@@ -38,4 +43,5 @@ export const DEFAULT_FORM_DATA = {
   fetchPredicate: '',
   multiSelect: true,
   showSeatch: true,
+  setSelectFilter: (values: string[]) => values,
 };
