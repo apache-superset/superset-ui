@@ -11,9 +11,10 @@ export default function processFilters(formData: QueryFormData) {
   // (2) expressionType
   //     2.1 SIMPLE (subject + operator + comparator)
   //     2.2 SQL (freeform SQL expression))
-  const { adhoc_filters } = formData;
+  const { adhoc_filters, native_filters } = formData;
   if (Array.isArray(adhoc_filters)) {
     const simpleWhere: QueryObjectFilterClause[] = formData.filters || [];
+    simpleWhere.push(...(native_filters || []));
     const simpleHaving: QueryObjectFilterClause[] = [];
     const freeformWhere: string[] = [];
     if (formData.where) freeformWhere.push(formData.where);
