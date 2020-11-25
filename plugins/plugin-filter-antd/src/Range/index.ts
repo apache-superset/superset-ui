@@ -20,13 +20,14 @@ import { t, ChartMetadata, ChartPlugin } from '@superset-ui/core';
 import buildQuery from './buildQuery';
 import controlPanel from './controlPanel';
 import transformProps from './transformProps';
-import thumbnail from '../images/thumbnail.png';
+import thumbnail from './images/thumbnail.png';
 
 export default class AntdRangeFilterPlugin extends ChartPlugin {
   constructor() {
     const metadata = new ChartMetadata({
       name: t('Range Filter Plugin'),
       description: 'Range Filter Plugin using AntD',
+      isNativeFilter: true,
       thumbnail,
     });
 
