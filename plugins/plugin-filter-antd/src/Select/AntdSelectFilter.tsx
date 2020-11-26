@@ -19,24 +19,23 @@
 import { styled } from '@superset-ui/core';
 import React, { useRef } from 'react';
 import { Select } from 'antd';
-import { DEFAULT_FORM_DATA, PluginFilterSelectProps } from './types';
-import { EchartsStylesProps } from '@superset-ui/plugin-chart-echarts/lib/types';
+import { DEFAULT_FORM_DATA, AntdPluginFilterSelectProps } from './types';
+import { AntdPluginFilterStylesProps } from '../types';
 
-const Styles = styled.div<EchartsStylesProps>`
+const Styles = styled.div<AntdPluginFilterStylesProps>`
   height: ${({ height }) => height};
   width: ${({ width }) => width};
 `;
 
 const { Option } = Select;
 
-export default function PluginFilterSelect(props: PluginFilterSelectProps) {
+export default function AntdPluginFilterSelect(props: AntdPluginFilterSelectProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const DELIMITER = '!^&@%#*!@';
   const { data, formData, height, width, setSelectedValues } = props;
   const { multiSelect, showSearch } = { ...DEFAULT_FORM_DATA, ...formData };
   let { groupby = [] } = formData;
   groupby = Array.isArray(groupby) ? groupby : [groupby];
-  // console.log('height width', height, width, hooks);
 
   function handleChange(value: string | string[]) {
     const values = Array.isArray(value) ? value : [value];

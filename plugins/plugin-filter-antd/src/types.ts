@@ -16,9 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { QueryFormData, DataRecord } from '@superset-ui/core';
-
-export interface PluginFilterStylesProps {
+export interface AntdPluginFilterStylesProps {
   height: number;
   width: number;
 }

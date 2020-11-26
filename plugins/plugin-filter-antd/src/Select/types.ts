@@ -17,26 +17,27 @@
  * under the License.
  */
 import { QueryFormData, DataRecord } from '@superset-ui/core';
-import { PluginFilterStylesProps } from '../types';
+import { AntdPluginFilterStylesProps } from '../types';
 
 interface SetSelectFilter {
   (values: string[]): void;
 }
 
-interface PluginFilterSelectCustomizeProps {
-  fetchPredicate: string;
+interface AntdPluginFilterSelectCustomizeProps {
+  fetchPredicate?: string;
   multiSelect: boolean;
   showSearch: boolean;
   setSelectedValues: SetSelectFilter;
 }
 
-export type PluginFilterSelectQueryFormData = QueryFormData &
-  PluginFilterStylesProps &
-  PluginFilterSelectCustomizeProps;
+export type AntdPluginFilterSelectQueryFormData = QueryFormData &
+  AntdPluginFilterStylesProps &
+  AntdPluginFilterSelectCustomizeProps;
 
-export type PluginFilterSelectProps = PluginFilterStylesProps & {
+export type AntdPluginFilterSelectProps = AntdPluginFilterStylesProps & {
   data: DataRecord[];
-  formData: PluginFilterSelectQueryFormData;
+  setSelectedValues: SetSelectFilter;
+  formData: AntdPluginFilterSelectQueryFormData;
 };
 
 export const DEFAULT_FORM_DATA = {

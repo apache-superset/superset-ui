@@ -8,7 +8,9 @@ describe('processFilters', () => {
         viz_type: 'custom',
         datasource: 'boba',
       }),
-    ).toEqual({});
+    ).toEqual(
+      expect.objectContaining({ extras: { having: '', having_druid: [], where: '' }, filters: [] }),
+    );
   });
 
   it('should merge simple adhoc_filters and filters', () => {

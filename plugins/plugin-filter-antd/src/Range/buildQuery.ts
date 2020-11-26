@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { buildQueryContext, QueryFormData } from '@superset-ui/core';
+import { buildQueryContext, ColumnType, QueryFormData } from '@superset-ui/core';
 
 /**
  * The buildQuery function is used to create an instance of QueryContext that's
@@ -36,8 +36,7 @@ export default function buildQuery(formData: QueryFormData) {
   const { groupby } = formData;
   const [column] = groupby || [];
   return buildQueryContext(formData, baseQueryObject => {
-    // console.log('!!!', formData);
-    const ret = [
+    return [
       {
         ...baseQueryObject,
         groupby: [],
@@ -45,7 +44,9 @@ export default function buildQuery(formData: QueryFormData) {
           {
             aggregate: 'MIN',
             column: {
-              column_name: column,
+              columnName: column,
+              id: 1,
+              type: ColumnType.FLOAT,
             },
             expressionType: 'SIMPLE',
             hasCustomLabel: true,
@@ -54,7 +55,9 @@ export default function buildQuery(formData: QueryFormData) {
           {
             aggregate: 'MAX',
             column: {
-              column_name: column,
+              columnName: column,
+              id: 2,
+              type: ColumnType.FLOAT,
             },
             expressionType: 'SIMPLE',
             hasCustomLabel: true,
@@ -63,7 +66,5 @@ export default function buildQuery(formData: QueryFormData) {
         ],
       },
     ];
-    // console.log('!!!', ret);
-    return ret;
   });
 }

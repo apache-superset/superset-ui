@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { PluginFilterSelectChartPlugin } from '../src';
+import { AntdSelectFilterPlugin, AntdRangeFilterPlugin } from '../src';
 
 /**
  * The example tests in this file act as a starting point, and
@@ -26,8 +26,9 @@ import { PluginFilterSelectChartPlugin } from '../src';
  * treated correctly (e.g. formData from plugin controls
  * properly transform the data and/or any resulting props).
  */
-describe('@superset-ui/plugin-chart-plugin-filter-select', () => {
+describe('@superset-ui/plugin-filter-antd', () => {
   it('exists', () => {
-    expect(PluginFilterSelectChartPlugin).toBeDefined();
+    expect(AntdSelectFilterPlugin).toBeDefined();
+    expect(AntdRangeFilterPlugin).toBeDefined();
   });
 });

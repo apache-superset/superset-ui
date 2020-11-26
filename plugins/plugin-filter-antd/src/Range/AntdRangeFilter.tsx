@@ -19,27 +19,26 @@
 import { styled } from '@superset-ui/core';
 import React, { useRef } from 'react';
 import { Slider } from 'antd';
-import { EchartsStylesProps } from '@superset-ui/plugin-chart-echarts/lib/types';
+import { AntdPluginFilterRangeProps } from './types';
+import { AntdPluginFilterStylesProps } from '../types';
 
-const Styles = styled.div<EchartsStylesProps>`
+const Styles = styled.div<AntdPluginFilterStylesProps>`
   height: ${({ height }) => height};
   width: ${({ width }) => width};
 `;
 
-export default function AntdRangeFilter(props) {
-  // console.log('AntdRangeFilter', props);
+export default function AntdRangeFilter(props: AntdPluginFilterRangeProps) {
   const divRef = useRef<HTMLDivElement>(null);
-  const { data, height, width, formData, onAddFilter } = props;
+  const { data, height, width, setRangeValues } = props;
   const [row] = data;
-  const { min, max } = row;
-  // console.log('!!!', data, formData, onAddFilter);
+  // @ts-ignore
+  const { min, max }: { min: number; max: number } = row;
 
   const handleChange = (value: [number, number]) => {
-    if (onAddFilter) {
-      //console.log('yeehaw');
-      onAddFilter({ gender: ['male'] }, false);
+    const [lower, upper] = value;
+    if (setRangeValues) {
+      setRangeValues({ lower, upper });
     }
-    //console.log('onChange', value);
   };
 
   return (
