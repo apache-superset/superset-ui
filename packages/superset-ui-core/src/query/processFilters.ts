@@ -11,48 +11,42 @@ export default function processFilters(formData: QueryFormData) {
   // (2) expressionType
   //     2.1 SIMPLE (subject + operator + comparator)
   //     2.2 SQL (freeform SQL expression))
-  const { adhoc_filters, native_filters } = formData;
-  if (Array.isArray(adhoc_filters)) {
-    const simpleWhere: QueryObjectFilterClause[] = formData.filters || [];
-    simpleWhere.push(...(native_filters || []));
-    const simpleHaving: QueryObjectFilterClause[] = [];
-    const freeformWhere: string[] = [];
-    if (formData.where) freeformWhere.push(formData.where);
-    const freeformHaving: string[] = [];
+  const { adhoc_filters = [], extra_form_data = {}, extras = {}, filters = [], where } = formData;
+  const simpleWhere: QueryObjectFilterClause[] = filters;
+  const { filters: extraFilters = [] } = extra_form_data;
 
-    adhoc_filters.forEach(filter => {
-      const { clause } = filter;
-      if (isSimpleAdhocFilter(filter)) {
-        const filterClause = convertFilter(filter);
-        if (clause === 'WHERE') {
-          simpleWhere.push(filterClause);
-        } else {
-          simpleHaving.push(filterClause);
-        }
+  simpleWhere.push(...extraFilters);
+  const simpleHaving: QueryObjectFilterClause[] = [];
+  const freeformWhere: string[] = [];
+  if (where) freeformWhere.push(where);
+  const freeformHaving: string[] = [];
+
+  adhoc_filters.forEach(filter => {
+    const { clause } = filter;
+    if (isSimpleAdhocFilter(filter)) {
+      const filterClause = convertFilter(filter);
+      if (clause === 'WHERE') {
+        simpleWhere.push(filterClause);
       } else {
-        const { sqlExpression } = filter;
-        if (clause === 'WHERE') {
-          freeformWhere.push(sqlExpression);
-        } else {
-          freeformHaving.push(sqlExpression);
-        }
+        simpleHaving.push(filterClause);
       }
-    });
+    } else {
+      const { sqlExpression } = filter;
+      if (clause === 'WHERE') {
+        freeformWhere.push(sqlExpression);
+      } else {
+        freeformHaving.push(sqlExpression);
+      }
+    }
+  });
 
-    // some filter-related fields need to go in `extras`
-    const extras = {
-      having: freeformHaving.map(exp => `(${exp})`).join(' AND '),
-      having_druid: simpleHaving,
-      where: freeformWhere.map(exp => `(${exp})`).join(' AND '),
-      ...formData.extras,
-    };
+  // some filter-related fields need to go in `extras`
+  extras.having = freeformHaving.map(exp => `(${exp})`).join(' AND ');
+  extras.having_druid = simpleHaving;
+  extras.where = freeformWhere.map(exp => `(${exp})`).join(' AND ');
 
-    return {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      filters: simpleWhere,
-      extras,
-    };
-  }
-
-  return {};
+  return {
+    filters: simpleWhere,
+    extras,
+  };
 }
