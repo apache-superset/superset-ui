@@ -27,7 +27,6 @@ interface AntdPluginFilterSelectCustomizeProps {
   fetchPredicate?: string;
   multiSelect: boolean;
   showSearch: boolean;
-  setSelectedValues: SetSelectFilter;
 }
 
 export type AntdPluginFilterSelectQueryFormData = QueryFormData &
