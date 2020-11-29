@@ -38,8 +38,18 @@ export default function AntdPluginFilterSelect(props: AntdPluginFilterSelectProp
   groupby = Array.isArray(groupby) ? groupby : [groupby];
 
   function handleChange(value: string | string[]) {
-    const values = Array.isArray(value) ? value : [value];
-    setSelectedValues(values);
+    const [col] = groupby;
+    setSelectedValues({
+      append_form_data: {
+        filters: [
+          {
+            col,
+            op: 'in',
+            val: Array.isArray(value) ? value : [value],
+          },
+        ],
+      },
+    });
   }
 
   return (

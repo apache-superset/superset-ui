@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { QueryFormData, DataRecord } from '@superset-ui/core';
+import { QueryFormData, DataRecord, ExtraFormData } from '@superset-ui/core';
 import { AntdPluginFilterStylesProps } from '../types';
 
 interface SetSelectFilter {
-  (values: string[]): void;
+  (extraFormData: ExtraFormData): void;
 }
 
 interface AntdPluginFilterSelectCustomizeProps {
