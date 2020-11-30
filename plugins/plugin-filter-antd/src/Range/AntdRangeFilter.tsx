@@ -42,10 +42,7 @@ export default function AntdRangeFilter(props: AntdPluginFilterRangeProps) {
     if (upper !== undefined && upper !== null) filters.push({ col, op: '>=', val: upper });
     setExtraFormData({
       append_form_data: {
-        filters: [
-          { col, op: '>=', val: lower },
-          { col, op: '<=', val: upper },
-        ],
+        filters,
       },
     });
   };

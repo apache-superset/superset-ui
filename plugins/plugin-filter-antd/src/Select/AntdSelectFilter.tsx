@@ -17,7 +17,7 @@
  * under the License.
  */
 import { styled } from '@superset-ui/core';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Select } from 'antd';
 import { DEFAULT_FORM_DATA, AntdPluginFilterSelectProps } from './types';
 import { AntdPluginFilterStylesProps } from '../types';
@@ -30,20 +30,26 @@ const Styles = styled.div<AntdPluginFilterStylesProps>`
 const { Option } = Select;
 
 export default function AntdPluginFilterSelect(props: AntdPluginFilterSelectProps) {
+  const [values, setValues] = useState<(string | number)[]>([]);
   const DELIMITER = '!^&@%#*!@';
   const { data, formData, height, width, setExtraFormData } = props;
-  const { enableEmptyFilter, multiSelect, showSearch, inverseSelection } = {
+  const { defaultValues, enableEmptyFilter, multiSelect, showSearch, inverseSelection } = {
     ...DEFAULT_FORM_DATA,
     ...formData,
   };
+
+  useEffect(() => {
+    setValues(defaultValues || []);
+  }, [defaultValues]);
+
   let { groupby = [] } = formData;
   groupby = Array.isArray(groupby) ? groupby : [groupby];
 
-  function handleChange(value?: number | number[] | string | string[] | null) {
+  function handleChange(value?: number[] | string[] | null) {
+    setValues(value || []);
     const [col] = groupby;
     const emptyFilter =
-      enableEmptyFilter &&
-      (value === undefined || value === null || (Array.isArray(value) && value.length === 0));
+      enableEmptyFilter && (value === undefined || value === null || value.length === 0);
     setExtraFormData({
       append_form_data: emptyFilter
         ? {
@@ -52,13 +58,16 @@ export default function AntdPluginFilterSelect(props: AntdPluginFilterSelectProp
             },
           }
         : {
-            filters: [
-              {
-                col,
-                op: inverseSelection ? 'NOT IN' : 'IN',
-                val: Array.isArray(value) ? value : [value as number | string],
-              },
-            ],
+            filters:
+              value === undefined || value === null || value.length === 0
+                ? []
+                : [
+                    {
+                      col,
+                      op: inverseSelection ? 'NOT IN' : 'IN',
+                      val: value,
+                    },
+                  ],
           },
     });
   }
@@ -67,6 +76,7 @@ export default function AntdPluginFilterSelect(props: AntdPluginFilterSelectProp
     <Styles height={height} width={width}>
       <Select
         allowClear
+        value={values}
         showSearch={showSearch}
         style={{ width }}
         mode={multiSelect ? 'multiple' : undefined}
@@ -74,9 +84,9 @@ export default function AntdPluginFilterSelect(props: AntdPluginFilterSelectProp
         onChange={handleChange}
       >
         {(data || []).map(row => {
-          const values = groupby.map(col => row[col]);
-          const key = values.join(DELIMITER);
-          const label = values.join(', ');
+          const options = groupby.map(col => row[col]);
+          const key = options.join(DELIMITER);
+          const label = options.join(', ');
           return (
             <Option key={key} value={key}>
               {label}

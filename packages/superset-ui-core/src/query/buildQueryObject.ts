@@ -20,8 +20,7 @@ export const DTTM_ALIAS = '__timestamp';
 export default function buildQueryObject<T extends QueryFormData>(formData: T): QueryObject {
   const {
     annotation_layers = [],
-    append_form_data = {},
-    override_form_data = {},
+    extra_form_data = {},
     time_range,
     since,
     until,
@@ -35,6 +34,7 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
     url_params = {},
     ...residualFormData
   } = formData;
+  const { append_form_data = {}, override_form_data = {} } = extra_form_data;
 
   const numericRowLimit = Number(row_limit);
   const numericRowOffset = Number(row_offset);

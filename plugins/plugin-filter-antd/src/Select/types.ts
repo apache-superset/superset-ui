@@ -20,6 +20,7 @@ import { QueryFormData, DataRecord, SetExtraFormDataHook } from '@superset-ui/co
 import { AntdPluginFilterStylesProps } from '../types';
 
 interface AntdPluginFilterSelectCustomizeProps {
+  defaultValues?: (string | number)[];
   enableEmptyFilter: boolean;
   fetchPredicate?: string;
   inverseSelection: boolean;
@@ -38,6 +39,7 @@ export type AntdPluginFilterSelectProps = AntdPluginFilterStylesProps & {
 };
 
 export const DEFAULT_FORM_DATA: AntdPluginFilterSelectCustomizeProps = {
+  defaultValues: [],
   enableEmptyFilter: false,
   fetchPredicate: '',
   inverseSelection: false,
