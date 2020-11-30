@@ -16,12 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { QueryFormData, DataRecord } from '@superset-ui/core';
+import { DataRecord, QueryFormData, SetExtraFormDataHook } from '@superset-ui/core';
 import { AntdPluginFilterStylesProps } from '../types';
-
-interface SetRangeFilter {
-  ({ lower, upper }: { lower?: number; upper?: number }): void;
-}
 
 interface AntdPluginFilterSelectCustomizeProps {
   max?: number;
@@ -34,6 +30,6 @@ export type PluginFilterRangeQueryFormData = QueryFormData &
 
 export type AntdPluginFilterRangeProps = AntdPluginFilterStylesProps & {
   data: DataRecord[];
-  setRangeValues: SetRangeFilter;
   formData: PluginFilterRangeQueryFormData;
+  setExtraFormData: SetExtraFormDataHook;
 };

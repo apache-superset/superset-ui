@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { styled } from '@superset-ui/core';
-import React, { useRef } from 'react';
+import { QueryObjectFilterClause, styled } from '@superset-ui/core';
+import React from 'react';
 import { Slider } from 'antd';
 import { AntdPluginFilterRangeProps } from './types';
 import { AntdPluginFilterStylesProps } from '../types';
@@ -28,21 +28,30 @@ const Styles = styled.div<AntdPluginFilterStylesProps>`
 `;
 
 export default function AntdRangeFilter(props: AntdPluginFilterRangeProps) {
-  const divRef = useRef<HTMLDivElement>(null);
-  const { data, height, width, setRangeValues } = props;
+  const { data, formData, height, width, setExtraFormData } = props;
   const [row] = data;
   // @ts-ignore
   const { min, max }: { min: number; max: number } = row;
+  const { groupby } = formData;
+  const [col] = groupby || [];
 
   const handleChange = (value: [number, number]) => {
     const [lower, upper] = value;
-    if (setRangeValues) {
-      setRangeValues({ lower, upper });
-    }
+    const filters: QueryObjectFilterClause[] = [];
+    if (lower !== undefined && lower !== null) filters.push({ col, op: '>=', val: lower });
+    if (upper !== undefined && upper !== null) filters.push({ col, op: '>=', val: upper });
+    setExtraFormData({
+      append_form_data: {
+        filters: [
+          { col, op: '>=', val: lower },
+          { col, op: '<=', val: upper },
+        ],
+      },
+    });
   };
 
   return (
-    <Styles ref={divRef} height={height} width={width}>
+    <Styles height={height} width={width}>
       <Slider range min={min} max={max} defaultValue={[min, max]} onChange={handleChange} />
     </Styles>
   );

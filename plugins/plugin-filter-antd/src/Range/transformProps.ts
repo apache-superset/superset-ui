@@ -20,16 +20,15 @@ import { ChartProps, DataRecord } from '@superset-ui/core';
 
 export default function transformProps(chartProps: ChartProps) {
   const { formData, height, hooks, queryData, width } = chartProps;
-  // console.log('@@@', formData);
-  const { onAddFilter } = hooks;
+  const { setExtraFormData } = hooks;
   const data = queryData.data as DataRecord[];
 
   // console.log('formData via TransformProps.ts', formData);
   return {
-    onAddFilter,
-    width,
-    height,
     data,
     formData,
+    height,
+    setExtraFormData,
+    width,
   };
 }

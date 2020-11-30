@@ -17,7 +17,7 @@
  * under the License.
  */
 import { styled } from '@superset-ui/core';
-import React, { useRef } from 'react';
+import React from 'react';
 import { Select } from 'antd';
 import { DEFAULT_FORM_DATA, AntdPluginFilterSelectProps } from './types';
 import { AntdPluginFilterStylesProps } from '../types';
@@ -30,7 +30,6 @@ const Styles = styled.div<AntdPluginFilterStylesProps>`
 const { Option } = Select;
 
 export default function AntdPluginFilterSelect(props: AntdPluginFilterSelectProps) {
-  const divRef = useRef<HTMLDivElement>(null);
   const DELIMITER = '!^&@%#*!@';
   const { data, formData, height, width, setExtraFormData } = props;
   const { enableEmptyFilter, multiSelect, showSearch, inverseSelection } = {
@@ -65,11 +64,11 @@ export default function AntdPluginFilterSelect(props: AntdPluginFilterSelectProp
   }
 
   return (
-    <Styles ref={divRef} height={height} width={width}>
+    <Styles height={height} width={width}>
       <Select
         allowClear
         showSearch={showSearch}
-        style={{ width: width - 4 }}
+        style={{ width }}
         mode={multiSelect ? 'multiple' : undefined}
         // @ts-ignore
         onChange={handleChange}
