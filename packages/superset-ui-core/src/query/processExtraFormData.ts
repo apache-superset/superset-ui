@@ -18,8 +18,8 @@
  */
 import { QueryObject } from './types/Query';
 
-const ALLOWED_OVERRIDES = ['time_grain_sqla', 'time_range_sqla'];
-const ALLOWED_APPENDS = ['groupby', 'filters', 'adhoc_filters'];
+const ALLOWED_OVERRIDES = ['time_grain_sqla', 'time_range', 'since', 'until'];
+const ALLOWED_APPENDS = ['adhoc_filters', 'filters', 'groupby'];
 
 export function overrideExtraFormData(
   queryObject: QueryObject,
@@ -44,9 +44,27 @@ export function appendExtraFormData(
       const append = appendFormData[key];
       const currentValue = appendedFormData[key] || [];
       // @ts-ignore
-      currentValue.push(...(Array.isArray(append) ? append : [append]));
+      currentValue.push(...append);
       appendedFormData[key] = currentValue;
     }
   });
+
+  // Add freeform where
+  const { extras = {} } = appendedFormData;
+  const { where = '' } = extras;
+  extras.where = where;
+
+  const { extras: appendExtras = {} } = appendFormData;
+  let { where: appendWhere } = appendExtras;
+
+  if (appendWhere) {
+    appendedFormData.extras = extras;
+    appendWhere = `(${appendWhere})`;
+  }
+  if (where) {
+    appendWhere = `(${where}) AND ${appendWhere}`;
+  }
+  extras.where = appendWhere;
+
   return appendedFormData;
 }

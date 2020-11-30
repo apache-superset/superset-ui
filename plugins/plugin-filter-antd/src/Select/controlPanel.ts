@@ -18,6 +18,15 @@
  */
 import { t, validateNonEmpty } from '@superset-ui/core';
 import { ControlPanelConfig } from '@superset-ui/chart-controls';
+import { DEFAULT_FORM_DATA } from './types';
+
+const {
+  enableEmptyFilter,
+  fetchPredicate,
+  inverseSelection,
+  multiSelect,
+  showSearch,
+} = DEFAULT_FORM_DATA;
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
@@ -34,8 +43,32 @@ const config: ControlPanelConfig = {
             config: {
               type: 'CheckboxControl',
               label: t('Multiple Select'),
-              default: true,
+              default: multiSelect,
               description: t('Allow selecting multiple values'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'enableEmptyFilter',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Enable Empty Filter'),
+              default: enableEmptyFilter,
+              description: t(
+                'When selection is empty, should an always false filter event be emitted',
+              ),
+            },
+          },
+        ],
+        [
+          {
+            name: 'inverseSelection',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Inverse Selection'),
+              default: inverseSelection,
+              description: t('Exclude selected values'),
             },
           },
         ],
@@ -45,7 +78,7 @@ const config: ControlPanelConfig = {
             config: {
               type: 'CheckboxControl',
               label: t('Search Field'),
-              default: true,
+              default: showSearch,
               description: t('Allow typing search terms'),
             },
           },
@@ -56,7 +89,7 @@ const config: ControlPanelConfig = {
             config: {
               type: 'TextControl',
               label: t('Fetch predicate'),
-              default: '',
+              default: fetchPredicate,
               description: t(
                 'Predicate applied when fetching distinct value to populate the filter control component.',
               ),

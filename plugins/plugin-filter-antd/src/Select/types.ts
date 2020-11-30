@@ -16,15 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { QueryFormData, DataRecord, ExtraFormData } from '@superset-ui/core';
+import { QueryFormData, DataRecord, SetExtraFormDataHook } from '@superset-ui/core';
 import { AntdPluginFilterStylesProps } from '../types';
 
-interface SetSelectFilter {
-  (extraFormData: ExtraFormData): void;
-}
-
 interface AntdPluginFilterSelectCustomizeProps {
+  enableEmptyFilter: boolean;
   fetchPredicate?: string;
+  inverseSelection: boolean;
   multiSelect: boolean;
   showSearch: boolean;
 }
@@ -35,13 +33,14 @@ export type AntdPluginFilterSelectQueryFormData = QueryFormData &
 
 export type AntdPluginFilterSelectProps = AntdPluginFilterStylesProps & {
   data: DataRecord[];
-  setSelectedValues: SetSelectFilter;
+  setExtraFormData: SetExtraFormDataHook;
   formData: AntdPluginFilterSelectQueryFormData;
 };
 
-export const DEFAULT_FORM_DATA = {
+export const DEFAULT_FORM_DATA: AntdPluginFilterSelectCustomizeProps = {
+  enableEmptyFilter: false,
   fetchPredicate: '',
+  inverseSelection: false,
   multiSelect: true,
-  showSeatch: true,
-  setSelectedValues: (values: string[]) => values,
+  showSearch: true,
 };

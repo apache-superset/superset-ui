@@ -32,23 +32,35 @@ const { Option } = Select;
 export default function AntdPluginFilterSelect(props: AntdPluginFilterSelectProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const DELIMITER = '!^&@%#*!@';
-  const { data, formData, height, width, setSelectedValues } = props;
-  const { multiSelect, showSearch } = { ...DEFAULT_FORM_DATA, ...formData };
+  const { data, formData, height, width, setExtraFormData } = props;
+  const { enableEmptyFilter, multiSelect, showSearch, inverseSelection } = {
+    ...DEFAULT_FORM_DATA,
+    ...formData,
+  };
   let { groupby = [] } = formData;
   groupby = Array.isArray(groupby) ? groupby : [groupby];
 
-  function handleChange(value: string | string[]) {
+  function handleChange(value?: number | number[] | string | string[] | null) {
     const [col] = groupby;
-    setSelectedValues({
-      append_form_data: {
-        filters: [
-          {
-            col,
-            op: 'in',
-            val: Array.isArray(value) ? value : [value],
+    const emptyFilter =
+      enableEmptyFilter &&
+      (value === undefined || value === null || (Array.isArray(value) && value.length === 0));
+    setExtraFormData({
+      append_form_data: emptyFilter
+        ? {
+            extras: {
+              where: '1 = 0',
+            },
+          }
+        : {
+            filters: [
+              {
+                col,
+                op: inverseSelection ? 'NOT IN' : 'IN',
+                val: Array.isArray(value) ? value : [value as number | string],
+              },
+            ],
           },
-        ],
-      },
     });
   }
 
@@ -59,6 +71,7 @@ export default function AntdPluginFilterSelect(props: AntdPluginFilterSelectProp
         showSearch={showSearch}
         style={{ width: width - 4 }}
         mode={multiSelect ? 'multiple' : undefined}
+        // @ts-ignore
         onChange={handleChange}
       >
         {(data || []).map(row => {

@@ -65,6 +65,57 @@ describe('appendExtraFormData', () => {
       ],
     });
   });
+
+  it('should add new freeform where', () => {
+    expect(
+      appendExtraFormData(
+        {
+          datasource: 'table_1',
+          granularity: 'something',
+          viz_type: 'custom',
+        },
+        {
+          extras: {
+            where: '1 = 0',
+          },
+        },
+      ),
+    ).toEqual({
+      datasource: 'table_1',
+      granularity: 'something',
+      viz_type: 'custom',
+      extras: {
+        where: '(1 = 0)',
+      },
+    });
+  });
+
+  it('should add new freeform where to existing where clause', () => {
+    expect(
+      appendExtraFormData(
+        {
+          datasource: 'table_1',
+          granularity: 'something',
+          viz_type: 'custom',
+          extras: {
+            where: 'abc = 1',
+          },
+        },
+        {
+          extras: {
+            where: '1 = 0',
+          },
+        },
+      ),
+    ).toEqual({
+      datasource: 'table_1',
+      granularity: 'something',
+      viz_type: 'custom',
+      extras: {
+        where: '(abc = 1) AND (1 = 0)',
+      },
+    });
+  });
 });
 
 describe('overrideExtraFormData', () => {
