@@ -42,7 +42,7 @@ describe('appendExtraFormData', () => {
     });
   });
 
-  it('should add allowed values to pre-existent value', () => {
+  it('should add allowed values to preexisting value(s)', () => {
     expect(
       appendExtraFormData(
         {
@@ -139,7 +139,7 @@ describe('overrideExtraFormData', () => {
     });
   });
 
-  it('should override allowed pre-existing value', () => {
+  it('should override allowed preexisting value', () => {
     expect(
       overrideExtraFormData(
         {
