@@ -49,7 +49,10 @@ export default function AntdPluginFilterSelect(props: AntdPluginFilterSelectProp
     setValues(value || []);
     const [col] = groupby;
     const emptyFilter =
-      enableEmptyFilter && (value === undefined || value === null || value.length === 0);
+      enableEmptyFilter &&
+      !inverseSelection &&
+      (value === undefined || value === null || value.length === 0);
+    console.log(enableEmptyFilter, emptyFilter);
     setExtraFormData({
       append_form_data: emptyFilter
         ? {
@@ -71,6 +74,8 @@ export default function AntdPluginFilterSelect(props: AntdPluginFilterSelectProp
           },
     });
   }
+  const placeholderText =
+    (data || []).length === 0 ? 'No data' : `${data.length} option${data.length > 1 ? 's' : 0}`;
   return (
     <Styles height={height} width={width}>
       <Select
@@ -79,6 +84,7 @@ export default function AntdPluginFilterSelect(props: AntdPluginFilterSelectProp
         showSearch={showSearch}
         style={{ width: '100%' }}
         mode={multiSelect ? 'multiple' : undefined}
+        placeholder={placeholderText}
         // @ts-ignore
         onChange={handleChange}
       >
