@@ -89,7 +89,7 @@ const config: ControlPanelConfig = {
       controlSetRows: [['adhoc_filters']],
     },
     {
-      label: t('Metadata'),
+      label: t('Additional metadata'),
       controlSetRows: [
         [
           {
