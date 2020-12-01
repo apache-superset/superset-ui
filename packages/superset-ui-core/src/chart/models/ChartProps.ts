@@ -47,6 +47,8 @@ export interface ChartPropsConfig {
   hooks?: Hooks;
   /** Formerly called "payload" */
   queryData?: QueryData;
+  /** Formerly called "payload" */
+  queriesData?: QueryData[];
   /** Chart width */
   width?: number;
 }
@@ -75,6 +77,8 @@ export default class ChartProps {
 
   queryData: QueryData;
 
+  queriesData: QueryData[];
+
   width: number;
 
   constructor(config: ChartPropsConfig = {}) {
@@ -85,6 +89,7 @@ export default class ChartProps {
       hooks = {},
       initialValues = {},
       queryData = {},
+      queriesData = [],
       width = DEFAULT_WIDTH,
       height = DEFAULT_HEIGHT,
     } = config;
@@ -98,6 +103,7 @@ export default class ChartProps {
     this.hooks = hooks;
     this.initialValues = initialValues;
     this.queryData = queryData;
+    this.queriesData = queriesData;
   }
 }
 
@@ -111,8 +117,19 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
     input => input.hooks,
     input => input.initialValues,
     input => input.queryData,
+    input => input.queriesData,
     input => input.width,
-    (annotationData, datasource, formData, height, hooks, initialValues, queryData, width) =>
+    (
+      annotationData,
+      datasource,
+      formData,
+      height,
+      hooks,
+      initialValues,
+      queryData,
+      queriesData,
+      width,
+    ) =>
       new ChartProps({
         annotationData,
         datasource,
@@ -121,6 +138,7 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
         hooks,
         initialValues,
         queryData,
+        queriesData,
         width,
       }),
   );
