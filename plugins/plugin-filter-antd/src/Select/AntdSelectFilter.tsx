@@ -71,14 +71,13 @@ export default function AntdPluginFilterSelect(props: AntdPluginFilterSelectProp
           },
     });
   }
-
   return (
     <Styles height={height} width={width}>
       <Select
         allowClear
         value={values}
         showSearch={showSearch}
-        style={{ width }}
+        style={{ width: '100%' }}
         mode={multiSelect ? 'multiple' : undefined}
         // @ts-ignore
         onChange={handleChange}
