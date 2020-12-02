@@ -45,7 +45,8 @@ export interface ChartPropsConfig {
   height?: number;
   /** Programmatic overrides such as event handlers, renderers */
   hooks?: Hooks;
-  /** Formerly called "payload" */
+  /** Formerly called "payload". This property going to be deprecated because
+   * contains only first item in response data array (use `queriesData` instead) */
   queryData?: QueryData;
   /** Formerly called "payload" */
   queriesData?: QueryData[];
