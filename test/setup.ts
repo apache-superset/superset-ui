@@ -21,7 +21,7 @@ class Cache {
     this.cache[url] = response;
     return Promise.resolve();
   }
-};
+}
 
 class CacheStorage {
   open(key: string): Promise<Cache> {
@@ -37,6 +37,6 @@ class CacheStorage {
 
     return Promise.resolve(wasPresent);
   }
-};
+}
 
 global.caches = new CacheStorage();
