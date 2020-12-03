@@ -1,4 +1,4 @@
-name: 'Chromatic Deployment'
+name: Chromatic
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build and test
+    name: Build and publish
     runs-on: ubuntu-18.04
     env:
       CODECOV_TOKEN: '${{ secrets.CODECOV_TOKEN }}'
@@ -56,10 +56,9 @@ jobs:
       - name: Build packages
         run: yarn build
       - name: Deploy to Chromatic
+        working-directory: packages/superset-ui-demo
         uses: chromaui/action@v1
-        # Chromatic GitHub Action options
         with:
-          working-directory: packages/superset-ui-demo
           token: ${{ secrets.GITHUB_TOKEN }}
           # 👇 Chromatic projectToken, refer to the manage page to obtain it.
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
