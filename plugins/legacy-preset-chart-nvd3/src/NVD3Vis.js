@@ -45,6 +45,7 @@ import {
   computeStackedYDomain,
   drawBarValues,
   generateBubbleTooltipContent,
+  generateCompareTooltipContent,
   generateMultiLineTooltipContent,
   generateRichLineTooltipContent,
   generateTimePivotTooltip,
@@ -651,7 +652,7 @@ function nvd3Vis(element, props) {
 
     if (isVizTypes(['compare'])) {
       chart.interactiveLayer.tooltip.contentGenerator(d =>
-        generateRichLineTooltipContent(d, smartDateVerboseFormatter, yAxisFormatter),
+        generateCompareTooltipContent(d, smartDateVerboseFormatter, yAxisFormatter),
       );
     }
 

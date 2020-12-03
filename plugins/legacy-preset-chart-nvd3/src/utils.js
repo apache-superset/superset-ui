@@ -106,12 +106,37 @@ function getFormattedKey(seriesKey, shouldDompurify) {
 // Custom sorted tooltip
 // use a verbose formatter for times
 export function generateRichLineTooltipContent(d, timeFormatter, valueFormatter) {
-  const time = timeFormatter(d.value);
-
   let tooltip = '';
   tooltip +=
     "<table><thead><tr><td colspan='3'>" +
-    `<strong class='x-value'>${time === '0NaN' ? d.value : time}</strong>` +
+    `<strong class='x-value'>${timeFormatter(d.value)}</strong>` +
+    '</td></tr></thead><tbody>';
+  d.series.sort((a, b) => (a.value >= b.value ? -1 : 1));
+  d.series.forEach(series => {
+    const key = getFormattedKey(series.key, true);
+    tooltip +=
+      `<tr class="${series.highlight ? 'emph' : ''}">` +
+      `<td class='legend-color-guide' style="opacity: ${series.highlight ? '1' : '0.75'};"">` +
+      '<div ' +
+      `style="border: 2px solid ${series.highlight ? 'black' : 'transparent'}; background-color: ${
+        series.color
+      };"` +
+      '></div>' +
+      '</td>' +
+      `<td>${key}</td>` +
+      `<td>${valueFormatter(series.value)}</td>` +
+      '</tr>';
+  });
+  tooltip += '</tbody></table>';
+
+  return dompurify.sanitize(tooltip);
+}
+
+export function generateCompareTooltipContent(d, timeFormatter, valueFormatter) {
+  let tooltip = '';
+  tooltip +=
+    "<table><thead><tr><td colspan='3'>" +
+    `<strong class='x-value'>${d.value}</strong>` +
     '</td></tr></thead><tbody>';
   d.series.sort((a, b) => (a.value >= b.value ? -1 : 1));
   d.series.forEach(series => {
