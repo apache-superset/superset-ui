@@ -642,10 +642,10 @@ function nvd3Vis(element, props) {
         chart.interactiveLayer.tooltip.contentGenerator(d =>
           generateRichLineTooltipContent(d, smartDateVerboseFormatter, yAxisFormatter),
         );
-      } else if (areaStackedStyle !== 'expand') {
+      } else {
         // area chart
         chart.interactiveLayer.tooltip.contentGenerator(d =>
-          generateAreaChartTooltipContent(d, smartDateVerboseFormatter, yAxisFormatter),
+          generateAreaChartTooltipContent(d, smartDateVerboseFormatter, yAxisFormatter, chart),
         );
       }
     }

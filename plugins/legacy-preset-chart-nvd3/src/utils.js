@@ -159,8 +159,13 @@ export function generateCompareTooltipContent(d, valueFormatter) {
   return dompurify.sanitize(tooltip);
 }
 
-export function generateAreaChartTooltipContent(d, timeFormatter, valueFormatter) {
-  const total = d.series[d.series.length - 1].value;
+export function generateAreaChartTooltipContent(d, timeFormatter, valueFormatter, chart) {
+  const total =
+    chart.style() === 'expand'
+      ? // expand mode does not include total row
+        d3.sum(d.series, s => s.value)
+      : // other modes include total row at the end
+        d.series[d.series.length - 1].value;
   let tooltip = '';
   tooltip +=
     "<table><thead><tr><td colspan='4'>" +
