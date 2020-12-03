@@ -106,10 +106,12 @@ function getFormattedKey(seriesKey, shouldDompurify) {
 // Custom sorted tooltip
 // use a verbose formatter for times
 export function generateRichLineTooltipContent(d, timeFormatter, valueFormatter) {
+  const time = timeFormatter(d.value);
+
   let tooltip = '';
   tooltip +=
     "<table><thead><tr><td colspan='3'>" +
-    `<strong class='x-value'>${timeFormatter(d.value)}</strong>` +
+    `<strong class='x-value'>${time === '0NaN' ? d.value : time}</strong>` +
     '</td></tr></thead><tbody>';
   d.series.sort((a, b) => (a.value >= b.value ? -1 : 1));
   d.series.forEach(series => {

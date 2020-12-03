@@ -649,6 +649,12 @@ function nvd3Vis(element, props) {
       }
     }
 
+    if (isVizTypes(['compare'])) {
+      chart.interactiveLayer.tooltip.contentGenerator(d =>
+        generateRichLineTooltipContent(d, smartDateVerboseFormatter, yAxisFormatter),
+      );
+    }
+
     if (isVizTypes(['dual_line', 'line_multi'])) {
       const yAxisFormatter1 = getNumberFormatter(yAxisFormat);
       const yAxisFormatter2 = getNumberFormatter(yAxis2Format);
