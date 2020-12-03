@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       CODECOV_TOKEN: '${{ secrets.CODECOV_TOKEN }}'
-      CHROMATIC_PROJECT_TOKEN: '${{ secrets.CHROMATIC_PROJECT_TOKEN }}'
     strategy:
       matrix:
         node-version: [12.x]
@@ -58,6 +57,5 @@ jobs:
       - name: Deploy to Chromatic
         uses: chromaui/action@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # 👇 Chromatic projectToken, refer to the manage page to obtain it.
+          token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
