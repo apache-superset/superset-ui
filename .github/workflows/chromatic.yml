@@ -1,4 +1,4 @@
-name: build-and-test-workflow
+name: 'Chromatic Deployment'
 
 on:
   push:
@@ -55,10 +55,11 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Build packages
         run: yarn build
-      - name: Run ESLint
-        run: yarn lint --quiet
-      - name: Run unit tests
-        run: yarn test
-
-      - name: Report code coverage
-        run: curl -s https://codecov.io/bash | bash
+      - name: Deploy to Chromatic
+        uses: chromaui/action@v1
+        # Chromatic GitHub Action options
+        with:
+          working-directory: packages/superset-ui-demo
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # 👇 Chromatic projectToken, refer to the manage page to obtain it.
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
