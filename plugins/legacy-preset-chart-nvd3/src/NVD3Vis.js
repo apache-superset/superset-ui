@@ -652,7 +652,7 @@ function nvd3Vis(element, props) {
 
     if (isVizTypes(['compare'])) {
       chart.interactiveLayer.tooltip.contentGenerator(d =>
-        generateCompareTooltipContent(d, smartDateVerboseFormatter, yAxisFormatter),
+        generateCompareTooltipContent(d, yAxisFormatter),
       );
     }
 

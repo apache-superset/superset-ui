@@ -132,7 +132,7 @@ export function generateRichLineTooltipContent(d, timeFormatter, valueFormatter)
   return dompurify.sanitize(tooltip);
 }
 
-export function generateCompareTooltipContent(d, timeFormatter, valueFormatter) {
+export function generateCompareTooltipContent(d, valueFormatter) {
   let tooltip = '';
   tooltip +=
     "<table><thead><tr><td colspan='3'>" +
