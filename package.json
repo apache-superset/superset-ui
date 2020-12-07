@@ -54,6 +54,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@airbnb/config-babel": "^3.1.0",
+    "@airbnb/config-jest": "^3.0.2",
     "@airbnb/config-webpack": "^3.3.1",
     "@babel/cli": "^7.11.5",
     "@babel/compat-data": "^7.9.6",
