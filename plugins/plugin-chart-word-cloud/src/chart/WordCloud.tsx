@@ -78,6 +78,7 @@ class WordCloud extends React.PureComponent<FullWordCloudProps, WordCloudState> 
     this.state = {
       words: [],
     };
+    this.setWords = this.setWords.bind(this);
   }
 
   componentDidMount() {
