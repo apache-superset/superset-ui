@@ -78,6 +78,7 @@ export interface DatasourceMeta {
 export interface ControlPanelState {
   form_data: QueryFormData;
   datasource: DatasourceMeta | null;
+  dataset_health_check_message?: string | null;
   controls: ControlStateMapping;
 }
 

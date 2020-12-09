@@ -168,9 +168,10 @@ const datasourceControl: SharedControlConfig<'DatasourceControl'> = {
   label: t('Datasource'),
   default: null,
   description: null,
-  mapStateToProps: ({ datasource }) => {
+  mapStateToProps: ({ datasource, dataset_health_check_message }) => {
     return {
       datasource,
+      healthCheckMessage: dataset_health_check_message,
     };
   },
 };
