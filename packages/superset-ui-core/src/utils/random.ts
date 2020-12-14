@@ -18,7 +18,7 @@
  */
 import seedrandom from 'seedrandom';
 
-let random = seedrandom();
+let random = seedrandom('superset-ui');
 
 export function seed(seed: string) {
   random = seedrandom(seed);
