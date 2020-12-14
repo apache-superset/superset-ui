@@ -30,7 +30,6 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
     granularity,
     url_params = {},
     queryFields,
-    include_time,
     ...residualFormData
   } = formData;
   const { append_form_data = {}, override_form_data = {} } = extra_form_data;
@@ -38,13 +37,6 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
   const numericRowLimit = Number(row_limit);
   const numericRowOffset = Number(row_offset);
   const { metrics, groupby, columns } = extractQueryFields(residualFormData, queryFields);
-
-  // add columns to groupby, too
-  const groupbySet = new Set(groupby);
-  if (include_time && !groupbySet.has(DTTM_ALIAS)) {
-    groupby.unshift(DTTM_ALIAS);
-    groupbySet.add(DTTM_ALIAS);
-  }
 
   const extras = extractExtras(formData);
   const extrasAndfilters = processFilters({
@@ -62,7 +54,6 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
     annotation_layers,
     groupby,
     columns,
-    is_timeseries: groupbySet.has(DTTM_ALIAS),
     metrics,
     order_desc: typeof order_desc === 'undefined' ? true : order_desc,
     orderby: [],

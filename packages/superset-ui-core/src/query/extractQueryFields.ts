@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { DTTM_ALIAS } from './buildQueryObject';
 import { QueryFields, QueryFieldAliases, FormDataResidual } from './types/QueryFormData';
 
 /**
@@ -61,6 +62,10 @@ export default function extractQueryFields(
       }
     }
   });
+
+  if (formData.include_time && !finalQueryFields.groupby.includes(DTTM_ALIAS)) {
+    finalQueryFields.groupby.unshift(DTTM_ALIAS);
+  }
 
   return finalQueryFields;
 }
