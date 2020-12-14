@@ -16,15 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import seedrandom from 'seedrandom';
 
-let random = seedrandom('superset-ui');
+import { seed, seedRandom } from '../../src';
 
-export function seed(seed: string) {
-  random = seedrandom(seed);
-  return random;
-}
+describe('random', () => {
+  it('seeded random should return the same value', () => {
+    expect(seedRandom()).toEqual(0.7237953289342797);
+  });
 
-export function seedRandom() {
-  return random();
-}
+  it('should allow update seed', () => {
+    const a = seed('abc');
+    const b = seed('abc');
+    expect(a()).toEqual(b());
+  });
+});
