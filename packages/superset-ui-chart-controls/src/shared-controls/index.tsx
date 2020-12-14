@@ -92,7 +92,7 @@ export const D3_TIME_FORMAT_OPTIONS = [
 ];
 
 const timeColumnOption = {
-  verbose_name: 'Time',
+  verbose_name: t('Time'),
   column_name: '__timestamp',
   description: t('A reference to the [Time] configuration, taking granularity into account'),
 };
@@ -126,7 +126,7 @@ const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
     if (state.datasource) {
       const options = state.datasource.columns.filter(c => c.groupby);
       if (includeTime) {
-        options.push(timeColumnOption);
+        options.unshift(timeColumnOption);
       }
       newState.options = options;
     }

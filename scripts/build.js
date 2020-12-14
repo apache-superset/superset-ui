@@ -1,6 +1,7 @@
 #!/bin/env node
+/* eslint-disable no-console */
 /**
- * Build plugins specified by globs
+ * Build packages/plugins filtered by globs
  */
 process.env.PATH = `./node_modules/.bin:${process.env.PATH}`;
 

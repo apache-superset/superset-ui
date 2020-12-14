@@ -1,7 +1,7 @@
 import {
   buildQueryContext,
   convertMetric,
-  QueryFormDataMetric,
+  QueryFormMetric,
   QueryObjectMetric,
 } from '@superset-ui/core';
 import TableFormData from './TableFormData';
@@ -18,7 +18,7 @@ export default function buildQuery(formData: TableFormData) {
       columns = [...formData.all_columns];
       const orderByColumns = formData.order_by_cols || [];
       orderByColumns.forEach(columnOrder => {
-        const parsedColumnOrder: [QueryFormDataMetric, boolean] = JSON.parse(columnOrder);
+        const parsedColumnOrder: [QueryFormMetric, boolean] = JSON.parse(columnOrder);
         orderby.push([convertMetric(parsedColumnOrder[0]), parsedColumnOrder[1]]);
       });
       groupby = [];

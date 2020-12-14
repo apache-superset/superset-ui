@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 import { QueryObject } from './types/Query';
 import { QueryFormData } from './types/QueryFormData';
-import processGroupby from './processGroupby';
 import convertMetric from './convertMetric';
 import processFilters from './processFilters';
 import extractExtras from './extractExtras';
@@ -29,9 +28,10 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
     row_offset,
     limit,
     timeseries_limit_metric,
-    queryFields,
     granularity,
     url_params = {},
+    queryFields,
+    include_time,
     ...residualFormData
   } = formData;
   const { append_form_data = {}, override_form_data = {} } = extra_form_data;
@@ -39,7 +39,12 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
   const numericRowLimit = Number(row_limit);
   const numericRowOffset = Number(row_offset);
   const { metrics, groupby, columns } = extractQueryFields(residualFormData, queryFields);
-  const groupbySet = new Set([...columns, ...groupby]);
+  // add columns to groupby, too
+  const groupbySet = new Set(groupby);
+  if (include_time && !groupbySet.has(DTTM_ALIAS)) {
+    groupby.unshift(DTTM_ALIAS);
+    groupbySet.add(DTTM_ALIAS);
+  }
 
   const extras = extractExtras(formData);
   const extrasAndfilters = processFilters({
@@ -55,7 +60,8 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
     ...extras,
     ...extrasAndfilters,
     annotation_layers,
-    groupby: processGroupby(Array.from(groupbySet)),
+    groupby,
+    columns,
     is_timeseries: groupbySet.has(DTTM_ALIAS),
     metrics: metrics.map(convertMetric),
     order_desc: typeof order_desc === 'undefined' ? true : order_desc,

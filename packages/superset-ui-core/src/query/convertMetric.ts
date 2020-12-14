@@ -1,27 +1,29 @@
-import { QueryFormResidualDataValue } from './types/QueryFormData';
+import { QueryFormMetric } from './types/QueryFormData';
 import { QueryObjectMetric } from './types/Query';
-import { AdhocMetric } from './types/Metric';
+import { AdhocMetric, PredefinedMetric } from './types/Metric';
 
-function getDefaultLabel(metric: AdhocMetric) {
+function getMetricLabel(metric: AdhocMetric | PredefinedMetric) {
+  if (metric.label) {
+    return metric.label;
+  }
+  if ('metric_name' in metric) {
+    return metric.metric_name;
+  }
   if (metric.expressionType === 'SIMPLE') {
     return `${metric.aggregate}(${metric.column.columnName})`;
   }
   return metric.sqlExpression;
 }
 
-export default function convertMetric(metric: QueryFormResidualDataValue): QueryObjectMetric {
-  let formattedMetric;
+export default function convertMetric(metric: QueryFormMetric): QueryObjectMetric {
   if (typeof metric === 'string') {
-    formattedMetric = {
+    return {
       label: metric,
-    };
-  } else {
-    const label = metric.label ?? getDefaultLabel(metric);
-    formattedMetric = {
-      ...metric,
-      label,
+      metric_name: metric,
     };
   }
-
-  return formattedMetric;
+  return {
+    ...metric,
+    label: getMetricLabel(metric),
+  };
 }

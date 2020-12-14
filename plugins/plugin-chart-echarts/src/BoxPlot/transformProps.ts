@@ -22,7 +22,7 @@ import {
   convertMetric,
   DataRecord,
   getNumberFormatter,
-  QueryFormDataMetric,
+  QueryFormMetric,
 } from '@superset-ui/core';
 import { BoxPlotQueryFormData } from './types';
 import { EchartsProps } from '../types';
@@ -43,9 +43,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const numberFormatter = getNumberFormatter(numberFormat);
 
   // TODO: remove cast once metrics is cleaned up in QueryFormData
-  const metrics = (formDataMetrics as QueryFormDataMetric[]).map(
-    metric => convertMetric(metric).label,
-  );
+  const metrics = (formDataMetrics as QueryFormMetric[]).map(metric => convertMetric(metric).label);
 
   const transformedData = data
     .map(datum => {
