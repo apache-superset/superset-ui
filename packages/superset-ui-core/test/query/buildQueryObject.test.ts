@@ -47,7 +47,7 @@ describe('buildQueryObject', () => {
       metric: 'sum__num',
       secondary_metric: 'avg__num',
     });
-    expect(query.metrics).toEqual([{ label: 'sum__num' }, { label: 'avg__num' }]);
+    expect(query.metrics).toEqual(['sum__num', 'avg__num']);
   });
 
   it('should group custom metric control', () => {
@@ -58,7 +58,7 @@ describe('buildQueryObject', () => {
       my_custom_metric_control: 'sum__num',
       queryFields: { my_custom_metric_control: 'metrics' },
     });
-    expect(query.metrics).toEqual([{ label: 'sum__num' }]);
+    expect(query.metrics).toEqual(['sum__num']);
   });
 
   it('should group custom metric control with predefined metrics', () => {
@@ -103,7 +103,7 @@ describe('buildQueryObject', () => {
       viz_type: 'table',
       timeseries_limit_metric: metric,
     });
-    expect(query.timeseries_limit_metric).toEqual({ label: metric });
+    expect(query.timeseries_limit_metric).toEqual(metric);
   });
 
   it('should handle null and non-numeric row_limit and row_offset', () => {

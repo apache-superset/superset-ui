@@ -47,15 +47,18 @@ export default function extractQueryFields(
     groupby: [],
     metrics: [],
   };
+
   Object.entries(formData).forEach(([key, value]) => {
     const normalizedKey = queryFieldAliases[key] || key;
-    if (normalizedKey === 'metrics') {
-      finalQueryFields[normalizedKey] = (finalQueryFields[normalizedKey] || []).concat(value);
-    } else {
-      // currently the groupby and columns field only accept pre-defined columns (string shortcut)
-      finalQueryFields[normalizedKey] = (finalQueryFields[normalizedKey] || [])
-        .concat(value)
-        .filter(x => typeof x === 'string' && !x);
+    if (normalizedKey in finalQueryFields) {
+      if (normalizedKey === 'metrics') {
+        finalQueryFields[normalizedKey] = (finalQueryFields[normalizedKey] || []).concat(value);
+      } else {
+        // currently the groupby and columns field only accept pre-defined columns (string shortcut)
+        finalQueryFields[normalizedKey] = (finalQueryFields[normalizedKey] || [])
+          .concat(value)
+          .filter(x => typeof x === 'string' && x);
+      }
     }
   });
 

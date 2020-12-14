@@ -1,7 +1,8 @@
+import { WordCloudFormData } from '../../src';
 import buildQuery from '../../src/plugin/buildQuery';
 
 describe('WordCloud buildQuery', () => {
-  const formData = {
+  const formData: WordCloudFormData = {
     datasource: '5__table',
     granularity_sqla: 'ds',
     series: 'foo',

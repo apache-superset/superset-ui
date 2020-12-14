@@ -38,6 +38,7 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
   const numericRowLimit = Number(row_limit);
   const numericRowOffset = Number(row_offset);
   const { metrics, groupby, columns } = extractQueryFields(residualFormData, queryFields);
+
   // add columns to groupby, too
   const groupbySet = new Set(groupby);
   if (include_time && !groupbySet.has(DTTM_ALIAS)) {
