@@ -23,6 +23,20 @@ describe('getMetricLabel', () => {
     expect(getMetricLabel('sum__num')).toEqual('sum__num');
   });
 
+  it('should handle predefined metric', () => {
+    expect(
+      getMetricLabel({
+        label: 'abc',
+        metric_name: 'sum__num',
+      }),
+    ).toEqual('abc');
+    expect(
+      getMetricLabel({
+        metric_name: 'sum__num',
+      }),
+    ).toEqual('sum__num');
+  });
+
   it('should handle simple adhoc metrics', () => {
     expect(
       getMetricLabel({
