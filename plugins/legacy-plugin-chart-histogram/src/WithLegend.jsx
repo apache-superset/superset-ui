@@ -120,7 +120,7 @@ class WithLegend extends React.Component {
     const legendContainerStyle = {
       flexWrap: 'wrap',
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: legendDirection,
     };
     return (
       <div className={`with-legend ${className}`} style={style}>
