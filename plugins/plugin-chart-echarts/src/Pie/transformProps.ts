@@ -73,7 +73,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     showLegend = false,
   } = formData as PieChartFormData;
   const metricLabel = getMetricLabel(metric);
-
   const keys = data.map(datum => extractGroupbyLabel({ datum, groupby }));
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const numberFormatter = getNumberFormatter(numberFormat);
