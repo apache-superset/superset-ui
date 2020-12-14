@@ -103,11 +103,12 @@ export interface BaseFormData extends TimeRange, FormDataResidual {
    * Can put "custom" (or any string) in this field in that case.
    */
   viz_type: string;
+  metrics?: QueryFormMetric[];
   /** list of columns to group by */
-  groupby?: string[];
+  groupby?: QueryFormColumn[];
   where?: string;
-  columns?: string[];
-  all_columns?: string[];
+  columns?: QueryFormColumn[];
+  all_columns?: QueryFormColumn[];
   /** list of filters */
   adhoc_filters?: AdhocFilter[];
   extra_filters?: QueryFormExtraFilter[];

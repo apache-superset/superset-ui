@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { buildQueryContext, QueryFormData } from '@superset-ui/core';
+import { buildQueryContext, getMetricLabel, QueryFormData } from '@superset-ui/core';
 
 export default function buildQuery(formData: QueryFormData) {
   return buildQueryContext(formData, baseQueryObject => {
-    const baseQueryMetrics = baseQueryObject?.metrics ? baseQueryObject.metrics : [];
+    const { metrics: baseQueryMetrics } = baseQueryObject;
 
     return [
       {
@@ -35,7 +35,7 @@ export default function buildQuery(formData: QueryFormData) {
               columns: formData.groupby,
               // Create 'dummy' sum aggregates to assign cell values in pivot table
               aggregates: Object.fromEntries(
-                baseQueryMetrics.map(metric => [metric.label, { operator: 'sum' }]),
+                baseQueryMetrics.map(metric => [getMetricLabel(metric), { operator: 'sum' }]),
               ),
             },
           },

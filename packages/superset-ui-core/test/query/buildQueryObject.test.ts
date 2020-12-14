@@ -70,7 +70,7 @@ describe('buildQueryObject', () => {
       my_custom_metric_control: 'avg__num',
       queryFields: { my_custom_metric_control: 'metrics' },
     });
-    expect(query.metrics).toEqual([{ label: 'sum__num' }, { label: 'avg__num' }]);
+    expect(query.metrics).toEqual(['sum__num', 'avg__num']);
   });
 
   it('should build limit', () => {

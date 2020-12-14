@@ -18,11 +18,11 @@
  * under the License.
  */
 import { DatasourceType } from './Datasource';
-import { AdhocMetric, PredefinedMetric } from './Metric';
 import { BinaryOperator, SetOperator, UnaryOperator } from './Operator';
 import { AppliedTimeExtras, TimeRange } from './Time';
 import { AnnotationLayer } from './AnnotationLayer';
-import { QueryFields } from './QueryFormData';
+import { QueryFields, QueryFormMetric } from './QueryFormData';
+import { Maybe } from '../../types';
 
 export type QueryObjectFilterClause = {
   col: string;
@@ -39,8 +39,6 @@ export type QueryObjectFilterClause = {
       op: UnaryOperator;
     }
 );
-
-export type QueryObjectMetric = (AdhocMetric | PredefinedMetric) & { label: string };
 
 export type QueryObjectExtras = Partial<{
   /** HAVING condition for Druid */
@@ -61,10 +59,11 @@ export type ResidualQueryObjectData = {
 };
 
 /**
- * The processed query object.
+ * Query object directly compatible with the new chart data API.
+ * A slightly more strict version of query form data.
  */
 export interface QueryObject extends QueryFields, TimeRange, ResidualQueryObjectData {
-  metrics: QueryObjectMetric[];
+  metrics: QueryFormMetric[];
 
   annotation_layers?: AnnotationLayer[];
   /** Time filters that have been applied to the query object */
@@ -91,9 +90,9 @@ export interface QueryObject extends QueryFields, TimeRange, ResidualQueryObject
   /** Maximum number of series */
   timeseries_limit?: number;
   /** The metric used to sort the returned result. */
-  timeseries_limit_metric?: QueryObjectMetric | null;
+  timeseries_limit_metric?: Maybe<QueryFormMetric>;
 
-  orderby?: Array<[QueryObjectMetric, boolean]>;
+  orderby?: Array<[QueryFormMetric, boolean]>;
   /** Direction to ordered by */
   order_desc?: boolean;
 

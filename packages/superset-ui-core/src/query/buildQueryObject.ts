@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 import { QueryObject } from './types/Query';
 import { QueryFormData } from './types/QueryFormData';
-import convertMetric from './convertMetric';
 import processFilters from './processFilters';
 import extractExtras from './extractExtras';
 import extractQueryFields from './extractQueryFields';
@@ -63,15 +62,13 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
     groupby,
     columns,
     is_timeseries: groupbySet.has(DTTM_ALIAS),
-    metrics: metrics.map(convertMetric),
+    metrics,
     order_desc: typeof order_desc === 'undefined' ? true : order_desc,
     orderby: [],
     row_limit: row_limit == null || Number.isNaN(numericRowLimit) ? undefined : numericRowLimit,
     row_offset: row_offset == null || Number.isNaN(numericRowOffset) ? undefined : numericRowOffset,
     timeseries_limit: limit ? Number(limit) : 0,
-    timeseries_limit_metric: timeseries_limit_metric
-      ? convertMetric(timeseries_limit_metric)
-      : null,
+    timeseries_limit_metric,
     url_params,
   };
   // append and override extra form data used by native filters
