@@ -41,6 +41,7 @@ export default function extractQueryFields(
     y: 'metrics',
     size: 'metrics',
     all_columns: 'columns',
+    series: 'groupby',
     ...aliases,
   };
   const finalQueryFields: QueryFields = {

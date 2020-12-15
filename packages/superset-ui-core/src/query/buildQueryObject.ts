@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { QueryObject } from './types/Query';
-import { QueryFormData } from './types/QueryFormData';
+import { QueryFieldAliases, QueryFormData } from './types/QueryFormData';
 import processFilters from './processFilters';
 import extractExtras from './extractExtras';
 import extractQueryFields from './extractQueryFields';
@@ -15,7 +15,10 @@ export const DTTM_ALIAS = '__timestamp';
  * Note the type of the formData argument passed in here is the type of the formData for a
  * specific viz, which is a subtype of the generic formData shared among all viz types.
  */
-export default function buildQueryObject<T extends QueryFormData>(formData: T): QueryObject {
+export default function buildQueryObject<T extends QueryFormData>(
+  formData: T,
+  queryFields?: QueryFieldAliases,
+): QueryObject {
   const {
     annotation_layers = [],
     extra_form_data = {},
@@ -29,7 +32,6 @@ export default function buildQueryObject<T extends QueryFormData>(formData: T): 
     timeseries_limit_metric,
     granularity,
     url_params = {},
-    queryFields,
     ...residualFormData
   } = formData;
   const { append_form_data = {}, override_form_data = {} } = extra_form_data;
