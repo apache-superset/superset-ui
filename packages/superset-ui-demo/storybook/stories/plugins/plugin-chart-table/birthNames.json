@@ -200,6 +200,10 @@
   },
   "initialValues": {},
   "formData": {
+    "queryFields": {
+      "groupby": "groupby",
+      "metrics": "metrics"
+    },
     "datasource": "3__table",
     "viz_type": "table",
     "slice_id": 129,
@@ -332,6 +336,10 @@
     "cache_timeout": 86400,
     "errors": [],
     "form_data": {
+      "queryFields": {
+        "groupby": "groupby",
+        "metrics": "metrics"
+      },
       "datasource": "3__table",
       "viz_type": "table",
       "slice_id": 129,

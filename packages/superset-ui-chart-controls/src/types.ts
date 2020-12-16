@@ -18,7 +18,7 @@
  * under the License.
  */
 import React, { ReactNode, ReactText, ReactElement } from 'react';
-import { QueryFormData, DatasourceType, QueryField } from '@superset-ui/core';
+import { QueryFormData, DatasourceType } from '@superset-ui/core';
 import sharedControls from './shared-controls';
 import sharedControlComponents from './shared-controls/components';
 
@@ -197,11 +197,6 @@ export interface BaseControlConfig<
   validators?: ControlValueValidator<T, O, V>[];
   warning?: ReactNode;
   error?: ReactNode;
-  /**
-   * The field type of a data-related control value, one of
-   * `columns | groupby | metrics`.
-   */
-  queryField?: QueryField;
   // override control panel state props
   mapStateToProps?: (state: ControlPanelState, control: this) => ExtraControlProps;
   visibility?: (props: ControlPanelsContainerProps) => boolean;

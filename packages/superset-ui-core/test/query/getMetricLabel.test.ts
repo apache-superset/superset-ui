@@ -43,21 +43,21 @@ describe('getMetricLabel', () => {
         expressionType: 'SIMPLE',
         aggregate: 'AVG',
         column: {
-          columnName: 'sum_girls',
+          columnName: 'num_girls',
           id: 5,
           type: ColumnType.BIGINT,
         },
       }),
-    ).toEqual('AVG(sum_girls)');
+    ).toEqual('AVG(num_girls)');
   });
 
   it('should handle SQL adhoc metrics', () => {
     expect(
       getMetricLabel({
         expressionType: 'SQL',
-        sqlExpression: 'COUNT(sum_girls)',
+        sqlExpression: 'COUNT(num_girls)',
       }),
-    ).toEqual('COUNT(sum_girls)');
+    ).toEqual('COUNT(num_girls)');
   });
 
   it('should handle adhoc metrics with custom labels', () => {
@@ -65,7 +65,7 @@ describe('getMetricLabel', () => {
       getMetricLabel({
         expressionType: 'SQL',
         label: 'foo',
-        sqlExpression: 'COUNT(sum_girls)',
+        sqlExpression: 'COUNT(num_girls)',
       }),
     ).toEqual('foo');
   });

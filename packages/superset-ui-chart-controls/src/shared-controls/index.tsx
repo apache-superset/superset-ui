@@ -105,7 +105,6 @@ type Control = {
 const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
   type: 'SelectControl',
   label: t('Group by'),
-  queryField: 'groupby',
   multi: true,
   freeForm: true,
   clearable: true,
@@ -137,7 +136,6 @@ const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
 
 const metrics: SharedControlConfig<'MetricsControl'> = {
   type: 'MetricsControl',
-  queryField: 'metrics',
   multi: true,
   label: t('Metrics'),
   validators: [validateNonEmpty],
