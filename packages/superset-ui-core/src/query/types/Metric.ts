@@ -41,12 +41,9 @@ export interface AdhocMetricSQL extends AdhocMetricBase {
 export type AdhocMetric = AdhocMetricSimple | AdhocMetricSQL;
 
 /**
- * Select a predefined metric and assign a custom label.
+ * Select a predefined metric by its `metric_name`.
  */
-export interface PredefinedMetric {
-  label?: string;
-  metric_name: string;
-}
+export type PredefinedMetric = string;
 
 /**
  * Metric definition stored in datasource metadata.

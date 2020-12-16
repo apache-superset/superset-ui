@@ -28,7 +28,7 @@ import { AnnotationLayer } from './AnnotationLayer';
 import { QueryObject } from './Query';
 import { TimeRange, TimeRangeEndpoints } from './Time';
 
-export type QueryFormMetric = string | PredefinedMetric | AdhocMetric;
+export type QueryFormMetric = PredefinedMetric | AdhocMetric;
 
 // Column selects (used as dimensions in groupby and raw query mode) only
 // support existing columns for now.

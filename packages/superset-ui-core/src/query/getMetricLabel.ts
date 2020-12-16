@@ -7,9 +7,6 @@ export default function getMetricLabel(metric: QueryFormMetric) {
   if (metric.label) {
     return metric.label;
   }
-  if ('metric_name' in metric) {
-    return metric.metric_name;
-  }
   if (metric.expressionType === 'SIMPLE') {
     return `${metric.aggregate}(${metric.column.columnName})`;
   }
