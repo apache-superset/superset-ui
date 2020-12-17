@@ -19,22 +19,8 @@
 import { ColumnType, getMetricLabel } from '@superset-ui/core/src/query';
 
 describe('getMetricLabel', () => {
-  it('should handle string metric name', () => {
+  it('should handle predefined metric name', () => {
     expect(getMetricLabel('sum__num')).toEqual('sum__num');
-  });
-
-  it('should handle predefined metric', () => {
-    expect(
-      getMetricLabel({
-        label: 'abc',
-        metric_name: 'sum__num',
-      }),
-    ).toEqual('abc');
-    expect(
-      getMetricLabel({
-        metric_name: 'sum__num',
-      }),
-    ).toEqual('sum__num');
   });
 
   it('should handle simple adhoc metrics', () => {
@@ -43,21 +29,21 @@ describe('getMetricLabel', () => {
         expressionType: 'SIMPLE',
         aggregate: 'AVG',
         column: {
-          columnName: 'num_girls',
+          columnName: 'sum_girls',
           id: 5,
           type: ColumnType.BIGINT,
         },
       }),
-    ).toEqual('AVG(num_girls)');
+    ).toEqual('AVG(sum_girls)');
   });
 
   it('should handle SQL adhoc metrics', () => {
     expect(
       getMetricLabel({
         expressionType: 'SQL',
-        sqlExpression: 'COUNT(num_girls)',
+        sqlExpression: 'COUNT(sum_girls)',
       }),
-    ).toEqual('COUNT(num_girls)');
+    ).toEqual('COUNT(sum_girls)');
   });
 
   it('should handle adhoc metrics with custom labels', () => {
@@ -65,7 +51,7 @@ describe('getMetricLabel', () => {
       getMetricLabel({
         expressionType: 'SQL',
         label: 'foo',
-        sqlExpression: 'COUNT(num_girls)',
+        sqlExpression: 'COUNT(sum_girls)',
       }),
     ).toEqual('foo');
   });
