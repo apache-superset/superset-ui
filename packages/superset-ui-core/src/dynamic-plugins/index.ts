@@ -17,4 +17,4 @@
  * under the License.
  */
 
-export { defineSharedModule, defineSharedModules } from './shared-modules';
+export * from './shared-modules';

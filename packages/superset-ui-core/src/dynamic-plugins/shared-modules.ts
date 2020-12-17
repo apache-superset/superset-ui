@@ -33,6 +33,8 @@ declare const window: Window & typeof globalThis & ModuleReferencer;
 
 const modulePromises: { [key: string]: Promise<Module> } = {};
 
+const withNamespace = (name: string) => `__superset__/${name}`;
+
 /**
  * Dependency management using global variables, because for the life of me
  * I can't figure out how to hook into UMD from a dynamically imported package.
@@ -49,13 +51,14 @@ const modulePromises: { [key: string]: Promise<Module> } = {};
  */
 export async function defineSharedModule(name: string, fetchModule: () => Promise<Module>) {
   // this field on window is used by dynamic plugins to reference the module
-  const moduleKey = `__superset__/${name}`;
+  const moduleKey = withNamespace(name);
 
   if (!window[moduleKey] && !modulePromises[name]) {
     // if the module has not been loaded, load it
     const modulePromise = fetchModule();
     modulePromises[name] = modulePromise;
     // wait for the module to load, and attach the result to window
+    // so that it can be referenced by plugins
     window[moduleKey] = await modulePromise;
   }
 
@@ -78,4 +81,12 @@ export async function defineSharedModules(moduleMap: { [key: string]: () => Prom
       return defineSharedModule(name, fetchModule);
     }),
   );
+}
+
+// only exposed for tests
+export function reset() {
+  Object.keys(modulePromises).forEach(key => {
+    delete window[withNamespace(key)];
+    delete modulePromises[key];
+  });
 }
