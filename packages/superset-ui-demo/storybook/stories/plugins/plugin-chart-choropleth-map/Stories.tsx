@@ -1,10 +1,7 @@
 import React from 'react';
 import { SuperChart } from '@superset-ui/core';
 import { withKnobs, select } from '@storybook/addon-knobs';
-import {
-  maps,
-  ChoroplethMapChartPlugin,
-} from '../../../../../../plugins/plugin-chart-choropleth-map/src';
+import { maps, ChoroplethMapChartPlugin } from '@superset-ui/plugin-chart-choropleth-map';
 import useFakeMapData from './useFakeMapData';
 
 new ChoroplethMapChartPlugin().configure({ key: 'choropleth-map' }).register();
