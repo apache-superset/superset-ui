@@ -35,7 +35,7 @@ describe('BoxPlot tranformProps', () => {
     formData,
     width: 800,
     height: 600,
-    queryData: {
+    queriesData: {
       data: [
         {
           type: 'organic',

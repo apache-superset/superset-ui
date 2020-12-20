@@ -31,7 +31,7 @@ describe('Pie tranformProps', () => {
     formData,
     width: 800,
     height: 600,
-    queryData: {
+    queriesData: {
       data: [
         { foo: 'Sylvester', bar: 1, sum__num: 10 },
         { foo: 'Arnold', bar: 2, sum__num: 2.5 },
