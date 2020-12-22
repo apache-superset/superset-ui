@@ -20,7 +20,7 @@ import {
   NumberFormatter,
   TimeFormatter,
   TimeGranularity,
-  QueryFormDataMetric,
+  QueryFormMetric,
   ChartProps,
   DataRecord,
   DataRecordValue,
@@ -55,8 +55,10 @@ export interface TableChartFormData {
   colorPn?: boolean;
   includeSearch?: boolean;
   pageLength?: string | number | null; // null means auto-paginate
-  metrics?: QueryFormDataMetric[] | null;
-  percentMetrics?: QueryFormDataMetric[] | null;
+  metrics?: QueryFormMetric[] | null;
+  percentMetrics?: QueryFormMetric[] | null;
+  groupby?: string[];
+  allColumns?: string[];
   orderDesc?: boolean;
   showCellBars?: boolean;
   tableTimestampFormat?: string;
