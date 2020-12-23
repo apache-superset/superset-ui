@@ -47,7 +47,7 @@ export interface ChartPropsConfig {
   height?: number;
   /** Programmatic overrides such as event handlers, renderers */
   hooks?: Hooks;
-  /** Formerly called "payload" */
+  /** The data returned for all queries objects in the request */
   queriesData?: QueryData[];
   /** Chart width */
   width?: number;
