@@ -199,7 +199,7 @@ describe('SuperChart', () => {
   });
 
   describe('supports NoResultsComponent', () => {
-    it('renders NoResultsComponent when queryData is missing', () => {
+    it('renders NoResultsComponent when queriesData is missing', () => {
       const wrapper = mount(<SuperChart chartType={ChartKeys.DILIGENT} width="200" height="200" />);
 
       expect(wrapper.find(NoResultsComponent)).toHaveLength(1);
