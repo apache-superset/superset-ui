@@ -36,7 +36,7 @@ const $ = window.$ || dt.$;
 
 const propTypes = {
   data: PropTypes.shape({
-    // TODO: replace this with raw data in SIP-69
+    // TODO: replace this with raw data in SIP-6
     html: PropTypes.string,
     columns: PropTypes.arrayOf(
       PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
