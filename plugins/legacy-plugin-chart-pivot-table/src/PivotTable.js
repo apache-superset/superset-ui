@@ -20,7 +20,6 @@
 import dt from 'datatables.net-bs';
 import PropTypes from 'prop-types';
 import {
-  formatNumber,
   getTimeFormatter,
   getTimeFormatterForGranularity,
   smartDateFormatter,
@@ -94,9 +93,8 @@ function PivotTable(element, props) {
     $(this)
       .find('td')
       .each(function eachTd(index) {
-        //metric = cols[index];
         const tdText = $(this)[0].textContent;
-        var { textContent, attr } = cellFormat(
+        const { textContent, attr } = cellFormat(
           index,
           cols,
           tdText,
