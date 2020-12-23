@@ -73,7 +73,7 @@ describe('SuperChart', () => {
       const wrapper = mount(
         <SuperChart
           chartType={ChartKeys.BUGGY}
-          queryData={DEFAULT_QUERY_DATA}
+          queriesData={[DEFAULT_QUERY_DATA]}
           width="200"
           height="200"
         />,
@@ -91,7 +91,7 @@ describe('SuperChart', () => {
       const wrapper = mount(
         <SuperChart
           chartType={ChartKeys.BUGGY}
-          queryData={DEFAULT_QUERY_DATA}
+          queriesData={[DEFAULT_QUERY_DATA]}
           width="200"
           height="200"
           FallbackComponent={CustomFallbackComponent}
@@ -109,7 +109,7 @@ describe('SuperChart', () => {
       mount(
         <SuperChart
           chartType={ChartKeys.BUGGY}
-          queryData={DEFAULT_QUERY_DATA}
+          queriesData={[DEFAULT_QUERY_DATA]}
           width="200"
           height="200"
           onErrorBoundary={handleError}
@@ -129,7 +129,7 @@ describe('SuperChart', () => {
           <SuperChart
             disableErrorBoundary
             chartType={ChartKeys.BUGGY}
-            queryData={DEFAULT_QUERY_DATA}
+            queriesData={[DEFAULT_QUERY_DATA]}
             width="200"
             height="200"
             onErrorBoundary={inactiveErrorHandler}
@@ -148,7 +148,7 @@ describe('SuperChart', () => {
     const wrapper = mount(
       <SuperChart
         chartType={ChartKeys.DILIGENT}
-        queryData={DEFAULT_QUERY_DATA}
+        queriesData={[DEFAULT_QUERY_DATA]}
         width={101}
         height={118}
         formData={{ abc: 1 }}
@@ -184,7 +184,6 @@ describe('SuperChart', () => {
     const wrapper = mount(
       <SuperChart
         chartType={ChartKeys.DILIGENT}
-        queryData={DEFAULT_QUERIES_DATA[0]}
         queriesData={DEFAULT_QUERIES_DATA}
         width={101}
         height={118}
@@ -206,51 +205,11 @@ describe('SuperChart', () => {
       expect(wrapper.find(NoResultsComponent)).toHaveLength(1);
     });
 
-    it('renders NoResultsComponent when queryData data is null', () => {
-      const wrapper = mount(
-        <SuperChart
-          chartType={ChartKeys.DILIGENT}
-          queryData={{ data: null }}
-          width="200"
-          height="200"
-        />,
-      );
-
-      expect(wrapper.find(NoResultsComponent)).toHaveLength(1);
-    });
-
     it('renders NoResultsComponent when queriesData data is null', () => {
       const wrapper = mount(
         <SuperChart
           chartType={ChartKeys.DILIGENT}
           queriesData={[{ data: null }]}
-          width="200"
-          height="200"
-        />,
-      );
-
-      expect(wrapper.find(NoResultsComponent)).toHaveLength(1);
-    });
-
-    it('renders NoResultsComponent when queryData data is empty', () => {
-      const wrapper = mount(
-        <SuperChart
-          chartType={ChartKeys.DILIGENT}
-          queryData={{ data: [] }}
-          width="200"
-          height="200"
-        />,
-      );
-
-      expect(wrapper.find(NoResultsComponent)).toHaveLength(1);
-    });
-
-    it('renders NoResultsComponent when queryData and queriesData data is empty (backward compatibility)', () => {
-      const wrapper = mount(
-        <SuperChart
-          chartType={ChartKeys.DILIGENT}
-          queryData={{ data: [] }}
-          queriesData={[{ data: [] }]}
           width="200"
           height="200"
         />,
@@ -265,7 +224,7 @@ describe('SuperChart', () => {
       const wrapper = mount(
         <SuperChart
           chartType={ChartKeys.DILIGENT}
-          queryData={DEFAULT_QUERY_DATA}
+          queriesData={[DEFAULT_QUERY_DATA]}
           width={100}
           height={100}
         />,
@@ -281,7 +240,7 @@ describe('SuperChart', () => {
       const wrapper = mount(
         <SuperChart
           chartType={ChartKeys.DILIGENT}
-          queryData={DEFAULT_QUERY_DATA}
+          queriesData={[DEFAULT_QUERY_DATA]}
           debounceTime={1}
           width="100%"
           height="100%"
@@ -299,7 +258,7 @@ describe('SuperChart', () => {
       const wrapper = mount(
         <SuperChart
           chartType={ChartKeys.DILIGENT}
-          queryData={DEFAULT_QUERY_DATA}
+          queriesData={[DEFAULT_QUERY_DATA]}
           debounceTime={1}
           width="50%"
           height="125"
@@ -320,7 +279,7 @@ describe('SuperChart', () => {
       const wrapper = mount(
         <SuperChart
           chartType={ChartKeys.DILIGENT}
-          queryData={DEFAULT_QUERY_DATA}
+          queriesData={[DEFAULT_QUERY_DATA]}
           debounceTime={1}
           width="50"
           height="25%"
@@ -341,7 +300,7 @@ describe('SuperChart', () => {
       const wrapper = mount(
         <SuperChart
           chartType={ChartKeys.DILIGENT}
-          queryData={DEFAULT_QUERY_DATA}
+          queriesData={[DEFAULT_QUERY_DATA]}
           debounceTime={1}
         />,
       );
@@ -371,7 +330,7 @@ describe('SuperChart', () => {
       const wrapper = mount(
         <SuperChart
           chartType={ChartKeys.DILIGENT}
-          queryData={DEFAULT_QUERY_DATA}
+          queriesData={[DEFAULT_QUERY_DATA]}
           width={100}
           height={100}
           Wrapper={MyWrapper}
@@ -391,7 +350,7 @@ describe('SuperChart', () => {
       const wrapper = mount(
         <SuperChart
           chartType={ChartKeys.DILIGENT}
-          queryData={DEFAULT_QUERY_DATA}
+          queriesData={[DEFAULT_QUERY_DATA]}
           debounceTime={1}
           width="100%"
           height="100%"
