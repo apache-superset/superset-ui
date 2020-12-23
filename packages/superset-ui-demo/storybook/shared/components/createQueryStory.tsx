@@ -48,11 +48,11 @@ export default function createQueryStory({
                         formData={payload.formData}
                         // @TODO fix typing
                         // all vis's now expect objects but api/v1/ returns an array
-                        queryData={
+                        queriesData={[
                           Array.isArray(payload.queryData)
                             ? payload.queryData[0]
-                            : payload.queryData
-                        }
+                            : payload.queryData,
+                        ]}
                       />
                       <br />
                       <Expandable expandableWhat="payload">

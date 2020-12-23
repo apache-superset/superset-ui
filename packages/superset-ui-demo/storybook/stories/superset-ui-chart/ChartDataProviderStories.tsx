@@ -75,9 +75,9 @@ export const dataProvider = () => {
                       height={Number(height)}
                       // @TODO fix typing
                       // all vis's now expect objects but api/v1/ returns an array
-                      queryData={
-                        Array.isArray(payload.queryData) ? payload.queryData[0] : payload.queryData
-                      }
+                      queriesData={[
+                        Array.isArray(payload.queryData) ? payload.queryData[0] : payload.queryData,
+                      ]}
                       width={Number(width)}
                     />
                     <br />
