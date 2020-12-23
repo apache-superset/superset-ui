@@ -64,7 +64,7 @@ export const basicWithTrendline = () => (
     chartType="big-number"
     width={400}
     height={400}
-    queriesyData={[{ data: testData }]}
+    queriesData={[{ data: testData }]}
     formData={formData}
   />
 );
