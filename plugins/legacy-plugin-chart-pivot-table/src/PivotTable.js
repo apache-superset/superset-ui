@@ -90,7 +90,7 @@ function PivotTable(element, props) {
     $(this)[0].textContent = cellValue;
   });
 
-  $container.find('tbody tr').each(function eachRo() {
+  $container.find('tbody tr').each(function eachRow() {
     $(this)
       .find('td')
       .each(function eachTd(index) {
