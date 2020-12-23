@@ -1,6 +1,6 @@
 import { formatNumber } from '@superset-ui/core';
 
-function eachRow(i, cols, tdText, columnFormats, numberFormat, dateRegex, dateFormatter) {
+function cellFormat(i, cols, tdText, columnFormats, numberFormat, dateRegex, dateFormatter) {
   const metric = cols[i];
   const format = columnFormats[metric] || numberFormat || '.3s';
   const parsedValue = parseFloat(tdText);
@@ -23,7 +23,7 @@ function eachRow(i, cols, tdText, columnFormats, numberFormat, dateRegex, dateFo
   return { textContent: textContent, attr: attr };
 }
 
-function replace(text, verboseMap, dateRegex, dateFormatter) {
+function cellDateFormat(text, verboseMap, dateRegex, dateFormatter) {
   const regexMatch = dateRegex.exec(text);
   let cellValue;
   if (regexMatch) {
@@ -35,4 +35,4 @@ function replace(text, verboseMap, dateRegex, dateFormatter) {
   return cellValue;
 }
 
-export { eachRow, replace };
+export { cellFormat, cellDateFormat };

@@ -1,5 +1,5 @@
 import { getTimeFormatter, getTimeFormatterForGranularity } from '@superset-ui/core';
-import { eachRow, replace } from '../src/utils/formatCells';
+import { cellFormat } from '../src/utils/formatCells';
 
 describe('pivot table plugin format cells', () => {
   let i = 0;
@@ -11,7 +11,7 @@ describe('pivot table plugin format cells', () => {
   let dateFormatter = getTimeFormatterForGranularity('P1D');
 
   it('render number', () => {
-    const { textContent, attr } = eachRow(
+    const { textContent, attr } = cellFormat(
       i,
       cols,
       tdText,
@@ -27,7 +27,7 @@ describe('pivot table plugin format cells', () => {
   it('render date', () => {
     tdText = '__timestamp:-126230400000.0';
 
-    const { textContent, attr } = eachRow(
+    const { textContent, attr } = cellFormat(
       i,
       cols,
       tdText,
@@ -42,7 +42,7 @@ describe('pivot table plugin format cells', () => {
   it('render string', () => {
     tdText = 'some-text';
 
-    const { textContent, attr } = eachRow(
+    const { textContent, attr } = cellFormat(
       i,
       cols,
       tdText,
