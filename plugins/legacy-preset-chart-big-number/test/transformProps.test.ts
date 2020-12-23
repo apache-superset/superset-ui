@@ -63,10 +63,12 @@ function generateProps(
       ...formData,
       ...extraFormData,
     },
-    queriesData: {
-      data,
-      ...extraQueryData,
-    },
+    queriesData: [
+      {
+        data,
+        ...extraQueryData,
+      },
+    ],
   };
 }
 
