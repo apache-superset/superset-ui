@@ -54,4 +54,20 @@ describe('pivot table plugin format cells', () => {
     expect(textContent).toEqual(tdText);
     expect(attr).toEqual(('data-sort', tdText));
   });
+
+  it('render null', () => {
+    tdText = null;
+
+    const { textContent, attr } = cellFormat(
+      i,
+      cols,
+      tdText,
+      columnFormats,
+      numberFormat,
+      dateRegex,
+      dateFormatter,
+    );
+    expect(textContent).toEqual('');
+    expect(attr).toEqual(('data-sort', Number.NEGATIVE_INFINITY));
+  });
 });
