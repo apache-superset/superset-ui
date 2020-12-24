@@ -4,7 +4,8 @@ function cellFormat(i, cols, tdText, columnFormats, numberFormat, dateRegex, dat
   const metric = cols[i];
   const format = columnFormats[metric] || numberFormat || '.3s';
   const parsedValue = parseFloat(tdText);
-  var textContent, attr;
+  let textContent;
+  let attr;
 
   if (Number.isNaN(parsedValue)) {
     const regexMatch = dateRegex.exec(tdText);
@@ -20,7 +21,7 @@ function cellFormat(i, cols, tdText, columnFormats, numberFormat, dateRegex, dat
     textContent = formatNumber(format, parsedValue);
     attr = ('data-sort', parsedValue);
   }
-  return { textContent: textContent, attr: attr };
+  return { textContent, attr };
 }
 
 function cellDateFormat(text, verboseMap, dateRegex, dateFormatter) {
