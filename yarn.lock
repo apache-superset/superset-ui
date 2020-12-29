@@ -16286,9 +16286,9 @@ mathfn@^1.0.0:
   integrity sha512-glxPY9PZqaoGUySN1QOVnKfnWH4Az2PnHEYMRVWUnR1RZpWTLNzdCm7RxEiEJ0SJ7G95ruF6Q2/1s/LuQnhXyg==
 
 mathjs@^8.0.1:
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-8.0.1.tgz#26f3e92a0c83b44c884ce8ffbbf31834e13c21c8"
-  integrity sha512-lvdYNHLNrRORYKRpRs22RMeeAoqVxRePUCjDealCZLfN5io0tJHqQLyNZuJJSXWa8Pl0dkM434D4cIUsbYR1Mg==
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-8.1.0.tgz#d27c420b0836a827dc27694e74e4736170ce28d4"
+  integrity sha512-Nf41Ms01FX+gP1xnJ5lWcGwMY/snFdqbYPe0LU16rXtLwk+UPfllKC6rStOuOqiPKwj5imJtkHO1vI8X4Y2aSw==
   dependencies:
     complex.js "^2.0.11"
     decimal.js "^10.2.1"
