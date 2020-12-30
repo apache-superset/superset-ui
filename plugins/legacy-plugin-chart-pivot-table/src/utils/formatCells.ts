@@ -18,33 +18,44 @@
  */
 import { formatNumber } from '@superset-ui/core';
 
-function formatCellValue(i, cols, tdText, columnFormats, numberFormat, dateRegex, dateFormatter) {
-  const metric = cols[i];
-  const format = columnFormats[metric] || numberFormat || '.3s';
+function formatCellValue(
+  i: number,
+  cols: string[],
+  tdText: string,
+  columnFormats: any,
+  numberFormat: string,
+  dateRegex: RegExp,
+  dateFormatter: any,
+) {
+  const metric: string = cols[i];
+  const format: string = columnFormats[metric] || numberFormat || '.3s';
   const tdTextType = parseFloat(tdText) ? 'number' : typeof tdText;
-  let textContent = tdText;
-  let attr = ('data-sort', tdText);
+  let textContent: string = tdText;
+  let sortAttributeValue: any = tdText;
 
   if (tdTextType === 'number') {
     const parsedValue = parseFloat(tdText);
     textContent = formatNumber(format, parsedValue);
-    attr = ('data-sort', parsedValue);
+    sortAttributeValue = parsedValue;
   } else if (tdTextType === 'string') {
     const regexMatch = dateRegex.exec(tdText);
     if (regexMatch) {
       const date = new Date(parseFloat(regexMatch[1]));
       textContent = dateFormatter(date);
-      attr = ('data-sort', date);
+      sortAttributeValue = date;
     }
   } else if (tdText === null) {
     textContent = '';
-    attr = ('data-sort', Number.NEGATIVE_INFINITY);
+    sortAttributeValue = Number.NEGATIVE_INFINITY;
   }
+
+  // @ts-ignore
+  const attr = ('data-sort', sortAttributeValue);
 
   return { textContent, attr };
 }
 
-function formatDateCellValue(text, verboseMap, dateRegex, dateFormatter) {
+function formatDateCellValue(text: string, verboseMap: any, dateRegex: RegExp, dateFormatter: any) {
   const regexMatch = dateRegex.exec(text);
   let cellValue;
   if (regexMatch) {
