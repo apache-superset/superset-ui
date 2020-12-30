@@ -1,5 +1,23 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 import { getTimeFormatterForGranularity } from '@superset-ui/core';
-import { cellFormat } from '../src/utils/formatCells';
+import { formatCellValue } from '../src/utils/formatCells';
 
 describe('pivot table plugin format cells', () => {
   const i = 0;
@@ -11,7 +29,7 @@ describe('pivot table plugin format cells', () => {
   const dateFormatter = getTimeFormatterForGranularity('P1D');
 
   it('render number', () => {
-    const { textContent, attr } = cellFormat(
+    const { textContent, attr } = formatCellValue(
       i,
       cols,
       tdText,
@@ -27,7 +45,7 @@ describe('pivot table plugin format cells', () => {
   it('render date', () => {
     tdText = '__timestamp:-126230400000.0';
 
-    const { textContent } = cellFormat(
+    const { textContent } = formatCellValue(
       i,
       cols,
       tdText,
@@ -42,7 +60,7 @@ describe('pivot table plugin format cells', () => {
   it('render string', () => {
     tdText = 'some-text';
 
-    const { textContent, attr } = cellFormat(
+    const { textContent, attr } = formatCellValue(
       i,
       cols,
       tdText,
@@ -58,7 +76,7 @@ describe('pivot table plugin format cells', () => {
   it('render null', () => {
     tdText = null;
 
-    const { textContent, attr } = cellFormat(
+    const { textContent, attr } = formatCellValue(
       i,
       cols,
       tdText,

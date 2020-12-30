@@ -24,7 +24,7 @@ import {
   getTimeFormatterForGranularity,
   smartDateFormatter,
 } from '@superset-ui/core';
-import { cellFormat, cellDateFormat } from './utils/formatCells';
+import { formatCellValue, formatDateCellValue } from './utils/formatCells';
 import fixTableHeight from './utils/fixTableHeight';
 import 'datatables.net-bs/css/dataTables.bootstrap.css';
 
@@ -80,12 +80,22 @@ function PivotTable(element, props) {
   const dateRegex = /^__timestamp:(-?\d*\.?\d*)$/;
 
   $container.find('thead tr th').each(function () {
-    const cellValue = cellDateFormat($(this)[0].textContent, verboseMap, dateRegex, dateFormatter);
+    const cellValue = formatDateCellValue(
+      $(this)[0].textContent,
+      verboseMap,
+      dateRegex,
+      dateFormatter,
+    );
     $(this)[0].textContent = cellValue;
   });
 
   $container.find('tbody tr th').each(function () {
-    const cellValue = cellDateFormat($(this)[0].textContent, verboseMap, dateRegex, dateFormatter);
+    const cellValue = formatDateCellValue(
+      $(this)[0].textContent,
+      verboseMap,
+      dateRegex,
+      dateFormatter,
+    );
     $(this)[0].textContent = cellValue;
   });
 
@@ -94,7 +104,7 @@ function PivotTable(element, props) {
       .find('td')
       .each(function eachTd(index) {
         const tdText = $(this)[0].textContent;
-        const { textContent, attr } = cellFormat(
+        const { textContent, attr } = formatCellValue(
           index,
           cols,
           tdText,
