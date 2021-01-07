@@ -20,15 +20,16 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { ColumnInstance, DefaultSortTypes, ColumnWithLooseAccessor } from 'react-table';
 import { extent as d3Extent, max as d3Max } from 'd3-array';
 import { FaSort, FaSortUp as FaSortAsc, FaSortDown as FaSortDesc } from 'react-icons/fa';
-import { t, tn, DataRecordValue, DataRecord } from '@superset-ui/core';
+import { t, tn, DataRecordValue, DataRecord, GenericDataType } from '@superset-ui/core';
 
-import { TableChartTransformedProps, DataType, DataColumnMeta } from './types';
+import { TableChartTransformedProps, DataColumnMeta } from './types';
 import DataTable, {
   DataTableProps,
   SearchInputProps,
   SelectPageSizeRendererProps,
   SizeOption,
 } from './DataTable';
+
 import Styles from './Styles';
 import formatValue from './utils/formatValue';
 import { PAGE_SIZE_OPTIONS } from './controlPanel';
@@ -38,11 +39,11 @@ type ValueRange = [number, number];
 /**
  * Return sortType based on data type
  */
-function getSortTypeByDataType(dataType: DataType): DefaultSortTypes {
-  if (dataType === DataType.DateTime) {
+function getSortTypeByDataType(dataType: GenericDataType): DefaultSortTypes {
+  if (dataType === GenericDataType.TEMPORAL) {
     return 'datetime';
   }
-  if (dataType === DataType.String) {
+  if (dataType === GenericDataType.STRING) {
     return 'alphanumeric';
   }
   return 'basic';
@@ -206,7 +207,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     (column: DataColumnMeta, i: number): ColumnWithLooseAccessor<D> => {
       const { key, label, dataType } = column;
       let className = '';
-      if (dataType === DataType.Number) {
+      if (dataType === GenericDataType.NUMERIC) {
         className += ' dt-metric';
       } else if (emitFilter) {
         className += ' dt-is-filter';

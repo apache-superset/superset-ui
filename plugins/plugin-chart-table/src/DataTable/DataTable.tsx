@@ -67,11 +67,11 @@ export default function DataTable<D extends object>({
   sticky: doSticky,
   searchInput = true,
   selectPageSize,
-  noResults = 'No data found',
+  noResults: noResultsText = 'No data found',
   hooks,
   wrapperRef: userWrapperRef,
   ...moreUseTableOptions
-}: DataTableProps<D>) {
+}: DataTableProps<D>): JSX.Element {
   const tableHooks: PluginHook<D>[] = [
     useGlobalFilter,
     useSortBy,
@@ -155,6 +155,13 @@ export default function DataTable<D extends object>({
     }
   };
 
+  const noResults =
+    typeof noResultsText === 'function' ? noResultsText(filterValue as string) : noResultsText;
+
+  if (!columns || columns.length === 0) {
+    return <div className="dt-no-results">{noResults}</div>;
+  }
+
   const renderTable = () => (
     <table {...getTableProps({ className: tableClassName })}>
       <thead>
@@ -186,7 +193,7 @@ export default function DataTable<D extends object>({
         ) : (
           <tr>
             <td className="dt-no-results" colSpan={columns.length}>
-              {typeof noResults === 'function' ? noResults(filterValue as string) : noResults}
+              {noResults}
             </td>
           </tr>
         )}

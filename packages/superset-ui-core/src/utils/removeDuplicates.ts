@@ -16,19 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import isEqualArray from './isEqualArray';
-import { TableChartProps } from '../types';
-
-export default function isEqualColumns(propsA: TableChartProps[], propsB: TableChartProps[]) {
-  const a = propsA[0];
-  const b = propsB[0];
-  return (
-    a.datasource.columnFormats === b.datasource.columnFormats &&
-    a.datasource.verboseMap === b.datasource.verboseMap &&
-    a.formData.tableTimestampFormat === b.formData.tableTimestampFormat &&
-    a.formData.timeGrainSqla === b.formData.timeGrainSqla &&
-    isEqualArray(a.formData.metrics, b.formData.metrics) &&
-    isEqualArray(a.queriesData?.[0]?.colnames, b.queriesData?.[0]?.colnames) &&
-    isEqualArray(a.queriesData?.[0]?.coltypes, b.queriesData?.[0]?.coltypes)
-  );
+/**
+ * Remove duplicate items from a list.
+ */
+export function removeDuplicates<T>(items: T[], hash?: (item: T) => unknown): T[] {
+  const seen = new Set();
+  const result: T[] = [];
+  items.forEach(x => {
+    const itemHash = hash ? hash(x) : x;
+    if (!seen.has(itemHash)) {
+      seen.add(itemHash);
+      result.push(x);
+    }
+  });
+  return result;
 }
+
+export default removeDuplicates;
