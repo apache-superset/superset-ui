@@ -42,7 +42,7 @@ function formatCellValue(
       const date = new Date(parseFloat(regexMatch[1]));
       textContent = dateFormatter(date);
       sortAttributeValue = date;
-    } else if (tdText == 'null') {
+    } else if (tdText === 'null') {
       textContent = '';
       sortAttributeValue = Number.NEGATIVE_INFINITY;
     }
