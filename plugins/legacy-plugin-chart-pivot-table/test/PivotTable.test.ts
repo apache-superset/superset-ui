@@ -74,7 +74,7 @@ describe('pivot table plugin format cells', () => {
   });
 
   it('render null', () => {
-    tdText = null;
+    tdText = 'null';
 
     const { textContent, attr } = formatCellValue(
       i,

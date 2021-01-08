@@ -29,26 +29,24 @@ function formatCellValue(
 ) {
   const metric: string = cols[i];
   const format: string = columnFormats[metric] || numberFormat || '.3s';
-  const tdTextType = parseFloat(tdText) ? 'number' : typeof tdText;
   let textContent: string = tdText;
   let sortAttributeValue: any = tdText;
 
-  if (tdTextType === 'number') {
+  if (parseFloat(tdText)) {
     const parsedValue = parseFloat(tdText);
     textContent = formatNumber(format, parsedValue);
     sortAttributeValue = parsedValue;
-  } else if (tdTextType === 'string') {
+  } else {
     const regexMatch = dateRegex.exec(tdText);
     if (regexMatch) {
       const date = new Date(parseFloat(regexMatch[1]));
       textContent = dateFormatter(date);
       sortAttributeValue = date;
+    } else if (tdText == 'null') {
+      textContent = '';
+      sortAttributeValue = Number.NEGATIVE_INFINITY;
     }
-  } else if (tdText === null) {
-    textContent = '';
-    sortAttributeValue = Number.NEGATIVE_INFINITY;
   }
-
   // @ts-ignore
   const attr = ('data-sort', sortAttributeValue);
 
