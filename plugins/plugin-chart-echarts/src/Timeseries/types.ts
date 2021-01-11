@@ -55,6 +55,9 @@ export type EchartsTimeseriesFormData = {
   stack: boolean;
   truncateYAxis: boolean;
   yAxisFormat?: string;
+  xAxisShowMinLabel?: boolean;
+  xAxisShowMaxLabel?: boolean;
+  xAxisFormat?: string;
   yAxisBounds: [number | undefined | null, number | undefined | null];
   zoomable: boolean;
 };

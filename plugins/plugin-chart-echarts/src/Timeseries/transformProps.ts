@@ -49,6 +49,7 @@ import {
   transformSeries,
   transformTimeseriesAnnotation,
 } from './transformers';
+import moment from "moment";
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
@@ -67,6 +68,9 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     minorSplitLine,
     truncateYAxis,
     yAxisFormat,
+    xAxisShowMinLabel,
+    xAxisShowMaxLabel,
+    xAxisFormat,
     yAxisBounds,
     zoomable,
   }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
@@ -115,7 +119,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     if (min === undefined) min = 0;
     if (max === undefined) max = 1;
   }
-
+  
   const echartOptions: echarts.EChartOption = {
     grid: {
       ...defaultGrid,
@@ -124,7 +128,22 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       left: 20,
       right: 20,
     },
-    xAxis: { type: 'time' },
+    xAxis: { 
+      type: 'time', 
+      axisLabel: { 
+        showMinLabel: !!xAxisShowMinLabel,
+        showMaxLabel: !!xAxisShowMaxLabel,
+        ...(xAxisFormat && {
+          formatter: value => {
+            if (moment(value).isValid()) {
+              return moment(value).format(xAxisFormat);
+            }
+
+            return moment(value).format('YYYY-MM-DD')
+          },
+        })
+      },
+    },
     yAxis: {
       ...defaultYAxis,
       type: logAxis ? 'log' : 'value',
