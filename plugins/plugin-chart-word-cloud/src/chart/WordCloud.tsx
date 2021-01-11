@@ -59,12 +59,7 @@ class WordCloud extends React.PureComponent<FullWordCloudProps, WordCloudState> 
 
   // Cannot name it isMounted because of conflict
   // with React's component function name
-  isComponentMounted: boolean = false;
-
-  state: WordCloudState = {
-    words: [],
-    scaleFactor: 1,
-  };
+  isComponentMounted = false;
 
   wordCloudEncoderFactory = createEncoderFactory<WordCloudEncodingConfig>({
     channelTypes: {
@@ -89,7 +84,7 @@ class WordCloud extends React.PureComponent<FullWordCloudProps, WordCloudState> 
     super(props);
     this.state = {
       words: [],
-      scaleFactor: 1
+      scaleFactor: 1,
     };
     this.setWords = this.setWords.bind(this);
   }
