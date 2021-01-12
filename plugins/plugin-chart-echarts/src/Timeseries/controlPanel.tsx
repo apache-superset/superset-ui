@@ -18,7 +18,13 @@
  */
 import React from 'react';
 import { legacyValidateInteger, legacyValidateNumber, t } from '@superset-ui/core';
-import { ControlPanelConfig, sections } from '@superset-ui/chart-controls';
+import {
+  ControlPanelConfig,
+  sections,
+  D3_FORMAT_DOCS,
+  D3_TIME_FORMAT_OPTIONS,
+} from '@superset-ui/chart-controls';
+
 import {
   DEFAULT_FORM_DATA,
   EchartsTimeseriesContributionType,
@@ -297,6 +303,23 @@ const config: ControlPanelConfig = {
               default: zoomable,
               renderTrigger: true,
               description: t('Enable data zooming controls'),
+            },
+          },
+        ],
+        // eslint-disable-next-line react/jsx-key
+        [<h1 className="section-header">{t('X Axis')}</h1>],
+        ['x_axis_format'],
+        [
+          {
+            name: 'x_axis_format',
+            config: {
+              type: 'SelectControl',
+              freeForm: true,
+              label: t('Date format'),
+              renderTrigger: true,
+              choices: D3_TIME_FORMAT_OPTIONS,
+              default: 'smart_date',
+              description: D3_FORMAT_DOCS,
             },
           },
         ],

@@ -29,6 +29,9 @@ import {
   isTimeseriesAnnotationLayer,
   smartDateVerboseFormatter,
   TimeseriesDataRecord,
+  getTimeFormatter,
+  getTimeFormatterForGranularity,
+  smartDateFormatter,
 } from '@superset-ui/core';
 import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
 import { EchartsProps, ForecastSeriesEnum } from '../types';
@@ -49,7 +52,6 @@ import {
   transformSeries,
   transformTimeseriesAnnotation,
 } from './transformers';
-import moment from "moment";
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
@@ -119,7 +121,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     if (min === undefined) min = 0;
     if (max === undefined) max = 1;
   }
-  
+
   const echartOptions: echarts.EChartOption = {
     grid: {
       ...defaultGrid,
@@ -128,20 +130,24 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       left: 20,
       right: 20,
     },
-    xAxis: { 
-      type: 'time', 
-      axisLabel: { 
+    xAxis: {
+      type: 'time',
+      axisLabel: {
         showMinLabel: !!xAxisShowMinLabel,
         showMaxLabel: !!xAxisShowMaxLabel,
-        ...(xAxisFormat && {
-          formatter: value => {
-            if (moment(value).isValid()) {
-              return moment(value).format(xAxisFormat);
-            }
+        formatter: (value: any) => {
+          let dateFormatter;
 
-            return moment(value).format('YYYY-MM-DD')
-          },
-        })
+          if (xAxisFormat === smartDateFormatter.id) {
+            dateFormatter = getTimeFormatterForGranularity('PT1S');
+          } else if (xAxisFormat) {
+            dateFormatter = getTimeFormatter(xAxisFormat);
+          } else {
+            dateFormatter = String;
+          }
+
+          return dateFormatter(value);
+        },
       },
     },
     yAxis: {

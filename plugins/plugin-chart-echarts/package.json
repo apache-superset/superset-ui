@@ -31,8 +31,7 @@
     "@types/echarts": "^4.6.3",
     "@types/mathjs": "^6.0.7",
     "echarts": "^5.0.0",
-    "mathjs": "^8.0.1",
-    "moment": "^2.29.1"
+    "mathjs": "^8.0.1"
   },
   "peerDependencies": {
     "react": "^16.13.1"
