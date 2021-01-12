@@ -425,6 +425,16 @@ const y_axis_format: SharedControlConfig<'SelectControl'> = {
   },
 };
 
+const x_axis_format: SharedControlConfig<'SelectControl'> = {
+  type: 'SelectControl',
+  freeForm: true,
+  label: t('X Axis Format'),
+  renderTrigger: true,
+  default: 'SMART_NUMBER',
+  choices: D3_FORMAT_OPTIONS,
+  description: D3_FORMAT_DOCS,
+};
+
 const adhoc_filters: SharedControlConfig<'AdhocFilterControl'> = {
   type: 'AdhocFilterControl',
   label: t('Filters'),
@@ -486,6 +496,7 @@ const sharedControls = {
   y,
   size,
   y_axis_format,
+  x_axis_format,
   adhoc_filters,
   color_scheme,
   label_colors,
