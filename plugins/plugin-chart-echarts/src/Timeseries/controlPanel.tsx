@@ -323,6 +323,30 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+        [
+          {
+            name: 'xAxisShowMinLabel',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Show Min Label'),
+              default: true,
+              renderTrigger: true,
+              description: t('Show Min Label'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'xAxisShowMaxLabel',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Show Max Label'),
+              default: true,
+              renderTrigger: true,
+              description: t('Show Max Label'),
+            },
+          },
+        ],
         // eslint-disable-next-line react/jsx-key
         [<h1 className="section-header">{t('Y Axis')}</h1>],
         ['y_axis_format'],
