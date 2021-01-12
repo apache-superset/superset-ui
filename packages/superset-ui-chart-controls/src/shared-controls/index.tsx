@@ -425,6 +425,28 @@ const y_axis_format: SharedControlConfig<'SelectControl'> = {
   },
 };
 
+const x_axis_format: SharedControlConfig<'SelectControl'> = {
+  type: 'SelectControl',
+  freeForm: true,
+  label: t('Y Axis Format'),
+  renderTrigger: true,
+  default: 'SMART_NUMBER',
+  choices: D3_FORMAT_OPTIONS,
+  description: D3_FORMAT_DOCS,
+  mapStateToProps: state => {
+    const showWarning = state.controls?.comparison_type?.value === 'percentage';
+    return {
+      warning: showWarning
+        ? t(
+            'When `Calculation type` is set to "Percentage change", the Y ' +
+              'Axis Format is forced to `.1%`',
+          )
+        : null,
+      disabled: showWarning,
+    };
+  },
+};
+
 const adhoc_filters: SharedControlConfig<'AdhocFilterControl'> = {
   type: 'AdhocFilterControl',
   label: t('Filters'),
@@ -486,6 +508,7 @@ const sharedControls = {
   y,
   size,
   y_axis_format,
+  x_axis_format,
   adhoc_filters,
   color_scheme,
   label_colors,
