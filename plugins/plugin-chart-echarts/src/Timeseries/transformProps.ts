@@ -74,6 +74,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     xAxisShowMaxLabel,
     xAxisFormat,
     yAxisBounds,
+    timeGrainSqla,
     zoomable,
   }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
@@ -139,7 +140,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           let dateFormatter;
 
           if (xAxisFormat === smartDateFormatter.id) {
-            dateFormatter = getTimeFormatterForGranularity('PT1S');
+            dateFormatter = getTimeFormatterForGranularity(timeGrainSqla);
           } else if (xAxisFormat) {
             dateFormatter = getTimeFormatter(xAxisFormat);
           } else {
