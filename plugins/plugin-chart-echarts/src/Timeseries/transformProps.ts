@@ -72,7 +72,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     yAxisFormat,
     xAxisShowMinLabel,
     xAxisShowMaxLabel,
-    xAxisFormat,
+    xAxisTimeFormat,
     yAxisBounds,
     timeGrainSqla,
     zoomable,
@@ -139,10 +139,10 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         formatter: (value: any) => {
           let dateFormatter;
 
-          if (xAxisFormat === smartDateFormatter.id) {
+          if (xAxisTimeFormat === smartDateFormatter.id) {
             dateFormatter = getTimeFormatterForGranularity(timeGrainSqla);
-          } else if (xAxisFormat) {
-            dateFormatter = getTimeFormatter(xAxisFormat);
+          } else if (xAxisTimeFormat) {
+            dateFormatter = getTimeFormatter(xAxisTimeFormat);
           } else {
             dateFormatter = String;
           }

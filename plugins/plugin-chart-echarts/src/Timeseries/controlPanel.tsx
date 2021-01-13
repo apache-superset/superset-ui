@@ -308,14 +308,14 @@ const config: ControlPanelConfig = {
         ],
         // eslint-disable-next-line react/jsx-key
         [<h1 className="section-header">{t('X Axis')}</h1>],
-        ['x_axis_format'],
+        ['x_axis_time_format'],
         [
           {
-            name: 'x_axis_format',
+            name: 'x_axis_time_format',
             config: {
               type: 'SelectControl',
               freeForm: true,
-              label: t('Date format'),
+              label: t('Time format'),
               renderTrigger: true,
               choices: D3_TIME_FORMAT_OPTIONS,
               default: 'smart_date',

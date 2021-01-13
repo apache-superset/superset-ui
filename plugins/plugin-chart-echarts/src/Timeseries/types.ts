@@ -57,7 +57,7 @@ export type EchartsTimeseriesFormData = {
   yAxisFormat?: string;
   xAxisShowMinLabel?: boolean;
   xAxisShowMaxLabel?: boolean;
-  xAxisFormat?: string;
+  xAxisTimeFormat?: string;
   timeGrainSqla?: TimeGranularity;
   yAxisBounds: [number | undefined | null, number | undefined | null];
   zoomable: boolean;

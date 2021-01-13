@@ -425,7 +425,7 @@ const y_axis_format: SharedControlConfig<'SelectControl'> = {
   },
 };
 
-const x_axis_format: SharedControlConfig<'SelectControl'> = {
+const x_axis_time_format: SharedControlConfig<'SelectControl'> = {
   type: 'SelectControl',
   freeForm: true,
   label: t('X Axis Format'),
@@ -496,7 +496,7 @@ const sharedControls = {
   y,
   size,
   y_axis_format,
-  x_axis_format,
+  x_axis_time_format,
   adhoc_filters,
   color_scheme,
   label_colors,
