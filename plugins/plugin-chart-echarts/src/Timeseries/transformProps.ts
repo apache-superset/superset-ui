@@ -124,6 +124,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   }
 
   const echartOptions: echarts.EChartOption = {
+    useUTC: true,
     grid: {
       ...defaultGrid,
       top: 30,
@@ -134,8 +135,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     xAxis: {
       type: 'time',
       axisLabel: {
-        showMinLabel: !!xAxisShowMinLabel,
-        showMaxLabel: !!xAxisShowMaxLabel,
+        showMinLabel: xAxisShowMinLabel,
+        showMaxLabel: xAxisShowMaxLabel,
         formatter: (value: any) => {
           let dateFormatter;
 

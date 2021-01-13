@@ -83,5 +83,7 @@ export const DEFAULT_FORM_DATA: EchartsTimeseriesFormData = {
   rowLimit: 10000,
   truncateYAxis: true,
   yAxisBounds: [null, null],
+  xAxisShowMinLabel: true,
+  xAxisShowMaxLabel: true,
   zoomable: false,
 };
