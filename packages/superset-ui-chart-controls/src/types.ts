@@ -59,21 +59,39 @@ export interface ColumnMeta extends AnyDict {
   filterable?: boolean;
 }
 
-export interface DatasourceMeta {
+export interface BaseDatasource {
   id: number;
-  type: DatasourceType;
   columns: ColumnMeta[];
-  metrics: Metric[];
   column_format: Record<string, string>;
-  verbose_map: Record<string, string>;
-  main_dttm_col: string;
-  // eg. ['["ds", true]', 'ds [asc]']
-  order_by_choices?: [string, string][] | null;
-  time_grain_sqla?: string;
-  granularity_sqla?: string;
   datasource_name: string | null;
   description: string | null;
+  metrics: Metric[];
+  verbose_map: Record<string, string>;
+  // eg. ['["ds", true]', 'ds [asc]']
+  order_by_choices?: [string, string][] | null;
+  owners: number[];
 }
+
+export interface DruidDatasource extends BaseDatasource {
+  type: DatasourceType.Druid;
+}
+
+/**
+ * Datasource metadata, corresponds to `SqlaTable.data()`:
+ *  See superset/connectors/sqla/models.py#L695
+ */
+export interface SqlaDatasource extends BaseDatasource {
+  type: DatasourceType.Table;
+  time_grain_sqla?: string[];
+  granularity_sqla?: string[];
+  main_dttm_col?: string;
+  fetch_values_predicate?: string;
+  template_params?: string;
+  is_sqla_view?: boolean;
+  health_check_message?: string;
+}
+
+export type DatasourceMeta = SqlaDatasource | DruidDatasource;
 
 export interface ControlPanelState {
   form_data: QueryFormData;
