@@ -15,7 +15,7 @@ export default function buildQuery(formData: TableChartFormData) {
           operation: 'contribution',
           options: {
             columns: percentMetricLabels,
-            rename_columns: percentMetricLabels.map(x => `% ${x}`),
+            rename_columns: percentMetricLabels.map(x => `%${x}`),
           },
         },
       ];

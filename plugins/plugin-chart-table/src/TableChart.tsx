@@ -220,7 +220,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         // so we ask TS not to check.
         accessor: ((datum: D) => datum[key]) as never,
         Cell: ({ value }: { column: ColumnInstance<D>; value: DataRecordValue }) => {
-          const [isHtml, text] = formatValue(column, value);
+          const [isHtml, text, customClassName] = formatValue(column, value);
           const style = {
             background: valueRange
               ? cellBar({
@@ -236,7 +236,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
             // show raw number in title in case of numeric values
             title: typeof value === 'number' ? String(value) : undefined,
             onClick: emitFilter && !valueRange ? () => toggleFilter(key, value) : undefined,
-            className: `${className}${
+            className: `${className} ${customClassName || ''} ${
               isActiveFilterValue(key, value) ? ' dt-is-active-filter' : ''
             }`,
             style,
