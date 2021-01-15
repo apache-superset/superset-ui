@@ -32,3 +32,4 @@ export * from './components/MetricOption';
 // React control components
 export * from './components/RadioButtonControl';
 export * from './types';
+export { default as __hask_reexport__ } from './types';
