@@ -328,6 +328,18 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+        [
+          {
+            name: 'rich_tooltip',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Rich Tooltip'),
+              renderTrigger: true,
+              default: true,
+              description: t('The rich tooltip shows a list of all series for that point in time'),
+            },
+          },
+        ],
         // eslint-disable-next-line react/jsx-key
         [<h1 className="section-header">{t('Y Axis')}</h1>],
         ['y_axis_format'],

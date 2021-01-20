@@ -61,6 +61,7 @@ export type EchartsTimeseriesFormData = {
   timeGrainSqla?: TimeGranularity;
   yAxisBounds: [number | undefined | null, number | undefined | null];
   zoomable: boolean;
+  richTooltip: boolean;
 };
 
 export const DEFAULT_FORM_DATA: EchartsTimeseriesFormData = {

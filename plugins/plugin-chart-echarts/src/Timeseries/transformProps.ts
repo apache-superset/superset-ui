@@ -76,6 +76,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     yAxisBounds,
     timeGrainSqla,
     zoomable,
+    richTooltip,
   }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
@@ -122,7 +123,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     if (min === undefined) min = 0;
     if (max === undefined) max = 1;
   }
-
+  console.log('SSSS', series);
   const echartOptions: echarts.EChartOption = {
     useUTC: true,
     grid: {
@@ -164,12 +165,24 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     },
     tooltip: {
       ...defaultTooltip,
-      trigger: 'axis',
+      trigger: richTooltip ? 'axis' : 'item',
       formatter: params => {
-        // @ts-ignore
-        const rows = [`${smartDateVerboseFormatter(params[0].value[0])}`];
-        // @ts-ignore
-        const prophetValues = extractProphetValuesFromTooltipParams(params);
+        console.log('params', params);
+        let rows = [];
+        let prophetValues: any;
+
+        if (!richTooltip) {
+          rows = [`${smartDateVerboseFormatter(params.value)}`];
+          prophetValues = extractProphetValuesFromTooltipParams([params]);
+        } else {
+          // @ts-ignore
+          rows = [`${smartDateVerboseFormatter(params[0].value[0])}`];
+          // @ts-ignore
+          prophetValues = extractProphetValuesFromTooltipParams(params);
+        }
+        console.log('rows', rows);
+        console.log('prophetValues', prophetValues);
+
         Object.keys(prophetValues).forEach(key => {
           const value = prophetValues[key];
           rows.push(
