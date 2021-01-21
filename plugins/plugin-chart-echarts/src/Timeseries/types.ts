@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { AnnotationLayer } from '@superset-ui/core';
+import { AnnotationLayer, TimeGranularity } from '@superset-ui/core';
+import { DEFAULT_LEGEND_FORM_DATA, EchartsLegendFormData } from '../types';
 
 export enum EchartsTimeseriesContributionType {
   Row = 'row',
@@ -55,11 +56,16 @@ export type EchartsTimeseriesFormData = {
   stack: boolean;
   truncateYAxis: boolean;
   yAxisFormat?: string;
+  xAxisShowMinLabel?: boolean;
+  xAxisShowMaxLabel?: boolean;
+  xAxisTimeFormat?: string;
+  timeGrainSqla?: TimeGranularity;
   yAxisBounds: [number | undefined | null, number | undefined | null];
   zoomable: boolean;
-};
+} & EchartsLegendFormData;
 
 export const DEFAULT_FORM_DATA: EchartsTimeseriesFormData = {
+  ...DEFAULT_LEGEND_FORM_DATA,
   annotationLayers: [],
   area: false,
   forecastEnabled: false,
@@ -68,16 +74,18 @@ export const DEFAULT_FORM_DATA: EchartsTimeseriesFormData = {
   forecastSeasonalityDaily: null,
   forecastSeasonalityWeekly: null,
   forecastSeasonalityYearly: null,
-  seriesType: EchartsTimeseriesSeriesType.Line,
   logAxis: false,
-  opacity: 0.2,
-  orderDesc: true,
-  stack: false,
   markerEnabled: false,
   markerSize: 6,
   minorSplitLine: false,
+  opacity: 0.2,
+  orderDesc: true,
   rowLimit: 10000,
+  seriesType: EchartsTimeseriesSeriesType.Line,
+  stack: false,
   truncateYAxis: true,
   yAxisBounds: [null, null],
+  xAxisShowMinLabel: true,
+  xAxisShowMaxLabel: true,
   zoomable: false,
 };
