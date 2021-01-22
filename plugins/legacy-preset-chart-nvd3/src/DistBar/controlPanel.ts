@@ -28,6 +28,8 @@ import {
   barStacked,
   reduceXTicks,
   yAxisLabel,
+  yAxisShowMinmax,
+  yAxisBounds,
 } from '../NVD3Controls';
 
 const config: ControlPanelConfig = {
@@ -76,6 +78,8 @@ const config: ControlPanelConfig = {
         ],
         ['y_axis_format', yAxisLabel],
         [showControls, null],
+        [yAxisShowMinmax],
+        [yAxisBounds],
       ],
     },
     {

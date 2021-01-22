@@ -29,6 +29,10 @@ import {
   xAxisShowMinmax,
   showMarkers,
   yAxis2Format,
+  yAxisShowMinmax,
+  yAxisBounds,
+  yAxis2ShowMinmax,
+  yAxis2Bounds,
 } from '../NVD3Controls';
 
 export type Result = {
@@ -107,6 +111,8 @@ const config: ControlPanelConfig = {
           },
           'y_axis_format',
         ],
+        [yAxisShowMinmax],
+        [yAxisBounds],
       ],
     },
     {
@@ -139,6 +145,8 @@ const config: ControlPanelConfig = {
           },
           yAxis2Format,
         ],
+        [yAxis2ShowMinmax],
+        [yAxis2Bounds],
       ],
     },
     {
