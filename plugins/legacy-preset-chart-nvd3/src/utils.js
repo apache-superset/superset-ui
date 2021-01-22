@@ -307,7 +307,7 @@ export function removeTooltip(uuid) {
   }
 }
 
-export function wrapTooltip(chart, maxWidth) {
+export function wrapTooltip(chart) {
   const tooltipLayer =
     chart.useInteractiveGuideline && chart.useInteractiveGuideline()
       ? chart.interactiveLayer
