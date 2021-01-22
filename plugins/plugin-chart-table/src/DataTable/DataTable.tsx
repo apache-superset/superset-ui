@@ -28,7 +28,7 @@ import {
   IdType,
   Row,
 } from 'react-table';
-import matchSorter from 'match-sorter';
+import { matchSorter, rankings } from 'match-sorter';
 import GlobalFilter, { GlobalFilterProps } from './components/GlobalFilter';
 import SelectPageSize, { SelectPageSizeProps, SizeOption } from './components/SelectPageSize';
 import SimplePagination from './components/Pagination';
@@ -113,11 +113,11 @@ export default function DataTable<D extends object>({
 
   const defaultGlobalFilter: FilterType<D> = useCallback(
     (rows: Row<D>[], columnIds: IdType<D>[], filterValue: string) => {
-      // allow searching by "col1 col2"
+      // allow searching by "col1_value col2_value"
       const joinedString = (row: Row<D>) => columnIds.map(x => row.values[x]).join(' ');
       return matchSorter(rows, filterValue, {
         keys: [...columnIds, joinedString],
-        threshold: matchSorter.rankings.ACRONYM,
+        threshold: rankings.ACRONYM,
       }) as typeof rows;
     },
     [],
