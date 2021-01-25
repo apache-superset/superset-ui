@@ -18,7 +18,7 @@
  */
 import React from 'react';
 import { legacyValidateInteger, legacyValidateNumber, t } from '@superset-ui/core';
-import { ControlPanelConfig, sections, sharedControls } from '@superset-ui/chart-controls';
+import { ControlPanelConfig, sections } from '@superset-ui/chart-controls';
 
 import {
   DEFAULT_FORM_DATA,

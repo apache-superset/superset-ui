@@ -107,7 +107,7 @@ export function transformSeries(
       (plotType === 'scatter' ||
         (forecastEnabled && isObservation) ||
         markerEnabled ||
-        richTooltip),
+        !richTooltip),
     symbolSize: markerSize,
   };
 }

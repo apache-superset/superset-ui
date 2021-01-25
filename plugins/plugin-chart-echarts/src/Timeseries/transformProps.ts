@@ -172,18 +172,13 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       ...defaultTooltip,
       trigger: richTooltip ? 'axis' : 'item',
       formatter: params => {
-        let rows = [];
-        let prophetValues: any;
+        const rows = !richTooltip
+          ? [`${smartDateVerboseFormatter(params.value)}`]
+          : [`${smartDateVerboseFormatter(params[0].value[0])}`];
 
-        if (!richTooltip) {
-          rows = [`${smartDateVerboseFormatter(params.value)}`];
-          prophetValues = extractProphetValuesFromTooltipParams([params]);
-        } else {
-          // @ts-ignore
-          rows = [`${smartDateVerboseFormatter(params[0].value[0])}`];
-          // @ts-ignore
-          prophetValues = extractProphetValuesFromTooltipParams(params);
-        }
+        const prophetValues = !richTooltip
+          ? extractProphetValuesFromTooltipParams([params])
+          : extractProphetValuesFromTooltipParams(params);
 
         Object.keys(prophetValues).forEach(key => {
           const value = prophetValues[key];
