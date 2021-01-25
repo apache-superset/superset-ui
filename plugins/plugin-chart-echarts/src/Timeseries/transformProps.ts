@@ -36,7 +36,7 @@ import {
 import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
 import { EchartsProps, ForecastSeriesEnum } from '../types';
 import { parseYAxisBound } from '../utils/controls';
-import { extractTimeseriesSeries } from '../utils/series';
+import { extractTimeseriesSeries, getChartPadding, getLegendProps } from '../utils/series';
 import { extractAnnotationLabels } from '../utils/annotation';
 import {
   extractForecastSeriesContext,
@@ -65,9 +65,13 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     annotationLayers,
     colorScheme,
     contributionMode,
+    legendMargin,
+    legendOrientation,
+    legendType,
     logAxis,
-    stack,
     minorSplitLine,
+    showLegend,
+    stack,
     truncateYAxis,
     yAxisFormat,
     xAxisShowMinLabel,
@@ -123,15 +127,16 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     if (min === undefined) min = 0;
     if (max === undefined) max = 1;
   }
-  console.log('SSSS', series);
   const echartOptions: echarts.EChartOption = {
     useUTC: true,
     grid: {
       ...defaultGrid,
-      top: 30,
-      bottom: zoomable ? 80 : 0,
-      left: 20,
-      right: 20,
+      ...getChartPadding(showLegend, legendOrientation, legendMargin, {
+        top: 20,
+        bottom: zoomable ? 80 : 20,
+        left: 20,
+        right: 20,
+      }),
     },
     xAxis: {
       type: 'time',
@@ -167,7 +172,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       ...defaultTooltip,
       trigger: richTooltip ? 'axis' : 'item',
       formatter: params => {
-        console.log('params', params);
         let rows = [];
         let prophetValues: any;
 
@@ -180,8 +184,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           // @ts-ignore
           prophetValues = extractProphetValuesFromTooltipParams(params);
         }
-        console.log('rows', rows);
-        console.log('prophetValues', prophetValues);
 
         Object.keys(prophetValues).forEach(key => {
           const value = prophetValues[key];
@@ -197,6 +199,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       },
     },
     legend: {
+      ...getLegendProps(legendType, legendOrientation, showLegend),
       data: rawSeries
         .filter(
           entry =>
@@ -204,7 +207,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         )
         .map(entry => entry.name || '')
         .concat(extractAnnotationLabels(annotationLayers, annotationData)),
-      right: zoomable ? 80 : 'auto',
     },
     series,
     toolbox: {
