@@ -126,7 +126,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     if (max === undefined) max = 1;
   }
 
-  const xAxisFormatter = value => {
+  const xAxisFormatter = (value: number) => {
     let dateFormatter;
 
     if (xAxisTimeFormat === smartDateFormatter.id) {
