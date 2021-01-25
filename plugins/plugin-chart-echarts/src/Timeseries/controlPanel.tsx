@@ -338,15 +338,17 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+        // eslint-disable-next-line react/jsx-key
+        [<h1 className="section-header">{t('Tooltip')}</h1>],
         [
           {
             name: 'rich_tooltip',
             config: {
               type: 'CheckboxControl',
-              label: t('Rich Tooltip'),
+              label: t('Rich tooltip'),
               renderTrigger: true,
               default: true,
-              description: t('The rich tooltip shows a list of all series for that point in time'),
+              description: t('Shows a list of all series available at that point in time'),
             },
           },
         ],

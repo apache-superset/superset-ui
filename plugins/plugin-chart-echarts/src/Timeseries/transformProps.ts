@@ -34,7 +34,7 @@ import {
   smartDateFormatter,
 } from '@superset-ui/core';
 import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
-import { EchartsProps, ForecastSeriesEnum } from '../types';
+import { EchartsProps, ForecastSeriesEnum, ProphetValue } from '../types';
 import { parseYAxisBound } from '../utils/controls';
 import { extractTimeseriesSeries, getChartPadding, getLegendProps } from '../utils/series';
 import { extractAnnotationLabels } from '../utils/annotation';
@@ -143,7 +143,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       axisLabel: {
         showMinLabel: xAxisShowMinLabel,
         showMaxLabel: xAxisShowMaxLabel,
-        formatter: (value: any) => {
+        formatter: (value: number) => {
           let dateFormatter;
 
           if (xAxisTimeFormat === smartDateFormatter.id) {
@@ -171,14 +171,15 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     tooltip: {
       ...defaultTooltip,
       trigger: richTooltip ? 'axis' : 'item',
-      formatter: params => {
-        const rows = !richTooltip
-          ? [`${smartDateVerboseFormatter(params.value)}`]
-          : [`${smartDateVerboseFormatter(params[0].value[0])}`];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      formatter: (params: any) => {
+        const value: number = !richTooltip ? params.value : params[0].value[0];
+        const prophetValue = !richTooltip ? [params] : params;
 
-        const prophetValues = !richTooltip
-          ? extractProphetValuesFromTooltipParams([params])
-          : extractProphetValuesFromTooltipParams(params);
+        const rows: Array<string> = [`${smartDateVerboseFormatter(value)}`];
+        const prophetValues: Record<string, ProphetValue> = extractProphetValuesFromTooltipParams(
+          prophetValue,
+        );
 
         Object.keys(prophetValues).forEach(key => {
           const value = prophetValues[key];
