@@ -27,7 +27,6 @@ import {
   isFormulaAnnotationLayer,
   isIntervalAnnotationLayer,
   isTimeseriesAnnotationLayer,
-  smartDateVerboseFormatter,
   TimeseriesDataRecord,
   getTimeFormatter,
   getTimeFormatterForGranularity,
@@ -126,6 +125,21 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     if (min === undefined) min = 0;
     if (max === undefined) max = 1;
   }
+
+  const xAxisFormatter = value => {
+    let dateFormatter;
+
+    if (xAxisTimeFormat === smartDateFormatter.id) {
+      dateFormatter = getTimeFormatterForGranularity(timeGrainSqla);
+    } else if (xAxisTimeFormat) {
+      dateFormatter = getTimeFormatter(xAxisTimeFormat);
+    } else {
+      dateFormatter = String;
+    }
+
+    return dateFormatter(value);
+  };
+
   const echartOptions: echarts.EChartOption = {
     useUTC: true,
     grid: {
@@ -142,19 +156,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       axisLabel: {
         showMinLabel: xAxisShowMinLabel,
         showMaxLabel: xAxisShowMaxLabel,
-        formatter: (value: any) => {
-          let dateFormatter;
-
-          if (xAxisTimeFormat === smartDateFormatter.id) {
-            dateFormatter = getTimeFormatterForGranularity(timeGrainSqla);
-          } else if (xAxisTimeFormat) {
-            dateFormatter = getTimeFormatter(xAxisTimeFormat);
-          } else {
-            dateFormatter = String;
-          }
-
-          return dateFormatter(value);
-        },
+        formatter: xAxisFormatter,
       },
     },
     yAxis: {
@@ -172,7 +174,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       trigger: 'axis',
       formatter: params => {
         // @ts-ignore
-        const rows = [`${smartDateVerboseFormatter(params[0].value[0])}`];
+        const rows = [`${xAxisFormatter(params[0].value[0])}`];
         // @ts-ignore
         const prophetValues = extractProphetValuesFromTooltipParams(params);
         Object.keys(prophetValues).forEach(key => {
