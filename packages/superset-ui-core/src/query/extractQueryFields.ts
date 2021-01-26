@@ -74,8 +74,7 @@ export default function extractQueryFields(
     }
     if (normalizedKey === 'metrics') {
       finalQueryFields[normalizedKey] = finalQueryFields[normalizedKey].concat(value);
-    }
-    if (normalizedKey === 'columns') {
+    } else if (normalizedKey === 'columns') {
       // currently the columns field only accept pre-defined columns (string shortcut)
       finalQueryFields[normalizedKey] = finalQueryFields[normalizedKey]
         .concat(value)

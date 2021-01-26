@@ -20,16 +20,16 @@
  * Remove duplicate items from a list.
  */
 export function removeDuplicates<T>(items: T[], hash?: (item: T) => unknown): T[] {
-  const seen = new Set();
-  const result: T[] = [];
-  items.forEach(x => {
-    const itemHash = hash ? hash(x) : x;
-    if (!seen.has(itemHash)) {
+  if (hash) {
+    const seen = new Set();
+    return items.filter(x => {
+      const itemHash = hash(x);
+      if (seen.has(itemHash)) return false;
       seen.add(itemHash);
-      result.push(x);
-    }
-  });
-  return result;
+      return true;
+    });
+  }
+  return [...new Set(items)];
 }
 
 export default removeDuplicates;
