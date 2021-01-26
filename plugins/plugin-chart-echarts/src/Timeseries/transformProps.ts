@@ -125,6 +125,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     if (max === undefined) max = 1;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let xAxisFormatter;
   if (xAxisTimeFormat === smartDateFormatter.id) {
     xAxisFormatter = getTimeFormatterForGranularity(timeGrainSqla);
