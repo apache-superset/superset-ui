@@ -1158,7 +1158,7 @@ function nvd3Vis(element, props) {
       }
     }
 
-    wrapTooltip(chart, maxWidth);
+    wrapTooltip(chart);
 
     return chart;
   };

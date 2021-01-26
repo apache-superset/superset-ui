@@ -338,7 +338,8 @@ export const timeSeriesSection: ControlPanelSectionConfig[] = [
       ['metrics'],
       ['adhoc_filters'],
       ['groupby'],
-      ['limit', 'timeseries_limit_metric'],
+      ['limit'],
+      ['timeseries_limit_metric'],
       [
         {
           name: 'order_desc',
@@ -349,6 +350,8 @@ export const timeSeriesSection: ControlPanelSectionConfig[] = [
             description: t('Whether to sort descending or ascending'),
           },
         },
+      ],
+      [
         {
           name: 'contribution',
           config: {
@@ -400,6 +403,8 @@ export const timeSeriesSection: ControlPanelSectionConfig[] = [
             ),
           },
         },
+      ],
+      [
         {
           name: 'min_periods',
           config: {
@@ -443,6 +448,8 @@ export const timeSeriesSection: ControlPanelSectionConfig[] = [
             ),
           },
         },
+      ],
+      [
         {
           name: 'comparison_type',
           config: {
@@ -477,6 +484,8 @@ export const timeSeriesSection: ControlPanelSectionConfig[] = [
             description: t('Pandas resample rule'),
           },
         },
+      ],
+      [
         {
           name: 'resample_method',
           config: {
