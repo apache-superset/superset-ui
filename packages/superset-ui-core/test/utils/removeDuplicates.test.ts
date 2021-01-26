@@ -19,10 +19,10 @@
 import { removeDuplicates } from '@superset-ui/core/src';
 
 describe('removeDuplicates([...])', () => {
-  it('should remove duplciages from a simple list', () => {
+  it('should remove duplicates from a simple list', () => {
     expect(removeDuplicates([1, 2, 4, 1, 1, 5, 2])).toEqual([1, 2, 4, 5]);
   });
-  it('should remove duplciages by key getter', () => {
+  it('should remove duplicates by key getter', () => {
     expect(removeDuplicates([{ a: 1 }, { a: 1 }, { b: 2 }], x => x.a)).toEqual([
       { a: 1 },
       { b: 2 },
