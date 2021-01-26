@@ -107,7 +107,7 @@ export function transformSeries(
       (plotType === 'scatter' ||
         (forecastEnabled && isObservation) ||
         markerEnabled ||
-        !richTooltip), // TODO: richTooltip will be removed once ECharts supports item based tooltips without markers
+        !richTooltip), // TODO: forcing markers when richTooltip is enabled will be removed…
     symbolSize: markerSize,
   };
 }
