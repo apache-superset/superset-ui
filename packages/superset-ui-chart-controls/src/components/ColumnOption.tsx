@@ -54,6 +54,7 @@ export function ColumnOption({ column, showType = false }: ColumnOptionProps) {
           icon="info"
           tooltip={column.description}
           label={`descr-${column.column_name}`}
+          placement="top"
         />
       )}
       {hasExpression && (
@@ -62,6 +63,7 @@ export function ColumnOption({ column, showType = false }: ColumnOptionProps) {
           icon="question-circle-o"
           tooltip={column.expression}
           label={`expr-${column.column_name}`}
+          placement="top"
         />
       )}
     </span>
