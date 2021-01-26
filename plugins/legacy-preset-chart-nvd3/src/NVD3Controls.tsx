@@ -93,6 +93,17 @@ export const yAxisShowMinmax: CustomControlItem = {
   },
 };
 
+export const yAxis2ShowMinmax: CustomControlItem = {
+  name: 'y_axis_2_showminmax',
+  config: {
+    type: 'CheckboxControl',
+    label: t('Y 2 bounds'),
+    renderTrigger: true,
+    default: false,
+    description: t('Whether to display the min and max values of the Y-axis'),
+  },
+};
+
 export const lineInterpolation: CustomControlItem = {
   name: 'line_interpolation',
   config: {
@@ -232,6 +243,22 @@ export const yAxisBounds: CustomControlItem = {
   },
 };
 
+export const yAxis2Bounds: CustomControlItem = {
+  name: 'y_axis_2_bounds',
+  config: {
+    type: 'BoundsControl',
+    label: t('Y Axis 2 Bounds'),
+    renderTrigger: true,
+    default: [null, null],
+    description: t(
+      'Bounds for the Y-axis. When left empty, the bounds are ' +
+        'dynamically defined based on the min/max of the data. Note that ' +
+        "this feature will only expand the axis range. It won't " +
+        "narrow the data's extent.",
+    ),
+  },
+};
+
 export const xAxisShowMinmax: CustomControlItem = {
   name: 'x_axis_showminmax',
   config: {
@@ -311,7 +338,8 @@ export const timeSeriesSection: ControlPanelSectionConfig[] = [
       ['metrics'],
       ['adhoc_filters'],
       ['groupby'],
-      ['limit', 'timeseries_limit_metric'],
+      ['limit'],
+      ['timeseries_limit_metric'],
       [
         {
           name: 'order_desc',
@@ -322,6 +350,8 @@ export const timeSeriesSection: ControlPanelSectionConfig[] = [
             description: t('Whether to sort descending or ascending'),
           },
         },
+      ],
+      [
         {
           name: 'contribution',
           config: {
@@ -373,6 +403,8 @@ export const timeSeriesSection: ControlPanelSectionConfig[] = [
             ),
           },
         },
+      ],
+      [
         {
           name: 'min_periods',
           config: {
@@ -416,6 +448,8 @@ export const timeSeriesSection: ControlPanelSectionConfig[] = [
             ),
           },
         },
+      ],
+      [
         {
           name: 'comparison_type',
           config: {
@@ -450,6 +484,8 @@ export const timeSeriesSection: ControlPanelSectionConfig[] = [
             description: t('Pandas resample rule'),
           },
         },
+      ],
+      [
         {
           name: 'resample_method',
           config: {
