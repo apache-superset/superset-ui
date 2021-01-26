@@ -126,19 +126,14 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     if (max === undefined) max = 1;
   }
 
-  const xAxisFormatter = (value: number) => {
-    let dateFormatter;
-
-    if (xAxisTimeFormat === smartDateFormatter.id) {
-      dateFormatter = getTimeFormatterForGranularity(timeGrainSqla);
-    } else if (xAxisTimeFormat) {
-      dateFormatter = getTimeFormatter(xAxisTimeFormat);
-    } else {
-      dateFormatter = String;
-    }
-
-    return dateFormatter(value);
-  };
+  let xAxisFormatter;
+  if (xAxisTimeFormat === smartDateFormatter.id) {
+    xAxisFormatter = getTimeFormatterForGranularity(timeGrainSqla);
+  } else if (xAxisTimeFormat) {
+    xAxisFormatter = getTimeFormatter(xAxisTimeFormat);
+  } else {
+    xAxisFormatter = String;
+  }
 
   const echartOptions: echarts.EChartOption = {
     useUTC: true,
