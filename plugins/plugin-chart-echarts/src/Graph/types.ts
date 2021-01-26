@@ -16,48 +16,77 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {
-    DEFAULT_LEGEND_FORM_DATA,
-    EchartsLegendFormData,
-    LegendOrientation,
-    LegendType,
-  } from '../types';
-  
-  export type EchartsPieFormData = EchartsLegendFormData & {
-    colorScheme?: string;
-    donut: boolean;
-    groupby: string[];
-    innerRadius: number;
-    labelLine: boolean;
-    labelType: EchartsPieLabelType;
-    labelsOutside: boolean;
-    metric?: string;
-    outerRadius: number;
-    showLabels: boolean;
-    numberFormat: string;
-  };
-  
-  export enum EchartsPieLabelType {
-    Key = 'key',
-    Value = 'value',
-    Percent = 'percent',
-    KeyValue = 'key_value',
-    KeyPercent = 'key_percent',
-    KeyValuePercent = 'key_value_percent',
-  }
-  
-  export const DEFAULT_FORM_DATA: EchartsPieFormData = {
-    ...DEFAULT_LEGEND_FORM_DATA,
-    donut: false,
-    groupby: [],
-    innerRadius: 30,
-    labelLine: false,
-    labelType: EchartsPieLabelType.Key,
-    legendOrientation: LegendOrientation.Top,
-    legendType: LegendType.Scroll,
-    numberFormat: 'SMART_NUMBER',
-    outerRadius: 70,
-    showLabels: true,
-    labelsOutside: true,
-  };
-  
+export type EchartsGraphFormData = {
+  name: string;
+  zoom: number;
+  layout: string;
+  circularConfig: object;
+  forceConfig: object;
+  roam: string | boolean;
+  draggable: boolean;
+  edgeSymbol: object;
+  edgeSymbolSize: object;
+  itemStyle: object;
+  labelConfig: object;
+  emphasis: object;
+  selectedMode: string;
+  autoCurveness: number;
+  left: string;
+  top: string;
+  right: string;
+  bottom: string;
+  animation: boolean;
+  animationDuration: number;
+  animationEasing: string;
+  showSymbolThreshold: number;
+  tooltipConfiguration: object;
+  lineStyleConfiguration: object;
+};
+
+export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
+  name: 'directed force graph',
+  zoom: 1,
+  layout: 'none',
+  circularConfig: { rotateLabel: true },
+  forceConfig: {
+    initLayout: 'circular',
+    repulsion: 50,
+    gravity: 0.1,
+    edgeLength: 30,
+    layoutAnimation: true,
+    friction: 0.6,
+  },
+  roam: true,
+  draggable: true,
+  edgeSymbol: ['circle', 'arrow'],
+  edgeSymbolSize: [10, 10],
+  itemStyle: { color: 'rgba(210, 136, 136, 1)' },
+  labelConfig: {
+    show: true,
+    position: 'right',
+    distance: 5,
+    rotate: 0,
+    offset: [0, 0],
+    fontStyle: 'normal',
+    fontWeight: 'normal',
+    fontFamily: 'sans-serif',
+    fontSize: 12,
+    padding: [0, 0, 0, 0],
+    overflow: 'none',
+    formatter: '{b}',
+  },
+
+  emphasis: { focus: 'adjacency', lineStyle: { width: 10 } },
+  selectedMode: 'single',
+  autoCurveness: 20,
+  left: 'center',
+  top: 'middle',
+  right: 'auto',
+  bottom: 'auto',
+  animation: true,
+  animationDuration: 1000,
+  animationEasing: 'cubicOut',
+  showSymbolThreshold: 0,
+  tooltipConfiguration: {},
+  lineStyleConfiguration: { color: 'source', curveness: 0.3 },
+};
