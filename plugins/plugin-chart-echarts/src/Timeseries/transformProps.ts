@@ -30,6 +30,7 @@ import {
   getTimeFormatterForGranularity,
   smartDateFormatter,
   TimeseriesChartDataResponseResult,
+  TimeFormatter,
 } from '@superset-ui/core';
 import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
 import { EchartsProps, ForecastSeriesEnum } from '../types';
@@ -125,8 +126,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     if (max === undefined) max = 1;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let xAxisFormatter;
+  let xAxisFormatter: TimeFormatter | StringConstructor;
   if (xAxisTimeFormat === smartDateFormatter.id) {
     xAxisFormatter = getTimeFormatterForGranularity(timeGrainSqla);
   } else if (xAxisTimeFormat) {
