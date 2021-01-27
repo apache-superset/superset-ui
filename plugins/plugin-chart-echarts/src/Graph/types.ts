@@ -18,11 +18,12 @@
  */
 export type EchartsGraphFormData = {
   name: string;
+  metric?: string;
   zoom: number;
   layout: string;
   circularConfig: object;
   forceConfig: object;
-  roam: string | boolean;
+  roam: boolean;
   draggable: boolean;
   edgeSymbol: object;
   edgeSymbolSize: object;
@@ -46,13 +47,13 @@ export type EchartsGraphFormData = {
 export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
   name: 'directed force graph',
   zoom: 1,
-  layout: 'none',
+  layout: 'force',
   circularConfig: { rotateLabel: true },
   forceConfig: {
     initLayout: 'circular',
     repulsion: 50,
-    gravity: 0.1,
-    edgeLength: 30,
+    gravity: 0.05,
+    edgeLength: 200,
     layoutAnimation: true,
     friction: 0.6,
   },
@@ -76,7 +77,12 @@ export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
     formatter: '{b}',
   },
 
-  emphasis: { focus: 'adjacency', lineStyle: { width: 10 } },
+  emphasis: {
+    focus: 'adjacency',
+    lineStyle: {
+      width: 10,
+    },
+  },
   selectedMode: 'single',
   autoCurveness: 20,
   left: 'center',
@@ -88,5 +94,5 @@ export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
   animationEasing: 'cubicOut',
   showSymbolThreshold: 0,
   tooltipConfiguration: {},
-  lineStyleConfiguration: { color: 'source', curveness: 0.3 },
+  lineStyleConfiguration: { color: 'source', curveness: 0.1 },
 };

@@ -18,6 +18,9 @@
  */
 import { t } from '@superset-ui/core';
 import { formatSelectOptions, sections } from '@superset-ui/chart-controls';
+import { DEFAULT_FORM_DATA } from './types';
+
+const { layout, roam, draggable, selectedMode, showSymbolThreshold } = DEFAULT_FORM_DATA;
 
 export default {
   controlPanelSections: [
@@ -33,40 +36,62 @@ export default {
       controlSetRows: [
         [
           {
-            name: 'link_length',
+            name: 'layout',
             config: {
               type: 'SelectControl',
               renderTrigger: true,
-              freeForm: true,
-              label: t('Link Length'),
-              default: '200',
-              choices: formatSelectOptions(['10', '25', '50', '75', '100', '150', '200', '250']),
-              description: t('Link length in the force layout'),
+              label: t('Graph Layout'),
+              default: layout,
+              choices: formatSelectOptions(['force', 'circular']), //cant show none,as data does not have x,y indices
+              description: t('Layout type of graph'),
             },
           },
         ],
         [
           {
-            name: 'charge',
+            name: 'draggable',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Enable node draging'),
+              renderTrigger: true,
+              default: draggable,
+              description: t('Whether to enable node dragging in force layout mode.'),
+            },
+          },
+          {
+            name: 'roam',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Enable graph roaming'),
+              renderTrigger: true,
+              default: roam,
+              description: t('Whether to enable chaging graph position.'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'selectMode',
             config: {
               type: 'SelectControl',
               renderTrigger: true,
-              freeForm: true,
-              label: t('Charge'),
-              default: '-500',
-              choices: formatSelectOptions([
-                '-50',
-                '-75',
-                '-100',
-                '-150',
-                '-200',
-                '-250',
-                '-500',
-                '-1000',
-                '-2500',
-                '-5000',
-              ]),
-              description: t('Charge in the force layout'),
+              label: t('Node Select Mode'),
+              default: selectedMode,
+              choices: formatSelectOptions(['single', 'multiple']),
+              description: t('Allow node selections'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'showSymbolThreshold',
+            config: {
+              type: 'TextControl',
+              label: t('Label Threshold'),
+              renderTrigger: true,
+              isInt: true,
+              default: showSymbolThreshold,
+              description: t('Minimum value for label to be displayed on graph.'),
             },
           },
         ],
