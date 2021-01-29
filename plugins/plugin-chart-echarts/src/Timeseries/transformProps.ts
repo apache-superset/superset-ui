@@ -136,13 +136,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     xAxisFormatter = String;
   }
 
-  console.log({
-    legendType,
-    legendOrientation,
-    showLegend,
-    zoomable,
-  });
-
   const echartOptions: echarts.EChartOption = {
     useUTC: true,
     grid: {
