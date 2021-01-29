@@ -80,6 +80,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     timeGrainSqla,
     zoomable,
     richTooltip,
+    xAxisLabelRotation,
   }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
@@ -153,6 +154,10 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         showMinLabel: xAxisShowMinLabel,
         showMaxLabel: xAxisShowMaxLabel,
         formatter: xAxisFormatter,
+        rotate:
+          xAxisLabelRotation >= -90 && xAxisLabelRotation <= 90
+            ? xAxisLabelRotation
+            : DEFAULT_FORM_DATA.xAxisLabelRotation,
       },
     },
     yAxis: {

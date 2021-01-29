@@ -54,6 +54,7 @@ const {
   truncateYAxis,
   yAxisBounds,
   zoomable,
+  xAxisLabelRotation,
 } = DEFAULT_FORM_DATA;
 
 const config: ControlPanelConfig = {
@@ -335,6 +336,18 @@ const config: ControlPanelConfig = {
               default: true,
               renderTrigger: true,
               description: t('Show Max Label'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'xAxisLabelRotation',
+            config: {
+              type: 'TextControl',
+              label: t('Rotate x axis label'),
+              default: xAxisLabelRotation,
+              renderTrigger: true,
+              description: t('Rotate x axis label value between -90 and 90'),
             },
           },
         ],
