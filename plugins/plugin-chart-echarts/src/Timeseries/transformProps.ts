@@ -144,7 +144,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         top: 20,
         bottom: zoomable ? 80 : 20,
         left: 20,
-        right: legendOrientation === LegendOrientation.Right ? 0 : 40,
+        right: showLegend && legendOrientation === LegendOrientation.Right ? 0 : 40,
       }),
     },
     xAxis: {
@@ -154,6 +154,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         showMaxLabel: xAxisShowMaxLabel,
         formatter: xAxisFormatter,
       },
+      nameRotate: 50,
     },
     yAxis: {
       ...defaultYAxis,
