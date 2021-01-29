@@ -93,7 +93,7 @@ export function getLegendProps(
   type: LegendType,
   orientation: LegendOrientation,
   show: boolean,
-  zoomable: boolean,
+  zoomable = false,
 ): echarts.EChartOption.Legend {
   const legend: echarts.EChartOption.Legend = {
     orient: [LegendOrientation.Top, LegendOrientation.Bottom].includes(orientation)
