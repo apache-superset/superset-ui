@@ -18,6 +18,7 @@
  */
 import React from 'react';
 import { kebabCase } from 'lodash';
+import { TooltipPlacement } from 'antd/lib/tooltip';
 import { t } from '@superset-ui/core';
 import { Tooltip } from './Tooltip';
 
@@ -26,19 +27,7 @@ export interface InfoTooltipWithTriggerProps {
   tooltip?: string;
   icon?: string;
   onClick?: () => void;
-  placement?:
-    | 'right'
-    | 'top'
-    | 'left'
-    | 'bottom'
-    | 'topLeft'
-    | 'topRight'
-    | 'bottomLeft'
-    | 'bottomRight'
-    | 'leftTop'
-    | 'leftBottom'
-    | 'rightTop'
-    | 'rightBottom';
+  placement?: TooltipPlacement;
   bsStyle?: string;
   className?: string;
 }
