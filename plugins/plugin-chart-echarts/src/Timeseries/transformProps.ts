@@ -51,6 +51,7 @@ import {
   transformSeries,
   transformTimeseriesAnnotation,
 } from './transformers';
+import { TIMESERIES_GRID_OFFSET_RIGHT, TIMESERIES_ZOOM_BOTTOM } from '../constants';
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
@@ -144,7 +145,10 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         top: 20,
         bottom: zoomable ? 80 : 20,
         left: 20,
-        right: showLegend && legendOrientation === LegendOrientation.Right ? 0 : 40,
+        right:
+          showLegend && legendOrientation === LegendOrientation.Right
+            ? 0
+            : TIMESERIES_GRID_OFFSET_RIGHT,
       }),
     },
     xAxis: {
@@ -223,7 +227,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
             type: 'slider',
             start: 0,
             end: 100,
-            bottom: 30,
+            bottom: TIMESERIES_ZOOM_BOTTOM,
           },
         ]
       : [],

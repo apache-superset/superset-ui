@@ -61,11 +61,7 @@ export type ProphetValue = {
 
 export type EchartsLegendFormData = {
   legendMargin: number | null | string;
-  legendOrientation:
-    | LegendOrientation.Top
-    | LegendOrientation.Bottom
-    | LegendOrientation.Left
-    | LegendOrientation.Right;
+  legendOrientation: LegendOrientation;
   legendType: LegendType;
   showLegend: boolean;
 };
