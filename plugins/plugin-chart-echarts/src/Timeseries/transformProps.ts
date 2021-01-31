@@ -154,10 +154,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         showMinLabel: xAxisShowMinLabel,
         showMaxLabel: xAxisShowMaxLabel,
         formatter: xAxisFormatter,
-        rotate:
-          xAxisLabelRotation >= -90 && xAxisLabelRotation <= 90
-            ? xAxisLabelRotation
-            : DEFAULT_FORM_DATA.xAxisLabelRotation,
+        rotate: xAxisLabelRotation,
       },
     },
     yAxis: {
