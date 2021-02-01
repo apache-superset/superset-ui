@@ -343,12 +343,17 @@ const config: ControlPanelConfig = {
           {
             name: 'xAxisLabelRotation',
             config: {
-              type: 'TextControl',
+              type: 'SelectControl',
+              freeForm: true,
+              clearable: false,
               label: t('Rotate x axis label'),
+              choices: [
+                [0, '0°'],
+                [45, '45°'],
+              ],
               default: xAxisLabelRotation,
-              validators: [legacyValidateInteger],
               renderTrigger: true,
-              description: t('Rotation of x axis label in degrees'),
+              description: t('Input field supports custom rotation. e.g. 30 for 30°'),
             },
           },
         ],
