@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import d3 from 'd3';
+import { extent, max, min, sum, select } from 'd3';
 import d3tip from 'd3-tip';
 import dompurify from 'dompurify';
 import { smartDateFormatter, getNumberFormatter } from '@superset-ui/core';
@@ -53,7 +53,7 @@ export function drawBarValues(svg, data, stacked, axisFormat) {
       ? data[0].values.map((bar, iBar) => {
           const bars = data.filter(series => !series.disabled).map(series => series.values[iBar]);
 
-          return d3.sum(bars, d => d.y);
+          return sum(bars, d => d.y);
         })
       : [];
   svg.selectAll('.bar-chart-label-group').remove();
@@ -68,7 +68,7 @@ export function drawBarValues(svg, data, stacked, axisFormat) {
       .filter((d, i) => !stacked || i === countSeriesDisplayed - 1)
       .selectAll('rect')
       .each(function each(d, index) {
-        const rectObj = d3.select(this);
+        const rectObj = select(this);
         const transformAttr = rectObj.attr('transform');
         const xPos = parseFloat(rectObj.attr('x'));
         const yPos = parseFloat(rectObj.attr('y'));
@@ -163,7 +163,7 @@ export function generateAreaChartTooltipContent(d, timeFormatter, valueFormatter
   const total =
     chart.style() === 'expand'
       ? // expand mode does not include total row
-        d3.sum(d.series, s => s.value)
+        sum(d.series, s => s.value)
       : // other modes include total row at the end
         d.series[d.series.length - 1].value;
   let tooltip = '';
@@ -369,9 +369,7 @@ export function formatLabel(input, verboseMap = {}) {
 const MIN_BAR_WIDTH = 18;
 
 export function computeBarChartWidth(data, stacked, maxWidth) {
-  const barCount = stacked
-    ? d3.max(data, d => d.values.length)
-    : d3.sum(data, d => d.values.length);
+  const barCount = stacked ? max(data, d => d.values.length) : sum(data, d => d.values.length);
 
   const barWidth = barCount * MIN_BAR_WIDTH;
 
@@ -401,9 +399,9 @@ export function setAxisShowMaxMin(axis, showminmax) {
 
 export function computeYDomain(data) {
   if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0].values)) {
-    const extents = data.filter(d => !d.disabled).map(row => d3.extent(row.values, v => v.y));
-    const minOfMin = d3.min(extents, ([min]) => min);
-    const maxOfMax = d3.max(extents, ([, max]) => max);
+    const extents = data.filter(d => !d.disabled).map(row => extent(row.values, v => v.y));
+    const minOfMin = min(extents, ([min]) => min);
+    const maxOfMax = max(extents, ([, max]) => max);
 
     return [minOfMin, maxOfMax];
   }
