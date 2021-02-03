@@ -18,6 +18,8 @@
  */
 import { TimeseriesDataRecord, NumberFormatter } from '@superset-ui/core';
 import { ForecastSeriesContext, ForecastSeriesEnum, ProphetValue } from '../types';
+import { CallbackDataParams } from 'echarts/types/src/util/types';
+import { TooltipMarker } from 'echarts/types/src/util/format';
 
 const seriesTypeRegex = new RegExp(
   `(.+)(${ForecastSeriesEnum.ForecastLower}|${ForecastSeriesEnum.ForecastTrend}|${ForecastSeriesEnum.ForecastUpper})$`,
@@ -32,7 +34,7 @@ export const extractForecastSeriesContext = (seriesName: string): ForecastSeries
 };
 
 export const extractProphetValuesFromTooltipParams = (
-  params: (echarts.EChartOption.Tooltip.Format & { seriesId: string })[],
+  params: (CallbackDataParams & { seriesId: string })[],
 ): Record<string, ProphetValue> => {
   const values: Record<string, ProphetValue> = {};
   params.forEach(param => {
@@ -67,7 +69,7 @@ export const formatProphetTooltipSeries = ({
   formatter,
 }: ProphetValue & {
   seriesName: string;
-  marker: string;
+  marker: TooltipMarker;
   formatter: NumberFormatter;
 }): string => {
   let row = `${marker}${seriesName}: `;

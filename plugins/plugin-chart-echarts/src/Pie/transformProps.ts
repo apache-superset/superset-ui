@@ -33,6 +33,8 @@ import {
 import { DEFAULT_LEGEND_FORM_DATA, EchartsProps } from '../types';
 import { extractGroupbyLabel, getChartPadding, getLegendProps } from '../utils/series';
 import { defaultGrid, defaultTooltip } from '../defaults';
+import { OptionDataItem, OptionDataValue } from 'echarts/types/src/util/types';
+import { EChartsOption } from 'echarts';
 
 const percentFormatter = getNumberFormatter(NumberFormats.PERCENT_2_POINT);
 
@@ -41,7 +43,7 @@ export function formatPieLabel({
   labelType,
   numberFormatter,
 }: {
-  params: echarts.EChartOption.Tooltip.Format;
+  params: { name: string; value: OptionDataItem | OptionDataValue; percent?: number };
   labelType: EchartsPieLabelType;
   numberFormatter: NumberFormatter;
 }): string {
@@ -113,16 +115,16 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     color: '#000000',
   };
 
-  const echartOptions: echarts.EChartOption<echarts.EChartOption.SeriesPie> = {
+  const echartOptions: EChartsOption = {
     grid: {
       ...defaultGrid,
     },
     tooltip: {
       ...defaultTooltip,
       trigger: 'item',
-      formatter: params =>
+      formatter: (params: any) =>
         formatPieLabel({
-          params: params as echarts.EChartOption.Tooltip.Format,
+          params: params,
           numberFormatter,
           labelType: EchartsPieLabelType.KeyValuePercent,
         }),
@@ -140,6 +142,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         center: ['50%', '50%'],
         avoidLabelOverlap: true,
         labelLine: labelsOutside && labelLine ? { show: true } : { show: false },
+        // @ts-ignore
         label: labelsOutside
           ? {
               ...defaultLabel,

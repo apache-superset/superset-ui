@@ -51,6 +51,7 @@ import {
   transformSeries,
   transformTimeseriesAnnotation,
 } from './transformers';
+import { EChartsOption, SeriesOption } from 'echarts';
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
@@ -85,7 +86,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
   const rebasedData = rebaseTimeseriesDatum(data);
   const rawSeries = extractTimeseriesSeries(rebasedData);
-  const series: echarts.EChartOption.Series[] = [];
+  const series: SeriesOption[] = [];
   const formatter = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormat);
 
   rawSeries.forEach(entry => {
@@ -136,7 +137,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     xAxisFormatter = String;
   }
 
-  const echartOptions: echarts.EChartOption = {
+  const echartOptions: EChartsOption = {
     useUTC: true,
     grid: {
       ...defaultGrid,
@@ -193,10 +194,12 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     },
     legend: {
       ...getLegendProps(legendType, legendOrientation, showLegend),
+      // @ts-ignore
       data: rawSeries
         .filter(
           entry =>
-            extractForecastSeriesContext(entry.name || '').type === ForecastSeriesEnum.Observation,
+            extractForecastSeriesContext((entry.name || '') as string).type ===
+            ForecastSeriesEnum.Observation,
         )
         .map(entry => entry.name || '')
         .concat(extractAnnotationLabels(annotationLayers, annotationData)),
@@ -227,7 +230,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   };
 
   return {
-    // @ts-ignore
     echartOptions,
     width,
     height,

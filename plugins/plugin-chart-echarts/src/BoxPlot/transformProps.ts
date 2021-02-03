@@ -27,6 +27,8 @@ import { BoxPlotQueryFormData } from './types';
 import { EchartsProps } from '../types';
 import { extractGroupbyLabel } from '../utils/series';
 import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
+import { EChartsOption } from 'echarts';
+import { CallbackDataParams } from 'echarts/types/src/util/types';
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
@@ -102,8 +104,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   else if (xTicksLayout === 'staggered') axisLabel = { rotate: -45 };
   else axisLabel = { show: true };
 
-  // @ts-ignore
-  const echartOptions: echarts.EChartOption<echarts.EChartOption.SeriesBoxplot> = {
+  const echartOptions: EChartsOption = {
     grid: {
       ...defaultGrid,
       top: 30,
@@ -132,11 +133,11 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       {
         name: 'boxplot',
         type: 'boxplot',
-        avoidLabelOverlap: true,
         // @ts-ignore
+        avoidLabelOverlap: true,
         data: transformedData,
         tooltip: {
-          formatter: param => {
+          formatter: (param: CallbackDataParams) => {
             // @ts-ignore
             const {
               value,
