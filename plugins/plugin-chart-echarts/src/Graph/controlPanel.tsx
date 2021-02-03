@@ -16,108 +16,63 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import React from 'react';
 import { t } from '@superset-ui/core';
 import {
   formatSelectOptions,
   sections,
   sharedControls,
-  ControlConfig,
-  ControlPanelConfig,
   ColumnOption,
+  ColumnMeta,
 } from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from './types';
 
 const noopControl = { name: 'noop', config: { type: '', renderTrigger: true } };
+const controlConfig = {
+  ...sharedControls.entity,
+  type: 'SelectControl',
+  multi: false,
+  freeForm: true,
+  default: null,
+  includeTime: false,
+  optionRenderer: (c: ColumnMeta) => <ColumnOption column={c} showType />,
+  valueRenderer: (c: ColumnMeta) => <ColumnOption column={c} />,
+  valueKey: 'column_name',
+  allowAll: true,
+  filterOption: ({ data: opt }: any, text: string) =>
+    (opt.column_name && opt.column_name.toLowerCase().indexOf(text.toLowerCase()) >= 0) ||
+    (opt.verbose_name && opt.verbose_name.toLowerCase().indexOf(text.toLowerCase()) >= 0),
+  promptTextCreator: (label: any) => label,
+  commaChoosesOption: false,
+};
 
 const sourceControl = {
   name: 'source',
   config: {
-    ...sharedControls.entity,
-    type: 'SelectControl',
-    multi: false,
-    freeForm: true,
+    ...controlConfig,
+    clearable: false,
     label: t('Source'),
-    default: [],
-    includeTime: false,
     description: t('Source for nodes of graph'),
-    optionRenderer: c => <ColumnOption column={c} showType />,
-    valueRenderer: c => <ColumnOption column={c} />,
-    valueKey: 'column_name',
-    allowAll: true,
-    filterOption: ({ data: opt }, text) =>
-      (opt.column_name && opt.column_name.toLowerCase().indexOf(text.toLowerCase()) >= 0) ||
-      (opt.verbose_name && opt.verbose_name.toLowerCase().indexOf(text.toLowerCase()) >= 0),
-    promptTextCreator: label => label,
-    mapStateToProps: (state, control) => {
-      const newState = {};
-      if (state.datasource) {
-        newState.options = state.datasource.columns.filter(c => c.groupby);
-      }
-      return newState;
-    },
-    commaChoosesOption: false,
   },
 };
 
 const targetControl = {
   name: 'target',
   config: {
-    ...sharedControls.entity,
-    type: 'SelectControl',
-    multi: false,
-    freeForm: true,
+    ...controlConfig,
+    clearable: false,
     label: t('Target'),
-    default: [],
-    includeTime: false,
     description: t('Target for nodes of graph'),
-    optionRenderer: c => <ColumnOption column={c} showType />,
-    valueRenderer: c => <ColumnOption column={c} />,
-    valueKey: 'column_name',
-    allowAll: true,
-    filterOption: ({ data: opt }, text) =>
-      (opt.column_name && opt.column_name.toLowerCase().indexOf(text.toLowerCase()) >= 0) ||
-      (opt.verbose_name && opt.verbose_name.toLowerCase().indexOf(text.toLowerCase()) >= 0),
-    promptTextCreator: label => label,
-    mapStateToProps: (state, control) => {
-      //TODO: is this required?
-      const newState = {};
-      if (state.datasource) {
-        newState.options = state.datasource.columns.filter(c => c.groupby);
-      }
-      return newState;
-    },
-    commaChoosesOption: false,
   },
 };
-//TODO: use only one object and other override params
+
 const categoryControl = {
   name: 'category',
   config: {
-    ...sharedControls.entity,
-    type: 'SelectControl',
-    multi: false,
-    freeForm: true,
+    ...controlConfig,
     clearable: true,
     label: t('Category'),
-    default: null,
-    includeTime: false,
-    description: t('Optional category for nodes'),
-    optionRenderer: c => <ColumnOption column={c} showType />,
-    valueRenderer: c => <ColumnOption column={c} />,
-    valueKey: 'column_name',
-
-    filterOption: ({ data: opt }, text) =>
-      (opt.column_name && opt.column_name.toLowerCase().indexOf(text.toLowerCase()) >= 0) ||
-      (opt.verbose_name && opt.verbose_name.toLowerCase().indexOf(text.toLowerCase()) >= 0),
-    promptTextCreator: label => label,
-    mapStateToProps: (state, control) => {
-      const newState = {};
-      if (state.datasource) {
-        newState.options = state.datasource.columns.filter(c => c.groupby);
-      }
-      return newState;
-    },
-    commaChoosesOption: false,
+    description: t('Optional category for nodes of graph'),
     validators: [],
   },
 };

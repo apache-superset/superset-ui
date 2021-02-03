@@ -1,4 +1,8 @@
-import { EchartsGraphFormData, DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA } from './types';
+import {
+  EchartsGraphFormData,
+  DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA,
+  GraphConstants,
+} from './types';
 import {
   CategoricalColorNamespace,
   ChartProps,
@@ -8,10 +12,19 @@ import {
 } from '@superset-ui/core';
 import { EchartsProps } from '../types';
 
-function normalizeData(nodes) {
+function normalizeSymbolSize(
+  nodes: {
+    id: number;
+    name: DataRecordValue;
+    symbolSize: any;
+    value: any;
+    label?: { [name: string]: boolean };
+    category: string | null;
+  }[],
+) {
   let max = Number.MIN_VALUE;
   let min = Number.MAX_VALUE;
-  nodes.forEach(node => {
+  nodes.forEach((node: { symbolSize: any }) => {
     const symbolSize = node.symbolSize;
     if (symbolSize > max) {
       max = symbolSize;
@@ -21,8 +34,8 @@ function normalizeData(nodes) {
     }
   });
 
-  nodes.forEach(node => {
-    node.symbolSize = ((node.symbolSize - min) / (max - min)) * 80 + 20;
+  nodes.forEach((node: { symbolSize: number }) => {
+    node.symbolSize = ((node.symbolSize - min) / (max - min)) * 60 + 10;
   });
 }
 
@@ -37,53 +50,34 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     category,
     colorScheme,
     metric = '',
-    zoom,
     layout,
-    circularConfig,
-    forceConfig,
     roam,
     draggable,
-    edgeSymbol,
-    edgeSymbolSize,
-    itemStyle,
-    labelConfig,
-    emphasis,
     selectedMode,
-    autoCurveness,
-    left,
-    top,
-    right,
-    bottom,
-    animation,
-    animationDuration,
-    animationEasing,
     showSymbolThreshold,
-    tooltipConfiguration,
-    lineStyleConfiguration,
   }: EchartsGraphFormData = { ...DEFAULT_GRAPH_FORM_DATA, ...formData };
 
   const metricLabel = getMetricLabel(metric);
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
-  var index: number = 0;
-  var nodes: { [name: string]: number } = {}; //{agri: 0, carbon: 1}
-  var echart_nodes: {
+  let nodes: { [name: string]: number } = {};
+  let echart_nodes: {
     id: number;
     name: DataRecordValue;
     symbolSize: any;
-    value: DataRecordValue;
+    value: any;
     label?: { [name: string]: boolean };
-  }[] = []; // [{id,name,symbol,x,y,value} , {}]
-  var echart_links: object[] = []; // [{source, target}, {}]
-  var echart_categories: [] = [];
-  var index = 0;
-  var source_index = 0;
-  var target_index = 0;
+    category: string | null;
+  }[] = [];
+  let echart_links: object[] = [];
+  let echart_categories: string[] = [];
+  let index = 0;
+  let source_index = 0;
+  let target_index = 0;
 
   data.forEach(link => {
-    console.log('link ', link);
     const node_source: any = link[source];
     const node_target: any = link[target];
-    const node_category: any = category ? link[category]?.toString() : 'default';
+    const node_category: string = category ? link[category]!.toString() : 'default';
 
     if (!(node_source in nodes)) {
       echart_nodes.push({
@@ -131,52 +125,47 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       };
     });
   }
-  console.log('nodes', echart_nodes);
-  normalizeData(echart_nodes);
-  console.log('normalized nodes', echart_nodes);
-  console.log('nodes', echart_nodes);
-  console.log('links ', echart_links);
-  console.log('categories ', echart_categories);
 
-  const echartOptions = {
+  normalizeSymbolSize(echart_nodes);
+
+  const echartOptions: echarts.EChartOption = {
     title: {
       text: name,
       subtext: 'Default layout',
       top: 'bottom',
       left: 'right',
     },
-    animationDuration: animationDuration,
-    animationEasing: animationEasing,
-    tooltip: tooltipConfiguration,
+    animationDuration: GraphConstants.animationDuration,
+    animationEasing: GraphConstants.animationEasing,
+    tooltip: GraphConstants.tooltipConfiguration,
     legend: [{ data: echart_categories }],
     series: [
       {
         name: name,
-        zoom: zoom,
+        zoom: GraphConstants.zoom,
         type: 'graph',
         categories: echart_categories.map(function (c) {
           return { name: c, itemStyle: { color: colorFn(c) } };
         }),
         layout: layout,
-        force: forceConfig,
-        circular: circularConfig,
+        force: GraphConstants.forceConfig,
+        circular: GraphConstants.circularConfig,
         data: echart_nodes,
         links: echart_links,
         roam: roam,
         draggable: draggable,
-        edgeSymbol: edgeSymbol,
-        edgeSymbolSize: edgeSymbolSize,
-        //itemStyle: itemStyle,
+        edgeSymbol: GraphConstants.edgeSymbol,
+        edgeSymbolSize: GraphConstants.edgeSymbolSize,
         selectedMode: selectedMode,
-        autoCurveness: autoCurveness,
-        left: left,
-        top: top,
-        bottom: bottom,
-        right: right,
-        animation: animation,
-        label: labelConfig,
-        lineStyle: lineStyleConfiguration,
-        emphasis: emphasis,
+        autoCurveness: GraphConstants.autoCurveness,
+        left: GraphConstants.left,
+        top: GraphConstants.top,
+        bottom: GraphConstants.bottom,
+        right: GraphConstants.right,
+        animation: GraphConstants.animation,
+        label: GraphConstants.labelConfig,
+        lineStyle: GraphConstants.lineStyleConfiguration,
+        emphasis: GraphConstants.emphasis,
       },
     ],
   };

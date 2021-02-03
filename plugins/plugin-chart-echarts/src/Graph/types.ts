@@ -18,6 +18,10 @@
  */
 export type EchartsGraphFormData = {
   name: string;
+  source: string;
+  target: string;
+  category?: string;
+  colorScheme?: string;
   groupby: string[];
   metric?: string;
   zoom: number;
@@ -46,24 +50,28 @@ export type EchartsGraphFormData = {
 };
 
 export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
-  name: 'directed force graph',
+  name: 'graph chart',
   groupby: [],
+  layout: 'circular',
+  roam: true,
+  draggable: false,
+  selectedMode: 'single',
+  showSymbolThreshold: 0,
+};
+
+export const GraphConstants = {
   zoom: 1,
-  layout: 'force',
   circularConfig: { rotateLabel: true },
   forceConfig: {
     initLayout: 'circular',
-    repulsion: 50,
-    gravity: 0.05,
-    edgeLength: 200,
+    repulsion: 100,
+    gravity: 0.1,
+    edgeLength: 400,
     layoutAnimation: true,
-    friction: 0.6,
+    friction: 0.2,
   },
-  roam: true,
-  draggable: true,
   edgeSymbol: ['circle', 'arrow'],
   edgeSymbolSize: [10, 10],
-  itemStyle: { color: 'rgba(210, 136, 136, 1)' },
   labelConfig: {
     show: true,
     position: 'right',
@@ -78,14 +86,12 @@ export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
     overflow: 'none',
     formatter: '{b}',
   },
-
   emphasis: {
     focus: 'adjacency',
     lineStyle: {
       width: 10,
     },
   },
-  selectedMode: 'single',
   autoCurveness: 20,
   left: 'center',
   top: 'middle',
@@ -94,7 +100,6 @@ export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
   animation: true,
   animationDuration: 500,
   animationEasing: 'cubicOut',
-  showSymbolThreshold: 0,
   tooltipConfiguration: { show: true, formatter: '{b}: {c}' },
   lineStyleConfiguration: { color: 'source', curveness: 0.1 },
 };
