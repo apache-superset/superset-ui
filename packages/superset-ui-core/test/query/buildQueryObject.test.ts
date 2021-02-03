@@ -210,4 +210,15 @@ describe('buildQueryObject', () => {
     });
     expect(query.url_params).toEqual(urlParams);
   });
+
+  it('should populate custom_params', () => {
+    const customParams = { customObject: { id: 137, name: 'C-137' } };
+    query = buildQueryObject({
+      datasource: '5__table',
+      granularity_sqla: 'ds',
+      viz_type: 'table',
+      custom_params: customParams,
+    });
+    expect(query.custom_params).toEqual(customParams);
+  });
 });
