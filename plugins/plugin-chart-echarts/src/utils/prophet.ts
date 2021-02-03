@@ -17,16 +17,17 @@
  * under the License.
  */
 import { TimeseriesDataRecord, NumberFormatter } from '@superset-ui/core';
-import { CallbackDataParams } from 'echarts/types/src/util/types';
+import { CallbackDataParams, OptionName } from 'echarts/types/src/util/types';
 import { TooltipMarker } from 'echarts/types/src/util/format';
 import { ForecastSeriesContext, ForecastSeriesEnum, ProphetValue } from '../types';
 
 const seriesTypeRegex = new RegExp(
   `(.+)(${ForecastSeriesEnum.ForecastLower}|${ForecastSeriesEnum.ForecastTrend}|${ForecastSeriesEnum.ForecastUpper})$`,
 );
-export const extractForecastSeriesContext = (seriesName: string): ForecastSeriesContext => {
-  const regexMatch = seriesTypeRegex.exec(seriesName);
-  if (!regexMatch) return { name: seriesName, type: ForecastSeriesEnum.Observation };
+export const extractForecastSeriesContext = (seriesName: OptionName): ForecastSeriesContext => {
+  const name = seriesName as string;
+  const regexMatch = seriesTypeRegex.exec(name);
+  if (!regexMatch) return { name, type: ForecastSeriesEnum.Observation };
   return {
     name: regexMatch[1],
     type: regexMatch[2] as ForecastSeriesEnum,

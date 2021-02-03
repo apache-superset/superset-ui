@@ -67,7 +67,7 @@ export function transformSeries(
     ...DEFAULT_FORM_DATA,
     ...formData,
   };
-  const forecastSeries = extractForecastSeriesContext((name || '') as string);
+  const forecastSeries = extractForecastSeriesContext(name || '');
   const isConfidenceBand =
     forecastSeries.type === ForecastSeriesEnum.ForecastLower ||
     forecastSeries.type === ForecastSeriesEnum.ForecastUpper;
@@ -275,7 +275,6 @@ export function transformTimeseriesAnnotation(
         type: 'line',
         id: key,
         name: key,
-        // @ts-ignore
         data: values.map(row => [row.x, row.y] as [OptionName, number]),
         symbolSize: showMarkers ? markerSize : 0,
         lineStyle: {

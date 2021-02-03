@@ -170,7 +170,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       ...defaultTooltip,
       trigger: richTooltip ? 'axis' : 'item',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      formatter: (params: any) => {
+      formatter: params => {
         const value: number = !richTooltip ? params.value : params[0].value[0];
         const prophetValue = !richTooltip ? [params] : params;
 

@@ -26,7 +26,7 @@ import {
   NumberFormatter,
 } from '@superset-ui/core';
 import { OptionDataItem, OptionDataValue } from 'echarts/types/src/util/types';
-import { EChartsOption } from 'echarts';
+import { EChartsOption, PieSeriesOption } from 'echarts';
 import {
   DEFAULT_FORM_DATA as DEFAULT_PIE_FORM_DATA,
   EchartsPieFormData,
@@ -122,7 +122,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     tooltip: {
       ...defaultTooltip,
       trigger: 'item',
-      formatter: (params: any) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      formatter: params =>
         formatPieLabel({
           params: params,
           numberFormatter,
@@ -142,7 +143,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         center: ['50%', '50%'],
         avoidLabelOverlap: true,
         labelLine: labelsOutside && labelLine ? { show: true } : { show: false },
-        // @ts-ignore
         label: labelsOutside
           ? {
               ...defaultLabel,
@@ -161,10 +161,9 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
             backgroundColor: 'white',
           },
         },
-        // @ts-ignore
         data: transformedData,
       },
-    ],
+    ] as PieSeriesOption,
   };
 
   return {

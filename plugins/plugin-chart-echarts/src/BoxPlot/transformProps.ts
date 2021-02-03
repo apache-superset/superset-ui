@@ -23,7 +23,7 @@ import {
   getMetricLabel,
   getNumberFormatter,
 } from '@superset-ui/core';
-import { EChartsOption } from 'echarts';
+import { EChartsOption, SeriesOption } from 'echarts';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { BoxPlotQueryFormData } from './types';
 import { EchartsProps } from '../types';
@@ -133,7 +133,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       {
         name: 'boxplot',
         type: 'boxplot',
-        // @ts-ignore
         avoidLabelOverlap: true,
         data: transformedData,
         tooltip: {
@@ -163,9 +162,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           },
         },
       },
-      // @ts-ignore
       ...outlierData,
-    ],
+    ] as SeriesOption,
   };
 
   return {
