@@ -23,12 +23,16 @@ import {
   getMetricLabel,
   getNumberFormatter,
 } from '@superset-ui/core';
-import { EChartsOption, SeriesOption } from 'echarts';
+import { EChartsOption, BoxplotSeriesOption } from 'echarts';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { BoxPlotQueryFormData } from './types';
 import { EchartsProps } from '../types';
 import { extractGroupbyLabel } from '../utils/series';
 import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
+import {
+  BoxplotDataItemOption,
+  BoxplotStateOption,
+} from 'echarts/types/src/chart/boxplot/BoxplotSeries';
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
@@ -44,8 +48,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const numberFormatter = getNumberFormatter(numberFormat);
   const metricLabels = formdataMetrics.map(getMetricLabel);
 
-  const transformedData = data
-    .map(datum => {
+  const transformedData: (BoxplotDataItemOption & { name: string })[] = data
+    .map((datum: any) => {
       const groupbyLabel = extractGroupbyLabel({ datum, groupby });
       return metricLabels.map(metric => {
         const name = metricLabels.length === 1 ? groupbyLabel : `${groupbyLabel}, ${metric}`;
@@ -61,17 +65,12 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
             datum[`${metric}__count`],
             datum[`${metric}__outliers`],
           ],
-          itemStyle: {
-            color: colorFn(groupbyLabel),
-            opacity: 0.6,
-            borderColor: colorFn(groupbyLabel),
-          },
         };
       });
     })
     .flatMap(row => row);
 
-  const outlierData = data
+  const outlierData: (BoxplotStateOption & { name: string })[] = data
     .map(datum =>
       metricLabels.map(metric => {
         const groupbyLabel = extractGroupbyLabel({ datum, groupby });
@@ -104,6 +103,41 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   else if (xTicksLayout === 'staggered') axisLabel = { rotate: -45 };
   else axisLabel = { show: true };
 
+  const series: BoxplotSeriesOption[] = [
+    {
+      name: 'boxplot',
+      type: 'boxplot',
+      data: transformedData,
+      tooltip: {
+        formatter: (param: CallbackDataParams) => {
+          // @ts-ignore
+          const {
+            value,
+            name,
+          }: {
+            value: [number, number, number, number, number, number, number, number, number[]];
+            name: string;
+          } = param;
+          const headline = name ? `<p><strong>${name}</strong></p>` : '';
+          const stats = [
+            `Max: ${numberFormatter(value[5])}`,
+            `3rd Quartile: ${numberFormatter(value[4])}`,
+            `Mean: ${numberFormatter(value[6])}`,
+            `Median: ${numberFormatter(value[3])}`,
+            `1st Quartile: ${numberFormatter(value[2])}`,
+            `Min: ${numberFormatter(value[1])}`,
+            `# Observations: ${numberFormatter(value[7])}`,
+          ];
+          if (value[8].length > 0) {
+            stats.push(`# Outliers: ${numberFormatter(value[8].length)}`);
+          }
+          return headline + stats.join('<br/>');
+        },
+      },
+    },
+    ...outlierData,
+  ];
+
   const echartOptions: EChartsOption = {
     grid: {
       ...defaultGrid,
@@ -129,41 +163,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         type: 'shadow',
       },
     },
-    series: [
-      {
-        name: 'boxplot',
-        type: 'boxplot',
-        avoidLabelOverlap: true,
-        data: transformedData,
-        tooltip: {
-          formatter: (param: CallbackDataParams) => {
-            // @ts-ignore
-            const {
-              value,
-              name,
-            }: {
-              value: [number, number, number, number, number, number, number, number, number[]];
-              name: string;
-            } = param;
-            const headline = name ? `<p><strong>${name}</strong></p>` : '';
-            const stats = [
-              `Max: ${numberFormatter(value[5])}`,
-              `3rd Quartile: ${numberFormatter(value[4])}`,
-              `Mean: ${numberFormatter(value[6])}`,
-              `Median: ${numberFormatter(value[3])}`,
-              `1st Quartile: ${numberFormatter(value[2])}`,
-              `Min: ${numberFormatter(value[1])}`,
-              `# Observations: ${numberFormatter(value[7])}`,
-            ];
-            if (value[8].length > 0) {
-              stats.push(`# Outliers: ${numberFormatter(value[8].length)}`);
-            }
-            return headline + stats.join('<br/>');
-          },
-        },
-      },
-      ...outlierData,
-    ] as SeriesOption,
+    series,
   };
 
   return {

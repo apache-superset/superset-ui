@@ -95,7 +95,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const numberFormatter = getNumberFormatter(numberFormat);
 
-  const transformedData = data.map(datum => {
+  const transformedData: PieSeriesOption[] = data.map(datum => {
     const name = extractGroupbyLabel({ datum, groupby });
     return {
       value: datum[metricLabel],
@@ -115,6 +115,37 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     color: '#000000',
   };
 
+  const series: PieSeriesOption[] = [
+    {
+      type: 'pie',
+      ...getChartPadding(showLegend, legendOrientation, legendMargin),
+      animation: false,
+      radius: [`${donut ? innerRadius : 0}%`, `${outerRadius}%`],
+      center: ['50%', '50%'],
+      avoidLabelOverlap: true,
+      labelLine: labelsOutside && labelLine ? { show: true } : { show: false },
+      label: labelsOutside
+        ? {
+            ...defaultLabel,
+            position: 'outer',
+            alignTo: 'none',
+            bleedMargin: 5,
+          }
+        : {
+            ...defaultLabel,
+            position: 'inner',
+          },
+      emphasis: {
+        label: {
+          show: true,
+          fontWeight: 'bold',
+          backgroundColor: 'white',
+        },
+      },
+      data: transformedData,
+    },
+  ];
+
   const echartOptions: EChartsOption = {
     grid: {
       ...defaultGrid,
@@ -133,36 +164,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       ...getLegendProps(legendType, legendOrientation, showLegend),
       data: keys,
     },
-    series: [
-      {
-        type: 'pie',
-        ...getChartPadding(showLegend, legendOrientation, legendMargin),
-        animation: false,
-        radius: [`${donut ? innerRadius : 0}%`, `${outerRadius}%`],
-        center: ['50%', '50%'],
-        avoidLabelOverlap: true,
-        labelLine: labelsOutside && labelLine ? { show: true } : { show: false },
-        label: labelsOutside
-          ? {
-              ...defaultLabel,
-              position: 'outer',
-              alignTo: 'none',
-              bleedMargin: 5,
-            }
-          : {
-              ...defaultLabel,
-              position: 'inner',
-            },
-        emphasis: {
-          label: {
-            show: true,
-            fontWeight: 'bold',
-            backgroundColor: 'white',
-          },
-        },
-        data: transformedData,
-      },
-    ] as PieSeriesOption,
+    series,
   };
 
   return {

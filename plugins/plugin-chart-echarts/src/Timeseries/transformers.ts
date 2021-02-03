@@ -30,7 +30,9 @@ import {
 import { SeriesOption } from 'echarts';
 import {
   CallbackDataParams,
+  DefaultExtraStateOpts,
   ItemStyleOption,
+  LineStyleOption,
   OptionName,
   ZRLineType,
 } from 'echarts/types/src/util/types';
@@ -161,7 +163,7 @@ export function transformIntervalAnnotation(
     const { name, color, opacity } = layer;
     const { descriptions, intervalEnd, time, title } = annotation;
     const label = formatAnnotationLabel(name, title, descriptions);
-    const intervalData = [
+    const intervalData: (MarkArea1DDataItemOption | MarkArea2DDataItemOption)[] = [
       [
         {
           name: label,
@@ -171,7 +173,7 @@ export function transformIntervalAnnotation(
           xAxis: intervalEnd,
         },
       ],
-    ] as (MarkArea1DDataItemOption | MarkArea2DDataItemOption)[];
+    ];
     series.push({
       id: `Interval - ${label}`,
       type: 'line',
@@ -222,6 +224,18 @@ export function transformEventAnnotation(
         xAxis: (time as unknown) as number,
       },
     ];
+
+    const lineStyle: LineStyleOption & DefaultExtraStateOpts['emphasis'] = {
+      width,
+      type: style as ZRLineType,
+      color: color || colorScale(name),
+      opacity: parseAnnotationOpacity(opacity),
+      emphasis: {
+        width: width ? width + 1 : width,
+        opacity: 1,
+      },
+    };
+
     series.push({
       id: `Event - ${label}`,
       type: 'line',
@@ -229,16 +243,7 @@ export function transformEventAnnotation(
       markLine: {
         silent: false,
         symbol: 'none',
-        lineStyle: {
-          width,
-          type: style,
-          color: color || colorScale(name),
-          opacity: parseAnnotationOpacity(opacity),
-          emphasis: {
-            width: width ? width + 1 : width,
-            opacity: 1,
-          },
-        } as ItemStyleOption,
+        lineStyle,
         label: {
           show: false,
           color: '#000000',
