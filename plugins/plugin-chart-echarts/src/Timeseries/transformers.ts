@@ -27,15 +27,6 @@ import {
   TimeseriesAnnotationLayer,
   TimeseriesDataRecord,
 } from '@superset-ui/core';
-import { extractForecastSeriesContext } from '../utils/prophet';
-import { ForecastSeriesEnum } from '../types';
-import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
-import {
-  evalFormula,
-  extractRecordAnnotations,
-  formatAnnotationLabel,
-  parseAnnotationOpacity,
-} from '../utils/annotation';
 import { SeriesOption } from 'echarts';
 import {
   CallbackDataParams,
@@ -47,6 +38,15 @@ import {
   MarkArea1DDataItemOption,
   MarkArea2DDataItemOption,
 } from 'echarts/types/src/component/marker/MarkAreaModel';
+import { extractForecastSeriesContext } from '../utils/prophet';
+import { ForecastSeriesEnum } from '../types';
+import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
+import {
+  evalFormula,
+  extractRecordAnnotations,
+  formatAnnotationLabel,
+  parseAnnotationOpacity,
+} from '../utils/annotation';
 
 export function transformSeries(
   series: SeriesOption,

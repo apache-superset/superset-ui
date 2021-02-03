@@ -25,6 +25,8 @@ import {
   NumberFormats,
   NumberFormatter,
 } from '@superset-ui/core';
+import { OptionDataItem, OptionDataValue } from 'echarts/types/src/util/types';
+import { EChartsOption } from 'echarts';
 import {
   DEFAULT_FORM_DATA as DEFAULT_PIE_FORM_DATA,
   EchartsPieFormData,
@@ -33,8 +35,6 @@ import {
 import { DEFAULT_LEGEND_FORM_DATA, EchartsProps } from '../types';
 import { extractGroupbyLabel, getChartPadding, getLegendProps } from '../utils/series';
 import { defaultGrid, defaultTooltip } from '../defaults';
-import { OptionDataItem, OptionDataValue } from 'echarts/types/src/util/types';
-import { EChartsOption } from 'echarts';
 
 const percentFormatter = getNumberFormatter(NumberFormats.PERCENT_2_POINT);
 

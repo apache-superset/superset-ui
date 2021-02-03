@@ -32,6 +32,7 @@ import {
   TimeseriesChartDataResponseResult,
   TimeFormatter,
 } from '@superset-ui/core';
+import { EChartsOption, SeriesOption } from 'echarts';
 import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
 import { EchartsProps, ForecastSeriesEnum, ProphetValue } from '../types';
 import { parseYAxisBound } from '../utils/controls';
@@ -51,7 +52,6 @@ import {
   transformSeries,
   transformTimeseriesAnnotation,
 } from './transformers';
-import { EChartsOption, SeriesOption } from 'echarts';
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;

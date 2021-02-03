@@ -24,10 +24,10 @@ import {
   TimeFormatter,
   TimeseriesDataRecord,
 } from '@superset-ui/core';
+import { LegendComponentOption, SeriesOption } from 'echarts';
 import { NULL_STRING } from '../constants';
 import { LegendOrientation, LegendType } from '../types';
 import { defaultLegendPadding } from '../defaults';
-import { LegendComponentOption, SeriesOption } from 'echarts';
 
 export function extractTimeseriesSeries(data: TimeseriesDataRecord[]): SeriesOption[] {
   if (data.length === 0) return [];

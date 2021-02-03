@@ -23,12 +23,12 @@ import {
   getMetricLabel,
   getNumberFormatter,
 } from '@superset-ui/core';
+import { EChartsOption } from 'echarts';
+import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { BoxPlotQueryFormData } from './types';
 import { EchartsProps } from '../types';
 import { extractGroupbyLabel } from '../utils/series';
 import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
-import { EChartsOption } from 'echarts';
-import { CallbackDataParams } from 'echarts/types/src/util/types';
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
