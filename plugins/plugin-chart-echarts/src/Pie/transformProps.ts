@@ -124,7 +124,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       trigger: 'item',
       formatter: (params: any) =>
         formatPieLabel({
-          params: params,
+          params,
           numberFormatter,
           labelType: EchartsPieLabelType.KeyValuePercent,
         }),
