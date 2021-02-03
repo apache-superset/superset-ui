@@ -144,7 +144,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         name: name,
         zoom: GraphConstants.zoom,
         type: 'graph',
-        categories: echart_categories.map(function (c) {
+        categories: echart_categories.map(c => {
           return { name: c, itemStyle: { color: colorFn(c) } };
         }),
         layout: layout,

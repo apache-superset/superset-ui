@@ -69,6 +69,7 @@ export function formatPieLabel({
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
   const data: DataRecord[] = queriesData[0].data || [];
+
   const {
     colorScheme,
     donut,
