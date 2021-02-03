@@ -172,7 +172,6 @@ export function transformIntervalAnnotation(
         },
       ],
     ] as (MarkArea1DDataItemOption | MarkArea2DDataItemOption)[];
-
     series.push({
       id: `Interval - ${label}`,
       type: 'line',
