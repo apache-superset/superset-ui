@@ -20,7 +20,6 @@ import { buildQueryContext, QueryFormData } from '@superset-ui/core';
 
 export default function buildQuery(formData: QueryFormData) {
   const { source, target, category } = formData;
-  console.log('build query input ', source, target, category);
   return buildQueryContext(formData, baseQueryObject => [
     {
       ...baseQueryObject,
