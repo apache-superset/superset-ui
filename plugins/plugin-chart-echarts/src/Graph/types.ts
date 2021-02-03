@@ -18,6 +18,7 @@
  */
 export type EchartsGraphFormData = {
   name: string;
+  groupby: string[];
   metric?: string;
   zoom: number;
   layout: string;
@@ -46,6 +47,7 @@ export type EchartsGraphFormData = {
 
 export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
   name: 'directed force graph',
+  groupby: [],
   zoom: 1,
   layout: 'force',
   circularConfig: { rotateLabel: true },
@@ -90,9 +92,9 @@ export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
   right: 'auto',
   bottom: 'auto',
   animation: true,
-  animationDuration: 1000,
+  animationDuration: 500,
   animationEasing: 'cubicOut',
   showSymbolThreshold: 0,
-  tooltipConfiguration: {},
+  tooltipConfiguration: { show: true, formatter: '{b}: {c}' },
   lineStyleConfiguration: { color: 'source', curveness: 0.1 },
 };

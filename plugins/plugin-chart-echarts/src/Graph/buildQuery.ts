@@ -16,10 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from 'react';
-import { EchartsProps } from '../types';
-import Echart from '../components/Echart';
+import { buildQueryContext, QueryFormData } from '@superset-ui/core';
 
-export default function EchartsGraph({ height, width, echartOptions }: EchartsProps) {
-  return <Echart height={height} width={width} echartOptions={echartOptions} />;
+export default function buildQuery(formData: QueryFormData) {
+  const { source, target, category } = formData;
+  console.log('build query input ', source, target, category);
+  return buildQueryContext(formData, baseQueryObject => [
+    {
+      ...baseQueryObject,
+      groupby: category ? [source, target, category] : [source, target],
+    },
+  ]);
 }

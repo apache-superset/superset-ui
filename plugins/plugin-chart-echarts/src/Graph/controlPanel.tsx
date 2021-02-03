@@ -17,10 +17,110 @@
  * under the License.
  */
 import { t } from '@superset-ui/core';
-import { formatSelectOptions, sections } from '@superset-ui/chart-controls';
+import {
+  formatSelectOptions,
+  sections,
+  sharedControls,
+  ControlConfig,
+  ControlPanelConfig,
+  ColumnOption,
+} from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from './types';
 
-const { layout, roam, draggable, selectedMode, showSymbolThreshold } = DEFAULT_FORM_DATA;
+const noopControl = { name: 'noop', config: { type: '', renderTrigger: true } };
+
+const sourceControl = {
+  name: 'source',
+  config: {
+    ...sharedControls.entity,
+    type: 'SelectControl',
+    multi: false,
+    freeForm: true,
+    label: t('Source'),
+    default: [],
+    includeTime: false,
+    description: t('Source for nodes of graph'),
+    optionRenderer: c => <ColumnOption column={c} showType />,
+    valueRenderer: c => <ColumnOption column={c} />,
+    valueKey: 'column_name',
+    allowAll: true,
+    filterOption: ({ data: opt }, text) =>
+      (opt.column_name && opt.column_name.toLowerCase().indexOf(text.toLowerCase()) >= 0) ||
+      (opt.verbose_name && opt.verbose_name.toLowerCase().indexOf(text.toLowerCase()) >= 0),
+    promptTextCreator: label => label,
+    mapStateToProps: (state, control) => {
+      const newState = {};
+      if (state.datasource) {
+        newState.options = state.datasource.columns.filter(c => c.groupby);
+      }
+      return newState;
+    },
+    commaChoosesOption: false,
+  },
+};
+
+const targetControl = {
+  name: 'target',
+  config: {
+    ...sharedControls.entity,
+    type: 'SelectControl',
+    multi: false,
+    freeForm: true,
+    label: t('Target'),
+    default: [],
+    includeTime: false,
+    description: t('Target for nodes of graph'),
+    optionRenderer: c => <ColumnOption column={c} showType />,
+    valueRenderer: c => <ColumnOption column={c} />,
+    valueKey: 'column_name',
+    allowAll: true,
+    filterOption: ({ data: opt }, text) =>
+      (opt.column_name && opt.column_name.toLowerCase().indexOf(text.toLowerCase()) >= 0) ||
+      (opt.verbose_name && opt.verbose_name.toLowerCase().indexOf(text.toLowerCase()) >= 0),
+    promptTextCreator: label => label,
+    mapStateToProps: (state, control) => {
+      //TODO: is this required?
+      const newState = {};
+      if (state.datasource) {
+        newState.options = state.datasource.columns.filter(c => c.groupby);
+      }
+      return newState;
+    },
+    commaChoosesOption: false,
+  },
+};
+//TODO: use only one object and other override params
+const categoryControl = {
+  name: 'category',
+  config: {
+    ...sharedControls.entity,
+    type: 'SelectControl',
+    multi: false,
+    freeForm: true,
+    clearable: true,
+    label: t('Category'),
+    default: null,
+    includeTime: false,
+    description: t('Optional category for nodes'),
+    optionRenderer: c => <ColumnOption column={c} showType />,
+    valueRenderer: c => <ColumnOption column={c} />,
+    valueKey: 'column_name',
+
+    filterOption: ({ data: opt }, text) =>
+      (opt.column_name && opt.column_name.toLowerCase().indexOf(text.toLowerCase()) >= 0) ||
+      (opt.verbose_name && opt.verbose_name.toLowerCase().indexOf(text.toLowerCase()) >= 0),
+    promptTextCreator: label => label,
+    mapStateToProps: (state, control) => {
+      const newState = {};
+      if (state.datasource) {
+        newState.options = state.datasource.columns.filter(c => c.groupby);
+      }
+      return newState;
+    },
+    commaChoosesOption: false,
+    validators: [],
+  },
+};
 
 export default {
   controlPanelSections: [
@@ -28,12 +128,20 @@ export default {
     {
       label: t('Query'),
       expanded: true,
-      controlSetRows: [['groupby'], ['metric'], ['adhoc_filters'], ['row_limit']],
+      controlSetRows: [
+        [sourceControl],
+        [targetControl],
+        [categoryControl],
+        ['metric'],
+        ['adhoc_filters'],
+        ['row_limit'],
+      ],
     },
     {
       label: t('Chart Options'),
       expanded: true,
       controlSetRows: [
+        ['color_scheme', noopControl],
         [
           {
             name: 'layout',
@@ -41,8 +149,11 @@ export default {
               type: 'SelectControl',
               renderTrigger: true,
               label: t('Graph Layout'),
-              default: layout,
-              choices: formatSelectOptions(['force', 'circular']), //cant show none,as data does not have x,y indices
+              default: DEFAULT_FORM_DATA.layout,
+              choices: formatSelectOptions([
+                ['force', t('Force')],
+                ['circular', t('Circular')],
+              ]),
               description: t('Layout type of graph'),
             },
           },
@@ -54,7 +165,7 @@ export default {
               type: 'CheckboxControl',
               label: t('Enable node draging'),
               renderTrigger: true,
-              default: draggable,
+              default: DEFAULT_FORM_DATA.draggable,
               description: t('Whether to enable node dragging in force layout mode.'),
             },
           },
@@ -64,20 +175,23 @@ export default {
               type: 'CheckboxControl',
               label: t('Enable graph roaming'),
               renderTrigger: true,
-              default: roam,
+              default: DEFAULT_FORM_DATA.roam,
               description: t('Whether to enable chaging graph position.'),
             },
           },
         ],
         [
           {
-            name: 'selectMode',
+            name: 'select_mode',
             config: {
               type: 'SelectControl',
               renderTrigger: true,
               label: t('Node Select Mode'),
-              default: selectedMode,
-              choices: formatSelectOptions(['single', 'multiple']),
+              default: DEFAULT_FORM_DATA.selectedMode,
+              choices: formatSelectOptions([
+                ['single', t('Single')],
+                ['multiple', t('Multiple')],
+              ]),
               description: t('Allow node selections'),
             },
           },
@@ -90,7 +204,7 @@ export default {
               label: t('Label Threshold'),
               renderTrigger: true,
               isInt: true,
-              default: showSymbolThreshold,
+              default: DEFAULT_FORM_DATA.showSymbolThreshold,
               description: t('Minimum value for label to be displayed on graph.'),
             },
           },
@@ -98,10 +212,4 @@ export default {
       ],
     },
   ],
-  controlOverrides: {
-    groupby: {
-      label: t('Source / Target'),
-      description: t('Choose a source and a target'),
-    },
-  },
 };
