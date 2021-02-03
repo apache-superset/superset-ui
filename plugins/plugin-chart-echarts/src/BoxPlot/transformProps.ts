@@ -24,15 +24,15 @@ import {
   getNumberFormatter,
 } from '@superset-ui/core';
 import { EChartsOption, BoxplotSeriesOption } from 'echarts';
+import {
+  BoxplotDataItemOption,
+  BoxplotStateOption,
+} from 'echarts/types/src/chart/boxplot/BoxplotSeries';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { BoxPlotQueryFormData } from './types';
 import { EchartsProps } from '../types';
 import { extractGroupbyLabel } from '../utils/series';
 import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
-import {
-  BoxplotDataItemOption,
-  BoxplotStateOption,
-} from 'echarts/types/src/chart/boxplot/BoxplotSeries';
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
