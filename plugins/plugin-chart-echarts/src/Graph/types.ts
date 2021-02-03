@@ -18,40 +18,20 @@
  */
 export type EchartsGraphFormData = {
   name: string;
-  source: string;
-  target: string;
+  source?: string;
+  target?: string;
   category?: string;
   colorScheme?: string;
-  groupby: string[];
   metric?: string;
-  zoom: number;
   layout: string;
-  circularConfig: object;
-  forceConfig: object;
   roam: boolean;
   draggable: boolean;
-  edgeSymbol: object;
-  edgeSymbolSize: object;
-  itemStyle: object;
-  labelConfig: object;
-  emphasis: object;
   selectedMode: string;
-  autoCurveness: number;
-  left: string;
-  top: string;
-  right: string;
-  bottom: string;
-  animation: boolean;
-  animationDuration: number;
-  animationEasing: string;
   showSymbolThreshold: number;
-  tooltipConfiguration: object;
-  lineStyleConfiguration: object;
 };
 
 export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
   name: 'graph chart',
-  groupby: [],
   layout: 'circular',
   roam: true,
   draggable: false,
@@ -65,7 +45,7 @@ export const GraphConstants = {
   forceConfig: {
     initLayout: 'circular',
     repulsion: 100,
-    gravity: 0.1,
+    gravity: 0.3,
     edgeLength: 400,
     layoutAnimation: true,
     friction: 0.2,
