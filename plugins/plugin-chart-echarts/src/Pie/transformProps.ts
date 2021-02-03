@@ -25,7 +25,7 @@ import {
   NumberFormats,
   NumberFormatter,
 } from '@superset-ui/core';
-import { OptionDataItem, OptionDataValue } from 'echarts/types/src/util/types';
+import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { EChartsOption, PieSeriesOption } from 'echarts';
 import {
   DEFAULT_FORM_DATA as DEFAULT_PIE_FORM_DATA,
@@ -43,7 +43,7 @@ export function formatPieLabel({
   labelType,
   numberFormatter,
 }: {
-  params: { name: string; value: OptionDataItem | OptionDataValue; percent?: number };
+  params: CallbackDataParams;
   labelType: EchartsPieLabelType;
   numberFormatter: NumberFormatter;
 }): string {
@@ -106,7 +106,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     };
   });
 
-  const formatter = (params: { name: string; value: number; percent: number }) =>
+  const formatter = (params: CallbackDataParams) =>
     formatPieLabel({ params, numberFormatter, labelType });
 
   const defaultLabel = {
@@ -122,8 +122,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     tooltip: {
       ...defaultTooltip,
       trigger: 'item',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      formatter: params =>
+      formatter: (params: any) =>
         formatPieLabel({
           params: params,
           numberFormatter,
