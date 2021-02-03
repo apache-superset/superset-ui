@@ -65,6 +65,11 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
             datum[`${metric}__count`],
             datum[`${metric}__outliers`],
           ],
+          itemStyle: {
+            color: colorFn(groupbyLabel),
+            opacity: 0.6,
+            borderColor: colorFn(groupbyLabel),
+          },
         };
       });
     })
