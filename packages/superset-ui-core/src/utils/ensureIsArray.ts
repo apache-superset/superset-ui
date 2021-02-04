@@ -16,12 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export { default as convertKeysToCamelCase } from './convertKeysToCamelCase';
-export { default as ensureIsArray } from './ensureIsArray';
-export { default as isDefined } from './isDefined';
-export { default as isRequired } from './isRequired';
-export { default as makeSingleton } from './makeSingleton';
-export { default as promiseTimeout } from './promiseTimeout';
-export { default as logging } from './logging';
-export { default as removeDuplicates } from './removeDuplicates';
-export * from './random';
+
+/**
+ * Ensure a nullable value input is an array. Useful when consolidating
+ * input format from a select control.
+ */
+export default function ensureIsArray<T>(value?: T[] | T | null): T[] {
+  if (value === undefined || value === null) {
+    return [];
+  }
+  return Array.isArray(value) ? value : [value];
+}
