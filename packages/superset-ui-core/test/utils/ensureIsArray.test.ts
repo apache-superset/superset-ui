@@ -16,12 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export { default as convertKeysToCamelCase } from './convertKeysToCamelCase';
-export { default as ensureIsArray } from './ensureIsArray';
-export { default as isDefined } from './isDefined';
-export { default as isRequired } from './isRequired';
-export { default as makeSingleton } from './makeSingleton';
-export { default as promiseTimeout } from './promiseTimeout';
-export { default as logging } from './logging';
-export { default as removeDuplicates } from './removeDuplicates';
-export * from './random';
+import { ensureIsArray } from '../../src';
+
+describe('ensureIsArray', () => {
+  it('handle inputs correctly', () => {
+    expect(ensureIsArray(undefined)).toEqual([]);
+    expect(ensureIsArray(null)).toEqual([]);
+    expect(ensureIsArray([])).toEqual([]);
+    expect(ensureIsArray('my_metric')).toEqual(['my_metric']);
+    expect(ensureIsArray(['my_metric'])).toEqual(['my_metric']);
+    expect(ensureIsArray(['my_metric_1', 'my_metric_2'])).toEqual(['my_metric_1', 'my_metric_2']);
+  });
+});
