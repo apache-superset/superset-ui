@@ -24,6 +24,7 @@ import {
   TimeFormatter,
   TimeseriesDataRecord,
 } from '@superset-ui/core';
+import { LegendComponentOption, SeriesOption } from 'echarts';
 import {
   NULL_STRING,
   TIMESERIES_LEGEND_RIGHT_TOP_OFFSET,
@@ -32,9 +33,7 @@ import {
 import { LegendOrientation, LegendType } from '../types';
 import { defaultLegendPadding } from '../defaults';
 
-export function extractTimeseriesSeries(
-  data: TimeseriesDataRecord[],
-): echarts.EChartOption.Series[] {
+export function extractTimeseriesSeries(data: TimeseriesDataRecord[]): SeriesOption[] {
   if (data.length === 0) return [];
   const rows = data.map(datum => ({
     ...datum,
@@ -46,9 +45,10 @@ export function extractTimeseriesSeries(
     .map(key => ({
       id: key,
       name: key,
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      data: rows.map(datum => [datum.__timestamp, datum[key]]),
+      data: rows.map((datum: { [p: string]: DataRecordValue; __timestamp: Date | null }) => [
+        datum.__timestamp,
+        datum[key],
+      ]),
     }));
 }
 
@@ -98,15 +98,14 @@ export function getLegendProps(
   orientation: LegendOrientation,
   show: boolean,
   zoomable = false,
-): echarts.EChartOption.Legend {
-  const legend: echarts.EChartOption.Legend = {
+): LegendComponentOption | LegendComponentOption[] {
+  const legend: LegendComponentOption | LegendComponentOption[] = {
     orient: [LegendOrientation.Top, LegendOrientation.Bottom].includes(orientation)
       ? 'horizontal'
       : 'vertical',
     show,
     type,
   };
-
   switch (orientation) {
     case LegendOrientation.Left:
       legend.left = 0;

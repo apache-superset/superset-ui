@@ -16,21 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { QueryFormData } from '@superset-ui/core';
-import { PostProcessingBoxplot } from '@superset-ui/core/lib/query/types/PostProcessing';
+import { ensureIsArray } from '../../src';
 
-export type BoxPlotQueryFormData = QueryFormData & {
-  numberFormat?: string;
-  whiskerOptions?: BoxPlotFormDataWhiskerOptions;
-  xTickLayout?: BoxPlotFormXTickLayout;
-};
-
-export type BoxPlotFormDataWhiskerOptions =
-  | 'Tukey'
-  | 'Min/max (no outliers)'
-  | '2/98 percentiles'
-  | '9/91 percentiles';
-
-export type BoxPlotFormXTickLayout = '45°' | '90°' | 'auto' | 'flat' | 'staggered';
-
-export type BoxPlotQueryObjectWhiskerType = PostProcessingBoxplot['options']['whisker_type'];
+describe('ensureIsArray', () => {
+  it('handle inputs correctly', () => {
+    expect(ensureIsArray(undefined)).toEqual([]);
+    expect(ensureIsArray(null)).toEqual([]);
+    expect(ensureIsArray([])).toEqual([]);
+    expect(ensureIsArray('my_metric')).toEqual(['my_metric']);
+    expect(ensureIsArray(['my_metric'])).toEqual(['my_metric']);
+    expect(ensureIsArray(['my_metric_1', 'my_metric_2'])).toEqual(['my_metric_1', 'my_metric_2']);
+  });
+});

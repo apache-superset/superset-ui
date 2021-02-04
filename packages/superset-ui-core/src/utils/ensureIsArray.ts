@@ -16,21 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { QueryFormData } from '@superset-ui/core';
-import { PostProcessingBoxplot } from '@superset-ui/core/lib/query/types/PostProcessing';
 
-export type BoxPlotQueryFormData = QueryFormData & {
-  numberFormat?: string;
-  whiskerOptions?: BoxPlotFormDataWhiskerOptions;
-  xTickLayout?: BoxPlotFormXTickLayout;
-};
-
-export type BoxPlotFormDataWhiskerOptions =
-  | 'Tukey'
-  | 'Min/max (no outliers)'
-  | '2/98 percentiles'
-  | '9/91 percentiles';
-
-export type BoxPlotFormXTickLayout = '45°' | '90°' | 'auto' | 'flat' | 'staggered';
-
-export type BoxPlotQueryObjectWhiskerType = PostProcessingBoxplot['options']['whisker_type'];
+/**
+ * Ensure a nullable value input is an array. Useful when consolidating
+ * input format from a select control.
+ */
+export default function ensureIsArray<T>(value?: T[] | T | null): T[] {
+  if (value === undefined || value === null) {
+    return [];
+  }
+  return Array.isArray(value) ? value : [value];
+}

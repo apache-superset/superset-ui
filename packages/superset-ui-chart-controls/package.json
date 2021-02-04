@@ -1,6 +1,6 @@
 {
   "name": "@superset-ui/chart-controls",
-  "version": "0.17.0",
+  "version": "0.17.5",
   "description": "Superset UI control-utils",
   "sideEffects": false,
   "main": "lib/index.js",
@@ -26,13 +26,14 @@
     "access": "public"
   },
   "dependencies": {
-    "@superset-ui/core": "0.17.0",
+    "@superset-ui/core": "0.17.5",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2"
   },
   "peerDependencies": {
     "@types/react": "*",
     "@types/react-bootstrap": "*",
+    "antd": "^4.9.1",
     "react": "^16.13.1",
     "react-bootstrap": "^0.33.1"
   }

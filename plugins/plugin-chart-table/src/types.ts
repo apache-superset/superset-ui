@@ -50,12 +50,13 @@ export interface TableChartData {
 export type TableChartFormData = QueryFormData & {
   align_pn?: boolean;
   color_pn?: boolean;
+  include_time?: boolean;
   include_search?: boolean;
   query_mode?: QueryMode;
   page_length?: string | number | null; // null means auto-paginate
   metrics?: QueryFormMetric[] | null;
   percent_metrics?: QueryFormMetric[] | null;
-  timeseries_limit_metric?: QueryFormMetric | null;
+  timeseries_limit_metric?: QueryFormMetric[] | QueryFormMetric | null;
   groupby?: QueryFormMetric[] | null;
   all_columns?: QueryFormMetric[] | null;
   order_desc?: boolean;

@@ -25,9 +25,9 @@ export default function buildQueryObject<T extends QueryFormData>(
     time_range,
     since,
     until,
-    order_desc,
     row_limit,
     row_offset,
+    order_desc,
     limit,
     timeseries_limit_metric,
     granularity,
@@ -38,7 +38,7 @@ export default function buildQueryObject<T extends QueryFormData>(
 
   const numericRowLimit = Number(row_limit);
   const numericRowOffset = Number(row_offset);
-  const { metrics, columns } = extractQueryFields(residualFormData, queryFields);
+  const { metrics, columns, orderby } = extractQueryFields(residualFormData, queryFields);
 
   const extras = extractExtras(formData);
   const extrasAndfilters = processFilters({
@@ -47,22 +47,24 @@ export default function buildQueryObject<T extends QueryFormData>(
   });
 
   let queryObject: QueryObject = {
-    time_range,
-    since,
-    until,
-    granularity,
+    // fallback `null` to `undefined` so they won't be sent to the backend
+    // (JSON.strinify will ignore `undefined`.)
+    time_range: time_range || undefined,
+    since: since || undefined,
+    until: until || undefined,
+    granularity: granularity || undefined,
     ...extras,
     ...extrasAndfilters,
-    annotation_layers,
     columns,
     metrics,
-    order_desc: typeof order_desc === 'undefined' ? true : order_desc,
-    orderby: [],
+    orderby,
+    annotation_layers,
     row_limit: row_limit == null || Number.isNaN(numericRowLimit) ? undefined : numericRowLimit,
     row_offset: row_offset == null || Number.isNaN(numericRowOffset) ? undefined : numericRowOffset,
     timeseries_limit: limit ? Number(limit) : 0,
-    timeseries_limit_metric,
-    url_params,
+    timeseries_limit_metric: timeseries_limit_metric || undefined,
+    order_desc: typeof order_desc === 'undefined' ? true : order_desc,
+    url_params: url_params || undefined,
   };
   // append and override extra form data used by native filters
   queryObject = appendExtraFormData(queryObject, append_form_data);
