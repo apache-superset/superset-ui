@@ -24,10 +24,6 @@ import {
   getNumberFormatter,
 } from '@superset-ui/core';
 import { EChartsOption, BoxplotSeriesOption } from 'echarts';
-import {
-  BoxplotDataItemOption,
-  BoxplotStateOption,
-} from 'echarts/types/src/chart/boxplot/BoxplotSeries';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { BoxPlotQueryFormData } from './types';
 import { EchartsProps } from '../types';
@@ -48,7 +44,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const numberFormatter = getNumberFormatter(numberFormat);
   const metricLabels = formdataMetrics.map(getMetricLabel);
 
-  const transformedData: (BoxplotDataItemOption & { name: string })[] = data
+  const transformedData = data
     .map((datum: any) => {
       const groupbyLabel = extractGroupbyLabel({ datum, groupby });
       return metricLabels.map(metric => {
@@ -75,7 +71,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     })
     .flatMap(row => row);
 
-  const outlierData: (BoxplotStateOption & { name: string })[] = data
+  const outlierData = data
     .map(datum =>
       metricLabels.map(metric => {
         const groupbyLabel = extractGroupbyLabel({ datum, groupby });
@@ -140,6 +136,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         },
       },
     },
+    // @ts-ignore
     ...outlierData,
   ];
 
