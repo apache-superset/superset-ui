@@ -50,7 +50,7 @@ describe('Pie tranformProps', () => {
         echartOptions: expect.objectContaining({
           series: [
             expect.objectContaining({
-              avoidLabelOverlap: true,
+              avoidLabelOverlap: false,
               data: expect.arrayContaining([
                 expect.objectContaining({
                   name: 'Arnold, 2',
