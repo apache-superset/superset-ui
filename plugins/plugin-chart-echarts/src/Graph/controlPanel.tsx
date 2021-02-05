@@ -179,10 +179,12 @@ export default {
           {
             name: 'edgeLength',
             config: {
-              type: 'TextControl',
+              type: 'SliderControl',
               label: t('Edge Length'),
               renderTrigger: true,
-              isInt: true,
+              min: 100,
+              max: 1000,
+              step: 50,
               default: DEFAULT_FORM_DATA.edgeLength,
               description: t('Edge length between nodes'),
             },
@@ -192,10 +194,12 @@ export default {
           {
             name: 'gravity',
             config: {
-              type: 'TextControl',
+              type: 'SliderControl',
               label: t('Gravity'),
               renderTrigger: true,
-              isInt: true,
+              min: 0.1,
+              max: 1,
+              step: 0.1,
               default: DEFAULT_FORM_DATA.gravity,
               description: t('Strength to pull the graph toward center'),
             },
@@ -203,12 +207,14 @@ export default {
         ],
         [
           {
-            name: 'replusion',
+            name: 'repulsion',
             config: {
-              type: 'TextControl',
+              type: 'SliderControl',
               label: t('Repulsion'),
               renderTrigger: true,
-              isInt: true,
+              min: 100,
+              max: 3000,
+              step: 50,
               default: DEFAULT_FORM_DATA.repulsion,
               description: t('Edge length between nodes'),
             },
@@ -218,10 +224,12 @@ export default {
           {
             name: 'friction',
             config: {
-              type: 'TextControl',
+              type: 'SliderControl',
               label: t('Friction'),
               renderTrigger: true,
-              isInt: true,
+              min: 0.1,
+              max: 1,
+              step: 0.1,
               default: DEFAULT_FORM_DATA.friction,
               description: t('Friction between nodes'),
             },

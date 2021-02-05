@@ -89,7 +89,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   let echartNodes: {
     id: number;
     name: DataRecordValue;
-    symbolSize?: any;
+    symbolSize: any;
     value: any;
     label?: { [name: string]: boolean };
     category: string | null;

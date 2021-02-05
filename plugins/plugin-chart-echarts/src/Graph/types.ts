@@ -25,8 +25,8 @@ import {
 
 export type EchartsGraphFormData = EchartsLegendFormData & {
   name: string;
-  source?: string;
-  target?: string;
+  source: string;
+  target: string;
   category?: string;
   colorScheme?: string;
   metric?: string;
@@ -44,6 +44,8 @@ export type EchartsGraphFormData = EchartsLegendFormData & {
 export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
   ...DEFAULT_LEGEND_FORM_DATA,
   name: 'graph chart',
+  source: '',
+  target: '',
   layout: 'circular',
   roam: true,
   draggable: false,
