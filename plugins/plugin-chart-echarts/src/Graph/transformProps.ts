@@ -52,8 +52,8 @@ function getNormalizedSymbolSize(
   });
   nodes.forEach((node: { symbolSize: number }) => {
     node.symbolSize =
-      ((node.symbolSize - minValue) / (maxValue - minValue)) * GraphConstants.nodeSizeRightLimit +
-      GraphConstants.nodeSizeLeftLimit;
+      ((node.symbolSize - minValue) / (maxValue - minValue)) * GraphConstants.nodeSizeRightLimit ||
+      0 + GraphConstants.nodeSizeLeftLimit;
   });
 }
 
@@ -105,7 +105,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     const nodeTarget = link[target];
     const nodeCategory = category ? link[category]!.toString() : 'default';
     const nodeValue = link[metricLabel];
-    console.log('valiue is ', nodeValue);
 
     if (!(nodeSource in nodes)) {
       echartNodes.push({
@@ -191,7 +190,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       },
     ],
   };
-
   return {
     width,
     height,
