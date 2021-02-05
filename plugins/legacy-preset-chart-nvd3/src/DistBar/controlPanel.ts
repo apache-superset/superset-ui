@@ -28,6 +28,8 @@ import {
   barStacked,
   reduceXTicks,
   yAxisLabel,
+  yAxisShowMinmax,
+  yAxisBounds,
 } from '../NVD3Controls';
 
 const config: ControlPanelConfig = {
@@ -59,10 +61,12 @@ const config: ControlPanelConfig = {
       label: t('Chart Options'),
       expanded: true,
       controlSetRows: [
-        ['color_scheme', 'label_colors'],
-        [showLegend, showBarValue],
+        ['color_scheme'],
+        ['label_colors'],
+        [showLegend],
+        [showBarValue],
+        [barStacked],
         [
-          barStacked,
           {
             name: 'order_bars',
             config: {
@@ -74,17 +78,17 @@ const config: ControlPanelConfig = {
             },
           },
         ],
-        ['y_axis_format', yAxisLabel],
+        ['y_axis_format'],
+        [yAxisLabel],
         [showControls, null],
+        [yAxisShowMinmax],
+        [yAxisBounds],
       ],
     },
     {
       label: t('X Axis'),
       expanded: true,
-      controlSetRows: [
-        [xAxisLabel, bottomMargin],
-        [xTicksLayout, reduceXTicks],
-      ],
+      controlSetRows: [[xAxisLabel], [bottomMargin], [xTicksLayout], [reduceXTicks]],
     },
   ],
   controlOverrides: {

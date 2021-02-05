@@ -16,21 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { QueryFormData } from '@superset-ui/core';
-import { PostProcessingBoxplot } from '@superset-ui/core/lib/query/types/PostProcessing';
+/**
+ * Remove duplicate items from a list.
+ */
+export function removeDuplicates<T>(items: T[], hash?: (item: T) => unknown): T[] {
+  if (hash) {
+    const seen = new Set();
+    return items.filter(x => {
+      const itemHash = hash(x);
+      if (seen.has(itemHash)) return false;
+      seen.add(itemHash);
+      return true;
+    });
+  }
+  return [...new Set(items)];
+}
 
-export type BoxPlotQueryFormData = QueryFormData & {
-  numberFormat?: string;
-  whiskerOptions?: BoxPlotFormDataWhiskerOptions;
-  xTickLayout?: BoxPlotFormXTickLayout;
-};
-
-export type BoxPlotFormDataWhiskerOptions =
-  | 'Tukey'
-  | 'Min/max (no outliers)'
-  | '2/98 percentiles'
-  | '9/91 percentiles';
-
-export type BoxPlotFormXTickLayout = '45°' | '90°' | 'auto' | 'flat' | 'staggered';
-
-export type BoxPlotQueryObjectWhiskerType = PostProcessingBoxplot['options']['whisker_type'];
+export default removeDuplicates;

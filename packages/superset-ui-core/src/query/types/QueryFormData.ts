@@ -21,18 +21,30 @@
 /**
  * Types for the final QueryContext sent to /api/v1/chart/data.
  */
-import { AdhocMetric, PredefinedMetric } from './Metric';
+import { AdhocMetric, SavedMetric } from './Metric';
 import { AdhocFilter } from './Filter';
 import { BinaryOperator, SetOperator } from './Operator';
 import { AnnotationLayer } from './AnnotationLayer';
 import { QueryObject } from './Query';
 import { TimeRange, TimeRangeEndpoints } from './Time';
+import { TimeGranularity } from '../../time-format';
 
-export type QueryFormMetric = PredefinedMetric | AdhocMetric;
+/**
+ * Metric definition/reference in query object.
+ */
+export type QueryFormMetric = SavedMetric | AdhocMetric;
 
-// Column selects (used as dimensions in groupby and raw query mode) only
-// support existing columns for now.
+/**
+ * Column selects in query object (used as dimensions in both groupby or raw
+ * query mode). Only support referring existing columns.
+ */
 export type QueryFormColumn = string;
+
+/**
+ * Order query results by columns.
+ * Format: [metric/column, is_ascending].
+ */
+export type QueryFormOrderBy = [QueryFormColumn | QueryFormMetric, boolean];
 
 export interface FormDataResidual {
   [key: string]: any;
@@ -48,8 +60,8 @@ export enum QueryMode {
  */
 export interface QueryFields {
   columns: QueryFormColumn[];
-  groupby: QueryFormColumn[];
   metrics: QueryFormMetric[];
+  orderby: QueryFormOrderBy[];
 }
 
 /**
@@ -59,10 +71,13 @@ export type QueryField = keyof QueryFields;
 
 /**
  * Map of arbitrary control field names to query field names
- * (one of 'groupby' | 'metrics' | 'columns').
+ * (one of 'metrics' | 'columns' | 'groupby').
+ *
+ * Note that `groupby` is only added here because it is will be handled when
+ * processing aliases but will not be sent to final objects. See `extraQueryFields.ts`.
  */
 export type QueryFieldAliases = {
-  [key: string]: QueryField;
+  [key: string]: QueryField | 'groupby';
 };
 
 /**
@@ -104,10 +119,9 @@ export interface BaseFormData extends TimeRange, FormDataResidual {
    */
   viz_type: string;
   metrics?: QueryFormMetric[];
-  /** list of columns to group by */
-  groupby?: QueryFormColumn[];
   where?: string;
   columns?: QueryFormColumn[];
+  groupby?: QueryFormColumn[];
   all_columns?: QueryFormColumn[];
   /** list of filters */
   adhoc_filters?: AdhocFilter[];
@@ -135,8 +149,11 @@ export interface BaseFormData extends TimeRange, FormDataResidual {
  * Form data for SQLAlchemy based datasources.
  */
 export interface SqlaFormData extends BaseFormData {
-  granularity_sqla: string;
-  time_grain_sqla?: string;
+  /**
+   * Name of the Time Column. Time column is optional.
+   */
+  granularity_sqla?: string;
+  time_grain_sqla?: TimeGranularity;
   having?: string;
 }
 
@@ -149,7 +166,7 @@ export interface DruidFormData extends BaseFormData {
   druid_time_origin?: string;
 }
 
-export type QueryFormData = SqlaFormData | DruidFormData;
+export type QueryFormData = DruidFormData | SqlaFormData;
 
 //---------------------------------------------------
 // Type guards

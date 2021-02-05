@@ -18,7 +18,6 @@
  */
 /* eslint-disable camelcase */
 import {
-  AnnotationData,
   AnnotationLayer,
   CategoricalColorNamespace,
   ChartProps,
@@ -27,14 +26,15 @@ import {
   isFormulaAnnotationLayer,
   isIntervalAnnotationLayer,
   isTimeseriesAnnotationLayer,
-  smartDateVerboseFormatter,
-  TimeseriesDataRecord,
   getTimeFormatter,
   getTimeFormatterForGranularity,
   smartDateFormatter,
+  TimeseriesChartDataResponseResult,
+  TimeFormatter,
 } from '@superset-ui/core';
+import { EChartsOption, SeriesOption } from 'echarts';
 import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
-import { EchartsProps, ForecastSeriesEnum } from '../types';
+import { EchartsProps, ForecastSeriesEnum, ProphetValue } from '../types';
 import { parseYAxisBound } from '../utils/controls';
 import { extractTimeseriesSeries, getChartPadding, getLegendProps } from '../utils/series';
 import { extractAnnotationLabels } from '../utils/annotation';
@@ -55,11 +55,11 @@ import {
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
-
   const {
-    annotation_data: annotationData = {},
+    annotation_data: annotationData_,
     data = [],
-  }: { annotation_data?: AnnotationData; data?: TimeseriesDataRecord[] } = queriesData[0];
+  } = queriesData[0] as TimeseriesChartDataResponseResult;
+  const annotationData = annotationData_ || {};
 
   const {
     annotationLayers,
@@ -80,12 +80,13 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     yAxisBounds,
     timeGrainSqla,
     zoomable,
+    richTooltip,
   }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
   const rebasedData = rebaseTimeseriesDatum(data);
   const rawSeries = extractTimeseriesSeries(rebasedData);
-  const series: echarts.EChartOption.Series[] = [];
+  const series: SeriesOption[] = [];
   const formatter = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormat);
 
   rawSeries.forEach(entry => {
@@ -126,7 +127,17 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     if (min === undefined) min = 0;
     if (max === undefined) max = 1;
   }
-  const echartOptions: echarts.EChartOption = {
+
+  let xAxisFormatter: TimeFormatter | StringConstructor;
+  if (xAxisTimeFormat === smartDateFormatter.id) {
+    xAxisFormatter = getTimeFormatterForGranularity(timeGrainSqla);
+  } else if (xAxisTimeFormat) {
+    xAxisFormatter = getTimeFormatter(xAxisTimeFormat);
+  } else {
+    xAxisFormatter = String;
+  }
+
+  const echartOptions: EChartsOption = {
     useUTC: true,
     grid: {
       ...defaultGrid,
@@ -142,19 +153,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       axisLabel: {
         showMinLabel: xAxisShowMinLabel,
         showMaxLabel: xAxisShowMaxLabel,
-        formatter: (value: any) => {
-          let dateFormatter;
-
-          if (xAxisTimeFormat === smartDateFormatter.id) {
-            dateFormatter = getTimeFormatterForGranularity(timeGrainSqla);
-          } else if (xAxisTimeFormat) {
-            dateFormatter = getTimeFormatter(xAxisTimeFormat);
-          } else {
-            dateFormatter = String;
-          }
-
-          return dateFormatter(value);
-        },
+        formatter: xAxisFormatter,
       },
     },
     yAxis: {
@@ -169,12 +168,16 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     },
     tooltip: {
       ...defaultTooltip,
-      trigger: 'axis',
-      formatter: params => {
-        // @ts-ignore
-        const rows = [`${smartDateVerboseFormatter(params[0].value[0])}`];
-        // @ts-ignore
-        const prophetValues = extractProphetValuesFromTooltipParams(params);
+      trigger: richTooltip ? 'axis' : 'item',
+      formatter: (params: any) => {
+        const value: number = !richTooltip ? params.value : params[0].value[0];
+        const prophetValue = !richTooltip ? [params] : params;
+
+        const rows: Array<string> = [`${smartDateFormatter(value)}`];
+        const prophetValues: Record<string, ProphetValue> = extractProphetValuesFromTooltipParams(
+          prophetValue,
+        );
+
         Object.keys(prophetValues).forEach(key => {
           const value = prophetValues[key];
           rows.push(
@@ -190,10 +193,12 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     },
     legend: {
       ...getLegendProps(legendType, legendOrientation, showLegend),
+      // @ts-ignore
       data: rawSeries
         .filter(
           entry =>
-            extractForecastSeriesContext(entry.name || '').type === ForecastSeriesEnum.Observation,
+            extractForecastSeriesContext((entry.name || '') as string).type ===
+            ForecastSeriesEnum.Observation,
         )
         .map(entry => entry.name || '')
         .concat(extractAnnotationLabels(annotationLayers, annotationData)),
@@ -224,7 +229,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   };
 
   return {
-    // @ts-ignore
     echartOptions,
     width,
     height,

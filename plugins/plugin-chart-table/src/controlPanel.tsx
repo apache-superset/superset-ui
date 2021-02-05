@@ -18,7 +18,14 @@
  * under the License.
  */
 import React from 'react';
-import { t, validateNonEmpty, addLocaleData, smartDateFormatter } from '@superset-ui/core';
+import {
+  t,
+  validateNonEmpty,
+  addLocaleData,
+  smartDateFormatter,
+  QueryMode,
+  QueryFormColumn,
+} from '@superset-ui/core';
 import {
   formatSelectOptions,
   D3_TIME_FORMAT_OPTIONS,
@@ -44,11 +51,6 @@ export const PAGE_SIZE_OPTIONS = formatSelectOptions<number>([
   200,
 ]);
 
-export enum QueryMode {
-  aggregate = 'aggregate',
-  raw = 'raw',
-}
-
 const QueryModeLabel = {
   [QueryMode.aggregate]: t('Aggregate'),
   [QueryMode.raw]: t('Raw Records'),
@@ -59,8 +61,8 @@ function getQueryMode(controls: ControlStateMapping): QueryMode {
   if (mode === QueryMode.aggregate || mode === QueryMode.raw) {
     return mode as QueryMode;
   }
-  const rawColumns = controls?.all_columns?.value;
-  const hasRawColumns = rawColumns && (rawColumns as string[])?.length > 0;
+  const rawColumns: QueryFormColumn[] | undefined = controls?.all_columns?.value;
+  const hasRawColumns = rawColumns && rawColumns.length > 0;
   return hasRawColumns ? QueryMode.raw : QueryMode.aggregate;
 }
 
@@ -113,7 +115,9 @@ const all_columns: typeof sharedControls.groupby = {
 const percent_metrics: typeof sharedControls.metrics = {
   type: 'MetricsControl',
   label: t('Percentage Metrics'),
-  description: t('Metrics for which percentage of total are to be displayed'),
+  description: t(
+    'Metrics for which percentage of total are to be displayed. Calculated from only data within the row limit.',
+  ),
   multi: true,
   visibility: isAggMode,
   mapStateToProps: ({ datasource, controls }) => ({
@@ -178,7 +182,7 @@ const config: ControlPanelConfig = {
             config: {
               type: 'SelectControl',
               label: t('Ordering'),
-              description: t('One or many metrics to display'),
+              description: t('Order results by selected columns'),
               multi: true,
               default: [],
               mapStateToProps: ({ datasource }) => ({
