@@ -149,14 +149,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
 
   setLabelVisibility(echartNodes, showSymbolThreshold);
   getNormalizedSymbolSize(echartNodes);
-  console.log('props are ', getLegendProps(legendType, legendOrientation, showLegend));
-  console.log('forceconfig ', {
-    ...GraphConstants.forceConfig,
-    edgeLength,
-    gravity,
-    repulsion,
-    friction,
-  });
 
   const echartOptions: echarts.EChartOption = {
     title: {
