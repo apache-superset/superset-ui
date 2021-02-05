@@ -26,6 +26,12 @@ import {
   ColumnMeta,
 } from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from './types';
+import {
+  legendMarginControl,
+  legendOrientationControl,
+  legendTypeControl,
+  showLegendControl,
+} from '../controls';
 
 const noopControl = { name: 'noop', config: { type: '', renderTrigger: true } };
 const controlConfig = {
@@ -97,6 +103,11 @@ export default {
       expanded: true,
       controlSetRows: [
         ['color_scheme', noopControl],
+        [<h1 className="section-header">{t('Legend')}</h1>],
+        [showLegendControl],
+        [legendTypeControl, legendOrientationControl],
+        [legendMarginControl, noopControl],
+        [<h1 className="section-header">{t('Layout')}</h1>],
         [
           {
             name: 'layout',

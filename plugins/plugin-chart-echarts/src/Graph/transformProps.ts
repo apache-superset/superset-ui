@@ -1,8 +1,5 @@
-import {
-  EchartsGraphFormData,
-  DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA,
-  GraphConstants,
-} from './types';
+import { EchartsGraphFormData, DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA } from './types';
+import { GraphConstants } from './constants';
 import {
   CategoricalColorNamespace,
   ChartProps,
@@ -11,8 +8,29 @@ import {
   DataRecordValue,
 } from '@superset-ui/core';
 import { EchartsProps } from '../types';
+import { getChartPadding, getLegendProps } from '../utils/series';
 
-function normalizeSymbolSize(
+function setLabelVisibility(
+  nodes: {
+    id: number;
+    name: DataRecordValue;
+    symbolSize: any;
+    value: any;
+    label?: { [name: string]: boolean };
+    category: string | null;
+  }[],
+  showSymbolThreshold: number,
+) {
+  if (showSymbolThreshold > 0) {
+    nodes.forEach(function (node) {
+      node.label = {
+        show: node.value > showSymbolThreshold,
+      };
+    });
+  }
+}
+
+function getNormalizedSymbolSize(
   nodes: {
     id: number;
     name: DataRecordValue;
@@ -22,20 +40,20 @@ function normalizeSymbolSize(
     category: string | null;
   }[],
 ) {
-  let max = Number.MIN_VALUE;
-  let min = Number.MAX_VALUE;
-  nodes.forEach((node: { symbolSize: any }) => {
-    const symbolSize = node.symbolSize;
-    if (symbolSize > max) {
-      max = symbolSize;
+  let minValue = Number.MAX_VALUE;
+  let maxValue = Number.MIN_VALUE;
+  nodes.forEach(node => {
+    if (node.symbolSize > maxValue) {
+      maxValue = node.symbolSize;
     }
-    if (symbolSize < min) {
-      min = symbolSize;
+    if (node.symbolSize < minValue) {
+      minValue = node.symbolSize;
     }
   });
-
   nodes.forEach((node: { symbolSize: number }) => {
-    node.symbolSize = ((node.symbolSize - min) / (max - min)) * 60 + 10;
+    node.symbolSize =
+      ((node.symbolSize - minValue) / (maxValue - minValue)) * GraphConstants.nodeSizeRightLimit +
+      GraphConstants.nodeSizeLeftLimit;
   });
 }
 
@@ -55,78 +73,79 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     draggable,
     selectedMode,
     showSymbolThreshold,
+    legendMargin,
+    legendOrientation,
+    legendType,
+    showLegend,
   }: EchartsGraphFormData = { ...DEFAULT_GRAPH_FORM_DATA, ...formData };
 
   const metricLabel = getMetricLabel(metric);
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   let nodes: { [name: string]: number } = {};
-  let echart_nodes: {
+  let echartNodes: {
     id: number;
     name: DataRecordValue;
-    symbolSize: any;
+    symbolSize?: any;
     value: any;
     label?: { [name: string]: boolean };
     category: string | null;
   }[] = [];
-  let echart_links: object[] = [];
-  let echart_categories: string[] = [];
+  let echartLinks: object[] = [];
+  let echartCategories: string[] = [];
   let index = 0;
-  let source_index = 0;
-  let target_index = 0;
+  let sourceIndex = 0;
+  let targetIndex = 0;
 
   data.forEach(link => {
-    const node_source: any = link[source];
-    const node_target: any = link[target];
-    const node_category: string = category ? link[category]!.toString() : 'default';
+    const nodeSource = link[source];
+    const nodeTarget = link[target];
+    const nodeCategory = category ? link[category]!.toString() : 'default';
+    const nodeValue = link[metricLabel];
+    console.log('valiue is ', nodeValue);
 
-    if (!(node_source in nodes)) {
-      echart_nodes.push({
+    if (!(nodeSource in nodes)) {
+      echartNodes.push({
         id: index,
-        name: node_source,
-        value: link[metricLabel],
-        symbolSize: link[metricLabel],
-        category: node_category,
+        name: nodeSource,
+        value: nodeValue,
+        symbolSize: nodeValue,
+        category: nodeCategory,
       });
-      source_index = index;
-      nodes[node_source] = index;
+      sourceIndex = index;
+      nodes[nodeSource] = index;
       index += 1;
     } else {
-      source_index = nodes[node_source];
-      echart_nodes[source_index].value += link[metricLabel];
-      echart_nodes[source_index].symbolSize += link[metricLabel];
+      sourceIndex = nodes[nodeSource];
+      echartNodes[sourceIndex].value += nodeValue;
+      echartNodes[sourceIndex].symbolSize += nodeValue;
     }
 
-    if (!(node_target in nodes)) {
-      echart_nodes.push({
+    if (!(nodeTarget in nodes)) {
+      echartNodes.push({
         id: index,
-        name: node_target,
-        value: link[metricLabel],
-        symbolSize: link[metricLabel],
-        category: node_category,
+        name: nodeTarget,
+        value: nodeValue,
+        symbolSize: nodeValue,
+        category: nodeCategory,
       });
-      target_index = index;
-      nodes[node_target] = index;
+      targetIndex = index;
+      nodes[nodeTarget] = index;
       index += 1;
     } else {
-      target_index = nodes[node_target];
-      echart_nodes[target_index].value += link[metricLabel];
-      echart_nodes[target_index].symbolSize += link[metricLabel];
+      targetIndex = nodes[nodeTarget];
+      echartNodes[targetIndex].value += nodeValue;
+      echartNodes[targetIndex].symbolSize += nodeValue;
     }
-    echart_links.push({ source: source_index.toString(), target: target_index.toString() });
+    echartLinks.push({ source: sourceIndex.toString(), target: targetIndex.toString() });
 
-    if (!echart_categories.includes(node_category)) {
-      echart_categories.push(node_category);
+    if (!echartCategories.includes(nodeCategory)) {
+      echartCategories.push(nodeCategory);
     }
   });
-  if (showSymbolThreshold > 0) {
-    echart_nodes.forEach(function (node) {
-      node.label = {
-        show: node.value > showSymbolThreshold,
-      };
-    });
-  }
 
-  normalizeSymbolSize(echart_nodes);
+  setLabelVisibility(echartNodes, showSymbolThreshold);
+  getNormalizedSymbolSize(echartNodes);
+  console.log('props are ', getLegendProps(legendType, legendOrientation, showLegend));
 
   const echartOptions: echarts.EChartOption = {
     title: {
@@ -138,30 +157,30 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     animationDuration: GraphConstants.animationDuration,
     animationEasing: GraphConstants.animationEasing,
     tooltip: GraphConstants.tooltipConfiguration,
-    legend: [{ data: echart_categories }],
+    legend: {
+      ...getLegendProps(legendType, legendOrientation, showLegend),
+      data: echartCategories,
+    },
     series: [
       {
         name: name,
         zoom: GraphConstants.zoom,
         type: 'graph',
-        categories: echart_categories.map(c => {
+        categories: echartCategories.map(c => {
           return { name: c, itemStyle: { color: colorFn(c) } };
         }),
         layout: layout,
         force: GraphConstants.forceConfig,
         circular: GraphConstants.circularConfig,
-        data: echart_nodes,
-        links: echart_links,
+        data: echartNodes,
+        links: echartLinks,
         roam: roam,
         draggable: draggable,
         edgeSymbol: GraphConstants.edgeSymbol,
         edgeSymbolSize: GraphConstants.edgeSymbolSize,
         selectedMode: selectedMode,
         autoCurveness: GraphConstants.autoCurveness,
-        left: GraphConstants.left,
-        top: GraphConstants.top,
-        bottom: GraphConstants.bottom,
-        right: GraphConstants.right,
+        ...getChartPadding(showLegend, legendOrientation, legendMargin),
         animation: GraphConstants.animation,
         label: GraphConstants.labelConfig,
         lineStyle: GraphConstants.lineStyleConfiguration,
