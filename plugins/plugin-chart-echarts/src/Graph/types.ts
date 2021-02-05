@@ -16,7 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export type EchartsGraphFormData = {
+import {
+  DEFAULT_LEGEND_FORM_DATA,
+  EchartsLegendFormData,
+  LegendOrientation,
+  LegendType,
+} from '../types';
+
+export type EchartsGraphFormData = EchartsLegendFormData & {
   name: string;
   source?: string;
   target?: string;
@@ -28,13 +35,24 @@ export type EchartsGraphFormData = {
   draggable: boolean;
   selectedMode: string;
   showSymbolThreshold: number;
+  repulsion: number;
+  gravity: number;
+  edgeLength: number;
+  friction: number;
 };
 
 export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
+  ...DEFAULT_LEGEND_FORM_DATA,
   name: 'graph chart',
   layout: 'circular',
   roam: true,
   draggable: false,
   selectedMode: 'single',
   showSymbolThreshold: 0,
+  repulsion: 1000,
+  gravity: 0.3,
+  edgeLength: 400,
+  friction: 0.2,
+  legendOrientation: LegendOrientation.Top,
+  legendType: LegendType.Scroll,
 };

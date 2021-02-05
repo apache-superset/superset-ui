@@ -3,11 +3,7 @@ export const GraphConstants = {
   circularConfig: { rotateLabel: true },
   forceConfig: {
     initLayout: 'circular',
-    repulsion: 1000,
-    gravity: 0.3,
-    edgeLength: 400,
     layoutAnimation: true,
-    friction: 0.2,
   },
   edgeSymbol: ['circle', 'arrow'],
   edgeSymbolSize: [10, 10],

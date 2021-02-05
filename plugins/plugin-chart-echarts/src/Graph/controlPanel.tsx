@@ -175,6 +175,58 @@ export default {
             },
           },
         ],
+        [
+          {
+            name: 'edgeLength',
+            config: {
+              type: 'TextControl',
+              label: t('Edge Length'),
+              renderTrigger: true,
+              isInt: true,
+              default: DEFAULT_FORM_DATA.edgeLength,
+              description: t('Edge length between nodes'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'gravity',
+            config: {
+              type: 'TextControl',
+              label: t('Gravity'),
+              renderTrigger: true,
+              isInt: true,
+              default: DEFAULT_FORM_DATA.gravity,
+              description: t('Strength to pull the graph toward center'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'replusion',
+            config: {
+              type: 'TextControl',
+              label: t('Repulsion'),
+              renderTrigger: true,
+              isInt: true,
+              default: DEFAULT_FORM_DATA.repulsion,
+              description: t('Edge length between nodes'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'friction',
+            config: {
+              type: 'TextControl',
+              label: t('Friction'),
+              renderTrigger: true,
+              isInt: true,
+              default: DEFAULT_FORM_DATA.friction,
+              description: t('Friction between nodes'),
+            },
+          },
+        ],
       ],
     },
   ],

@@ -73,6 +73,10 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     draggable,
     selectedMode,
     showSymbolThreshold,
+    edgeLength,
+    gravity,
+    repulsion,
+    friction,
     legendMargin,
     legendOrientation,
     legendType,
@@ -146,6 +150,13 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   setLabelVisibility(echartNodes, showSymbolThreshold);
   getNormalizedSymbolSize(echartNodes);
   console.log('props are ', getLegendProps(legendType, legendOrientation, showLegend));
+  console.log('forceconfig ', {
+    ...GraphConstants.forceConfig,
+    edgeLength,
+    gravity,
+    repulsion,
+    friction,
+  });
 
   const echartOptions: echarts.EChartOption = {
     title: {
@@ -170,7 +181,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           return { name: c, itemStyle: { color: colorFn(c) } };
         }),
         layout: layout,
-        force: GraphConstants.forceConfig,
+        force: { ...GraphConstants.forceConfig, edgeLength, gravity, repulsion, friction },
         circular: GraphConstants.circularConfig,
         data: echartNodes,
         links: echartLinks,
