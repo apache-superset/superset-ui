@@ -122,7 +122,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       animation: false,
       radius: [`${donut ? innerRadius : 0}%`, `${outerRadius}%`],
       center: ['50%', '50%'],
-      avoidLabelOverlap: true,
+      avoidLabelOverlap: false,
       labelLine: labelsOutside && labelLine ? { show: true } : { show: false },
       label: labelsOutside
         ? {
