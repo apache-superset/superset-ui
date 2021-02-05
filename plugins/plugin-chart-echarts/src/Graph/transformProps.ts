@@ -30,7 +30,7 @@ function setLabelVisibility(
   }
 }
 
-function getNormalizedSymbolSize(
+function setNormalizedSymbolSize(
   nodes: {
     id: number;
     name: DataRecordValue;
@@ -147,7 +147,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   });
 
   setLabelVisibility(echartNodes, showSymbolThreshold);
-  getNormalizedSymbolSize(echartNodes);
+  setNormalizedSymbolSize(echartNodes);
 
   const echartOptions: echarts.EChartOption = {
     title: {
