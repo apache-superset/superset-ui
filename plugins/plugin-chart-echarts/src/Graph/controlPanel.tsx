@@ -216,7 +216,7 @@ export default {
               max: 3000,
               step: 50,
               default: DEFAULT_FORM_DATA.repulsion,
-              description: t('Edge length between nodes'),
+              description: t('Repulsion strength between nodes'),
             },
           },
         ],

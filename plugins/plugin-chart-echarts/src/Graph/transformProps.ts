@@ -9,6 +9,7 @@ import {
 } from '@superset-ui/core';
 import { EchartsProps } from '../types';
 import { getChartPadding, getLegendProps } from '../utils/series';
+import { EChartsOption } from 'echarts';
 
 function setLabelVisibility(
   nodes: {
@@ -94,16 +95,16 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     label?: { [name: string]: boolean };
     category: string | null;
   }[] = [];
-  let echartLinks: object[] = [];
+  let echartLinks: { source: string; target: string }[] = [];
   let echartCategories: string[] = [];
   let index = 0;
   let sourceIndex = 0;
   let targetIndex = 0;
 
   data.forEach(link => {
-    const nodeSource = link[source];
-    const nodeTarget = link[target];
-    const nodeCategory = category ? link[category]!.toString() : 'default';
+    const nodeSource: any = link[source];
+    const nodeTarget: any = link[target];
+    const nodeCategory = category && link[category] ? link[category]!.toString() : 'default';
     const nodeValue = link[metricLabel];
 
     if (!(nodeSource in nodes)) {
@@ -149,7 +150,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   setLabelVisibility(echartNodes, showSymbolThreshold);
   setNormalizedSymbolSize(echartNodes);
 
-  const echartOptions: echarts.EChartOption = {
+  const echartOptions: EChartsOption = {
     title: {
       text: name,
       subtext: 'Default layout',

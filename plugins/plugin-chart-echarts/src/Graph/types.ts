@@ -46,7 +46,7 @@ export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
   name: 'graph chart',
   source: '',
   target: '',
-  layout: 'circular',
+  layout: 'force',
   roam: true,
   draggable: false,
   selectedMode: 'single',
