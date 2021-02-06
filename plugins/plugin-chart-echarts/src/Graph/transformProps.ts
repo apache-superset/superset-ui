@@ -37,8 +37,8 @@ function setNormalizedSymbolSize(nodes: GraphNodeItemOption[]) {
   nodes.forEach(node => {
     node.symbolSize =
       // @ts-ignore: symbolsize is not null
-      ((node.symbolSize - minValue) / (maxValue - minValue)) *
-        normalizationLimits.nodeSizeRightLimit || 0 + normalizationLimits.nodeSizeLeftLimit;
+      (((node.symbolSize - minValue) / (maxValue - minValue)) *
+        normalizationLimits.nodeSizeRightLimit || 0) + normalizationLimits.nodeSizeLeftLimit;
   });
 }
 
