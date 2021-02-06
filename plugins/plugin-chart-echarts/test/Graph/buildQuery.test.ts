@@ -19,7 +19,7 @@
 import buildQuery from '../../src/Graph/buildQuery';
 
 describe('Graph buildQuery', () => {
-  let formData = {
+  const formData = {
     datasource: '5__table',
     granularity_sqla: 'ds',
     source: 'dummy_source',
@@ -38,7 +38,7 @@ describe('Graph buildQuery', () => {
 
   it('should build groupby with categories', () => {
     // @ts-ignore
-    formData['category'] = 'dummy_category';
+    formData.category = 'dummy_category';
     const queryContext = buildQuery(formData);
     const [query] = queryContext.queries;
     expect(query.groupby).toEqual(['dummy_source', 'dummy_target', 'dummy_category']);

@@ -67,14 +67,14 @@ describe('EchartsGraph tranformProps', () => {
             expect.objectContaining({
               data: [
                 {
-                  id: 0,
+                  id: '0',
                   name: 'source_value',
                   value: 11,
                   symbolSize: 10,
                   category: 'default',
                 },
                 {
-                  id: 1,
+                  id: '1',
                   name: 'target_value',
                   value: 11,
                   symbolSize: 10,
@@ -138,14 +138,14 @@ describe('EchartsGraph tranformProps', () => {
             expect.objectContaining({
               data: [
                 {
-                  id: 0,
+                  id: '0',
                   name: 'source_value',
                   value: 11,
                   symbolSize: 10,
                   category: 'category_value_1',
                 },
                 {
-                  id: 1,
+                  id: '1',
                   name: 'target_value',
                   value: 11,
                   symbolSize: 10,
