@@ -159,7 +159,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     },
     animationDuration: GraphConstants.animationDuration,
     animationEasing: GraphConstants.animationEasing,
-    tooltip: GraphConstants.tooltipConfiguration,
+    tooltip: GraphConstants.tooltip,
     legend: {
       ...getLegendProps(legendType, legendOrientation, showLegend),
       data: echartCategories,
@@ -186,7 +186,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         ...getChartPadding(showLegend, legendOrientation, legendMargin),
         animation: GraphConstants.animation,
         label: GraphConstants.label,
-        lineStyle: GraphConstants.lineStyleConfiguration,
+        lineStyle: GraphConstants.lineStyle,
         emphasis: GraphConstants.emphasis,
       },
     ],

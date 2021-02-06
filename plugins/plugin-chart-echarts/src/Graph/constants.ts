@@ -20,7 +20,7 @@ export const GraphConstants: GraphSeriesOption = {
     fontFamily: 'sans-serif',
     fontSize: 12,
     padding: [0, 0, 0, 0],
-    overflow: 'none',
+    overflow: 'truncate',
     formatter: '{b}',
   },
   emphasis: {
@@ -33,8 +33,8 @@ export const GraphConstants: GraphSeriesOption = {
   animation: true,
   animationDuration: 500,
   animationEasing: 'cubicOut',
-  tooltipConfiguration: { show: true, formatter: '{b}: {c}' },
-  lineStyleConfiguration: { color: 'source', curveness: 0.1 },
+  tooltip: { show: true, formatter: '{b}: {c}' },
+  lineStyle: { color: 'source', curveness: 0.1 },
 };
 
 export const normalizationLimits = {

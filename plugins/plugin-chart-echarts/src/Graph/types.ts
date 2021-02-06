@@ -30,10 +30,10 @@ export type EchartsGraphFormData = EchartsLegendFormData & {
   category?: string;
   colorScheme?: string;
   metric?: string;
-  layout: string;
+  layout: 'none' | 'circular' | 'force' | undefined;
   roam: boolean;
   draggable: boolean;
-  selectedMode: string;
+  selectedMode: boolean | 'multiple' | 'single' | undefined;
   showSymbolThreshold: number;
   repulsion: number;
   gravity: number;
