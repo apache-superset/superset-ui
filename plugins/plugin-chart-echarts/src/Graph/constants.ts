@@ -1,4 +1,4 @@
-import { GraphSeriesOption } from 'echarts';
+import { GraphSeriesOption, TooltipComponentOption } from 'echarts';
 
 export const GraphConstants: GraphSeriesOption = {
   zoom: 1,
@@ -29,12 +29,15 @@ export const GraphConstants: GraphSeriesOption = {
       width: 10,
     },
   },
-  autoCurveness: 20,
   animation: true,
   animationDuration: 500,
   animationEasing: 'cubicOut',
-  tooltip: { show: true, formatter: '{b}: {c}' },
   lineStyle: { color: 'source', curveness: 0.1 },
+};
+
+export const tooltipConfig: TooltipComponentOption = {
+  show: true,
+  formatter: '{b}: {c}',
 };
 
 export const normalizationLimits = {
