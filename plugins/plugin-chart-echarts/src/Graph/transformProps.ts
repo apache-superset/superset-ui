@@ -1,16 +1,17 @@
-import { EchartsGraphFormData, DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA } from './types';
-import { GraphConstants, tooltipConfig, normalizationLimits } from './constants';
 import {
   CategoricalColorNamespace,
   ChartProps,
   getMetricLabel,
   DataRecord,
 } from '@superset-ui/core';
-import { EchartsProps } from '../types';
-import { getChartPadding, getLegendProps } from '../utils/series';
 import { EChartsOption, GraphSeriesOption } from 'echarts';
 import { GraphNodeItemOption } from 'echarts/types/src/chart/graph/GraphSeries';
+import { EchartsGraphFormData, DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA } from './types';
+import { GraphConstants, tooltipConfig, normalizationLimits } from './constants';
+import { EchartsProps } from '../types';
+import { getChartPadding, getLegendProps } from '../utils/series';
 
+/* eslint-disable no-param-reassign */
 function setLabelVisibility(nodes: GraphNodeItemOption[], showSymbolThreshold: number) {
   if (showSymbolThreshold > 0) {
     nodes.forEach(function (node) {
@@ -21,6 +22,7 @@ function setLabelVisibility(nodes: GraphNodeItemOption[], showSymbolThreshold: n
   }
 }
 
+/* eslint-disable no-param-reassign */
 function setNormalizedSymbolSize(nodes: GraphNodeItemOption[]) {
   let minValue: any = Number.MAX_VALUE;
   let maxValue: any = Number.MIN_VALUE;
@@ -34,7 +36,7 @@ function setNormalizedSymbolSize(nodes: GraphNodeItemOption[]) {
   });
   nodes.forEach(node => {
     node.symbolSize =
-      //@ts-ignore: symbolsize is not null
+      // @ts-ignore: symbolsize is not null
       ((node.symbolSize - minValue) / (maxValue - minValue)) *
         normalizationLimits.nodeSizeRightLimit || 0 + normalizationLimits.nodeSizeLeftLimit;
   });
@@ -68,10 +70,10 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
 
   const metricLabel = getMetricLabel(metric);
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
-  let nodes: { [name: string]: number } = {};
-  let echartNodes: GraphNodeItemOption[] = [];
-  let echartLinks: { source: string; target: string }[] = [];
-  let echartCategories: string[] = [];
+  const nodes: { [name: string]: number } = {};
+  const echartNodes: GraphNodeItemOption[] = [];
+  const echartLinks: { source: string; target: string }[] = [];
+  const echartCategories: string[] = [];
   let index = 0;
   let sourceIndex = 0;
   let targetIndex = 0;
@@ -129,22 +131,20 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
 
   const series: GraphSeriesOption[] = [
     {
-      name: name,
+      name,
       zoom: GraphConstants.zoom,
       type: 'graph',
-      categories: echartCategories.map(c => {
-        return { name: c, itemStyle: { color: colorFn(c) } };
-      }),
-      layout: layout,
+      categories: echartCategories.map(c => ({ name: c, itemStyle: { color: colorFn(c) } })),
+      layout,
       force: { ...GraphConstants.force, edgeLength, gravity, repulsion, friction },
       circular: GraphConstants.circular,
       data: echartNodes,
       links: echartLinks,
-      roam: roam,
-      draggable: draggable,
+      roam,
+      draggable,
       edgeSymbol: GraphConstants.edgeSymbol,
       edgeSymbolSize: GraphConstants.edgeSymbolSize,
-      selectedMode: selectedMode,
+      selectedMode,
       ...getChartPadding(showLegend, legendOrientation, legendMargin),
       animation: GraphConstants.animation,
       label: GraphConstants.label,
