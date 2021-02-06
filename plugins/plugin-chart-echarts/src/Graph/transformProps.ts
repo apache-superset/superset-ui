@@ -1,5 +1,5 @@
 import { EchartsGraphFormData, DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA } from './types';
-import { GraphConstants } from './constants';
+import { GraphConstants, normalizationLimits } from './constants';
 import {
   CategoricalColorNamespace,
   ChartProps,
@@ -53,8 +53,8 @@ function setNormalizedSymbolSize(
   });
   nodes.forEach((node: { symbolSize: number }) => {
     node.symbolSize =
-      ((node.symbolSize - minValue) / (maxValue - minValue)) * GraphConstants.nodeSizeRightLimit ||
-      0 + GraphConstants.nodeSizeLeftLimit;
+      ((node.symbolSize - minValue) / (maxValue - minValue)) *
+        normalizationLimits.nodeSizeRightLimit || 0 + normalizationLimits.nodeSizeLeftLimit;
   });
 }
 
@@ -173,8 +173,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           return { name: c, itemStyle: { color: colorFn(c) } };
         }),
         layout: layout,
-        force: { ...GraphConstants.forceConfig, edgeLength, gravity, repulsion, friction },
-        circular: GraphConstants.circularConfig,
+        force: { ...GraphConstants.force, edgeLength, gravity, repulsion, friction },
+        circular: GraphConstants.circular,
         data: echartNodes,
         links: echartLinks,
         roam: roam,
@@ -185,7 +185,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         autoCurveness: GraphConstants.autoCurveness,
         ...getChartPadding(showLegend, legendOrientation, legendMargin),
         animation: GraphConstants.animation,
-        label: GraphConstants.labelConfig,
+        label: GraphConstants.label,
         lineStyle: GraphConstants.lineStyleConfiguration,
         emphasis: GraphConstants.emphasis,
       },

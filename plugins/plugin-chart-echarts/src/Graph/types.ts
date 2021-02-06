@@ -43,7 +43,7 @@ export type EchartsGraphFormData = EchartsLegendFormData & {
 
 export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
   ...DEFAULT_LEGEND_FORM_DATA,
-  name: 'graph chart',
+  name: 'Graph Chart',
   source: '',
   target: '',
   layout: 'force',

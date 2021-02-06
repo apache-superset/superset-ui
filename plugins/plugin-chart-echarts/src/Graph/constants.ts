@@ -1,13 +1,15 @@
-export const GraphConstants = {
+import { GraphSeriesOption } from 'echarts';
+
+export const GraphConstants: GraphSeriesOption = {
   zoom: 1,
-  circularConfig: { rotateLabel: true },
-  forceConfig: {
+  circular: { rotateLabel: true },
+  force: {
     initLayout: 'circular',
     layoutAnimation: true,
   },
   edgeSymbol: ['circle', 'arrow'],
   edgeSymbolSize: [10, 10],
-  labelConfig: {
+  label: {
     show: true,
     position: 'right',
     distance: 5,
@@ -33,6 +35,9 @@ export const GraphConstants = {
   animationEasing: 'cubicOut',
   tooltipConfiguration: { show: true, formatter: '{b}: {c}' },
   lineStyleConfiguration: { color: 'source', curveness: 0.1 },
+};
+
+export const normalizationLimits = {
   nodeSizeLeftLimit: 10,
   nodeSizeRightLimit: 60,
 };
