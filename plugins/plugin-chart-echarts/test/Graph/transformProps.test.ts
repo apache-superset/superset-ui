@@ -81,7 +81,7 @@ describe('EchartsGraph tranformProps', () => {
                   category: 'default',
                 },
               ],
-              name: 'graph chart',
+              name: 'Graph Chart',
             }),
           ]),
         }),
@@ -89,7 +89,7 @@ describe('EchartsGraph tranformProps', () => {
     );
   });
 
-  it('should tranform chart props for viz with category and same min, max value for normalization', () => {
+  it('should tranform chart props for viz with category and falsey normalization', () => {
     const formData = {
       colorScheme: 'bnbColors',
       datasource: '3__table',
