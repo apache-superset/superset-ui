@@ -85,7 +85,7 @@ export const datasourceAndVizType: ControlPanelSectionConfig = {
           label: t('Extra Parameters'),
           hidden: true,
           description: t(
-            'Extra parameters that any plugins can choose to set for use in jinja templated queries',
+            'Extra parameters that any plugins can choose to set for use in Jinja templated queries',
           ),
         },
       },
