@@ -75,7 +75,7 @@ export const datasourceAndVizType: ControlPanelSectionConfig = {
           type: 'HiddenControl',
           label: t('URL Parameters'),
           hidden: true,
-          description: t('Extra url parameters for use in jinja templated queries'),
+          description: t('Extra url parameters for use in Jinja templated queries'),
         },
       },
       {
