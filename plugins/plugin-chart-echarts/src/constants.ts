@@ -19,10 +19,17 @@
 // eslint-disable-next-line import/prefer-default-export
 export const NULL_STRING = '<NULL>';
 
-export const TIMESERIES_GRID_OFFSET_RIGHT = 40;
-
-export const TIMESERIES_ZOOM_BOTTOM = 30;
-
-export const TIMESERIES_LEGEND_RIGHT_TOP_OFFSET = 30;
-
-export const TIMESERIES_LEGEND_TOP_RIGHT_OFFSET = 55;
+export const TIMESERIES_CONSTANTS = {
+  grid_offset_right: 40,
+  grid_offset_left: 20,
+  grid_offset_top: 20,
+  grid_offset_bottom: 20,
+  grid_offset_bottom_zoomable: 80,
+  legend_right_top_offset: 30,
+  legend_top_right_offset: 30,
+  zoom_bottom: 30,
+  toolbox_top: 0,
+  toolbox_right: 0,
+  data_zoom_start: 0,
+  data_zoom_end: 100,
+}

@@ -52,7 +52,7 @@ import {
   transformSeries,
   transformTimeseriesAnnotation,
 } from './transformers';
-import { TIMESERIES_GRID_OFFSET_RIGHT, TIMESERIES_ZOOM_BOTTOM } from '../constants';
+import { TIMESERIES_CONSTANTS } from "../constants";
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
@@ -143,13 +143,13 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     grid: {
       ...defaultGrid,
       ...getChartPadding(showLegend, legendOrientation, legendMargin, {
-        top: 20,
-        bottom: zoomable ? 80 : 20,
-        left: 20,
+        top: TIMESERIES_CONSTANTS.grid_offset_top,
+        bottom: zoomable ? TIMESERIES_CONSTANTS.grid_offset_bottom_zoomable : TIMESERIES_CONSTANTS.grid_offset_bottom,
+        left: TIMESERIES_CONSTANTS.grid_offset_left,
         right:
           showLegend && legendOrientation === LegendOrientation.Right
             ? 0
-            : TIMESERIES_GRID_OFFSET_RIGHT,
+            : TIMESERIES_CONSTANTS.grid_offset_right,
       }),
     },
     xAxis: {
@@ -211,8 +211,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     series,
     toolbox: {
       show: zoomable,
-      top: 0,
-      right: 5,
+      top: TIMESERIES_CONSTANTS.toolbox_top,
+      right: TIMESERIES_CONSTANTS.toolbox_right,
       feature: {
         dataZoom: {
           yAxisIndex: false,
@@ -227,9 +227,9 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       ? [
           {
             type: 'slider',
-            start: 0,
-            end: 100,
-            bottom: TIMESERIES_ZOOM_BOTTOM,
+            start: TIMESERIES_CONSTANTS.data_zoom_start,
+            end: TIMESERIES_CONSTANTS.data_zoom_end,
+            bottom: TIMESERIES_CONSTANTS.zoom_bottom,
           },
         ]
       : [],
