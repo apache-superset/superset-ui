@@ -32,4 +32,4 @@ export const TIMESERIES_CONSTANTS = {
   toolbox_right: 5,
   data_zoom_start: 0,
   data_zoom_end: 100,
-}
+};

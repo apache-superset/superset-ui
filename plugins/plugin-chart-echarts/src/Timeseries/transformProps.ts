@@ -52,7 +52,7 @@ import {
   transformSeries,
   transformTimeseriesAnnotation,
 } from './transformers';
-import { TIMESERIES_CONSTANTS } from "../constants";
+import { TIMESERIES_CONSTANTS } from '../constants';
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
@@ -144,7 +144,9 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       ...defaultGrid,
       ...getChartPadding(showLegend, legendOrientation, legendMargin, {
         top: TIMESERIES_CONSTANTS.grid_offset_top,
-        bottom: zoomable ? TIMESERIES_CONSTANTS.grid_offset_bottom_zoomable : TIMESERIES_CONSTANTS.grid_offset_bottom,
+        bottom: zoomable
+          ? TIMESERIES_CONSTANTS.grid_offset_bottom_zoomable
+          : TIMESERIES_CONSTANTS.grid_offset_bottom,
         left: TIMESERIES_CONSTANTS.grid_offset_left,
         right:
           showLegend && legendOrientation === LegendOrientation.Right
