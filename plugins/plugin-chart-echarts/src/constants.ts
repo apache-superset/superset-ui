@@ -26,7 +26,7 @@ export const TIMESERIES_CONSTANTS = {
   grid_offset_bottom: 20,
   grid_offset_bottom_zoomable: 80,
   legend_right_top_offset: 30,
-  legend_top_right_offset: 30,
+  legend_top_right_offset: 55,
   zoom_bottom: 30,
   toolbox_top: 0,
   toolbox_right: 5,
