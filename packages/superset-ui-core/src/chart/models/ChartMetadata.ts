@@ -2,6 +2,11 @@ interface LookupTable {
   [key: string]: boolean;
 }
 
+export enum Behaviour {
+  CROSS_FILTER = 'CROSS_FILTER',
+  NATIVE_FILTER = 'NATIVE_FILTER',
+}
+
 export interface ChartMetadataConfig {
   name: string;
   canBeAnnotationTypes?: string[];
@@ -11,7 +16,7 @@ export interface ChartMetadataConfig {
   supportedAnnotationTypes?: string[];
   thumbnail: string;
   useLegacyApi?: boolean;
-  isNativeFilter?: boolean;
+  behaviours?: Behaviour[];
 }
 
 export default class ChartMetadata {
@@ -33,7 +38,7 @@ export default class ChartMetadata {
 
   useLegacyApi: boolean;
 
-  isNativeFilter: boolean;
+  behaviours: Behaviour[];
 
   constructor(config: ChartMetadataConfig) {
     const {
@@ -45,7 +50,7 @@ export default class ChartMetadata {
       supportedAnnotationTypes = [],
       thumbnail,
       useLegacyApi = false,
-      isNativeFilter = false,
+      behaviours = [],
     } = config;
 
     this.name = name;
@@ -65,7 +70,7 @@ export default class ChartMetadata {
     this.supportedAnnotationTypes = supportedAnnotationTypes;
     this.thumbnail = thumbnail;
     this.useLegacyApi = useLegacyApi;
-    this.isNativeFilter = isNativeFilter;
+    this.behaviours = behaviours;
   }
 
   canBeAnnotationType(type: string): boolean {
@@ -82,7 +87,7 @@ export default class ChartMetadata {
       supportedAnnotationTypes: this.supportedAnnotationTypes,
       thumbnail: this.thumbnail,
       useLegacyApi: this.useLegacyApi,
-      isNativeFilter: this.isNativeFilter,
+      behaviours: this.behaviours,
     });
   }
 }
