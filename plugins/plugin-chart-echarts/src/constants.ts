@@ -29,7 +29,7 @@ export const TIMESERIES_CONSTANTS = {
   legend_top_right_offset: 30,
   zoom_bottom: 30,
   toolbox_top: 0,
-  toolbox_right: 0,
+  toolbox_right: 5,
   data_zoom_start: 0,
   data_zoom_end: 100,
 }
