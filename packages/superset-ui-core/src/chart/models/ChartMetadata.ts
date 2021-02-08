@@ -1,10 +1,7 @@
+import { Behaviour } from '../types/Base';
+
 interface LookupTable {
   [key: string]: boolean;
-}
-
-export enum Behaviour {
-  CROSS_FILTER = 'CROSS_FILTER',
-  NATIVE_FILTER = 'NATIVE_FILTER',
 }
 
 export interface ChartMetadataConfig {

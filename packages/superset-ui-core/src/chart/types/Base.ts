@@ -2,6 +2,11 @@ import { ExtraFormData } from '../../query';
 
 export type HandlerFunction = (...args: unknown[]) => void;
 
+export enum Behaviour {
+  CROSS_FILTER = 'CROSS_FILTER',
+  NATIVE_FILTER = 'NATIVE_FILTER',
+}
+
 export type SetExtraFormDataHook = {
   ({
     extraFormData,
