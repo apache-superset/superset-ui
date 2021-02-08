@@ -25,9 +25,7 @@ import {
   TimeseriesDataRecord,
 } from '@superset-ui/core';
 import { LegendComponentOption, SeriesOption } from 'echarts';
-import {
-  NULL_STRING, TIMESERIES_CONSTANTS,
-} from "../constants";
+import { NULL_STRING, TIMESERIES_CONSTANTS } from '../constants';
 import { LegendOrientation, LegendType } from '../types';
 import { defaultLegendPadding } from '../defaults';
 
