@@ -32,6 +32,7 @@ import {
   xAxisShowMinmax,
   richTooltip,
   timeSeriesSection,
+  yAxisShowMinmax,
 } from '../NVD3Controls';
 
 const config: ControlPanelConfig = {
@@ -79,10 +80,7 @@ const config: ControlPanelConfig = {
       label: t('Y Axis'),
       tabOverride: 'customize',
       expanded: true,
-      controlSetRows: [
-        ['y_axis_format', yAxisBounds],
-        [yLogScale, null],
-      ],
+      controlSetRows: [['y_axis_format', yAxisBounds], [yAxisShowMinmax], [yLogScale, null]],
     },
     timeSeriesSection[1],
     sections.annotations,
