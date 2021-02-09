@@ -1,4 +1,4 @@
-import { Behaviour } from '../types/Base';
+import { Behavior } from '../types/Base';
 
 interface LookupTable {
   [key: string]: boolean;
@@ -14,7 +14,7 @@ export interface ChartMetadataConfig {
   supportedAnnotationTypes?: string[];
   thumbnail: string;
   useLegacyApi?: boolean;
-  behaviours?: Behaviour[];
+  behaviors?: Behavior[];
 }
 
 export default class ChartMetadata {
@@ -36,7 +36,7 @@ export default class ChartMetadata {
 
   useLegacyApi: boolean;
 
-  behaviours: Behaviour[];
+  behaviors: Behavior[];
 
   datasourceCount: number;
 
@@ -50,7 +50,7 @@ export default class ChartMetadata {
       supportedAnnotationTypes = [],
       thumbnail,
       useLegacyApi = false,
-      behaviours = [],
+      behaviors = [],
       datasourceCount = 1,
     } = config;
 
@@ -71,7 +71,7 @@ export default class ChartMetadata {
     this.supportedAnnotationTypes = supportedAnnotationTypes;
     this.thumbnail = thumbnail;
     this.useLegacyApi = useLegacyApi;
-    this.behaviours = behaviours;
+    this.behaviors = behaviors;
     this.datasourceCount = datasourceCount;
   }
 
@@ -89,7 +89,7 @@ export default class ChartMetadata {
       supportedAnnotationTypes: this.supportedAnnotationTypes,
       thumbnail: this.thumbnail,
       useLegacyApi: this.useLegacyApi,
-      behaviours: this.behaviours,
+      behaviors: this.behaviors,
       datasourceCount: this.datasourceCount,
     });
   }
