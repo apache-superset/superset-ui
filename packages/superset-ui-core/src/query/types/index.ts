@@ -25,3 +25,13 @@ export * from './Query';
 export * from './QueryFormData';
 export * from './QueryResponse';
 export * from './Time';
+
+export { default as __hask_reexport_Datasource } from './Datasource';
+export { default as __hask_reexport_Column } from './Column';
+export { default as __hask_reexport_Metric } from './Metric';
+export { default as __hask_reexport_Query } from './Query';
+export { default as __hask_reexport_QueryResponse } from './QueryResponse';
+export { default as __hask_reexport_QueryFormData } from './QueryFormData';
+export { default as __hask_reexport_Time } from './Time';
+
+export default {};
