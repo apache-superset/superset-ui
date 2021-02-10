@@ -133,3 +133,5 @@ export interface QueryContext {
   result_format: string;
   queries: QueryObject[];
 }
+
+export default {};

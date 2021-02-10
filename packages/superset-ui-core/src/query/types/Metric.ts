@@ -50,6 +50,7 @@ export type SavedMetric = string;
  */
 export interface Metric {
   id: number;
+  label?: string;
   certification_details?: Maybe<string>;
   certified_by?: Maybe<string>;
   d3format?: Maybe<string>;
@@ -60,3 +61,5 @@ export interface Metric {
   verbose_name?: string;
   warning_text?: Maybe<string>;
 }
+
+export default {};
