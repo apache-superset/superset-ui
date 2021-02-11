@@ -53,7 +53,7 @@ export const DEFAULT_GRAPH_SERIES_OPTION: GraphSeriesOption = {
   lineStyle: { color: 'source', curveness: 0.1 },
 };
 
-export const tooltipConfig: TooltipComponentOption = {
+export const tooltip: TooltipComponentOption = {
   show: true,
   // show node_name and node_value
   // Ref: https://echarts.apache.org/en/option.html#tooltip.formatter

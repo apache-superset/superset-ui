@@ -25,7 +25,7 @@ import {
 import { EChartsOption, GraphSeriesOption } from 'echarts';
 import { GraphNodeItemOption } from 'echarts/types/src/chart/graph/GraphSeries';
 import { EchartsGraphFormData, DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA } from './types';
-import { DEFAULT_GRAPH_SERIES_OPTION, tooltipConfig, normalizationLimits } from './constants';
+import { DEFAULT_GRAPH_SERIES_OPTION, tooltip, normalizationLimits } from './constants';
 import { EchartsProps } from '../types';
 import { getChartPadding, getLegendProps } from '../utils/series';
 
@@ -58,7 +58,7 @@ function setNormalizedSymbolSize(nodes: GraphNodeItemOption[]): void {
   });
   nodes.forEach(node => {
     node.symbolSize =
-      // @ts-ignore: value is not null
+      // @ts-ignore: value is not null and type is GraphDataValue
       (((node.value - minValue) / (maxValue - minValue)) * normalizationLimits.nodeSizeRightLimit ||
         0) + normalizationLimits.nodeSizeLeftLimit;
   });
@@ -105,11 +105,11 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     const nodeTarget = link[target] as string;
     const nodeCategory: string =
       category && link[category] ? link[category]!.toString() : 'default';
-    const nodeValue = link[metricLabel] as GraphDataValue | null;
+    const nodeValue = link[metricLabel] as any;
     if (nodeValue) {
       if (nodeSource in nodes) {
         sourceIndex = nodes[nodeSource];
-        echartNodes[sourceIndex].value += nodeValue;
+        echartNodes[sourceIndex].value! += nodeValue;
       } else {
         echartNodes.push({
           id: index.toString(),
@@ -124,7 +124,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
 
       if (nodeTarget in nodes) {
         targetIndex = nodes[nodeTarget];
-        echartNodes[targetIndex].value += nodeValue;
+        echartNodes[targetIndex].value! += nodeValue;
       } else {
         echartNodes.push({
           id: index.toString(),
@@ -180,7 +180,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     },
     animationDuration: DEFAULT_GRAPH_SERIES_OPTION.animationDuration,
     animationEasing: DEFAULT_GRAPH_SERIES_OPTION.animationEasing,
-    tooltip: tooltipConfig,
+    tooltip,
     legend: {
       ...getLegendProps(legendType, legendOrientation, showLegend),
       data: echartCategories,
