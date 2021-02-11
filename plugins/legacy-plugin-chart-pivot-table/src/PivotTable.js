@@ -104,10 +104,10 @@ function PivotTable(element, props) {
       .find('td')
       .each(function eachTd(index) {
         const tdText = $(this)[0].textContent;
-        if(tdText){
-          //only modify textContent if its not empty string,as it could be an image.
-          //if modified,innerHtml gets overriden and image is not displayed.
-          //'null' value is handled inside this function
+        if( tdText ){
+          // only modify textContent if its not empty string,as it could be an image.
+          // if modified,innerHtml gets overriden and image is not displayed.
+          // 'null' value is handled inside this function
           const { textContent, attr } = formatCellValue(
             index,
             cols,
@@ -119,7 +119,7 @@ function PivotTable(element, props) {
           );
           $(this)[0].textContent = textContent;
           $(this).attr = attr;
-        }        
+        }
       });
   });
 
