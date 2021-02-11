@@ -18,7 +18,7 @@
  */
 import { GraphSeriesOption, TooltipComponentOption } from 'echarts';
 
-export const GraphConstants: GraphSeriesOption = {
+export const DEFAULT_GRAPH_SERIES_OPTION: GraphSeriesOption = {
   zoom: 1,
   circular: { rotateLabel: true },
   force: {
@@ -55,6 +55,8 @@ export const GraphConstants: GraphSeriesOption = {
 
 export const tooltipConfig: TooltipComponentOption = {
   show: true,
+  // show node_name and node_value
+  // Ref: https://echarts.apache.org/en/option.html#tooltip.formatter
   formatter: '{b}: {c}',
 };
 

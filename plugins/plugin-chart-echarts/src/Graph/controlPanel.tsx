@@ -34,7 +34,7 @@ import {
 } from '../controls';
 
 const noopControl = { name: 'noop', config: { type: '', renderTrigger: true } };
-const controlConfig = {
+const columnSelectControl = {
   ...sharedControls.entity,
   type: 'SelectControl',
   multi: false,
@@ -45,37 +45,37 @@ const controlConfig = {
   valueRenderer: (c: ColumnMeta) => <ColumnOption column={c} />,
   valueKey: 'column_name',
   allowAll: true,
-  filterOption: ({ data: opt }: any, text: string) =>
+  filterOption: ({ data: opt }: { data: ColumnMeta }, text: string) =>
     (opt.column_name && opt.column_name.toLowerCase().indexOf(text.toLowerCase()) >= 0) ||
     (opt.verbose_name && opt.verbose_name.toLowerCase().indexOf(text.toLowerCase()) >= 0),
-  promptTextCreator: (label: any) => label,
+  promptTextCreator: (label: string) => label,
   commaChoosesOption: false,
 };
 
 const sourceControl = {
   name: 'source',
   config: {
-    ...controlConfig,
+    ...columnSelectControl,
     clearable: false,
     label: t('Source'),
-    description: t('Source for nodes of graph'),
+    description: t('Name of the source nodes'),
   },
 };
 
 const targetControl = {
   name: 'target',
   config: {
-    ...controlConfig,
+    ...columnSelectControl,
     clearable: false,
     label: t('Target'),
-    description: t('Target for nodes of graph'),
+    description: t('Name of the target nodes'),
   },
 };
 
 const categoryControl = {
   name: 'category',
   config: {
-    ...controlConfig,
+    ...columnSelectControl,
     clearable: true,
     label: t('Category'),
     description: t('Optional category for nodes of graph'),
@@ -92,8 +92,8 @@ export default {
       controlSetRows: [
         [sourceControl],
         [targetControl],
-        [categoryControl],
         ['metric'],
+        [categoryControl],
         ['adhoc_filters'],
         ['row_limit'],
       ],
@@ -102,7 +102,7 @@ export default {
       label: t('Chart Options'),
       expanded: true,
       controlSetRows: [
-        ['color_scheme', noopControl],
+        ['color_scheme'],
         [<h1 className="section-header">{t('Legend')}</h1>],
         [showLegendControl],
         [legendTypeControl, legendOrientationControl],

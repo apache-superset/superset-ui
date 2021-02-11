@@ -25,7 +25,7 @@ import {
 import { EChartsOption, GraphSeriesOption } from 'echarts';
 import { GraphNodeItemOption } from 'echarts/types/src/chart/graph/GraphSeries';
 import { EchartsGraphFormData, DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA } from './types';
-import { GraphConstants, tooltipConfig, normalizationLimits } from './constants';
+import { DEFAULT_GRAPH_SERIES_OPTION, tooltipConfig, normalizationLimits } from './constants';
 import { EchartsProps } from '../types';
 import { getChartPadding, getLegendProps } from '../utils/series';
 
@@ -42,14 +42,18 @@ function setLabelVisibility(nodes: GraphNodeItemOption[], showSymbolThreshold: n
 
 /* eslint-disable no-param-reassign */
 function setNormalizedSymbolSize(nodes: GraphNodeItemOption[]): void {
-  let minValue: any = Number.MAX_VALUE;
-  let maxValue: any = Number.MIN_VALUE;
+  let minValue = Number.MAX_VALUE;
+  let maxValue = Number.MIN_VALUE;
   nodes.forEach(node => {
-    if (node.value! > maxValue) {
-      maxValue = node.value;
+    if (node.value == null) {
+      return;
     }
-    if (node.value! < minValue) {
-      minValue = node.value;
+
+    if (node.value > maxValue) {
+      maxValue = node.value as any;
+    }
+    if (node.value < minValue) {
+      minValue = node.value as any;
     }
   });
   nodes.forEach(node => {
@@ -97,13 +101,16 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   let targetIndex = 0;
 
   data.forEach(link => {
-    const nodeSource: any = link[source];
-    const nodeTarget: any = link[target];
+    const nodeSource = link[source] as string;
+    const nodeTarget = link[target] as string;
     const nodeCategory: string =
       category && link[category] ? link[category]!.toString() : 'default';
-    const nodeValue: any = link[metricLabel];
+    const nodeValue = link[metricLabel] as GraphDataValue | null;
     if (nodeValue) {
-      if (!(nodeSource in nodes)) {
+      if (nodeSource in nodes) {
+        sourceIndex = nodes[nodeSource];
+        echartNodes[sourceIndex].value += nodeValue;
+      } else {
         echartNodes.push({
           id: index.toString(),
           name: nodeSource,
@@ -113,12 +120,12 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         sourceIndex = index;
         nodes[nodeSource] = index;
         index += 1;
-      } else {
-        sourceIndex = nodes[nodeSource];
-        echartNodes[sourceIndex].value += nodeValue;
       }
 
-      if (!(nodeTarget in nodes)) {
+      if (nodeTarget in nodes) {
+        targetIndex = nodes[nodeTarget];
+        echartNodes[targetIndex].value += nodeValue;
+      } else {
         echartNodes.push({
           id: index.toString(),
           name: nodeTarget,
@@ -128,9 +135,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         targetIndex = index;
         nodes[nodeTarget] = index;
         index += 1;
-      } else {
-        targetIndex = nodes[nodeTarget];
-        echartNodes[targetIndex].value += nodeValue;
       }
       echartLinks.push({ source: sourceIndex.toString(), target: targetIndex.toString() });
 
@@ -146,24 +150,24 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const series: GraphSeriesOption[] = [
     {
       name,
-      zoom: GraphConstants.zoom,
+      zoom: DEFAULT_GRAPH_SERIES_OPTION.zoom,
       type: 'graph',
       categories: echartCategories.map(c => ({ name: c, itemStyle: { color: colorFn(c) } })),
       layout,
-      force: { ...GraphConstants.force, edgeLength, gravity, repulsion, friction },
-      circular: GraphConstants.circular,
+      force: { ...DEFAULT_GRAPH_SERIES_OPTION.force, edgeLength, gravity, repulsion, friction },
+      circular: DEFAULT_GRAPH_SERIES_OPTION.circular,
       data: echartNodes,
       links: echartLinks,
       roam,
       draggable,
-      edgeSymbol: GraphConstants.edgeSymbol,
-      edgeSymbolSize: GraphConstants.edgeSymbolSize,
+      edgeSymbol: DEFAULT_GRAPH_SERIES_OPTION.edgeSymbol,
+      edgeSymbolSize: DEFAULT_GRAPH_SERIES_OPTION.edgeSymbolSize,
       selectedMode,
       ...getChartPadding(showLegend, legendOrientation, legendMargin),
-      animation: GraphConstants.animation,
-      label: GraphConstants.label,
-      lineStyle: GraphConstants.lineStyle,
-      emphasis: GraphConstants.emphasis,
+      animation: DEFAULT_GRAPH_SERIES_OPTION.animation,
+      label: DEFAULT_GRAPH_SERIES_OPTION.label,
+      lineStyle: DEFAULT_GRAPH_SERIES_OPTION.lineStyle,
+      emphasis: DEFAULT_GRAPH_SERIES_OPTION.emphasis,
     },
   ];
 
@@ -174,8 +178,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       top: 'bottom',
       left: 'right',
     },
-    animationDuration: GraphConstants.animationDuration,
-    animationEasing: GraphConstants.animationEasing,
+    animationDuration: DEFAULT_GRAPH_SERIES_OPTION.animationDuration,
+    animationEasing: DEFAULT_GRAPH_SERIES_OPTION.animationEasing,
     tooltip: tooltipConfig,
     legend: {
       ...getLegendProps(legendType, legendOrientation, showLegend),
