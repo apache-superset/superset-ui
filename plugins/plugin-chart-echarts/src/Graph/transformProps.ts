@@ -30,7 +30,7 @@ import { EchartsProps } from '../types';
 import { getChartPadding, getLegendProps } from '../utils/series';
 
 /* eslint-disable no-param-reassign */
-function setLabelVisibility(nodes: GraphNodeItemOption[], showSymbolThreshold: number) {
+function setLabelVisibility(nodes: GraphNodeItemOption[], showSymbolThreshold: number): void {
   if (showSymbolThreshold > 0) {
     nodes.forEach(function (node) {
       node.label = {
@@ -41,22 +41,22 @@ function setLabelVisibility(nodes: GraphNodeItemOption[], showSymbolThreshold: n
 }
 
 /* eslint-disable no-param-reassign */
-function setNormalizedSymbolSize(nodes: GraphNodeItemOption[]) {
+function setNormalizedSymbolSize(nodes: GraphNodeItemOption[]): void {
   let minValue: any = Number.MAX_VALUE;
   let maxValue: any = Number.MIN_VALUE;
   nodes.forEach(node => {
-    if (node.symbolSize! > maxValue) {
-      maxValue = node.symbolSize;
+    if (node.value! > maxValue) {
+      maxValue = node.value;
     }
-    if (node.symbolSize! < minValue) {
-      minValue = node.symbolSize;
+    if (node.value! < minValue) {
+      minValue = node.value;
     }
   });
   nodes.forEach(node => {
     node.symbolSize =
-      // @ts-ignore: symbolsize is not null
-      (((node.symbolSize - minValue) / (maxValue - minValue)) *
-        normalizationLimits.nodeSizeRightLimit || 0) + normalizationLimits.nodeSizeLeftLimit;
+      // @ts-ignore: value is not null
+      (((node.value - minValue) / (maxValue - minValue)) * normalizationLimits.nodeSizeRightLimit ||
+        0) + normalizationLimits.nodeSizeLeftLimit;
   });
 }
 
@@ -108,7 +108,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           id: index.toString(),
           name: nodeSource,
           value: nodeValue,
-          symbolSize: nodeValue,
           category: nodeCategory,
         });
         sourceIndex = index;
@@ -117,7 +116,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       } else {
         sourceIndex = nodes[nodeSource];
         echartNodes[sourceIndex].value += nodeValue;
-        echartNodes[sourceIndex].symbolSize += nodeValue;
       }
 
       if (!(nodeTarget in nodes)) {
@@ -125,7 +123,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           id: index.toString(),
           name: nodeTarget,
           value: nodeValue,
-          symbolSize: nodeValue,
           category: nodeCategory,
         });
         targetIndex = index;
@@ -134,7 +131,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       } else {
         targetIndex = nodes[nodeTarget];
         echartNodes[targetIndex].value += nodeValue;
-        echartNodes[targetIndex].symbolSize += nodeValue;
       }
       echartLinks.push({ source: sourceIndex.toString(), target: targetIndex.toString() });
 
