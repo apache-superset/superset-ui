@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { GraphNodeItemOption } from 'echarts/types/src/chart/graph/GraphSeries';
 import {
   DEFAULT_LEGEND_FORM_DATA,
   EchartsLegendFormData,
@@ -39,6 +40,10 @@ export type EchartsGraphFormData = EchartsLegendFormData & {
   gravity: number;
   edgeLength: number;
   friction: number;
+};
+
+export type EChartGraphNode = GraphNodeItemOption & {
+  value: number;
 };
 
 export const DEFAULT_FORM_DATA: EchartsGraphFormData = {

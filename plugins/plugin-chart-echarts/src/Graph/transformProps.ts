@@ -23,44 +23,38 @@ import {
   DataRecord,
 } from '@superset-ui/core';
 import { EChartsOption, GraphSeriesOption } from 'echarts';
-import { GraphNodeItemOption } from 'echarts/types/src/chart/graph/GraphSeries';
-import { EchartsGraphFormData, DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA } from './types';
+import { GraphEdgeItemOption } from 'echarts/types/src/chart/graph/GraphSeries';
+import {
+  EchartsGraphFormData,
+  EChartGraphNode,
+  DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA,
+} from './types';
 import { DEFAULT_GRAPH_SERIES_OPTION, tooltip, normalizationLimits } from './constants';
 import { EchartsProps } from '../types';
 import { getChartPadding, getLegendProps } from '../utils/series';
 
 /* eslint-disable no-param-reassign */
-function setLabelVisibility(nodes: GraphNodeItemOption[], showSymbolThreshold: number): void {
+function setLabelVisibility(nodes: EChartGraphNode[], showSymbolThreshold: number): void {
   if (showSymbolThreshold > 0) {
     nodes.forEach(function (node) {
       node.label = {
-        show: node.value! > showSymbolThreshold,
+        show: node.value > showSymbolThreshold,
       };
     });
   }
 }
 
 /* eslint-disable no-param-reassign */
-function setNormalizedSymbolSize(nodes: GraphNodeItemOption[]): void {
-  let minValue = Number.MAX_VALUE;
-  let maxValue = Number.MIN_VALUE;
-  nodes.forEach(node => {
-    if (node.value == null) {
-      return;
-    }
+function setNormalizedSymbolSize(nodes: EChartGraphNode[], nodeValues: number[]): void {
+  const minValue = Math.min(...nodeValues);
+  const maxValue = Math.max(...nodeValues);
 
-    if (node.value > maxValue) {
-      maxValue = node.value as any;
-    }
-    if (node.value < minValue) {
-      minValue = node.value as any;
-    }
-  });
+  let i = 0;
   nodes.forEach(node => {
     node.symbolSize =
-      // @ts-ignore: value is not null and type is GraphDataValue
-      (((node.value - minValue) / (maxValue - minValue)) * normalizationLimits.nodeSizeRightLimit ||
-        0) + normalizationLimits.nodeSizeLeftLimit;
+      (((nodeValues[i] - minValue) / (maxValue - minValue)) *
+        normalizationLimits.nodeSizeRightLimit || 0) + normalizationLimits.nodeSizeLeftLimit;
+    i += 1;
   });
 }
 
@@ -93,9 +87,10 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const metricLabel = getMetricLabel(metric);
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const nodes: { [name: string]: number } = {};
-  const echartNodes: GraphNodeItemOption[] = [];
-  const echartLinks: { source: string; target: string }[] = [];
+  const echartNodes: EChartGraphNode[] = [];
+  const echartLinks: GraphEdgeItemOption[] = [];
   const echartCategories: string[] = [];
+  const nodeValues: number[] = [];
   let index = 0;
   let sourceIndex = 0;
   let targetIndex = 0;
@@ -105,11 +100,14 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     const nodeTarget = link[target] as string;
     const nodeCategory: string =
       category && link[category] ? link[category]!.toString() : 'default';
-    const nodeValue = link[metricLabel] as any;
+
+    const nodeValue = link[metricLabel] as number;
+
     if (nodeValue) {
       if (nodeSource in nodes) {
         sourceIndex = nodes[nodeSource];
-        echartNodes[sourceIndex].value! += nodeValue;
+        nodeValues[sourceIndex] += nodeValue;
+        echartNodes[sourceIndex].value += nodeValue;
       } else {
         echartNodes.push({
           id: index.toString(),
@@ -117,14 +115,16 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           value: nodeValue,
           category: nodeCategory,
         });
-        sourceIndex = index;
+        nodeValues[index] = nodeValue;
         nodes[nodeSource] = index;
+        sourceIndex = index;
         index += 1;
       }
 
       if (nodeTarget in nodes) {
         targetIndex = nodes[nodeTarget];
-        echartNodes[targetIndex].value! += nodeValue;
+        nodeValues[targetIndex] += nodeValue;
+        echartNodes[targetIndex].value += nodeValue;
       } else {
         echartNodes.push({
           id: index.toString(),
@@ -132,8 +132,9 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           value: nodeValue,
           category: nodeCategory,
         });
-        targetIndex = index;
+        nodeValues[index] = nodeValue;
         nodes[nodeTarget] = index;
+        targetIndex = index;
         index += 1;
       }
       echartLinks.push({ source: sourceIndex.toString(), target: targetIndex.toString() });
@@ -145,7 +146,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   });
 
   setLabelVisibility(echartNodes, showSymbolThreshold);
-  setNormalizedSymbolSize(echartNodes);
+  setNormalizedSymbolSize(echartNodes, nodeValues);
 
   const series: GraphSeriesOption[] = [
     {

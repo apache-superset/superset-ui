@@ -77,7 +77,7 @@ const categoryControl = {
   config: {
     ...columnSelectControl,
     clearable: true,
-    label: t('Category'),
+    label: t('Color By'),
     description: t('Optional category for nodes of graph'),
     validators: [],
   },
