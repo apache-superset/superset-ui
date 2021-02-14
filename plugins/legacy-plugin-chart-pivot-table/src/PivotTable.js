@@ -85,7 +85,6 @@ function PivotTable(element, props) {
   $container.find('th').each(function formatTh() {
     if (hasOnlyTextChild(this)) {
       const cellValue = formatDateCellValue($(this).text(), verboseMap, dateRegex, dateFormatter);
-      console.log($(this).text(), cellValue);
       $(this).text(cellValue);
     }
   });
