@@ -23,6 +23,7 @@ import {
   DataRecord,
 } from '@superset-ui/core';
 import { EChartsOption, GraphSeriesOption } from 'echarts';
+import { max as d3Max, min as d3Min } from 'd3-array';
 import { GraphEdgeItemOption } from 'echarts/types/src/chart/graph/GraphSeries';
 import {
   EchartsGraphFormData,
@@ -46,8 +47,8 @@ function setLabelVisibility(nodes: EChartGraphNode[], showSymbolThreshold: numbe
 
 /* eslint-disable no-param-reassign */
 function setNormalizedSymbolSize(nodes: EChartGraphNode[], nodeValues: number[]): void {
-  const minValue = Math.min(...nodeValues);
-  const maxValue = Math.max(...nodeValues);
+  const minValue = d3Min(nodeValues) as number;
+  const maxValue = d3Max(nodeValues) as number;
 
   let i = 0;
   nodes.forEach(node => {
