@@ -172,7 +172,7 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
     rawFormData: formData,
     queriesData,
     initialValues: filters = {},
-    ownCurrentState: { currentPage, pageSize = 10 },
+    ownCurrentState: { currentPage, pageSize },
     hooks: { onAddFilter: onChangeFilter, setDataMask = () => {} },
   } = chartProps;
 

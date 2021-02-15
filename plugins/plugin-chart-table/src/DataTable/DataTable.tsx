@@ -129,7 +129,7 @@ export default function DataTable<D extends object>({
     }
     return undefined;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialHeight, initialWidth, wrapperRef, hasPagination, hasGlobalControl]);
+  }, [initialHeight, initialWidth, wrapperRef, hasPagination, hasGlobalControl, showBENextButton]);
 
   const defaultGlobalFilter: FilterType<D> = useCallback(
     (rows: Row<D>[], columnIds: IdType<D>[], filterValue: string) => {
