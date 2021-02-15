@@ -64,7 +64,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const data: DataRecord[] = queriesData[0].data || [];
 
   const {
-    name,
     source,
     target,
     category,
@@ -132,6 +131,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           name: nodeTarget,
           value: nodeValue,
           category: nodeCategory,
+          select: {itemStyle: {borderWidth: 5}, label:{fontWeight: 'bolder'}}
         });
         nodeValues[index] = nodeValue;
         nodes[nodeTarget] = index;
@@ -174,12 +174,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   ];
 
   const echartOptions: EChartsOption = {
-    title: {
-      text: name,
-      subtext: 'Default layout',
-      top: 'bottom',
-      left: 'right',
-    },
     animationDuration: DEFAULT_GRAPH_SERIES_OPTION.animationDuration,
     animationEasing: DEFAULT_GRAPH_SERIES_OPTION.animationEasing,
     tooltip,

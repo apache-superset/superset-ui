@@ -19,7 +19,6 @@
 import React from 'react';
 import { t } from '@superset-ui/core';
 import {
-  formatSelectOptions,
   sections,
   sharedControls,
   ColumnOption,
@@ -112,14 +111,20 @@ export default {
           {
             name: 'layout',
             config: {
-              type: 'SelectControl',
+              type: 'RadioButtonControl',
               renderTrigger: true,
               label: t('Graph Layout'),
               default: DEFAULT_FORM_DATA.layout,
-              choices: formatSelectOptions([
-                ['force', t('Force')],
-                ['circular', t('Circular')],
-              ]),
+              options: [
+                {
+                  label: 'force',
+                  value: 'force',
+                },
+                {
+                  label: 'circular',
+                  value: 'circular',
+                },
+              ],
               description: t('Layout type of graph'),
             },
           },
@@ -129,35 +134,47 @@ export default {
             name: 'draggable',
             config: {
               type: 'CheckboxControl',
-              label: t('Enable node draging'),
+              label: t('Enable node dragging'),
               renderTrigger: true,
               default: DEFAULT_FORM_DATA.draggable,
               description: t('Whether to enable node dragging in force layout mode.'),
-            },
-          },
-          {
-            name: 'roam',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Enable graph roaming'),
-              renderTrigger: true,
-              default: DEFAULT_FORM_DATA.roam,
-              description: t('Whether to enable chaging graph position.'),
+              visibility({form_data: {layout}}: {form_data: EchartsGraphFormData} ){
+                return layout === 'force' || (!layout && DEFAULT_FORM_DATA.layout === 'force');
+              }
             },
           },
         ],
         [
           {
-            name: 'select_mode',
+            name: 'roam',
+            config: {
+              type: 'SelectControl',
+              label: t('Enable graph roaming'),
+              renderTrigger: true,
+              default: DEFAULT_FORM_DATA.roam,
+              choices: [
+                [false, t('Disabled')],
+                ['scale', t('Scale only')],
+                ['move', t('Move only')],
+                [true, t('Scale and Move')],
+              ],
+              description: t('Whether to enable changing graph position and scaling.'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'selectedMode',
             config: {
               type: 'SelectControl',
               renderTrigger: true,
               label: t('Node Select Mode'),
               default: DEFAULT_FORM_DATA.selectedMode,
-              choices: formatSelectOptions([
+              choices: [
+                [false, t('Disabled')],
                 ['single', t('Single')],
                 ['multiple', t('Multiple')],
-              ]),
+              ],
               description: t('Allow node selections'),
             },
           },
@@ -187,6 +204,9 @@ export default {
               step: 50,
               default: DEFAULT_FORM_DATA.edgeLength,
               description: t('Edge length between nodes'),
+              visibility({form_data: {layout}}: {form_data: EchartsGraphFormData} ){
+                return layout === 'force' || (!layout && DEFAULT_FORM_DATA.layout === 'force');
+              }
             },
           },
         ],
@@ -202,6 +222,9 @@ export default {
               step: 0.1,
               default: DEFAULT_FORM_DATA.gravity,
               description: t('Strength to pull the graph toward center'),
+              visibility({form_data: {layout}}: {form_data: EchartsGraphFormData} ){
+                return layout === 'force' || (!layout && DEFAULT_FORM_DATA.layout === 'force');
+              }
             },
           },
         ],
@@ -217,6 +240,9 @@ export default {
               step: 50,
               default: DEFAULT_FORM_DATA.repulsion,
               description: t('Repulsion strength between nodes'),
+              visibility({form_data: {layout}}: {form_data: EchartsGraphFormData} ){
+                return layout === 'force' || (!layout && DEFAULT_FORM_DATA.layout === 'force');
+              }
             },
           },
         ],
@@ -232,6 +258,9 @@ export default {
               step: 0.1,
               default: DEFAULT_FORM_DATA.friction,
               description: t('Friction between nodes'),
+              visibility({form_data: {layout}}: {form_data: EchartsGraphFormData} ){
+                return layout === 'force' || (!layout && DEFAULT_FORM_DATA.layout === 'force');
+              }
             },
           },
         ],

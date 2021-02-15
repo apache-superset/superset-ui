@@ -25,16 +25,15 @@ import {
 } from '../types';
 
 export type EchartsGraphFormData = EchartsLegendFormData & {
-  name: string;
   source: string;
   target: string;
   category?: string;
   colorScheme?: string;
   metric?: string;
-  layout: 'none' | 'circular' | 'force' | undefined;
-  roam: boolean;
+  layout?: 'none' | 'circular' | 'force';
+  roam: boolean | 'scale' | 'move';
   draggable: boolean;
-  selectedMode: boolean | 'multiple' | 'single' | undefined;
+  selectedMode?: boolean | 'multiple' | 'single';
   showSymbolThreshold: number;
   repulsion: number;
   gravity: number;
@@ -48,7 +47,6 @@ export type EChartGraphNode = GraphNodeItemOption & {
 
 export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
   ...DEFAULT_LEGEND_FORM_DATA,
-  name: 'Graph Chart',
   source: '',
   target: '',
   layout: 'force',
