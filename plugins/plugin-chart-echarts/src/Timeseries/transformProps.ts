@@ -161,7 +161,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         showMaxLabel: xAxisShowMaxLabel,
         formatter: xAxisFormatter,
       },
-      nameRotate: 50,
     },
     yAxis: {
       ...defaultYAxis,
