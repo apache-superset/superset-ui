@@ -20,16 +20,16 @@
 export const NULL_STRING = '<NULL>';
 
 export const TIMESERIES_CONSTANTS = {
-  grid_offset_right: 40,
-  grid_offset_left: 20,
-  grid_offset_top: 20,
-  grid_offset_bottom: 20,
-  grid_offset_bottom_zoomable: 80,
-  legend_right_top_offset: 30,
-  legend_top_right_offset: 55,
-  zoom_bottom: 30,
-  toolbox_top: 0,
-  toolbox_right: 5,
-  data_zoom_start: 0,
-  data_zoom_end: 100,
+  gridOffsetRight: 40,
+  gridOffsetLeft: 20,
+  gridOffsetTop: 20,
+  gridOffsetBottom: 20,
+  gridOffsetBottomZoomable: 80,
+  legendRightTopOffset: 30,
+  legendTopRightOffset: 55,
+  zoomBottom: 30,
+  toolboxTop: 0,
+  toolboxRight: 5,
+  dataZoomStart: 0,
+  dataZoomEnd: 100,
 };

@@ -108,7 +108,7 @@ export function getLegendProps(
       break;
     case LegendOrientation.Right:
       legend.right = 0;
-      legend.top = zoomable ? TIMESERIES_CONSTANTS.legend_right_top_offset : 0;
+      legend.top = zoomable ? TIMESERIES_CONSTANTS.legendRightTopOffset : 0;
       break;
     case LegendOrientation.Bottom:
       legend.bottom = 0;
@@ -116,7 +116,7 @@ export function getLegendProps(
     case LegendOrientation.Top:
     default:
       legend.top = 0;
-      legend.right = zoomable ? TIMESERIES_CONSTANTS.legend_top_right_offset : 0;
+      legend.right = zoomable ? TIMESERIES_CONSTANTS.legendTopRightOffset : 0;
       break;
   }
   return legend;

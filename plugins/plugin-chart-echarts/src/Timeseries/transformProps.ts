@@ -143,15 +143,15 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     grid: {
       ...defaultGrid,
       ...getChartPadding(showLegend, legendOrientation, legendMargin, {
-        top: TIMESERIES_CONSTANTS.grid_offset_top,
+        top: TIMESERIES_CONSTANTS.gridOffsetTop,
         bottom: zoomable
-          ? TIMESERIES_CONSTANTS.grid_offset_bottom_zoomable
-          : TIMESERIES_CONSTANTS.grid_offset_bottom,
-        left: TIMESERIES_CONSTANTS.grid_offset_left,
+          ? TIMESERIES_CONSTANTS.gridOffsetBottomZoomable
+          : TIMESERIES_CONSTANTS.gridOffsetBottom,
+        left: TIMESERIES_CONSTANTS.gridOffsetLeft,
         right:
           showLegend && legendOrientation === LegendOrientation.Right
             ? 0
-            : TIMESERIES_CONSTANTS.grid_offset_right,
+            : TIMESERIES_CONSTANTS.gridOffsetRight,
       }),
     },
     xAxis: {
@@ -213,8 +213,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     series,
     toolbox: {
       show: zoomable,
-      top: TIMESERIES_CONSTANTS.toolbox_top,
-      right: TIMESERIES_CONSTANTS.toolbox_right,
+      top: TIMESERIES_CONSTANTS.toolboxTop,
+      right: TIMESERIES_CONSTANTS.toolboxRight,
       feature: {
         dataZoom: {
           yAxisIndex: false,
@@ -229,9 +229,9 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       ? [
           {
             type: 'slider',
-            start: TIMESERIES_CONSTANTS.data_zoom_start,
-            end: TIMESERIES_CONSTANTS.data_zoom_end,
-            bottom: TIMESERIES_CONSTANTS.zoom_bottom,
+            start: TIMESERIES_CONSTANTS.dataZoomStart,
+            end: TIMESERIES_CONSTANTS.dataZoomEnd,
+            bottom: TIMESERIES_CONSTANTS.zoomBottom,
           },
         ]
       : [],
