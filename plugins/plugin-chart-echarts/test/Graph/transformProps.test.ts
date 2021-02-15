@@ -18,6 +18,7 @@
  */
 import { ChartProps } from '@superset-ui/core';
 import transformProps from '../../src/Graph/transformProps';
+import { DEFAULT_GRAPH_SERIES_OPTION } from '../../src/Graph/constants';
 
 describe('EchartsGraph tranformProps', () => {
   it('should tranform chart props for viz without category', () => {
@@ -72,6 +73,7 @@ describe('EchartsGraph tranformProps', () => {
                   value: 11,
                   symbolSize: 10,
                   category: 'default',
+                  select: DEFAULT_GRAPH_SERIES_OPTION.select,
                 },
                 {
                   id: '1',
@@ -79,9 +81,9 @@ describe('EchartsGraph tranformProps', () => {
                   value: 11,
                   symbolSize: 10,
                   category: 'default',
+                  select: DEFAULT_GRAPH_SERIES_OPTION.select,
                 },
               ],
-              name: 'Graph Chart',
             }),
           ]),
         }),
@@ -143,6 +145,7 @@ describe('EchartsGraph tranformProps', () => {
                   value: 11,
                   symbolSize: 10,
                   category: 'category_value_1',
+                  select: DEFAULT_GRAPH_SERIES_OPTION.select,
                 },
                 {
                   id: '1',
@@ -150,6 +153,7 @@ describe('EchartsGraph tranformProps', () => {
                   value: 11,
                   symbolSize: 10,
                   category: 'category_value_1',
+                  select: DEFAULT_GRAPH_SERIES_OPTION.select,
                 },
               ],
             }),

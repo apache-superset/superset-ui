@@ -51,6 +51,10 @@ export const DEFAULT_GRAPH_SERIES_OPTION: GraphSeriesOption = {
   animationDuration: 500,
   animationEasing: 'cubicOut',
   lineStyle: { color: 'source', curveness: 0.1 },
+  select: {
+    itemStyle: { borderWidth: 5 },
+    label: { fontWeight: 'bolder' },
+  },
 };
 
 export const tooltip: TooltipComponentOption = {

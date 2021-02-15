@@ -114,6 +114,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           name: nodeSource,
           value: nodeValue,
           category: nodeCategory,
+          select: DEFAULT_GRAPH_SERIES_OPTION.select,
         });
         nodeValues[index] = nodeValue;
         nodes[nodeSource] = index;
@@ -131,7 +132,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           name: nodeTarget,
           value: nodeValue,
           category: nodeCategory,
-          select: {itemStyle: {borderWidth: 5}, label:{fontWeight: 'bolder'}}
+          select: DEFAULT_GRAPH_SERIES_OPTION.select,
         });
         nodeValues[index] = nodeValue;
         nodes[nodeTarget] = index;
@@ -151,7 +152,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
 
   const series: GraphSeriesOption[] = [
     {
-      name,
       zoom: DEFAULT_GRAPH_SERIES_OPTION.zoom,
       type: 'graph',
       categories: echartCategories.map(c => ({ name: c, itemStyle: { color: colorFn(c) } })),
