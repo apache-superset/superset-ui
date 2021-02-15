@@ -251,7 +251,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         },
         Header: ({ column: col, onClick, style }) => (
           <th
-            title="Hold SHIFT for multiple sorting"
+            title="Shift + Click to sort by multiple columns"
             className={col.isSorted ? `${className || ''} is-sorted` : className}
             style={style}
             onClick={onClick}
