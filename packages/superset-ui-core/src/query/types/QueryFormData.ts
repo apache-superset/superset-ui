@@ -28,6 +28,7 @@ import { AnnotationLayer } from './AnnotationLayer';
 import { QueryObject } from './Query';
 import { TimeRange, TimeRangeEndpoints } from './Time';
 import { TimeGranularity } from '../../time-format';
+import { JsonObject } from '../../connection';
 
 /**
  * Metric definition/reference in query object.
@@ -100,6 +101,7 @@ export type QueryFormExtraFilter = {
 export type ExtraFormData = {
   append_form_data?: Partial<QueryObject>;
   override_form_data?: Partial<QueryObject>;
+  custom_form_data?: JsonObject;
 };
 
 // Type signature for formData shared by all viz types

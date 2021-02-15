@@ -18,7 +18,14 @@
  */
 import { QueryObject } from './types/Query';
 
-const ALLOWED_OVERRIDES = ['time_grain_sqla', 'time_range', 'since', 'until'];
+const ALLOWED_OVERRIDES = [
+  'time_grain_sqla',
+  'time_range',
+  'since',
+  'until',
+  'row_offset',
+  'row_limit',
+];
 const ALLOWED_APPENDS = ['adhoc_filters', 'filters', 'groupby'];
 
 export function overrideExtraFormData(

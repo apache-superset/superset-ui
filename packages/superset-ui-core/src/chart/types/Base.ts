@@ -7,13 +7,24 @@ export enum Behavior {
   NATIVE_FILTER = 'NATIVE_FILTER',
 }
 
-export type SetExtraFormDataHook = {
+export type SetDataMaskHook = {
   ({
-    extraFormData,
-    currentState: { value },
+    native,
+    cross,
+    own,
   }: {
-    extraFormData: ExtraFormData;
-    currentState: { value: any; [key: string]: any };
+    native?: {
+      extraFormData: ExtraFormData;
+      currentState: { value: any; [key: string]: any };
+    };
+    cross?: {
+      extraFormData: ExtraFormData;
+      currentState: { [key: string]: any };
+    };
+    own?: {
+      extraFormData: ExtraFormData;
+      currentState: { [key: string]: any };
+    };
   }): void;
 };
 
