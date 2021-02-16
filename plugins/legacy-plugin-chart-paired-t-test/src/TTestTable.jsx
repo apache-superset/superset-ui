@@ -19,7 +19,7 @@
 /* eslint-disable react/no-array-index-key, react/jsx-no-bind */
 import dist from 'distributions';
 import React from 'react';
-import { Table, Tr, Td, Thead, Th } from 'reactable-arc';
+import { Table, Tr, Td, Thead, Th } from 'reactable';
 import PropTypes from 'prop-types';
 
 export const dataPropType = PropTypes.arrayOf(
