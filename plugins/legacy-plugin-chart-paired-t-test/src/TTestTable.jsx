@@ -166,6 +166,11 @@ class TTestTable extends React.Component {
   render() {
     const { data, metric, groups } = this.props;
     const { control, liftValues, pValues } = this.state;
+
+    if (!Array.isArray(groups) || groups.length === 0) {
+      throw Error('Group by param is required');
+    }
+
     // Render column header for each group
     const columns = groups.map((group, i) => (
       <Th key={i} column={group}>
