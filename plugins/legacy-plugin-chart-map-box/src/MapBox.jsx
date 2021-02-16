@@ -109,12 +109,13 @@ class MapBox extends React.Component {
     // to an area outside of the original bounds, no additional queries are made to the backend to
     // retrieve additional data.
     // add this variable to widen the visible area
-    const offset = 0.05;
+    const offsetHorizontal = (width * 0.5) / 100;
+    const offsetVertical = (height * 0.5) / 100;
     const bbox = [
-      bounds[0][0] - offset,
-      bounds[0][1] - offset,
-      bounds[1][0] + offset,
-      bounds[1][1] + offset,
+      bounds[0][0] - offsetHorizontal,
+      bounds[0][1] - offsetVertical,
+      bounds[1][0] + offsetHorizontal,
+      bounds[1][1] + offsetVertical,
     ];
     const clusters = clusterer.getClusters(bbox, Math.round(viewport.zoom));
 
