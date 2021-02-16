@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { GraphSeriesOption, TooltipComponentOption } from 'echarts';
+import { GraphSeriesOption } from 'echarts';
 
 export const DEFAULT_GRAPH_SERIES_OPTION: GraphSeriesOption = {
   zoom: 1,
@@ -55,13 +55,7 @@ export const DEFAULT_GRAPH_SERIES_OPTION: GraphSeriesOption = {
     itemStyle: { borderWidth: 5 },
     label: { fontWeight: 'bolder' },
   },
-};
-
-export const tooltip: TooltipComponentOption = {
-  show: true,
-  // show node_name and node_value
-  // Ref: https://echarts.apache.org/en/option.html#tooltip.formatter
-  formatter: '{b}: {c}',
+  tooltip: { formatter: '{b}: {c}' },
 };
 
 export const normalizationLimits = {

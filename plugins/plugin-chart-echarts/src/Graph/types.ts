@@ -17,6 +17,7 @@
  * under the License.
  */
 import { GraphNodeItemOption } from 'echarts/types/src/chart/graph/GraphSeries';
+import { SeriesTooltipOption } from 'echarts/types/src/util/types';
 import {
   DEFAULT_LEGEND_FORM_DATA,
   EchartsLegendFormData,
@@ -43,6 +44,7 @@ export type EchartsGraphFormData = EchartsLegendFormData & {
 
 export type EChartGraphNode = GraphNodeItemOption & {
   value: number;
+  tooltip?: SeriesTooltipOption;
 };
 
 export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
@@ -60,4 +62,8 @@ export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
   friction: 0.2,
   legendOrientation: LegendOrientation.Top,
   legendType: LegendType.Scroll,
+};
+
+export type tooltipFormatParams = {
+  data: { [name: string]: string };
 };

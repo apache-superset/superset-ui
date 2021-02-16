@@ -74,6 +74,7 @@ describe('EchartsGraph tranformProps', () => {
                   symbolSize: 10,
                   category: 'default',
                   select: DEFAULT_GRAPH_SERIES_OPTION.select,
+                  tooltip: DEFAULT_GRAPH_SERIES_OPTION.tooltip,
                 },
                 {
                   id: '1',
@@ -81,7 +82,7 @@ describe('EchartsGraph tranformProps', () => {
                   value: 11,
                   symbolSize: 10,
                   category: 'default',
-                  select: DEFAULT_GRAPH_SERIES_OPTION.select,
+                  tooltip: DEFAULT_GRAPH_SERIES_OPTION.tooltip,
                 },
               ],
             }),
@@ -146,6 +147,7 @@ describe('EchartsGraph tranformProps', () => {
                   symbolSize: 10,
                   category: 'category_value_1',
                   select: DEFAULT_GRAPH_SERIES_OPTION.select,
+                  tooltip: DEFAULT_GRAPH_SERIES_OPTION.tooltip,
                 },
                 {
                   id: '1',
@@ -154,6 +156,7 @@ describe('EchartsGraph tranformProps', () => {
                   symbolSize: 10,
                   category: 'category_value_1',
                   select: DEFAULT_GRAPH_SERIES_OPTION.select,
+                  tooltip: DEFAULT_GRAPH_SERIES_OPTION.tooltip,
                 },
               ],
             }),

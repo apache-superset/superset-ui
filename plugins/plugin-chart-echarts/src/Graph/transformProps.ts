@@ -30,7 +30,7 @@ import {
   EChartGraphNode,
   DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA,
 } from './types';
-import { DEFAULT_GRAPH_SERIES_OPTION, tooltip, normalizationLimits } from './constants';
+import { DEFAULT_GRAPH_SERIES_OPTION, normalizationLimits } from './constants';
 import { EchartsProps } from '../types';
 import { getChartPadding, getLegendProps } from '../utils/series';
 
@@ -57,6 +57,23 @@ function setNormalizedSymbolSize(nodes: EChartGraphNode[], nodeValues: number[])
         normalizationLimits.nodeSizeRightLimit || 0) + normalizationLimits.nodeSizeLeftLimit;
     i += 1;
   });
+}
+
+function getKeyByValue(object: { [name: string]: number }, value: number): string {
+  return Object.keys(object).find(key => object[key] === value) as string;
+}
+
+function edgeFormatter(
+  sourceIndex: string,
+  targetIndex: string,
+  nodes: { [name: string]: number },
+  nodeValues: number[],
+): string {
+  const source = Number(sourceIndex);
+  const target = Number(targetIndex);
+  return `${getKeyByValue(nodes, source)} > ${getKeyByValue(nodes, target)} : ${
+    nodeValues[source] + nodeValues[target]
+  }`;
 }
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
@@ -115,6 +132,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           value: nodeValue,
           category: nodeCategory,
           select: DEFAULT_GRAPH_SERIES_OPTION.select,
+          tooltip: DEFAULT_GRAPH_SERIES_OPTION.tooltip,
         });
         nodeValues[index] = nodeValue;
         nodes[nodeSource] = index;
@@ -133,6 +151,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           value: nodeValue,
           category: nodeCategory,
           select: DEFAULT_GRAPH_SERIES_OPTION.select,
+          tooltip: DEFAULT_GRAPH_SERIES_OPTION.tooltip,
         });
         nodeValues[index] = nodeValue;
         nodes[nodeTarget] = index;
@@ -176,7 +195,10 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const echartOptions: EChartsOption = {
     animationDuration: DEFAULT_GRAPH_SERIES_OPTION.animationDuration,
     animationEasing: DEFAULT_GRAPH_SERIES_OPTION.animationEasing,
-    tooltip,
+    tooltip: {
+      formatter: (params: any): string =>
+        edgeFormatter(params.data.source, params.data.target, nodes, nodeValues),
+    },
     legend: {
       ...getLegendProps(legendType, legendOrientation, showLegend),
       data: echartCategories,
