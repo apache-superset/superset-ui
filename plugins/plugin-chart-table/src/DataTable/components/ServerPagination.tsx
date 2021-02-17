@@ -20,7 +20,7 @@ import React, { CSSProperties } from 'react';
 import { t } from '@superset-ui/core';
 import { BackendPage } from '../../types';
 
-export interface BackendPaginationProps {
+export interface ServerPaginationProps {
   showNext: boolean;
   showPrevious: boolean;
   onPageChange: (direction: BackendPage) => void; // `page` next/previous
@@ -29,10 +29,10 @@ export interface BackendPaginationProps {
 
 export default React.memo(
   React.forwardRef(function BackendPagination(
-    { style, onPageChange, showNext, showPrevious }: BackendPaginationProps,
+    { style, onPageChange, showNext, showPrevious }: ServerPaginationProps,
     ref: React.Ref<HTMLDivElement>,
   ) {
-    const getButton = (name: BackendPage) => (
+    const getButton = (name: BackendPage, label: string) => (
       <li key={name}>
         <a
           href={undefined}
@@ -42,15 +42,15 @@ export default React.memo(
             onPageChange(name);
           }}
         >
-          {t(name)}
+          {label}
         </a>
       </li>
     );
     return (
       <div ref={ref} className="dt-pagination" style={style}>
         <ul className="pagination pagination-sm">
-          {showPrevious && getButton(BackendPage.PREVIOUS)}
-          {showNext && getButton(BackendPage.NEXT)}
+          {showPrevious && getButton(BackendPage.PREVIOUS, t('table.previous_page'))}
+          {showNext && getButton(BackendPage.NEXT, t('table.next_page'))}
         </ul>
       </div>
     );

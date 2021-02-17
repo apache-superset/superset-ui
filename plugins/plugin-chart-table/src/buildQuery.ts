@@ -86,11 +86,11 @@ export default function buildQuery(formData: TableChartFormData) {
     }
 
     const moreProps: Partial<QueryObject> = {};
-    if (formDataCopy.be_pagination) {
+    if (formDataCopy.backend_pagination) {
       const rowLimit = formDataCopy.extra_form_data?.custom_form_data?.row_limit;
       // 1 - means all data
       if (rowLimit !== 1) {
-        moreProps.row_limit = rowLimit ?? formDataCopy.be_page_length + 1; // +1 to determine if exists next page
+        moreProps.row_limit = rowLimit ?? formDataCopy.backend_page_length + 1; // +1 to determine if exists next page
       }
       moreProps.row_offset = formDataCopy?.extra_form_data?.custom_form_data?.row_offset ?? 0;
     }

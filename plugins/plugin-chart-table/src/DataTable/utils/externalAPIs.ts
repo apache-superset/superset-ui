@@ -25,8 +25,7 @@ export const updateExternalFormData = (
   pageSize: number,
 ) =>
   setDataMask({
-    // @ts-ignore
-    own: {
+    ownFilters: {
       extraFormData: {
         custom_form_data: {
           row_offset: pageNumber * pageSize,

@@ -23,7 +23,7 @@ type Hooks = {
   onError?: HandlerFunction;
   /** use the vis as control to update state */
   setControlValue?: HandlerFunction;
-  /** handle native filters */
+  /** handle external filters */
   setDataMask?: SetDataMaskHook;
   /** handle tooltip */
   setTooltip?: HandlerFunction;

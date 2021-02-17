@@ -42,7 +42,7 @@ import SelectPageSize, { SelectPageSizeProps, SizeOption } from './components/Se
 import SimplePagination from './components/Pagination';
 import useSticky from './hooks/useSticky';
 import { updateExternalFormData } from './utils/externalAPIs';
-import BackendPagination from './components/BackendPagination';
+import ServerPagination from './components/ServerPagination';
 import { BackendPage } from '../types';
 
 export interface DataTableProps<D extends object> extends TableOptions<D> {
@@ -54,7 +54,7 @@ export interface DataTableProps<D extends object> extends TableOptions<D> {
   hooks?: PluginHook<D>[]; // any additional hooks
   width?: string | number;
   height?: string | number;
-  bePagination?: boolean;
+  backendPagination?: boolean;
   setDataMask: SetDataMaskHook;
   currentPage?: number;
   pageSize?: number;
@@ -87,7 +87,7 @@ export default function DataTable<D extends object>({
   selectPageSize,
   noResults: noResultsText = 'No data found',
   hooks,
-  bePagination,
+  backendPagination,
   wrapperRef: userWrapperRef,
   ...moreUseTableOptions
 }: DataTableProps<D>): JSX.Element {
@@ -169,7 +169,7 @@ export default function DataTable<D extends object>({
   );
   // make setPageSize accept 0
   const setPageSize = (size: number) => {
-    if (bePagination) {
+    if (backendPagination) {
       updateExternalFormData(setDataMask, 0, size);
     }
     // keep the original size if data is empty
@@ -275,8 +275,8 @@ export default function DataTable<D extends object>({
         </div>
       ) : null}
       {wrapStickyTable ? wrapStickyTable(renderTable) : renderTable()}
-      {bePagination && (
-        <BackendPagination
+      {backendPagination && (
+        <ServerPagination
           ref={paginationRef}
           style={paginationStyle}
           showNext={showBENextButton}
@@ -284,7 +284,7 @@ export default function DataTable<D extends object>({
           onPageChange={goToBEPage}
         />
       )}
-      {!bePagination && hasPagination ? (
+      {!backendPagination && hasPagination ? (
         <SimplePagination
           ref={paginationRef}
           style={paginationStyle}

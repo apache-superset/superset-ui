@@ -80,7 +80,7 @@ export interface TableChartTransformedProps<D extends DataRecord = DataRecord> {
   height: number;
   width: number;
   showBENextButton: boolean;
-  bePagination: boolean;
+  backendPagination: boolean;
   currentPage?: number;
   setDataMask: SetDataMaskHook;
   data: D[];

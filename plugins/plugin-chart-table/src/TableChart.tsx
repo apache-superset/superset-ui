@@ -152,7 +152,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     colorPositiveNegative = false,
     includeSearch = false,
     pageSize = 0,
-    bePagination = false,
+    backendPagination = false,
     currentPage,
     setDataMask,
     showCellBars = true,
@@ -167,7 +167,8 @@ export default function TableChart<D extends DataRecord = DataRecord>(
 
   // only take relevant page size options
   const pageSizeOptions = useMemo(
-    () => PAGE_SIZE_OPTIONS.filter(([n]) => n <= 2 * data.length || bePagination) as SizeOption[],
+    () =>
+      PAGE_SIZE_OPTIONS.filter(([n]) => n <= 2 * data.length || backendPagination) as SizeOption[],
     [data.length],
   );
 
@@ -294,7 +295,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         pageSizeOptions={pageSizeOptions}
         width={width}
         height={height}
-        bePagination={bePagination}
+        backendPagination={backendPagination}
         setDataMask={setDataMask}
         // 9 page items in > 340px works well even for 100+ pages
         maxPageItemCount={width > 340 ? 9 : 7}

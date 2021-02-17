@@ -9,19 +9,19 @@ export enum Behavior {
 
 export type SetDataMaskHook = {
   ({
-    native,
-    cross,
-    own,
+    nativeFilters,
+    crossFilters,
+    ownFilters,
   }: {
-    native?: {
+    nativeFilters?: {
       extraFormData: ExtraFormData;
       currentState: { value: any; [key: string]: any };
     };
-    cross?: {
+    crossFilters?: {
       extraFormData: ExtraFormData;
       currentState: { [key: string]: any };
     };
-    own?: {
+    ownFilters?: {
       extraFormData: ExtraFormData;
       currentState: { [key: string]: any };
     };
