@@ -192,7 +192,7 @@ export default {
             name: 'edgeLength',
             config: {
               type: 'SliderControl',
-              label: t('Edge Length'),
+              label: t('Edge length'),
               renderTrigger: true,
               min: 100,
               max: 1000,
