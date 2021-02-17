@@ -93,7 +93,7 @@ export default {
       ],
     },
     {
-      label: t('Chart Options'),
+      label: t('Chart options'),
       expanded: true,
       controlSetRows: [
         ['color_scheme'],
