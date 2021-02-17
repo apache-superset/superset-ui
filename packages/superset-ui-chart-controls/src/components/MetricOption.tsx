@@ -32,7 +32,7 @@ const FlexRowContainer = styled.div`
 `;
 
 export interface MetricOptionProps {
-  metric: Metric;
+  metric: Omit<Metric, 'id'> & { label?: string };
   openInNewWindow?: boolean;
   showFormula?: boolean;
   showType?: boolean;
