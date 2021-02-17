@@ -21,7 +21,6 @@ import {
   ChartProps,
   getMetricLabel,
   DataRecord,
-  t,
   DataRecordValue,
 } from '@superset-ui/core';
 import { EChartsOption, GraphSeriesOption } from 'echarts';
