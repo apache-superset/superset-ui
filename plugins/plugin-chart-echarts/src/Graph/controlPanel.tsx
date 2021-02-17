@@ -179,7 +179,7 @@ export default {
             name: 'showSymbolThreshold',
             config: {
               type: 'TextControl',
-              label: t('Label Threshold'),
+              label: t('Label threshold'),
               renderTrigger: true,
               isInt: true,
               default: DEFAULT_FORM_DATA.showSymbolThreshold,
