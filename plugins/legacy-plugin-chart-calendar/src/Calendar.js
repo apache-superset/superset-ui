@@ -26,6 +26,7 @@ import {
 } from '@superset-ui/core';
 import CalHeatMap from './vendor/cal-heatmap';
 import './vendor/cal-heatmap.css';
+import { groupByTimePeriod } from './utils';
 
 function convertUTC(dttm) {
   return new Date(
@@ -117,7 +118,19 @@ function Calendar(element, props) {
       calContainer.text(`Metric: ${verboseMap[metric] || metric}`);
     }
     const timestamps = metricsData[metric];
-    const extents = d3Extent(Object.keys(timestamps), key => timestamps[key]);
+
+    const newData = Object.keys(timestamps).map(key => ({
+      timestamp: key,
+      value: timestamps[key],
+    }));
+
+    const objPeriodDay = groupByTimePeriod(newData, 'timestamp', subdomainGranularity);
+    const interval = Object.keys(objPeriodDay).map(key =>
+      objPeriodDay[key].reduce((a, b) => a + b.value, 0),
+    );
+
+    const extents = d3Extent(interval);
+
     const step = (extents[1] - extents[0]) / (steps - 1);
     const colorScale = getSequentialSchemeRegistry()
       .get(linearColorScheme)
