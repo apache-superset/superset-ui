@@ -160,7 +160,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         source: sourceIndex.toString(),
         target: targetIndex.toString(),
         value: nodeValue,
-        lineStyle:{width: edgeWidth}
+        lineStyle: { width: edgeWidth },
       });
 
       if (!echartCategories.includes(nodeCategory)) {

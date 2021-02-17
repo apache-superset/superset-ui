@@ -82,6 +82,7 @@ describe('EchartsGraph tranformProps', () => {
                   value: 11,
                   symbolSize: 10,
                   category: 'default',
+                  select: DEFAULT_GRAPH_SERIES_OPTION.select,
                   tooltip: DEFAULT_GRAPH_SERIES_OPTION.tooltip,
                 },
               ],

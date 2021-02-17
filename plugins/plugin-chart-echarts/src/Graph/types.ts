@@ -17,7 +17,7 @@
  * under the License.
  */
 import { GraphNodeItemOption } from 'echarts/types/src/chart/graph/GraphSeries';
-import { SeriesTooltipOption } from 'echarts/types/src/util/types';
+import { CommonTooltipOption } from 'echarts/types/src/util/types';
 import {
   DEFAULT_LEGEND_FORM_DATA,
   EchartsLegendFormData,
@@ -44,7 +44,7 @@ export type EchartsGraphFormData = EchartsLegendFormData & {
 
 export type EChartGraphNode = GraphNodeItemOption & {
   value: number;
-  tooltip?: SeriesTooltipOption;
+  tooltip?: CommonTooltipOption;
 };
 
 export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
