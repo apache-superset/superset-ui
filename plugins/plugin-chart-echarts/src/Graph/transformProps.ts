@@ -66,14 +66,12 @@ function getKeyByValue(object: { [name: string]: number }, value: number): strin
 function edgeFormatter(
   sourceIndex: string,
   targetIndex: string,
+  value: number,
   nodes: { [name: string]: number },
-  nodeValues: number[],
 ): string {
   const source = Number(sourceIndex);
   const target = Number(targetIndex);
-  return `${getKeyByValue(nodes, source)} > ${getKeyByValue(nodes, target)} : ${
-    nodeValues[source] + nodeValues[target]
-  }`;
+  return `${getKeyByValue(nodes, source)} > ${getKeyByValue(nodes, target)} : ${value}`;
 }
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
@@ -158,7 +156,11 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         targetIndex = index;
         index += 1;
       }
-      echartLinks.push({ source: sourceIndex.toString(), target: targetIndex.toString() });
+      echartLinks.push({
+        source: sourceIndex.toString(),
+        target: targetIndex.toString(),
+        value: nodeValue,
+      });
 
       if (!echartCategories.includes(nodeCategory)) {
         echartCategories.push(nodeCategory);
@@ -197,7 +199,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     animationEasing: DEFAULT_GRAPH_SERIES_OPTION.animationEasing,
     tooltip: {
       formatter: (params: any): string =>
-        edgeFormatter(params.data.source, params.data.target, nodes, nodeValues),
+        edgeFormatter(params.data.source, params.data.target, params.value, nodes, nodeValues),
     },
     legend: {
       ...getLegendProps(legendType, legendOrientation, showLegend),
