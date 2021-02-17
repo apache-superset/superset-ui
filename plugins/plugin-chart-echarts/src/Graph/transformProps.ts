@@ -30,7 +30,7 @@ import {
   EChartGraphNode,
   DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA,
 } from './types';
-import { DEFAULT_GRAPH_SERIES_OPTION, normalizationLimits } from './constants';
+import { DEFAULT_GRAPH_SERIES_OPTION, normalizationLimits, edgeWidth } from './constants';
 import { EchartsProps } from '../types';
 import { getChartPadding, getLegendProps } from '../utils/series';
 
@@ -160,6 +160,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         source: sourceIndex.toString(),
         target: targetIndex.toString(),
         value: nodeValue,
+        lineStyle:{width: edgeWidth}
       });
 
       if (!echartCategories.includes(nodeCategory)) {
@@ -199,7 +200,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     animationEasing: DEFAULT_GRAPH_SERIES_OPTION.animationEasing,
     tooltip: {
       formatter: (params: any): string =>
-        edgeFormatter(params.data.source, params.data.target, params.value, nodes, nodeValues),
+        edgeFormatter(params.data.source, params.data.target, params.value, nodes),
     },
     legend: {
       ...getLegendProps(legendType, legendOrientation, showLegend),

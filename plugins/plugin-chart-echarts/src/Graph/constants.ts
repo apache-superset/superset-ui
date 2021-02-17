@@ -62,3 +62,5 @@ export const normalizationLimits = {
   nodeSizeLeftLimit: 10,
   nodeSizeRightLimit: 60,
 };
+
+export const edgeWidth = 2;
