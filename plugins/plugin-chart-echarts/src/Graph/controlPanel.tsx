@@ -108,7 +108,7 @@ export default {
             config: {
               type: 'RadioButtonControl',
               renderTrigger: true,
-              label: t('Graph Layout'),
+              label: t('Graph layout'),
               default: DEFAULT_FORM_DATA.layout,
               options: [
                 {
