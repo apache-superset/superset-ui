@@ -21,41 +21,51 @@ import {
   ChartProps,
   getMetricLabel,
   DataRecord,
+  t,
+  DataRecordValue,
 } from '@superset-ui/core';
 import { EChartsOption, GraphSeriesOption } from 'echarts';
-import { max as d3Max, min as d3Min } from 'd3-array';
+import { extent as d3Extent } from 'd3-array';
 import { GraphEdgeItemOption } from 'echarts/types/src/chart/graph/GraphSeries';
 import {
   EchartsGraphFormData,
   EChartGraphNode,
   DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA,
 } from './types';
-import { DEFAULT_GRAPH_SERIES_OPTION, normalizationLimits, edgeWidth } from './constants';
+import { DEFAULT_GRAPH_SERIES_OPTION, NORMALIZATION_LIMITS } from './constants';
 import { EchartsProps } from '../types';
 import { getChartPadding, getLegendProps } from '../utils/series';
 
-/* eslint-disable no-param-reassign */
-function setLabelVisibility(nodes: EChartGraphNode[], showSymbolThreshold: number): void {
-  if (showSymbolThreshold > 0) {
-    nodes.forEach(function (node) {
-      node.label = {
-        show: node.value > showSymbolThreshold,
-      };
-    });
-  }
-}
-
-/* eslint-disable no-param-reassign */
-function setNormalizedSymbolSize(nodes: EChartGraphNode[], nodeValues: number[]): void {
-  const minValue = d3Min(nodeValues) as number;
-  const maxValue = d3Max(nodeValues) as number;
-
-  let i = 0;
+/**
+ * Normalize node size, edge width, and apply label visibility thresholds.
+ */
+function normalizeStyles(
+  nodes: EChartGraphNode[],
+  links: GraphEdgeItemOption[],
+  {
+    showSymbolThreshold,
+  }: {
+    showSymbolThreshold?: number;
+  },
+) {
+  const [minValue, maxValue] = d3Extent(nodes, x => x.value) as [number, number];
+  const spread = maxValue - minValue;
   nodes.forEach(node => {
+    // eslint-disable-next-line no-param-reassign
     node.symbolSize =
-      (((nodeValues[i] - minValue) / (maxValue - minValue)) *
-        normalizationLimits.nodeSizeRightLimit || 0) + normalizationLimits.nodeSizeLeftLimit;
-    i += 1;
+      (((node.value - minValue) / spread) * NORMALIZATION_LIMITS.maxNodeSize || 0) +
+      NORMALIZATION_LIMITS.minNodeSize;
+    // eslint-disable-next-line no-param-reassign
+    node.label = {
+      ...node.label,
+      show: showSymbolThreshold ? node.value > showSymbolThreshold : true,
+    };
+  });
+  links.forEach(link => {
+    // eslint-disable-next-line no-param-reassign
+    link.lineStyle!.width =
+      (((link.value! - minValue) / spread) * NORMALIZATION_LIMITS.maxEdgeWidth || 0) +
+      NORMALIZATION_LIMITS.minEdgeWidth;
   });
 }
 
@@ -74,6 +84,19 @@ function edgeFormatter(
   return `${getKeyByValue(nodes, source)} > ${getKeyByValue(nodes, target)} : ${value}`;
 }
 
+function getCategoryName(columnName: string, name?: DataRecordValue) {
+  if (name === false) {
+    return `${columnName}: false`;
+  }
+  if (name === true) {
+    return `${columnName}: true`;
+  }
+  if (name == null) {
+    return 'N/A';
+  }
+  return String(name);
+}
+
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
   const data: DataRecord[] = queriesData[0].data || [];
@@ -81,7 +104,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const {
     source,
     target,
-    category,
+    sourceCategory,
+    targetCategory,
     colorScheme,
     metric = '',
     layout,
@@ -102,81 +126,74 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const metricLabel = getMetricLabel(metric);
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const nodes: { [name: string]: number } = {};
+  const categories: Set<string> = new Set();
   const echartNodes: EChartGraphNode[] = [];
   const echartLinks: GraphEdgeItemOption[] = [];
-  const echartCategories: string[] = [];
-  const nodeValues: number[] = [];
-  let index = 0;
-  let sourceIndex = 0;
-  let targetIndex = 0;
 
-  data.forEach(link => {
-    const nodeSource = link[source] as string;
-    const nodeTarget = link[target] as string;
-    const nodeCategory: string =
-      category && link[category] ? link[category]!.toString() : 'default';
-
-    const nodeValue = link[metricLabel] as number;
-
-    if (nodeValue) {
-      if (nodeSource in nodes) {
-        sourceIndex = nodes[nodeSource];
-        nodeValues[sourceIndex] += nodeValue;
-        echartNodes[sourceIndex].value += nodeValue;
-      } else {
-        echartNodes.push({
-          id: index.toString(),
-          name: nodeSource,
-          value: nodeValue,
-          category: nodeCategory,
-          select: DEFAULT_GRAPH_SERIES_OPTION.select,
-          tooltip: DEFAULT_GRAPH_SERIES_OPTION.tooltip,
-        });
-        nodeValues[index] = nodeValue;
-        nodes[nodeSource] = index;
-        sourceIndex = index;
-        index += 1;
-      }
-
-      if (nodeTarget in nodes) {
-        targetIndex = nodes[nodeTarget];
-        nodeValues[targetIndex] += nodeValue;
-        echartNodes[targetIndex].value += nodeValue;
-      } else {
-        echartNodes.push({
-          id: index.toString(),
-          name: nodeTarget,
-          value: nodeValue,
-          category: nodeCategory,
-          select: DEFAULT_GRAPH_SERIES_OPTION.select,
-          tooltip: DEFAULT_GRAPH_SERIES_OPTION.tooltip,
-        });
-        nodeValues[index] = nodeValue;
-        nodes[nodeTarget] = index;
-        targetIndex = index;
-        index += 1;
-      }
-      echartLinks.push({
-        source: sourceIndex.toString(),
-        target: targetIndex.toString(),
-        value: nodeValue,
-        lineStyle: { width: edgeWidth },
+  /**
+   * Get the node id of an existing node,
+   * or create a new node if it doesn't exist.
+   */
+  function getOrCreateNode(name: string, category?: string) {
+    if (!(name in nodes)) {
+      nodes[name] = echartNodes.length;
+      echartNodes.push({
+        id: String(nodes[name]),
+        name,
+        value: 0,
+        category,
+        select: DEFAULT_GRAPH_SERIES_OPTION.select,
+        tooltip: DEFAULT_GRAPH_SERIES_OPTION.tooltip,
       });
-
-      if (!echartCategories.includes(nodeCategory)) {
-        echartCategories.push(nodeCategory);
+    }
+    const node = echartNodes[nodes[name]];
+    if (category) {
+      categories.add(category);
+      // category may be empty when one of `sourceCategory`
+      // or `targetCategory` is not set.
+      if (!node.category) {
+        node.category = category;
       }
     }
+    return node;
+  }
+
+  data.forEach(link => {
+    const value = link[metricLabel] as number;
+    if (!value) {
+      return;
+    }
+    const sourceName = link[source] as string;
+    const targetName = link[target] as string;
+    const sourceCategoryName = sourceCategory
+      ? getCategoryName(sourceCategory, link[sourceCategory])
+      : undefined;
+    const targetCategoryName = targetCategory
+      ? getCategoryName(targetCategory, link[targetCategory])
+      : undefined;
+    const sourceNode = getOrCreateNode(sourceName, sourceCategoryName);
+    const targetNode = getOrCreateNode(targetName, targetCategoryName);
+
+    sourceNode.value += value;
+    targetNode.value += value;
+
+    echartLinks.push({
+      source: sourceNode.id,
+      target: targetNode.id,
+      value,
+      lineStyle: {},
+    });
   });
 
-  setLabelVisibility(echartNodes, showSymbolThreshold);
-  setNormalizedSymbolSize(echartNodes, nodeValues);
+  normalizeStyles(echartNodes, echartLinks, { showSymbolThreshold });
+
+  const categoryList = [...categories];
 
   const series: GraphSeriesOption[] = [
     {
       zoom: DEFAULT_GRAPH_SERIES_OPTION.zoom,
       type: 'graph',
-      categories: echartCategories.map(c => ({ name: c, itemStyle: { color: colorFn(c) } })),
+      categories: categoryList.map(c => ({ name: c, itemStyle: { color: colorFn(c) } })),
       layout,
       force: { ...DEFAULT_GRAPH_SERIES_OPTION.force, edgeLength, gravity, repulsion, friction },
       circular: DEFAULT_GRAPH_SERIES_OPTION.circular,
@@ -204,7 +221,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     },
     legend: {
       ...getLegendProps(legendType, legendOrientation, showLegend),
-      data: echartCategories,
+      data: categoryList,
     },
     series,
   };

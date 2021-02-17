@@ -39,42 +39,11 @@ const columnSelectControl = {
   valueRenderer: (c: ColumnMeta) => <ColumnOption column={c} />,
   valueKey: 'column_name',
   allowAll: true,
-  filterOption: ({ data: opt }: { data: ColumnMeta }, text: string) =>
-    (opt.column_name && opt.column_name.toLowerCase().indexOf(text.toLowerCase()) >= 0) ||
-    (opt.verbose_name && opt.verbose_name.toLowerCase().indexOf(text.toLowerCase()) >= 0),
+  filterOption: ({ data: opt }: { data: ColumnMeta }, text: string = '') =>
+    opt.column_name?.toLowerCase().includes(text.toLowerCase()) ||
+    opt.verbose_name?.toLowerCase().includes(text.toLowerCase()),
   promptTextCreator: (label: string) => label,
   commaChoosesOption: false,
-};
-
-const sourceControl = {
-  name: 'source',
-  config: {
-    ...columnSelectControl,
-    clearable: false,
-    label: t('Source'),
-    description: t('Name of the source nodes'),
-  },
-};
-
-const targetControl = {
-  name: 'target',
-  config: {
-    ...columnSelectControl,
-    clearable: false,
-    label: t('Target'),
-    description: t('Name of the target nodes'),
-  },
-};
-
-const categoryControl = {
-  name: 'category',
-  config: {
-    ...columnSelectControl,
-    clearable: true,
-    label: t('Color by'),
-    description: t('Optional category for nodes of graph'),
-    validators: [],
-  },
 };
 
 export default {
@@ -84,10 +53,56 @@ export default {
       label: t('Query'),
       expanded: true,
       controlSetRows: [
-        [sourceControl],
-        [targetControl],
+        [
+          {
+            name: 'source',
+            config: {
+              ...columnSelectControl,
+              clearable: false,
+              label: t('Source'),
+              description: t('Name of the source nodes'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'target',
+            config: {
+              ...columnSelectControl,
+              clearable: false,
+              label: t('Target'),
+              description: t('Name of the target nodes'),
+            },
+          },
+        ],
         ['metric'],
-        [categoryControl],
+        [
+          {
+            name: 'source_category',
+            config: {
+              ...columnSelectControl,
+              label: t('Source category'),
+              description: t(
+                'The category of source nodes used to assign colors. ' +
+                  'If a node is associated with more than one category, only the first will be used.',
+              ),
+              clearable: true,
+              validators: [],
+            },
+          },
+        ],
+        [
+          {
+            name: 'target_category',
+            config: {
+              ...columnSelectControl,
+              label: t('Target category'),
+              description: t('Category of target nodes'),
+              clearable: true,
+              validators: [],
+            },
+          },
+        ],
         ['adhoc_filters'],
         ['row_limit'],
       ],

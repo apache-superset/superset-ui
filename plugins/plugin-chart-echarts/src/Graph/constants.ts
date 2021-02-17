@@ -19,7 +19,7 @@
 import { GraphSeriesOption } from 'echarts';
 
 export const DEFAULT_GRAPH_SERIES_OPTION: GraphSeriesOption = {
-  zoom: 1,
+  zoom: 0.7,
   circular: { rotateLabel: true },
   force: {
     initLayout: 'circular',
@@ -52,15 +52,18 @@ export const DEFAULT_GRAPH_SERIES_OPTION: GraphSeriesOption = {
   animationEasing: 'cubicOut',
   lineStyle: { color: 'source', curveness: 0.1 },
   select: {
-    itemStyle: { borderWidth: 5 },
+    itemStyle: { borderWidth: 3 },
     label: { fontWeight: 'bolder' },
   },
+  // Ref: https://echarts.apache.org/en/option.html#series-graph.data.tooltip.formatter
+  //   - b: data name
+  //   - c: data value
   tooltip: { formatter: '{b}: {c}' },
 };
 
-export const normalizationLimits = {
-  nodeSizeLeftLimit: 10,
-  nodeSizeRightLimit: 60,
+export const NORMALIZATION_LIMITS = {
+  minNodeSize: 10,
+  maxNodeSize: 60,
+  minEdgeWidth: 0.5,
+  maxEdgeWidth: 8,
 };
-
-export const edgeWidth = 2;

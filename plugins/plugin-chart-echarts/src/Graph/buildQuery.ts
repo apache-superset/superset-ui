@@ -19,15 +19,12 @@
 import { buildQueryContext, QueryFormData } from '@superset-ui/core';
 
 export default function buildQuery(formData: QueryFormData) {
-  const { source, target, category } = formData;
-  const groupby = new Set([source, target]);
-  if (category) {
-    groupby.add(category);
-  }
-  return buildQueryContext(formData, baseQueryObject => [
-    {
-      ...baseQueryObject,
-      groupby: [...groupby],
+  return buildQueryContext(formData, {
+    queryFields: {
+      source: 'columns',
+      target: 'columns',
+      source_category: 'columns',
+      target_category: 'columns',
     },
-  ]);
+  });
 }

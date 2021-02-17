@@ -28,7 +28,8 @@ import {
 export type EchartsGraphFormData = EchartsLegendFormData & {
   source: string;
   target: string;
-  category?: string;
+  sourceCategory?: string;
+  targetCategory?: string;
   colorScheme?: string;
   metric?: string;
   layout?: 'none' | 'circular' | 'force';
@@ -42,9 +43,9 @@ export type EchartsGraphFormData = EchartsLegendFormData & {
   friction: number;
 };
 
-export type EChartGraphNode = GraphNodeItemOption & {
+export type EChartGraphNode = Omit<GraphNodeItemOption, 'value'> & {
   value: number;
-  tooltip?: SeriesTooltipOption;
+  tooltip?: Pick<SeriesTooltipOption, 'formatter'>;
 };
 
 export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
