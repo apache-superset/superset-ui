@@ -71,7 +71,7 @@ const categoryControl = {
   config: {
     ...columnSelectControl,
     clearable: true,
-    label: t('Color By'),
+    label: t('Color by'),
     description: t('Optional category for nodes of graph'),
     validators: [],
   },
@@ -93,7 +93,7 @@ export default {
       ],
     },
     {
-      label: t('Chart Options'),
+      label: t('Chart options'),
       expanded: true,
       controlSetRows: [
         ['color_scheme'],
@@ -108,7 +108,7 @@ export default {
             config: {
               type: 'RadioButtonControl',
               renderTrigger: true,
-              label: t('Graph Layout'),
+              label: t('Graph layout'),
               default: DEFAULT_FORM_DATA.layout,
               options: [
                 {
@@ -163,7 +163,7 @@ export default {
             config: {
               type: 'SelectControl',
               renderTrigger: true,
-              label: t('Node Select Mode'),
+              label: t('Node select mode'),
               default: DEFAULT_FORM_DATA.selectedMode,
               choices: [
                 [false, t('Disabled')],
@@ -179,7 +179,7 @@ export default {
             name: 'showSymbolThreshold',
             config: {
               type: 'TextControl',
-              label: t('Label Threshold'),
+              label: t('Label threshold'),
               renderTrigger: true,
               isInt: true,
               default: DEFAULT_FORM_DATA.showSymbolThreshold,
@@ -192,7 +192,7 @@ export default {
             name: 'edgeLength',
             config: {
               type: 'SliderControl',
-              label: t('Edge Length'),
+              label: t('Edge length'),
               renderTrigger: true,
               min: 100,
               max: 1000,
