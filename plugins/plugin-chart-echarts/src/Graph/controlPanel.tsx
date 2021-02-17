@@ -163,7 +163,7 @@ export default {
             config: {
               type: 'SelectControl',
               renderTrigger: true,
-              label: t('Node Select Mode'),
+              label: t('Node select mode'),
               default: DEFAULT_FORM_DATA.selectedMode,
               choices: [
                 [false, t('Disabled')],
