@@ -64,10 +64,11 @@ class MapBox extends React.Component {
     // Get a viewport that fits the given bounds, which all marks to be clustered.
     // Derive lat, lon and zoom from this viewport. This is only done on initial
     // render as the bounds don't update as we pan/zoom in the current design.
+    // A round is done so points don't render on the margins of the map.
     const mercator = new ViewportMercator({
       width,
       height,
-    }).fitBounds(bounds);
+    }).fitBounds([bounds[0].map(Math.floor), bounds[1].map(Math.ceil)]);
     const { latitude, longitude, zoom } = mercator;
 
     this.state = {
@@ -100,15 +101,20 @@ class MapBox extends React.Component {
       renderWhileDragging,
       rgb,
       hasCustomMetric,
-      bounds,
     } = this.props;
     const { viewport } = this.state;
     const isDragging = viewport.isDragging === undefined ? false : viewport.isDragging;
 
-    // Compute the clusters based on the original bounds and current zoom level. Note when zoom/pan
-    // to an area outside of the original bounds, no additional queries are made to the backend to
-    // retrieve additional data.
-    const bbox = [bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]];
+    // Compute the clusters based only on the current viewport
+    const zoomPower = 2 ** (viewport.zoom + 1);
+    const halfHeight = height / zoomPower; // = height / 2 / (2 ** viewport.zoom)
+    const halfWidth = width / zoomPower; // = width / 2 / (2 ** viewport.zoom)
+    const bbox = [
+      viewport.longitude - halfHeight,
+      viewport.latitude - halfWidth,
+      viewport.longitude + halfHeight,
+      viewport.latitude + halfWidth,
+    ];
     const clusters = clusterer.getClusters(bbox, Math.round(viewport.zoom));
 
     return (
