@@ -41,6 +41,8 @@ export interface DataColumnMeta {
   label: string;
   dataType: GenericDataType;
   formatter?: TimeFormatter | NumberFormatter | CustomFormatter;
+  isMetric?: boolean;
+  isPercentMetric?: boolean;
 }
 
 export interface TableChartData {
@@ -83,6 +85,7 @@ export interface TableChartTransformedProps<D extends DataRecord = DataRecord> {
   backendPagination: boolean;
   currentPage?: number;
   setDataMask: SetDataMaskHook;
+  isRawRecords?: boolean;
   data: D[];
   columns: DataColumnMeta[];
   metrics?: (keyof D)[];
