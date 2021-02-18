@@ -186,8 +186,8 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
     include_search: includeSearch = false,
     page_length: pageLength,
     table_filter: tableFilter,
-    backend_pagination: backendPagination = false,
-    backend_page_length: backendPageLength = 10,
+    server_pagination: serverPagination = false,
+    server_page_length: serverPageLength = 10,
     order_desc: sortDesc = false,
     query_mode: queryMode,
   } = formData;
@@ -196,7 +196,7 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
   let data = queriesData?.[0]?.data;
   let showNextButton = false;
   // We do request +1 items for BE pagination to know if how `next` button
-  if (backendPagination && data.length === (pageSize ?? backendPageLength) + 1) {
+  if (serverPagination && data.length === (pageSize ?? serverPageLength) + 1) {
     data.pop();
     showNextButton = true;
   }
@@ -208,7 +208,7 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
     isRawRecords: queryMode === QueryMode.raw,
     data,
     columns,
-    backendPagination,
+    serverPagination,
     metrics,
     percentMetrics,
     currentPage,
@@ -219,8 +219,8 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
     sortDesc,
     includeSearch,
     showNextButton,
-    pageSize: backendPagination
-      ? backendPageLength
+    pageSize: serverPagination
+      ? serverPageLength
       : getPageSize(pageLength, data.length, columns.length),
     filters,
     emitFilter: tableFilter === true,

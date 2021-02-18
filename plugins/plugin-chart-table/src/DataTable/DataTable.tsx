@@ -87,7 +87,7 @@ export default function DataTable<D extends object>({
   selectPageSize,
   noResults: noResultsText = 'No data found',
   hooks,
-  backendPagination,
+  serverPagination,
   wrapperRef: userWrapperRef,
   ...moreUseTableOptions
 }: DataTableProps<D>): JSX.Element {
@@ -169,7 +169,7 @@ export default function DataTable<D extends object>({
   );
   // make setPageSize accept 0
   const setPageSize = (size: number) => {
-    if (backendPagination) {
+    if (serverPagination) {
       updateExternalFormData(setDataMask, 0, size);
     }
     // keep the original size if data is empty
@@ -275,7 +275,7 @@ export default function DataTable<D extends object>({
         </div>
       ) : null}
       {wrapStickyTable ? wrapStickyTable(renderTable) : renderTable()}
-      {backendPagination && (
+      {serverPagination && (
         <ServerPagination
           ref={paginationRef}
           style={paginationStyle}
@@ -284,7 +284,7 @@ export default function DataTable<D extends object>({
           onPageChange={goToBEPage}
         />
       )}
-      {!backendPagination && hasPagination ? (
+      {!serverPagination && hasPagination ? (
         <SimplePagination
           ref={paginationRef}
           style={paginationStyle}

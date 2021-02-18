@@ -194,7 +194,7 @@ const config: ControlPanelConfig = {
         ],
         [
           {
-            name: 'backend_pagination',
+            name: 'server_pagination',
             config: {
               type: 'CheckboxControl',
               label: t('Server pagination'),
@@ -208,20 +208,20 @@ const config: ControlPanelConfig = {
             name: 'row_limit',
             override: {
               visibility: ({ controls }: ControlPanelsContainerProps) =>
-                !controls.backend_pagination.value,
+                !controls.server_pagination.value,
             },
           },
           {
-            name: 'backend_page_length',
+            name: 'server_page_length',
             config: {
               type: 'SelectControl',
               freeForm: true,
-              label: t('Backend Page Length'),
+              label: t('Server Page Length'),
               default: 10,
               choices: PAGE_SIZE_OPTIONS,
               description: t('Rows per page, 0 means no pagination'),
               visibility: ({ controls }: ControlPanelsContainerProps) =>
-                controls.backend_pagination.value,
+                controls.server_pagination.value,
             },
           },
         ],
@@ -284,7 +284,7 @@ const config: ControlPanelConfig = {
               choices: PAGE_SIZE_OPTIONS,
               description: t('Rows per page, 0 means no pagination'),
               visibility: ({ controls }: ControlPanelsContainerProps) =>
-                !controls.backend_pagination.value,
+                !controls.server_pagination.value,
             },
           },
           null,

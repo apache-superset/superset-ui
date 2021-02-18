@@ -28,7 +28,7 @@ export interface ServerPaginationProps {
 }
 
 export default React.memo(
-  React.forwardRef(function BackendPagination(
+  React.forwardRef(function ServerPagination(
     { style, onPageChange, showNext, showPrevious }: ServerPaginationProps,
     ref: React.Ref<HTMLDivElement>,
   ) {

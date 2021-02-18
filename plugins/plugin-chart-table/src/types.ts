@@ -82,7 +82,7 @@ export interface TableChartTransformedProps<D extends DataRecord = DataRecord> {
   height: number;
   width: number;
   showNextButton: boolean;
-  backendPagination: boolean;
+  serverPagination: boolean;
   currentPage?: number;
   setDataMask: SetDataMaskHook;
   isRawRecords?: boolean;
