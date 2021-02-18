@@ -16,10 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export function groupByTimePeriod(obj, timestamp, period) {
-  const objPeriod = {};
+export type GroupObject = {
+  timestamp: number;
+  value: number | string;
+};
 
-  const getKey = function (d) {
+export type Period = 'min' | 'hour' | 'day' | 'week' | 'month' | 'year';
+
+export function groupByTimePeriod(
+  obj: GroupObject[],
+  column: string,
+  period: Period,
+): Record<string, GroupObject[]> {
+  const objPeriod: Record<string, GroupObject[]> = {};
+
+  const getKey = function (d: Date): number {
     switch (period) {
       case 'min':
         return Math.floor(d.getTime() / (1000 * 60));
@@ -34,13 +45,14 @@ export function groupByTimePeriod(obj, timestamp, period) {
       case 'year':
         return d.getFullYear();
       default:
-        return d;
+        return d.getTime();
     }
   };
 
   // eslint-disable-next-line no-plusplus
   for (let i = 0; i < obj.length; i++) {
-    const d = new Date(obj[i][timestamp] * 1000);
+    // @ts-ignore
+    const d = new Date(obj[i][column] * 1000);
     const key = getKey(d);
     objPeriod[key] = objPeriod[key] || [];
     objPeriod[key].push(obj[i]);
