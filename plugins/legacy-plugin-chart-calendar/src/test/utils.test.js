@@ -1,6 +1,6 @@
+import { extent as d3Extent } from 'd3-array';
 import { data } from './sample-data';
 import { groupByTimePeriod } from '../utils';
-import { extent as d3Extent } from 'd3-array';
 
 const formatData = data =>
   Object.keys(data).map(key => ({
