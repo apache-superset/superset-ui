@@ -5,4 +5,4 @@ export { default as mergeMargin } from './mergeMargin';
 export { default as parseLength } from './parseLength';
 
 export * from './types';
-export { default as __hask_reexport_dimension } from './types';
+export { default as __hack_reexport_dimension } from './types';

@@ -19,7 +19,7 @@
 import { Jed as BaseJed, JedOptions, DomainData, Translations } from './jed';
 
 export * from './jed';
-export { default as __hask_reexport_jed } from './jed';
+export { default as __hack_reexport_jed } from './jed';
 
 /**
  * Superset supported languages.

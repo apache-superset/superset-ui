@@ -3,4 +3,4 @@ export * from './types';
 
 export default {};
 
-export { default as __hask_reexport_trasnslation } from './types';
+export { default as __hack_reexport_trasnslation } from './types';

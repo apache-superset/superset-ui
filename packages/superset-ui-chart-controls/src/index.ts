@@ -33,6 +33,3 @@ export * from './components/MetricOption';
 export { default as sharedControlComponents } from './shared-controls/components';
 export * from './shared-controls/components';
 export * from './types';
-
-// hack for fixing invalid webpack builds when using `npm link`
-export { default as __hack_reexport__ } from './types';
