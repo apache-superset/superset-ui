@@ -147,7 +147,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     width,
     data,
     isRawRecords,
-    showBENextButton,
+    showNextButton,
     columns: columnsMeta,
     alignPositiveNegative = false,
     colorPositiveNegative = false,
@@ -289,7 +289,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
       <DataTable<D>
         columns={columns}
         data={data}
-        showBENextButton={showBENextButton}
+        showNextButton={showNextButton}
         tableClassName="table table-striped table-condensed"
         pageSize={pageSize}
         currentPage={currentPage}

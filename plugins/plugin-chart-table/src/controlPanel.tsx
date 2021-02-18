@@ -197,8 +197,8 @@ const config: ControlPanelConfig = {
             name: 'backend_pagination',
             config: {
               type: 'CheckboxControl',
-              label: t('Backend pagination'),
-              description: t('Enable backend pagination'),
+              label: t('Server pagination'),
+              description: t('Enable server side pagination of results'),
               default: false,
             },
           },

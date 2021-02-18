@@ -194,11 +194,11 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
 
   const [metrics, percentMetrics, columns] = processColumns(chartProps);
   let data = queriesData?.[0]?.data;
-  let showBENextButton = false;
+  let showNextButton = false;
   // We do request +1 items for BE pagination to know if how `next` button
   if (backendPagination && data.length === (pageSize ?? backendPageLength) + 1) {
     data.pop();
-    showBENextButton = true;
+    showNextButton = true;
   }
   data = processDataRecords(data, columns);
 
@@ -218,7 +218,7 @@ export default function transformProps(chartProps: TableChartProps): TableChartT
     showCellBars,
     sortDesc,
     includeSearch,
-    showBENextButton,
+    showNextButton,
     pageSize: backendPagination
       ? backendPageLength
       : getPageSize(pageLength, data.length, columns.length),

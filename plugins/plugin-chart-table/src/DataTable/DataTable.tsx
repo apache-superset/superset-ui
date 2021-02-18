@@ -43,7 +43,7 @@ import SimplePagination from './components/Pagination';
 import useSticky from './hooks/useSticky';
 import { updateExternalFormData } from './utils/externalAPIs';
 import ServerPagination from './components/ServerPagination';
-import { BackendPage } from '../types';
+import { ServerPage } from '../types';
 
 export interface DataTableProps<D extends object> extends TableOptions<D> {
   tableClassName?: string;
@@ -54,13 +54,13 @@ export interface DataTableProps<D extends object> extends TableOptions<D> {
   hooks?: PluginHook<D>[]; // any additional hooks
   width?: string | number;
   height?: string | number;
-  backendPagination?: boolean;
+  serverPagination?: boolean;
   setDataMask: SetDataMaskHook;
   currentPage?: number;
   pageSize?: number;
   noResults?: string | ((filterString: string) => ReactNode);
   sticky?: boolean;
-  showBENextButton: boolean;
+  showNextButton: boolean;
   wrapperRef?: MutableRefObject<HTMLDivElement>;
 }
 
@@ -83,7 +83,7 @@ export default function DataTable<D extends object>({
   sticky: doSticky,
   searchInput = true,
   setDataMask,
-  showBENextButton,
+  showNextButton,
   selectPageSize,
   noResults: noResultsText = 'No data found',
   hooks,
@@ -129,7 +129,7 @@ export default function DataTable<D extends object>({
     }
     return undefined;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialHeight, initialWidth, wrapperRef, hasPagination, hasGlobalControl, showBENextButton]);
+  }, [initialHeight, initialWidth, wrapperRef, hasPagination, hasGlobalControl, showNextButton]);
 
   const defaultGlobalFilter: FilterType<D> = useCallback(
     (rows: Row<D>[], columnIds: IdType<D>[], filterValue: string) => {
@@ -235,10 +235,10 @@ export default function DataTable<D extends object>({
     setPageSize(initialPageSize);
   }
 
-  const goToBEPage = (direction: BackendPage) => {
+  const goToBEPage = (direction: ServerPage) => {
     updateExternalFormData(
       setDataMask,
-      direction === BackendPage.NEXT ? currentPage + 1 : currentPage - 1,
+      direction === ServerPage.NEXT ? currentPage + 1 : currentPage - 1,
       pageSize,
     );
   };
@@ -279,7 +279,7 @@ export default function DataTable<D extends object>({
         <ServerPagination
           ref={paginationRef}
           style={paginationStyle}
-          showNext={showBENextButton}
+          showNext={showNextButton}
           showPrevious={currentPage !== 0}
           onPageChange={goToBEPage}
         />
