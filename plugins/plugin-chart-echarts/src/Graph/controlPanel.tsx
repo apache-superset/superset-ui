@@ -39,7 +39,7 @@ const columnSelectControl = {
   valueRenderer: (c: ColumnMeta) => <ColumnOption column={c} />,
   valueKey: 'column_name',
   allowAll: true,
-  filterOption: ({ data: opt }: { data: ColumnMeta }, text: string = '') =>
+  filterOption: ({ data: opt }: { data: ColumnMeta }, text = '') =>
     opt.column_name?.toLowerCase().includes(text.toLowerCase()) ||
     opt.verbose_name?.toLowerCase().includes(text.toLowerCase()),
   promptTextCreator: (label: string) => label,
