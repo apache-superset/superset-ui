@@ -47,12 +47,12 @@ function normalizeStyles(
     showSymbolThreshold?: number;
   },
 ) {
-  const [minValue, maxValue] = d3Extent(nodes, x => x.value) as [number, number];
-  const spread = maxValue - minValue;
+  const [nodeMinValue, nodeMaxValue] = d3Extent(nodes, x => x.value) as [number, number];
+  const nodeSpread = nodeMaxValue - nodeMinValue;
   nodes.forEach(node => {
     // eslint-disable-next-line no-param-reassign
     node.symbolSize =
-      (((node.value - minValue) / spread) * NORMALIZATION_LIMITS.maxNodeSize || 0) +
+      (((node.value - nodeMinValue) / nodeSpread) * NORMALIZATION_LIMITS.maxNodeSize || 0) +
       NORMALIZATION_LIMITS.minNodeSize;
     // eslint-disable-next-line no-param-reassign
     node.label = {
@@ -60,11 +60,13 @@ function normalizeStyles(
       show: showSymbolThreshold ? node.value > showSymbolThreshold : true,
     };
   });
+  const [linkMinValue, linkMaxValue] = d3Extent(links, x => x.value) as [number, number];
+  const linkSpread = linkMaxValue - linkMinValue;
   links.forEach(link => {
     // eslint-disable-next-line no-param-reassign
     link.lineStyle!.width =
-      (((link.value! - minValue) / spread) * NORMALIZATION_LIMITS.maxEdgeWidth || 0) +
-      NORMALIZATION_LIMITS.minEdgeWidth;
+      ((link.value! - linkMinValue) / linkSpread) * NORMALIZATION_LIMITS.maxEdgeWidth ||
+      0 + NORMALIZATION_LIMITS.minEdgeWidth;
   });
 }
 

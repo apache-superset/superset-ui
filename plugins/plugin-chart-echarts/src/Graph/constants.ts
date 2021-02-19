@@ -64,6 +64,6 @@ export const DEFAULT_GRAPH_SERIES_OPTION: GraphSeriesOption = {
 export const NORMALIZATION_LIMITS = {
   minNodeSize: 10,
   maxNodeSize: 60,
-  minEdgeWidth: 1.5,
+  minEdgeWidth: 0.5,
   maxEdgeWidth: 8,
 };
