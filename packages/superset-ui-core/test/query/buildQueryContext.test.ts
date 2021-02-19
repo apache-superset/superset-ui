@@ -81,4 +81,34 @@ describe('buildQueryContext', () => {
       ]),
     );
   });
+  it('should build datasource for table sources and process with custom function', () => {
+    const queryContext = buildQueryContext(
+      {
+        datasource: '5__table',
+        granularity_sqla: 'ds',
+        viz_type: 'table',
+        source: 'source_column',
+        source_category: 'source_category_column',
+        target: 'target_column',
+        target_category: 'target_category_column',
+      },
+      function addExtraColumn(queryObject){
+        return [{...queryObject, columns: ['dummy_column']}]
+      }
+    );
+    expect(queryContext.datasource.id).toBe(5);
+    expect(queryContext.datasource.type).toBe('table');
+    expect(queryContext.force).toBe(false);
+    expect(queryContext.result_format).toBe('json');
+    expect(queryContext.result_type).toBe('full');
+    expect(queryContext.queries).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          columns: [
+            'dummy_column'
+          ],
+        }),
+      ]),
+    );
+  });
 });
