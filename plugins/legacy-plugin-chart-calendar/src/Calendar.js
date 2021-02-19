@@ -27,6 +27,19 @@ import {
 import CalHeatMap from './vendor/cal-heatmap';
 import './vendor/cal-heatmap.css';
 
+function convertUTC(dttm) {
+  return new Date(
+    dttm.getUTCFullYear(),
+    dttm.getUTCMonth(),
+    dttm.getUTCDate(),
+    dttm.getUTCHours(),
+    dttm.getUTCMinutes(),
+    dttm.getUTCSeconds(),
+  );
+}
+
+const convertUTCTS = uts => convertUTC(new Date(uts)).getTime();
+
 const propTypes = {
   data: PropTypes.shape({
     // Object hashed by metric name,
@@ -87,12 +100,23 @@ function Calendar(element, props) {
 
   const subDomainTextFormat = showValues ? (date, value) => valueFormatter(value) : null;
 
+  // Trick to convert all timestamps to UTC
+  // TODO: Verify if this conversion is really necessary
+  // since all timestamps should always be in UTC.
+  const metricsData = {};
   Object.keys(data.data).forEach(metric => {
+    metricsData[metric] = {};
+    Object.keys(data.data[metric]).forEach(ts => {
+      metricsData[metric][convertUTCTS(ts * 1000) / 1000] = data.data[metric][ts];
+    });
+  });
+
+  Object.keys(metricsData).forEach(metric => {
     const calContainer = div.append('div');
     if (showMetricName) {
       calContainer.text(`Metric: ${verboseMap[metric] || metric}`);
     }
-    const timestamps = data.data[metric];
+    const timestamps = metricsData[metric];
     const extents = d3Extent(Object.keys(timestamps), key => timestamps[key]);
     const step = (extents[1] - extents[0]) / (steps - 1);
     const colorScale = getSequentialSchemeRegistry()
@@ -104,7 +128,7 @@ function Calendar(element, props) {
 
     const cal = new CalHeatMap();
     cal.init({
-      start: data.start,
+      start: convertUTCTS(data.start),
       data: timestamps,
       itemSelector: calContainer.node(),
       legendVerticalPosition: 'top',
