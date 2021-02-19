@@ -137,8 +137,8 @@ type Control = {
 //   commaChoosesOption: false,
 // };
 
-const groupByControl: SharedControlConfig<'DropGroupByControl'> = {
-  type: 'DropGroupByControl',
+const groupByControl: SharedControlConfig<'DndColumnSelectControl'> = {
+  type: 'DndColumnSelectControl',
   label: t('Group by'),
   default: [],
   description: t('One or many columns to group by'),
