@@ -153,13 +153,7 @@ function Calendar(element, props) {
       displayLegend: showLegend,
       itemName: '',
       valueFormatter,
-      timeFormatter: val => {
-        console.log('val', val);
-        const r = timeFormatter(val);
-        console.log('r', r);
-        console.log(new Date(val).toLocaleString('en-US', { timeZone: 'UTC' }));
-        return r;
-      },
+      timeFormatter,
       subDomainTextFormat,
     });
   });
