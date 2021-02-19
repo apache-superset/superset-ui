@@ -62,7 +62,7 @@ describe('EchartsGraph tranformProps', () => {
         height: 600,
         echartOptions: expect.objectContaining({
           legend: expect.objectContaining({
-            data: ['default'],
+            data: [],
           }),
           series: expect.arrayContaining([
             expect.objectContaining({
@@ -72,18 +72,20 @@ describe('EchartsGraph tranformProps', () => {
                   name: 'source_value',
                   value: 11,
                   symbolSize: 10,
-                  category: 'default',
+                  category: undefined,
                   select: DEFAULT_GRAPH_SERIES_OPTION.select,
                   tooltip: DEFAULT_GRAPH_SERIES_OPTION.tooltip,
+                  label: { show: true },
                 },
                 {
                   id: '1',
                   name: 'target_value',
                   value: 11,
                   symbolSize: 10,
-                  category: 'default',
+                  category: undefined,
                   select: DEFAULT_GRAPH_SERIES_OPTION.select,
                   tooltip: DEFAULT_GRAPH_SERIES_OPTION.tooltip,
+                  label: { show: true },
                 },
               ],
             }),
@@ -101,22 +103,31 @@ describe('EchartsGraph tranformProps', () => {
       metric: 'count',
       source: 'source_column',
       target: 'target_column',
-      category: 'category_column',
+      sourceCategory: 'source_category_column',
+      targetCategory: 'target_category_column',
     };
     const queriesData = [
       {
-        colnames: ['source_column', 'target_column', 'category_column', 'count'],
+        colnames: [
+          'source_column',
+          'target_column',
+          'source_category_column',
+          'target_category_column',
+          'count',
+        ],
         data: [
           {
             source_column: 'source_value',
             target_column: 'target_value',
-            category_column: 'category_value_1',
+            source_category_column: 'category_value_1',
+            target_category_column: 'category_value_2',
             count: 6,
           },
           {
             source_column: 'source_value',
             target_column: 'target_value',
-            category_column: 'category_value_2',
+            source_category_column: 'category_value_1',
+            target_category_column: 'category_value_2',
             count: 5,
           },
         ],
@@ -149,15 +160,17 @@ describe('EchartsGraph tranformProps', () => {
                   category: 'category_value_1',
                   select: DEFAULT_GRAPH_SERIES_OPTION.select,
                   tooltip: DEFAULT_GRAPH_SERIES_OPTION.tooltip,
+                  label: { show: true },
                 },
                 {
                   id: '1',
                   name: 'target_value',
                   value: 11,
                   symbolSize: 10,
-                  category: 'category_value_1',
+                  category: 'category_value_2',
                   select: DEFAULT_GRAPH_SERIES_OPTION.select,
                   tooltip: DEFAULT_GRAPH_SERIES_OPTION.tooltip,
+                  label: { show: true },
                 },
               ],
             }),
