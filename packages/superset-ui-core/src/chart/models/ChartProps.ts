@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { convertKeysToCamelCase, Datasource, JsonObject } from '../..';
+import { Behavior, convertKeysToCamelCase, Datasource, JsonObject } from '../..';
 import { HandlerFunction, PlainObject, SetDataMaskHook } from '../types/Base';
 import { QueryData, DataRecordFilters } from '..';
 
@@ -53,6 +53,8 @@ export interface ChartPropsConfig {
   width?: number;
   /** Own chart state of object that saved in dashboard */
   ownCurrentState?: JsonObject;
+  /** Set of actual behaviors that this instance of chart should use */
+  behaviors?: Behavior[];
 }
 
 const DEFAULT_WIDTH = 800;
@@ -83,6 +85,8 @@ export default class ChartProps<FormData extends RawFormData = RawFormData> {
 
   width: number;
 
+  behaviors: Behavior[];
+
   constructor(config: ChartPropsConfig & { formData?: FormData } = {}) {
     const {
       annotationData = {},
@@ -92,6 +96,7 @@ export default class ChartProps<FormData extends RawFormData = RawFormData> {
       ownCurrentState = {},
       initialValues = {},
       queriesData = [],
+      behaviors = [],
       width = DEFAULT_WIDTH,
       height = DEFAULT_HEIGHT,
     } = config;
@@ -106,6 +111,7 @@ export default class ChartProps<FormData extends RawFormData = RawFormData> {
     this.initialValues = initialValues;
     this.queriesData = queriesData;
     this.ownCurrentState = ownCurrentState;
+    this.behaviors = behaviors;
   }
 }
 
@@ -121,6 +127,7 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
     input => input.queriesData,
     input => input.width,
     input => input.ownCurrentState,
+    input => input.behaviors,
     (
       annotationData,
       datasource,
@@ -131,6 +138,7 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
       queriesData,
       width,
       ownCurrentState,
+      behaviors,
     ) =>
       new ChartProps({
         annotationData,
@@ -142,6 +150,7 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
         queriesData,
         ownCurrentState,
         width,
+        behaviors,
       }),
   );
 };
