@@ -105,39 +105,39 @@ type Control = {
   default?: unknown;
 };
 
-// const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
-//   type: 'SelectControl',
-//   label: t('Group by'),
-//   multi: true,
-//   freeForm: true,
-//   clearable: true,
-//   default: [],
-//   includeTime: false,
-//   description: t('One or many columns to group by'),
-//   optionRenderer: c => <ColumnOption showType column={c} />,
-//   valueRenderer: c => <ColumnOption column={c} />,
-//   valueKey: 'column_name',
-//   allowAll: true,
-//   filterOption: ({ data: opt }, text: string) =>
-//     (opt.column_name && opt.column_name.toLowerCase().includes(text.toLowerCase())) ||
-//     (opt.verbose_name && opt.verbose_name.toLowerCase().includes(text.toLowerCase())) ||
-//     false,
-//   promptTextCreator: (label: unknown) => label,
-//   mapStateToProps(state, { includeTime }) {
-//     const newState: ExtraControlProps = {};
-//     if (state.datasource) {
-//       const options = state.datasource.columns.filter(c => c.groupby);
-//       if (includeTime) {
-//         options.unshift(timeColumnOption);
-//       }
-//       newState.options = options;
-//     }
-//     return newState;
-//   },
-//   commaChoosesOption: false,
-// };
+const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
+  type: 'SelectControl',
+  label: t('Group by'),
+  multi: true,
+  freeForm: true,
+  clearable: true,
+  default: [],
+  includeTime: false,
+  description: t('One or many columns to group by'),
+  optionRenderer: c => <ColumnOption showType column={c} />,
+  valueRenderer: c => <ColumnOption column={c} />,
+  valueKey: 'column_name',
+  allowAll: true,
+  filterOption: ({ data: opt }, text: string) =>
+    (opt.column_name && opt.column_name.toLowerCase().includes(text.toLowerCase())) ||
+    (opt.verbose_name && opt.verbose_name.toLowerCase().includes(text.toLowerCase())) ||
+    false,
+  promptTextCreator: (label: unknown) => label,
+  mapStateToProps(state, { includeTime }) {
+    const newState: ExtraControlProps = {};
+    if (state.datasource) {
+      const options = state.datasource.columns.filter(c => c.groupby);
+      if (includeTime) {
+        options.unshift(timeColumnOption);
+      }
+      newState.options = options;
+    }
+    return newState;
+  },
+  commaChoosesOption: false,
+};
 
-const groupByControl: SharedControlConfig<'DndColumnSelectControl'> = {
+const dndGroupByControl: SharedControlConfig<'DndColumnSelectControl'> = {
   type: 'DndColumnSelectControl',
   label: t('Group by'),
   default: [],
@@ -494,6 +494,20 @@ const label_colors: SharedControlConfig<'ColorMapControl'> = {
   }),
 };
 
+// A quick and dirty patch, should be moved to the main repo in the future
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+declare global {
+  interface Window {
+    featureFlags: any;
+  }
+}
+
+export function isFeatureEnabled(feature: string) {
+  return window && window.featureFlags && !!window.featureFlags[feature];
+}
+
+const enableExploreDnd = isFeatureEnabled('ENABLE_EXPLORE_DRAG_AND_DROP')
+
 const sharedControls = {
   metrics,
   metric,
@@ -503,7 +517,7 @@ const sharedControls = {
   metric_2,
   linear_color_scheme,
   secondary_metric,
-  groupby: groupByControl,
+  groupby: enableExploreDnd ? dndGroupByControl : groupByControl,
   columns: columnsControl,
   druid_time_origin,
   granularity,
