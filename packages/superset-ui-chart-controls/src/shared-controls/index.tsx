@@ -499,7 +499,7 @@ export function isFeatureEnabled(feature: string) {
   // @ts-ignore
   return window && window.featureFlags && !!window.featureFlags[feature];
 }
-const enableExploreDnd = isFeatureEnabled('ENABLE_EXPLORE_DRAG_AND_DROP')
+const enableExploreDnd = isFeatureEnabled('ENABLE_EXPLORE_DRAG_AND_DROP');
 
 const sharedControls = {
   metrics,
