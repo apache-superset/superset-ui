@@ -495,17 +495,10 @@ const label_colors: SharedControlConfig<'ColorMapControl'> = {
 };
 
 // A quick and dirty patch, should be moved to the main repo in the future
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-declare global {
-  interface Window {
-    featureFlags: any;
-  }
-}
-
 export function isFeatureEnabled(feature: string) {
+  // @ts-ignore
   return window && window.featureFlags && !!window.featureFlags[feature];
 }
-
 const enableExploreDnd = isFeatureEnabled('ENABLE_EXPLORE_DRAG_AND_DROP')
 
 const sharedControls = {
