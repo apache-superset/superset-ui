@@ -70,7 +70,7 @@ export function formatSeriesName(
   if (typeof name === 'boolean') {
     return name.toString();
   }
-  if (name instanceof Date || coltype === GenericDataType.STRING) {
+  if (name instanceof Date || coltype === GenericDataType.TEMPORAL) {
     const d = name instanceof Date ? name : new Date(name);
 
     return timeFormatter ? timeFormatter(d) : d.toISOString();
