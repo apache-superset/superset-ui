@@ -13,7 +13,7 @@ export function convertUTCTS(uts: number): number {
   return convertUTC(new Date(uts)).getTime();
 }
 
-export function setUTC(d: Date): Date {
+export function getUTC(d: Date): Date {
   return new Date(
     Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()),
   );

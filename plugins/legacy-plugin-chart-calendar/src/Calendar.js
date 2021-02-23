@@ -26,7 +26,7 @@ import {
 } from '@superset-ui/core';
 import CalHeatMap from './vendor/cal-heatmap';
 import './vendor/cal-heatmap.css';
-import { convertUTCTS, setUTC } from './utils';
+import { convertUTCTS, getUTC } from './utils';
 
 const propTypes = {
   data: PropTypes.shape({
@@ -114,7 +114,7 @@ function Calendar(element, props) {
     const legend = d3Range(steps).map(i => extents[0] + step * i);
     const legendColors = legend.map(x => colorScale(x));
 
-    const newTimeFormatter = val => timeFormatter(setUTC(new Date(val).getTime()));
+    const newTimeFormatter = val => timeFormatter(getUTC(new Date(val).getTime()));
 
     const cal = new CalHeatMap();
     cal.init({

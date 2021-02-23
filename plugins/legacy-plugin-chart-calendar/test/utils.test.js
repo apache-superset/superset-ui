@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { convertUTCTS, setUTC } from '../src/utils';
+import { convertUTCTS, getUTC } from '../src/utils';
 
 describe('legacy-plugin-chart-calendar/utils', () => {
   const timezone = new Date().getTimezoneOffset() / 60;
@@ -30,8 +30,8 @@ describe('legacy-plugin-chart-calendar/utils', () => {
     expect(Math.abs(timezone)).toBe(hours);
   });
 
-  it('setUTC', () => {
-    const converted = setUTC(date);
+  it('getUTC', () => {
+    const converted = getUTC(date);
 
     const diffInMilliSeconds = Math.abs(converted - date) / 1000;
     const hours = Math.floor(diffInMilliSeconds / 3600) % 24;
