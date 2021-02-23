@@ -16,31 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { Column } from './Column';
-import { Metric } from './Metric';
+import { t, ChartMetadata, ChartPlugin } from '@superset-ui/core';
+import controlPanel from './controlPanel';
+import transformProps from './transformProps';
+import thumbnail from './images/thumbnail.png';
+import buildQuery from './buildQuery';
 
-export enum DatasourceType {
-  Table = 'table',
-  Druid = 'druid',
+export default class EchartsGraphChartPlugin extends ChartPlugin {
+  constructor() {
+    super({
+      buildQuery,
+      controlPanel,
+      loadChart: () => import('./EchartsGraph'),
+      metadata: new ChartMetadata({
+        credits: ['https://echarts.apache.org'],
+        name: t('Graph Chart'),
+        thumbnail,
+      }),
+      transformProps,
+    });
+  }
 }
-
-/**
- * Datasource metadata.
- */
-export interface Datasource {
-  id: number;
-  name: string;
-  type: DatasourceType;
-  columns: Column[];
-  metrics: Metric[];
-  description?: string;
-  // key is column names (labels)
-  columnFormats?: {
-    [key: string]: string;
-  };
-  verboseMap?: {
-    [key: string]: string;
-  };
-}
-
-export default {};

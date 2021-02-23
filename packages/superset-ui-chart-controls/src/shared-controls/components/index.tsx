@@ -16,31 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { Column } from './Column';
-import { Metric } from './Metric';
+import RadioButtonControl from './RadioButtonControl';
 
-export enum DatasourceType {
-  Table = 'table',
-  Druid = 'druid',
-}
+export * from './RadioButtonControl';
 
 /**
- * Datasource metadata.
+ * Shared chart controls. Can be referred via string shortcuts in chart control
+ * configs.
  */
-export interface Datasource {
-  id: number;
-  name: string;
-  type: DatasourceType;
-  columns: Column[];
-  metrics: Metric[];
-  description?: string;
-  // key is column names (labels)
-  columnFormats?: {
-    [key: string]: string;
-  };
-  verboseMap?: {
-    [key: string]: string;
-  };
-}
-
-export default {};
+export default {
+  RadioButtonControl,
+};

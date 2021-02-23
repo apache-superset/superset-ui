@@ -16,13 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import RadioButtonControl from '../components/RadioButtonControl';
+import React from 'react';
+import { EchartsProps } from '../types';
+import Echart from '../components/Echart';
 
-export * from '../components/RadioButtonControl';
-
-/**
- * Aliases for Control Components
- */
-export default {
-  RadioButtonControl,
-};
+export default function EchartsGraph({ height, width, echartOptions }: EchartsProps) {
+  return <Echart height={height} width={width} echartOptions={echartOptions} />;
+}
