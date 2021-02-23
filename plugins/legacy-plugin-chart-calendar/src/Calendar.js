@@ -90,7 +90,7 @@ function Calendar(element, props) {
   } = props;
 
   const valueFormatter = getNumberFormatter(valueFormat);
-  const timeFormatter = getTimeFormatter(`local!${timeFormat}`);
+  const timeFormatter = getTimeFormatter(timeFormat);
 
   const container = d3Select(element)
     .classed('superset-legacy-chart-calendar', true)
@@ -153,7 +153,14 @@ function Calendar(element, props) {
       displayLegend: showLegend,
       itemName: '',
       valueFormatter,
-      timeFormatter,
+      timeFormatter: val => {
+        const d = new Date(val);
+        return timeFormatter(
+          new Date(
+            Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()),
+          ).getTime(),
+        );
+      },
       subDomainTextFormat,
     });
   });
