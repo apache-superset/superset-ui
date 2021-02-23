@@ -20,6 +20,7 @@ import {
   CategoricalColorNamespace,
   ChartProps,
   DataRecord,
+  GenericDataType,
   getMetricLabel,
   getNumberFormatter,
   getTimeFormatter,
@@ -39,53 +40,41 @@ import { defaultGrid, defaultTooltip } from '../defaults';
 
 const percentFormatter = getNumberFormatter(NumberFormats.PERCENT_2_POINT);
 
-const formatName = (name: string, formatter: Function): string => {
-  const date = new Date(name);
-
-  if (!Number.isNaN(date.valueOf())) {
-    return formatter(name);
-  }
-
-  return name;
-};
-
 export function formatPieLabel({
   params,
   labelType,
   numberFormatter,
-  nameFormatter,
 }: {
   params: CallbackDataParams;
   labelType: EchartsPieLabelType;
   numberFormatter: NumberFormatter;
-  nameFormatter?: Function;
 }): string {
   const { name = '', value, percent } = params;
   const formattedValue = numberFormatter(value as number);
   const formattedPercent = percentFormatter((percent as number) / 100);
-  const formatterName = nameFormatter ? formatName(name, nameFormatter) : name;
 
   switch (labelType) {
     case EchartsPieLabelType.Key:
-      return formatterName;
+      return name;
     case EchartsPieLabelType.Value:
       return formattedValue;
     case EchartsPieLabelType.Percent:
       return formattedPercent;
     case EchartsPieLabelType.KeyValue:
-      return `${formatterName}: ${formattedValue}`;
+      return `${name}: ${formattedValue}`;
     case EchartsPieLabelType.KeyValuePercent:
-      return `${formatterName}: ${formattedValue} (${formattedPercent})`;
+      return `${name}: ${formattedValue} (${formattedPercent})`;
     case EchartsPieLabelType.KeyPercent:
-      return `${formatterName}: ${formattedPercent}`;
+      return `${name}: ${formattedPercent}`;
     default:
-      return formatterName;
+      return name;
   }
 }
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
   const data: DataRecord[] = queriesData[0].data || [];
+  const coltypes: Array<GenericDataType> = queriesData[0].coltypes || [];
 
   const {
     colorScheme,
@@ -107,12 +96,21 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   }: EchartsPieFormData = { ...DEFAULT_LEGEND_FORM_DATA, ...DEFAULT_PIE_FORM_DATA, ...formData };
   const metricLabel = getMetricLabel(metric);
 
-  const keys = data.map(datum => extractGroupbyLabel({ datum, groupby }));
+  const keys = data.map(datum =>
+    extractGroupbyLabel({ datum, groupby, coltypes, timeFormatter: getTimeFormatter(dateFormat) }),
+  );
+
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const numberFormatter = getNumberFormatter(numberFormat);
 
   const transformedData: PieSeriesOption[] = data.map(datum => {
-    const name = extractGroupbyLabel({ datum, groupby });
+    const name = extractGroupbyLabel({
+      datum,
+      groupby,
+      coltypes,
+      timeFormatter: getTimeFormatter(dateFormat),
+    });
+
     return {
       value: datum[metricLabel],
       name,
@@ -122,13 +120,11 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     };
   });
 
-  const nameFormatter = dateFormat !== 'smart_date' && getTimeFormatter(dateFormat);
   const formatter = (params: CallbackDataParams) =>
     formatPieLabel({
       params,
       numberFormatter,
       labelType,
-      ...(nameFormatter && { nameFormatter }),
     });
 
   const defaultLabel = {

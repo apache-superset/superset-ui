@@ -20,6 +20,7 @@
 import {
   DataRecord,
   DataRecordValue,
+  GenericDataType,
   NumberFormatter,
   TimeFormatter,
   TimeseriesDataRecord,
@@ -53,9 +54,11 @@ export function formatSeriesName(
   {
     numberFormatter,
     timeFormatter,
+    coltype,
   }: {
     numberFormatter?: NumberFormatter;
     timeFormatter?: TimeFormatter;
+    coltype?: GenericDataType;
   } = {},
 ): string {
   if (name === undefined || name === null) {
@@ -67,8 +70,10 @@ export function formatSeriesName(
   if (typeof name === 'boolean') {
     return name.toString();
   }
-  if (name instanceof Date) {
-    return timeFormatter ? timeFormatter(name) : name.toISOString();
+  if (name instanceof Date || coltype === GenericDataType.STRING) {
+    const d = name instanceof Date ? name : new Date(name);
+
+    return timeFormatter ? timeFormatter(d) : d.toISOString();
   }
   return name;
 }
@@ -78,14 +83,22 @@ export function extractGroupbyLabel({
   groupby,
   numberFormatter,
   timeFormatter,
+  coltypes,
 }: {
   datum?: DataRecord;
   groupby?: string[] | null;
   numberFormatter?: NumberFormatter;
   timeFormatter?: TimeFormatter;
+  coltypes?: Array<GenericDataType>;
 }): string {
   return (groupby || [])
-    .map(val => formatSeriesName(datum[val], { numberFormatter, timeFormatter }))
+    .map((val, index) =>
+      formatSeriesName(datum[val], {
+        numberFormatter,
+        timeFormatter,
+        ...(coltypes && { coltype: coltypes[index] }),
+      }),
+    )
     .join(', ');
 }
 
