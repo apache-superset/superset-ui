@@ -22,6 +22,7 @@ import {
   DataRecord,
   getMetricLabel,
   getNumberFormatter,
+  getTimeFormatter,
   NumberFormats,
   NumberFormatter,
 } from '@superset-ui/core';
@@ -38,33 +39,47 @@ import { defaultGrid, defaultTooltip } from '../defaults';
 
 const percentFormatter = getNumberFormatter(NumberFormats.PERCENT_2_POINT);
 
+const formatName = (name: string, formatter: Function): string => {
+  const date = new Date(name);
+
+  if (!Number.isNaN(date.valueOf())) {
+    return formatter(name);
+  }
+
+  return name;
+};
+
 export function formatPieLabel({
   params,
   labelType,
   numberFormatter,
+  nameFormatter,
 }: {
   params: CallbackDataParams;
   labelType: EchartsPieLabelType;
   numberFormatter: NumberFormatter;
+  nameFormatter?: Function;
 }): string {
   const { name = '', value, percent } = params;
   const formattedValue = numberFormatter(value as number);
   const formattedPercent = percentFormatter((percent as number) / 100);
+  const formatterName = nameFormatter ? formatName(name, nameFormatter) : name;
+
   switch (labelType) {
     case EchartsPieLabelType.Key:
-      return name;
+      return formatterName;
     case EchartsPieLabelType.Value:
       return formattedValue;
     case EchartsPieLabelType.Percent:
       return formattedPercent;
     case EchartsPieLabelType.KeyValue:
-      return `${name}: ${formattedValue}`;
+      return `${formatterName}: ${formattedValue}`;
     case EchartsPieLabelType.KeyValuePercent:
-      return `${name}: ${formattedValue} (${formattedPercent})`;
+      return `${formatterName}: ${formattedValue} (${formattedPercent})`;
     case EchartsPieLabelType.KeyPercent:
-      return `${name}: ${formattedPercent}`;
+      return `${formatterName}: ${formattedPercent}`;
     default:
-      return name;
+      return formatterName;
   }
 }
 
@@ -85,6 +100,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     legendType,
     metric = '',
     numberFormat,
+    dateFormat,
     outerRadius,
     showLabels,
     showLegend,
@@ -106,8 +122,14 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     };
   });
 
+  const nameFormatter = dateFormat !== 'smart_date' && getTimeFormatter(dateFormat);
   const formatter = (params: CallbackDataParams) =>
-    formatPieLabel({ params, numberFormatter, labelType });
+    formatPieLabel({
+      params,
+      numberFormatter,
+      labelType,
+      ...(nameFormatter && { nameFormatter }),
+    });
 
   const defaultLabel = {
     formatter,
