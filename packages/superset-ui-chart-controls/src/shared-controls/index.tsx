@@ -54,6 +54,7 @@ import {
   SelectControlConfig,
 } from '../types';
 import { ColumnOption } from '../components/ColumnOption';
+import { dndColumnsControl, dndEntity, dndGroupByControl, dndSeries } from './dndControls';
 
 const categoricalSchemeRegistry = getCategoricalSchemeRegistry();
 const sequentialSchemeRegistry = getSequentialSchemeRegistry();
@@ -135,24 +136,6 @@ const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
     return newState;
   },
   commaChoosesOption: false,
-};
-
-const dndGroupByControl: SharedControlConfig<'DndColumnSelectControl'> = {
-  type: 'DndColumnSelectControl',
-  label: t('Group by'),
-  default: [],
-  description: t('One or many columns to group by'),
-  mapStateToProps(state, { includeTime }) {
-    const newState: ExtraControlProps = {};
-    if (state.datasource) {
-      const options = state.datasource.columns.filter(c => c.groupby);
-      if (includeTime) {
-        options.unshift(timeColumnOption);
-      }
-      newState.options = Object.fromEntries(options.map(option => [option.column_name, option]));
-    }
-    return newState;
-  },
 };
 
 const metrics: SharedControlConfig<'MetricsControl'> = {
@@ -511,7 +494,7 @@ const sharedControls = {
   linear_color_scheme,
   secondary_metric,
   groupby: enableExploreDnd ? dndGroupByControl : groupByControl,
-  columns: columnsControl,
+  columns: enableExploreDnd ? dndColumnsControl : columnsControl,
   druid_time_origin,
   granularity,
   granularity_sqla,
@@ -520,8 +503,8 @@ const sharedControls = {
   row_limit,
   limit,
   timeseries_limit_metric,
-  series,
-  entity,
+  series: enableExploreDnd ? dndSeries : series,
+  entity: enableExploreDnd ? dndEntity : entity,
   x,
   y,
   size,
