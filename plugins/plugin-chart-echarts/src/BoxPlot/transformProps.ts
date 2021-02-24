@@ -20,8 +20,10 @@ import {
   CategoricalColorNamespace,
   ChartProps,
   DataRecord,
+  GenericDataType,
   getMetricLabel,
   getNumberFormatter,
+  getTimeFormatter,
 } from '@superset-ui/core';
 import { EChartsOption, BoxplotSeriesOption } from 'echarts';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
@@ -33,11 +35,14 @@ import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
   const data: DataRecord[] = queriesData[0].data || [];
+  const coltypes: Array<GenericDataType> = queriesData[0].coltypes || [];
+  console.log('coltypes', coltypes);
   const {
     colorScheme,
     groupby = [],
     metrics: formdataMetrics = [],
     numberFormat,
+    dateFormat,
     xTicksLayout,
   } = formData as BoxPlotQueryFormData;
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
@@ -46,7 +51,12 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
 
   const transformedData = data
     .map((datum: any) => {
-      const groupbyLabel = extractGroupbyLabel({ datum, groupby });
+      const groupbyLabel = extractGroupbyLabel({
+        datum,
+        groupby,
+        coltypes,
+        timeFormatter: getTimeFormatter(dateFormat),
+      });
       return metricLabels.map(metric => {
         const name = metricLabels.length === 1 ? groupbyLabel : `${groupbyLabel}, ${metric}`;
         return {
@@ -70,11 +80,16 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       });
     })
     .flatMap(row => row);
-
+  console.log('transformedData,', transformedData);
   const outlierData = data
     .map(datum =>
       metricLabels.map(metric => {
-        const groupbyLabel = extractGroupbyLabel({ datum, groupby });
+        const groupbyLabel = extractGroupbyLabel({
+          datum,
+          groupby,
+          coltypes,
+          timeFormatter: getTimeFormatter(dateFormat),
+        });
         const name = metricLabels.length === 1 ? groupbyLabel : `${groupbyLabel}, ${metric}`;
         // Outlier data is a nested array of numbers (uncommon, therefore no need to add to DataRecordValue)
         const outlierDatum = (datum[`${metric}__outliers`] || []) as number[];
@@ -96,7 +111,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       }),
     )
     .flat(2);
-
+  console.log('outlierData', outlierData);
   let axisLabel;
   if (xTicksLayout === '45°') axisLabel = { rotate: -45 };
   else if (xTicksLayout === '90°') axisLabel = { rotate: -90 };
