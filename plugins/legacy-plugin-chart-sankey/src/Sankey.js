@@ -58,9 +58,7 @@ function getResponsiveContainereClass(width) {
 function Sankey(element, props) {
   const { data, width, height, colorScheme } = props;
   const div = d3.select(element);
-  console.log(width);
   const responsiveClass = getResponsiveContainereClass(width);
-  console.log(responsiveClass);
   div.classed(`superset-legacy-chart-sankey ${responsiveClass}`, true);
   const margin = {
     top: 5,

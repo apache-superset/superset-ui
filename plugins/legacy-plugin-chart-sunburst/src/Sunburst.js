@@ -161,7 +161,6 @@ function Sunburst(element, props) {
   const { data, width, height, colorScheme, linearColorScheme, metrics, numberFormat } = props;
   const responsiveClass = getResponsiveContainereClass(width);
   container.classed(`superset-legacy-chart-sunburst ${responsiveClass}`, true);
-  // console.log({width, responsiveClass});
   // vars with shared scope within this function
   const margin = { top: 10, right: 5, bottom: 10, left: 5 };
   const containerWidth = width;
