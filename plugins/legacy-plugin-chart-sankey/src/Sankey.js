@@ -22,6 +22,7 @@ import d3 from 'd3';
 import PropTypes from 'prop-types';
 import { sankey as d3Sankey } from 'd3-sankey';
 import { getNumberFormatter, NumberFormats, CategoricalColorNamespace } from '@superset-ui/core';
+import './Sankey.css';
 
 const propTypes = {
   data: PropTypes.arrayOf(
@@ -38,11 +39,29 @@ const propTypes = {
 
 const formatNumber = getNumberFormatter(NumberFormats.FLOAT);
 
+function getResponsiveContainereClass(width) {
+  if (width > 550) {
+    return 'l';
+  }
+
+  if (width > 400 && width <= 550) {
+    return 'm';
+  }
+
+  if (width > 300 && width <= 400) {
+    return 's';
+  }
+
+  return 'xs';
+}
+
 function Sankey(element, props) {
   const { data, width, height, colorScheme } = props;
-
   const div = d3.select(element);
-  div.classed('superset-legacy-chart-sankey', true);
+  console.log(width);
+  const responsiveClass = getResponsiveContainereClass(width);
+  console.log(responsiveClass);
+  div.classed(`superset-legacy-chart-sankey ${responsiveClass}`, true);
   const margin = {
     top: 5,
     right: 5,
@@ -187,7 +206,7 @@ function Sankey(element, props) {
     .attr('dy', '.35em')
     .attr('text-anchor', 'end')
     .attr('transform', null)
-    .text(d => d.name)
+    .text(d => (responsiveClass === 'xs' ? '' : d.name))
     .filter(d => d.x < innerWidth / 2)
     .attr('x', 6 + sankey.nodeWidth())
     .attr('text-anchor', 'start');

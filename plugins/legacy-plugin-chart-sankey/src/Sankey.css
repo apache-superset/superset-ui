@@ -1,0 +1,9 @@
+.dashboard .superset-legacy-chart-sankey.s text, .dashboard .superset-legacy-chart-sankey .sankey-tooltip {
+    font-size: 0.45em;
+}
+.dashboard .superset-legacy-chart-sankey.m text, .dashboard .superset-legacy-chart-sankey .sankey-tooltip {
+    font-size: 0.55em;
+}
+.dashboard .superset-legacy-chart-sankey.l text, .dashboard .superset-legacy-chart-sankey .sankey-tooltip {
+    font-size: 0.8em;
+}

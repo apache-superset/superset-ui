@@ -51,21 +51,15 @@
 }
 
 /* dashboard specific */
-/*
-.dashboard .superset-legacy-chart-sunburst text {
-  font-size: 1em;
+.dashboard .superset-legacy-chart-sunburst.m text {
+  font-size: 0.6em;
+}
+.dashboard .superset-legacy-chart-sunburst.s text {
+  font-size: 0.5em;
+}
+.dashboard .superset-legacy-chart-sunburst.l text {
+  font-size: 0.8em;
 }
 .dashboard .superset-legacy-chart-sunburst .path-abs-percent {
-  font-size: 2em;
   font-weight: 700;
 }
-.dashboard .superset-legacy-chart-sunburst .path-cond-percent {
-  font-size: 1.5em;
-}
-.dashboard .superset-legacy-chart-sunburst .path-metrics {
-  font-size: 1em;
-}
-.dashboard .superset-legacy-chart-sunburst .path-ratio {
-  font-size: 1em;
-}
-*/

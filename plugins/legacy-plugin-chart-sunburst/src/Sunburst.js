@@ -131,12 +131,37 @@ function buildHierarchy(rows) {
   return root;
 }
 
+function getResponsiveContainereClass(width) {
+  if (width > 500) {
+    return 'l';
+  }
+
+  if (width > 200 && width <= 500) {
+    return 'm';
+  }
+
+  return 's';
+}
+
+function getYOffset(width) {
+  if (width > 500) {
+    return ['0', '20', '40', '60'];
+  }
+
+  if (width > 200 && width <= 500) {
+    return ['0', '15', '30', '45'];
+  }
+
+  return ['0', '10', '20', '30'];
+}
+
 // Modified from http://bl.ocks.org/kerryrodden/7090426
 function Sunburst(element, props) {
   const container = d3.select(element);
-  container.classed('superset-legacy-chart-sunburst', true);
   const { data, width, height, colorScheme, linearColorScheme, metrics, numberFormat } = props;
-
+  const responsiveClass = getResponsiveContainereClass(width);
+  container.classed(`superset-legacy-chart-sunburst ${responsiveClass}`, true);
+  // console.log({width, responsiveClass});
   // vars with shared scope within this function
   const margin = { top: 10, right: 5, bottom: 10, left: 5 };
   const containerWidth = width;
@@ -234,7 +259,7 @@ function Sunburst(element, props) {
       .append('svg:text')
       .attr('x', (breadcrumbDims.width + breadcrumbDims.tipTailWidth) / 2)
       .attr('y', breadcrumbDims.height / 4)
-      .attr('dy', '0.85em')
+      .attr('dy', '0.35em')
       .style('fill', d => {
         // Make text white or black based on the lightness of the background
         const col = d3.hsl(
@@ -280,7 +305,7 @@ function Sunburst(element, props) {
     const conditionalPercString = parentOfD ? formatPerc(conditionalPercentage) : '';
 
     // 3 levels of text if inner-most level, 4 otherwise
-    const yOffsets = ['-25', '7', '35', '60'];
+    const yOffsets = getYOffset(width);
     let offsetIndex = 0;
 
     // If metrics match, assume we are coloring by category
