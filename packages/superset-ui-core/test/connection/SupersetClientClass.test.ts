@@ -22,7 +22,7 @@ import { LOGIN_GLOB } from './fixtures/constants';
 
 describe('SupersetClientClass', () => {
   beforeAll(() => {
-    fetchMock.get(LOGIN_GLOB, { csrf_token: '' });
+    fetchMock.get(LOGIN_GLOB, { result: '' });
   });
 
   afterAll(fetchMock.restore);
@@ -68,7 +68,7 @@ describe('SupersetClientClass', () => {
     afterEach(() => {
       fetchMock.reset();
       // reset
-      fetchMock.get(LOGIN_GLOB, { csrf_token: 1234 }, { overwriteRoutes: true });
+      fetchMock.get(LOGIN_GLOB, { result: 1234 }, { overwriteRoutes: true });
     });
 
     it('calls api/v1/security/csrf_token/ when init() is called if no CSRF token is passed', async () => {
@@ -226,7 +226,7 @@ describe('SupersetClientClass', () => {
       // reset
       fetchMock.get(
         LOGIN_GLOB,
-        { csrf_token: 1234 },
+        { result: 1234 },
         {
           overwriteRoutes: true,
         },
