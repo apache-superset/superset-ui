@@ -53,18 +53,18 @@
 .dashboard-chart.sunburst {
   overflow: visible;
 }
-.dashboard .superset-legacy-chart-sunburst svg {
+.superset-legacy-chart-sunburst svg {
   overflow: visible;
 }
-.dashboard .superset-legacy-chart-sunburst.m text {
+.superset-legacy-chart-sunburst.m text {
   font-size: 0.55em;
 }
-.dashboard .superset-legacy-chart-sunburst.s text {
+.superset-legacy-chart-sunburst.s text {
   font-size: 0.45em;
 }
-.dashboard .superset-legacy-chart-sunburst.l text {
+.superset-legacy-chart-sunburst.l text {
   font-size: 0.75em;
 }
-.dashboard .superset-legacy-chart-sunburst .path-abs-percent {
+.superset-legacy-chart-sunburst .path-abs-percent {
   font-weight: 700;
 }

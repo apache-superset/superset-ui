@@ -61,7 +61,7 @@ function Sankey(element, props) {
   const responsiveClass = getResponsiveContainereClass(width);
   div.classed(`superset-legacy-chart-sankey ${responsiveClass}`, true);
   const margin = {
-    top: 5,
+    top: 20,
     right: 5,
     bottom: 5,
     left: 5,
@@ -70,14 +70,13 @@ function Sankey(element, props) {
   const innerHeight = height - margin.top - margin.bottom;
 
   div.selectAll('*').remove();
+  const tooltip = div.append('div').attr('class', 'sankey-tooltip').style('opacity', 0);
   const svg = div
     .append('svg')
     .attr('width', innerWidth + margin.left + margin.right)
     .attr('height', innerHeight + margin.top + margin.bottom)
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
-
-  const tooltip = div.append('div').attr('class', 'sankey-tooltip').style('opacity', 0);
 
   const colorFn = CategoricalColorNamespace.getScale(colorScheme);
 
@@ -134,8 +133,7 @@ function Sankey(element, props) {
       .html(() => getTooltipHtml(d))
       .transition()
       .duration(200)
-      .style('left', `${d3.event.offsetX + 10}px`)
-      .style('top', `${d3.event.offsetY + 10}px`)
+      .style('position', 'absolute')
       .style('opacity', 0.95);
   }
 
