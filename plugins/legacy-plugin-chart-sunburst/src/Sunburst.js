@@ -160,6 +160,7 @@ function Sunburst(element, props) {
   const container = d3.select(element);
   const { data, width, height, colorScheme, linearColorScheme, metrics, numberFormat } = props;
   const responsiveClass = getResponsiveContainereClass(width);
+  const isSmallWidth = responsiveClass === 's';
   container.classed(`superset-legacy-chart-sunburst ${responsiveClass}`, true);
   // vars with shared scope within this function
   const margin = { top: 10, right: 5, bottom: 10, left: 5 };
@@ -226,22 +227,35 @@ function Sunburst(element, props) {
   // Generate a string that describes the points of a breadcrumb polygon.
   function breadcrumbPoints(d, i) {
     const points = [];
-    points.push('0,0');
-    points.push(`${breadcrumbDims.width},0`);
-    points.push(
-      `${breadcrumbDims.width + breadcrumbDims.tipTailWidth},${breadcrumbDims.height / 2}`,
-    );
-    points.push(`${breadcrumbDims.width},${breadcrumbDims.height}`);
-    points.push(`0,${breadcrumbDims.height}`);
-    if (i > 0) {
-      // Leftmost breadcrumb; don't include 6th vertex.
-      points.push(`${breadcrumbDims.tipTailWidth},${breadcrumbDims.height / 2}`);
+    if (isSmallWidth) {
+      points.push('0,0');
+      points.push(`${width},0`);
+      points.push(`${width},0`);
+      points.push(`${width},${breadcrumbDims.height}`);
+      points.push(`0,${breadcrumbDims.height}`);
+      if (i > 0) {
+        // Leftmost breadcrumb; don't include 6th vertex.
+        // points.push(`${breadcrumbDims.tipTailWidth},${breadcrumbDims.height / 2}`);
+      }
+    } else {
+      points.push('0,0');
+      points.push(`${breadcrumbDims.width},0`);
+      points.push(
+        `${breadcrumbDims.width + breadcrumbDims.tipTailWidth},${breadcrumbDims.height / 2}`,
+      );
+      points.push(`${breadcrumbDims.width},${breadcrumbDims.height}`);
+      points.push(`0,${breadcrumbDims.height}`);
+      if (i > 0) {
+        // Leftmost breadcrumb; don't include 6th vertex.
+        points.push(`${breadcrumbDims.tipTailWidth},${breadcrumbDims.height / 2}`);
+      }
     }
 
     return points.join(' ');
   }
 
   function updateBreadcrumbs(sequenceArray, percentageString) {
+    const breadcrumbWidth = isSmallWidth ? width : breadcrumbDims.width;
     const g = breadcrumbs.selectAll('g').data(sequenceArray, d => d.name + d.depth);
 
     // Add breadcrumb and label for entering nodes.
@@ -256,7 +270,7 @@ function Sunburst(element, props) {
 
     entering
       .append('svg:text')
-      .attr('x', (breadcrumbDims.width + breadcrumbDims.tipTailWidth) / 2)
+      .attr('x', (breadcrumbWidth + breadcrumbDims.tipTailWidth) / 2)
       .attr('y', breadcrumbDims.height / 4)
       .attr('dy', '0.35em')
       .style('fill', d => {
@@ -269,13 +283,15 @@ function Sunburst(element, props) {
       })
       .attr('class', 'step-label')
       .text(d => d.name.replace(/_/g, ' '))
-      .call(wrapSvgText, breadcrumbDims.width, breadcrumbDims.height / 2);
+      .call(wrapSvgText, breadcrumbWidth, breadcrumbDims.height / 2);
 
     // Set position for entering and updating nodes.
-    g.attr(
-      'transform',
-      (d, i) => `translate(${i * (breadcrumbDims.width + breadcrumbDims.spacing)}, 0)`,
-    );
+    g.attr('transform', (d, i) => {
+      if (isSmallWidth) {
+        return `translate(0, ${i * (breadcrumbDims.height + breadcrumbDims.spacing)})`;
+      }
+      return `translate(${i * (breadcrumbDims.width + breadcrumbDims.spacing)}, 0)`;
+    });
 
     // Remove exiting nodes.
     g.exit().remove();
@@ -283,8 +299,20 @@ function Sunburst(element, props) {
     // Now move and update the percentage at the end.
     breadcrumbs
       .select('.end-label')
-      .attr('x', (sequenceArray.length + 0.5) * (breadcrumbDims.width + breadcrumbDims.spacing))
-      .attr('y', breadcrumbDims.height / 2)
+      .attr('x', () => {
+        if (isSmallWidth) {
+          return (breadcrumbWidth + breadcrumbDims.tipTailWidth) / 2;
+        }
+
+        return (sequenceArray.length + 0.5) * (breadcrumbDims.width + breadcrumbDims.spacing);
+      })
+      .attr('y', () => {
+        if (isSmallWidth) {
+          return (sequenceArray.length + 1) * breadcrumbDims.height;
+        }
+
+        return breadcrumbDims.height / 2;
+      })
       .attr('dy', '0.35em')
       .text(percentageString);
 
@@ -389,7 +417,7 @@ function Sunburst(element, props) {
   // Main function to draw and set up the visualization, once we have the data.
   function createVisualization(rows) {
     const root = buildHierarchy(rows);
-
+    maxBreadcrumbs = rows[0].length - 2;
     vis = svg
       .append('svg:g')
       .attr('class', 'sunburst-vis')
@@ -397,7 +425,11 @@ function Sunburst(element, props) {
         'transform',
         'translate(' +
           `${margin.left + visWidth / 2},` +
-          `${margin.top + breadcrumbHeight + visHeight / 2}` +
+          `${
+            margin.top +
+            (isSmallWidth ? breadcrumbHeight * maxBreadcrumbs : breadcrumbHeight) +
+            visHeight / 2
+          }` +
           ')',
       )
       .on('mouseleave', mouseleave);
