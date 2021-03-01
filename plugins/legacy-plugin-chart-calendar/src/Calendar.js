@@ -114,7 +114,7 @@ function Calendar(element, props) {
     const legend = d3Range(steps).map(i => extents[0] + step * i);
     const legendColors = legend.map(x => colorScale(x));
 
-    const newTimeFormatter = val => timeFormatter(getUTC(new Date(val).getTime()));
+    const newTimeFormatter = val => timeFormatter(getUTC(new Date(val)));
 
     const cal = new CalHeatMap();
     cal.init({
