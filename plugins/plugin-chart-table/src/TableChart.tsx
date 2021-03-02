@@ -147,14 +147,14 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     width,
     data,
     isRawRecords,
-    showNextButton,
+    rowCount = 0,
     columns: columnsMeta,
     alignPositiveNegative = false,
     colorPositiveNegative = false,
     includeSearch = false,
     pageSize = 0,
     serverPagination = false,
-    currentPage,
+    ownCurrentState,
     setDataMask,
     showCellBars = true,
     emitFilter = false,
@@ -167,11 +167,12 @@ export default function TableChart<D extends DataRecord = DataRecord>(
   const [filters, setFilters] = useState(initialFilters);
 
   // only take relevant page size options
-  const pageSizeOptions = useMemo(
-    () =>
-      PAGE_SIZE_OPTIONS.filter(([n]) => n <= 2 * data.length || serverPagination) as SizeOption[],
-    [data.length],
-  );
+  const pageSizeOptions = useMemo(() => {
+    const getServerPagination = (n: number) => n <= rowCount;
+    return PAGE_SIZE_OPTIONS.filter(([n]) =>
+      serverPagination ? getServerPagination(n) : n <= 2 * data.length,
+    ) as SizeOption[];
+  }, [data.length, rowCount]);
 
   const getValueRange = useCallback(
     function getValueRange(key: string) {
@@ -289,10 +290,10 @@ export default function TableChart<D extends DataRecord = DataRecord>(
       <DataTable<D>
         columns={columns}
         data={data}
-        showNextButton={showNextButton}
+        rowCount={rowCount}
         tableClassName="table table-striped table-condensed"
         pageSize={pageSize}
-        currentPage={currentPage}
+        ownCurrentState={ownCurrentState}
         pageSizeOptions={pageSizeOptions}
         width={width}
         height={height}

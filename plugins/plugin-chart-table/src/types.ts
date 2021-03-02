@@ -74,6 +74,8 @@ export interface TableChartProps extends ChartProps {
     pageSize?: number;
     currentPage?: number;
   };
+  cachedChanges: any;
+  setCachedChanges: Function;
   rawFormData: TableChartFormData;
   queriesData: ChartDataResponseResult[];
 }
@@ -81,9 +83,9 @@ export interface TableChartProps extends ChartProps {
 export interface TableChartTransformedProps<D extends DataRecord = DataRecord> {
   height: number;
   width: number;
-  showNextButton: boolean;
+  rowCount?: number;
   serverPagination: boolean;
-  currentPage?: number;
+  ownCurrentState: { pageSize?: number; currentPage?: number };
   setDataMask: SetDataMaskHook;
   isRawRecords?: boolean;
   data: D[];

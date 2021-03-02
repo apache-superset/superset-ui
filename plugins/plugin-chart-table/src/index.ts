@@ -20,7 +20,7 @@ import { t, ChartMetadata, ChartPlugin } from '@superset-ui/core';
 import transformProps from './transformProps';
 import thumbnail from './images/thumbnail.png';
 import controlPanel from './controlPanel';
-import buildQuery from './buildQuery';
+import cachedBuildQuery from './buildQuery';
 import { TableChartFormData, TableChartProps } from './types';
 
 // must export something for the module to be exist in dev mode
@@ -41,7 +41,7 @@ export default class TableChartPlugin extends ChartPlugin<TableChartFormData, Ta
       metadata,
       transformProps,
       controlPanel,
-      buildQuery,
+      buildQuery: cachedBuildQuery(),
     });
   }
 }

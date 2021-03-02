@@ -7,6 +7,8 @@ const WRAP_IN_ARRAY = (baseQueryObject: QueryObject) => [baseQueryObject];
 
 export type BuildFinalQuerieObjects = (baseQueryObject: QueryObject) => QueryObject[];
 
+const emptyFunction = () => {};
+
 export default function buildQueryContext(
   formData: QueryFormData,
   options?:
@@ -24,5 +26,6 @@ export default function buildQueryContext(
     queries: buildQuery(buildQueryObject(formData, queryFields)),
     result_format: formData.result_format || 'json',
     result_type: formData.result_type || 'full',
+    setDataMask: formData.setDataMask ?? emptyFunction,
   };
 }

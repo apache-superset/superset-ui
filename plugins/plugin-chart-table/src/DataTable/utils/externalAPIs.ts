@@ -29,7 +29,7 @@ export const updateExternalFormData = (
       extraFormData: {
         custom_form_data: {
           row_offset: pageNumber * pageSize,
-          row_limit: pageSize + 1,
+          row_limit: pageSize,
         },
       },
       currentState: {

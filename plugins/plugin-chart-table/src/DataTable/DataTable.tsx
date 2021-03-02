@@ -42,8 +42,7 @@ import SelectPageSize, { SelectPageSizeProps, SizeOption } from './components/Se
 import SimplePagination from './components/Pagination';
 import useSticky from './hooks/useSticky';
 import { updateExternalFormData } from './utils/externalAPIs';
-import ServerPagination from './components/ServerPagination';
-import { ServerPage } from '../types';
+import { PAGE_SIZE_OPTIONS } from '../controlPanel';
 
 export interface DataTableProps<D extends object> extends TableOptions<D> {
   tableClassName?: string;
@@ -56,11 +55,11 @@ export interface DataTableProps<D extends object> extends TableOptions<D> {
   height?: string | number;
   serverPagination?: boolean;
   setDataMask: SetDataMaskHook;
-  currentPage?: number;
+  ownCurrentState: { pageSize?: number; currentPage?: number };
   pageSize?: number;
   noResults?: string | ((filterString: string) => ReactNode);
   sticky?: boolean;
-  showNextButton: boolean;
+  rowCount: number;
   wrapperRef?: MutableRefObject<HTMLDivElement>;
 }
 
@@ -73,17 +72,17 @@ export default function DataTable<D extends object>({
   tableClassName,
   columns,
   data,
-  currentPage = 0,
+  ownCurrentState,
   width: initialWidth = '100%',
   height: initialHeight = 300,
   pageSize: initialPageSize = 0,
   initialState: initialState_ = {},
-  pageSizeOptions = [10, 25, 50, 100, 200],
+  pageSizeOptions = PAGE_SIZE_OPTIONS,
   maxPageItemCount = 9,
   sticky: doSticky,
   searchInput = true,
   setDataMask,
-  showNextButton,
+  rowCount,
   selectPageSize,
   noResults: noResultsText = 'No data found',
   hooks,
@@ -98,7 +97,7 @@ export default function DataTable<D extends object>({
     doSticky ? useSticky : [],
     hooks || [],
   ].flat();
-  const resultsSize = data.length;
+  const resultsSize = serverPagination ? rowCount : data.length;
   const sortByRef = useRef([]); // cache initial `sortby` so sorting doesn't trigger page reset
   const pageSizeRef = useRef([initialPageSize, resultsSize]);
   const hasPagination = initialPageSize > 0 && resultsSize > 0; // pageSize == 0 means no pagination
@@ -129,7 +128,16 @@ export default function DataTable<D extends object>({
     }
     return undefined;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialHeight, initialWidth, wrapperRef, hasPagination, hasGlobalControl, showNextButton]);
+  }, [
+    initialHeight,
+    initialWidth,
+    wrapperRef,
+    hasPagination,
+    hasGlobalControl,
+    paginationRef,
+    resultsSize,
+    JSON.stringify(ownCurrentState),
+  ]);
 
   const defaultGlobalFilter: FilterType<D> = useCallback(
     (rows: Row<D>[], columnIds: IdType<D>[], filterValue: string) => {
@@ -224,7 +232,7 @@ export default function DataTable<D extends object>({
     </table>
   );
 
-  // force upate the pageSize when it's been update from the initial state
+  // force update the pageSize when it's been update from the initial state
   if (
     pageSizeRef.current[0] !== initialPageSize ||
     // when initialPageSize stays as zero, but total number of records changed,
@@ -235,16 +243,29 @@ export default function DataTable<D extends object>({
     setPageSize(initialPageSize);
   }
 
-  const goToBEPage = (direction: ServerPage) => {
-    updateExternalFormData(
-      setDataMask,
-      direction === ServerPage.NEXT ? currentPage + 1 : currentPage - 1,
-      pageSize,
-    );
-  };
-
   const paginationStyle: CSSProperties = sticky.height ? {} : { visibility: 'hidden' };
 
+  let resultPageCount = pageCount;
+  let resultCurrentPageSize = pageSize;
+  let resultCurrentPage = pageIndex;
+  let resultOnPageChange: (page: number) => void = gotoPage;
+  if (serverPagination) {
+    const serverPageSize = ownCurrentState.pageSize ?? initialPageSize;
+    resultPageCount = Math.ceil(rowCount / serverPageSize);
+    if (!Number.isFinite(resultPageCount)) {
+      resultPageCount = 0;
+    }
+    resultCurrentPageSize = serverPageSize;
+    const foundPageSizeIndex = pageSizeOptions.findIndex(
+      ([option]) => option >= resultCurrentPageSize,
+    );
+    if (foundPageSizeIndex === -1) {
+      resultCurrentPageSize = 0;
+    }
+    resultCurrentPage = ownCurrentState.currentPage ?? 0;
+    resultOnPageChange = (pageNumber: number) =>
+      updateExternalFormData(setDataMask, pageNumber, serverPageSize);
+  }
   return (
     <div ref={wrapperRef} style={{ width: initialWidth, height: initialHeight }}>
       {hasGlobalControl ? (
@@ -254,7 +275,7 @@ export default function DataTable<D extends object>({
               {hasPagination ? (
                 <SelectPageSize
                   total={resultsSize}
-                  current={pageSize}
+                  current={resultCurrentPageSize}
                   options={pageSizeOptions}
                   selectRenderer={typeof selectPageSize === 'boolean' ? undefined : selectPageSize}
                   onChange={setPageSize}
@@ -275,23 +296,14 @@ export default function DataTable<D extends object>({
         </div>
       ) : null}
       {wrapStickyTable ? wrapStickyTable(renderTable) : renderTable()}
-      {serverPagination && (
-        <ServerPagination
-          ref={paginationRef}
-          style={paginationStyle}
-          showNext={showNextButton}
-          showPrevious={currentPage !== 0}
-          onPageChange={goToBEPage}
-        />
-      )}
-      {!serverPagination && hasPagination ? (
+      {hasPagination && resultPageCount > 1 ? (
         <SimplePagination
           ref={paginationRef}
           style={paginationStyle}
           maxPageItemCount={maxPageItemCount}
-          pageCount={pageCount}
-          currentPage={pageIndex}
-          onPageChange={gotoPage}
+          pageCount={resultPageCount}
+          currentPage={resultCurrentPage}
+          onPageChange={resultOnPageChange}
         />
       ) : null}
     </div>
