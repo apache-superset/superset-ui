@@ -35,9 +35,11 @@
  */
 import React from 'react';
 import {
+  FeatureFlag,
   t,
   getCategoricalSchemeRegistry,
   getSequentialSchemeRegistry,
+  isFeatureEnabled,
   SequentialScheme,
   legacyValidateInteger,
   validateNonEmpty,
@@ -54,7 +56,13 @@ import {
   SelectControlConfig,
 } from '../types';
 import { ColumnOption } from '../components/ColumnOption';
-import { dndColumnsControl, dndEntity, dndGroupByControl, dndSeries } from './dndControls';
+import {
+  dnd_adhoc_filters,
+  dndColumnsControl,
+  dndEntity,
+  dndGroupByControl,
+  dndSeries,
+} from './dndControls';
 
 const categoricalSchemeRegistry = getCategoricalSchemeRegistry();
 const sequentialSchemeRegistry = getSequentialSchemeRegistry();
@@ -477,12 +485,7 @@ const label_colors: SharedControlConfig<'ColorMapControl'> = {
   }),
 };
 
-// A quick and dirty patch, should be moved to the main repo in the future
-export function isFeatureEnabled(feature: string) {
-  // @ts-ignore
-  return window && window.featureFlags && !!window.featureFlags[feature];
-}
-const enableExploreDnd = isFeatureEnabled('ENABLE_EXPLORE_DRAG_AND_DROP');
+const enableExploreDnd = isFeatureEnabled(FeatureFlag.ENABLE_EXPLORE_DRAG_AND_DROP);
 
 const sharedControls = {
   metrics,
@@ -510,7 +513,7 @@ const sharedControls = {
   size,
   y_axis_format,
   x_axis_time_format,
-  adhoc_filters,
+  adhoc_filters: enableExploreDnd ? dnd_adhoc_filters : adhoc_filters,
   color_scheme,
   label_colors,
 };

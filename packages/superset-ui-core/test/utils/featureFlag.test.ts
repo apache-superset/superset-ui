@@ -16,13 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import fetchMock from 'fetch-mock';
-import { SupersetClient } from '@superset-ui/core/src/connection';
 
-const LOGIN_GLOB = 'glob:*api/v1/security/csrf_token/*';
+import { FeatureFlag, isFeatureEnabled } from '../../src';
 
-export default function setupClientForTest() {
-  fetchMock.get(LOGIN_GLOB, { result: '1234' });
-  SupersetClient.reset();
-  SupersetClient.configure().init();
-}
+describe('isFeatureFlagEnabled', () => {
+  window.featureFlags = {
+    [FeatureFlag.CLIENT_CACHE]: true,
+  };
+  it('returns false for unset feature flag', () => {
+    expect(isFeatureEnabled(FeatureFlag.ALLOW_DASHBOARD_DOMAIN_SHARDING)).toEqual(false);
+  });
+
+  it('returns true for set feature flag', () => {
+    expect(isFeatureEnabled(FeatureFlag.CLIENT_CACHE)).toEqual(true);
+  });
+});
