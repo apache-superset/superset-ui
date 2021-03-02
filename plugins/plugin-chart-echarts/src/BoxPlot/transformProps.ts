@@ -36,7 +36,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
   const data: DataRecord[] = queriesData[0].data || [];
   const coltypes: Array<GenericDataType> = queriesData[0].coltypes || [];
-  console.log('coltypes', coltypes);
   const {
     colorScheme,
     groupby = [],
@@ -80,7 +79,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       });
     })
     .flatMap(row => row);
-  console.log('transformedData,', transformedData);
   const outlierData = data
     .map(datum =>
       metricLabels.map(metric => {
@@ -111,7 +109,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       }),
     )
     .flat(2);
-  console.log('outlierData', outlierData);
   let axisLabel;
   if (xTicksLayout === '45°') axisLabel = { rotate: -45 };
   else if (xTicksLayout === '90°') axisLabel = { rotate: -90 };
