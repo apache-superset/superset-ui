@@ -34,10 +34,10 @@ const getRectangle = (element: SVGElement, offset = 0): Rect => {
   const { x, y, width, height } = element.getBoundingClientRect();
 
   return {
-    x: x + offset,
+    x,
     y: y + offset,
     width,
-    height: height - offset,
+    height: height - offset * 2,
   };
 };
 
