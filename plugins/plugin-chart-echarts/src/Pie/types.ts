@@ -36,6 +36,7 @@ export type EchartsPieFormData = EchartsLegendFormData & {
   showLabels: boolean;
   numberFormat: string;
   dateFormat: string;
+  showLabelsThreshold: number;
 };
 
 export enum EchartsPieLabelType {
@@ -60,5 +61,6 @@ export const DEFAULT_FORM_DATA: EchartsPieFormData = {
   outerRadius: 70,
   showLabels: true,
   labelsOutside: true,
+  showLabelsThreshold: 5,
   dateFormat: 'smart_date',
 };

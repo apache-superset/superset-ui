@@ -93,6 +93,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     outerRadius,
     showLabels,
     showLegend,
+    showLabelsThreshold,
   }: EchartsPieFormData = { ...DEFAULT_LEGEND_FORM_DATA, ...DEFAULT_PIE_FORM_DATA, ...formData };
   const metricLabel = getMetricLabel(metric);
 
@@ -120,12 +121,15 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     };
   });
 
-  const formatter = (params: CallbackDataParams) =>
-    formatPieLabel({
+  const formatter = (params: CallbackDataParams) => {
+    if (params.percent && params.percent < showLabelsThreshold) return '';
+
+    return formatPieLabel({
       params,
       numberFormatter,
       labelType,
     });
+  };
 
   const defaultLabel = {
     formatter,

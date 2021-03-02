@@ -72,6 +72,19 @@ const config: ControlPanelConfig = {
       expanded: true,
       controlSetRows: [
         ['color_scheme'],
+        [
+          {
+            name: 'show_labels_threshold',
+            config: {
+              type: 'TextControl',
+              label: t('Percentage threshold'),
+              renderTrigger: true,
+              isFloat: true,
+              default: 5,
+              description: t('Minimum threshold in percentage points for showing labels.'),
+            },
+          },
+        ],
         // eslint-disable-next-line react/jsx-key
         [<h1 className="section-header">{t('Legend')}</h1>],
         [showLegendControl],
