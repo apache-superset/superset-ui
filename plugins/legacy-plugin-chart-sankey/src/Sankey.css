@@ -7,3 +7,6 @@
 .dashboard .superset-legacy-chart-sankey.l text, .dashboard .superset-legacy-chart-sankey .sankey-tooltip {
     font-size: 0.8em;
 }
+.dashboard .superset-legacy-chart-sankey .opacity-0 {
+    opacity: 0;
+}

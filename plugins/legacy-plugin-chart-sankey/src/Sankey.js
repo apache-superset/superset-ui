@@ -23,6 +23,7 @@ import PropTypes from 'prop-types';
 import { sankey as d3Sankey } from 'd3-sankey';
 import { getNumberFormatter, NumberFormats, CategoricalColorNamespace } from '@superset-ui/core';
 import './Sankey.css';
+import { elementsAreOverlapping } from './utils';
 
 const propTypes = {
   data: PropTypes.arrayOf(
@@ -163,6 +164,15 @@ function Sankey(element, props) {
     link.attr('d', path);
   }
 
+  function checkVisibility() {
+    const elements = Array.from(document.getElementsByClassName('sankey-text'));
+    const areOverlapping = elementsAreOverlapping(elements);
+
+    if (!areOverlapping) {
+      elements.forEach(el => el.classList.remove('opacity-0'));
+    }
+  }
+
   const node = svg
     .append('g')
     .selectAll('.node')
@@ -202,10 +212,13 @@ function Sankey(element, props) {
     .attr('dy', '.35em')
     .attr('text-anchor', 'end')
     .attr('transform', null)
-    .text(d => (responsiveClass === 'xs' ? '' : d.name))
+    .text(d => d.name)
+    .attr('class', 'sankey-text opacity-0')
     .filter(d => d.x < innerWidth / 2)
     .attr('x', 6 + sankey.nodeWidth())
     .attr('text-anchor', 'start');
+
+  checkVisibility();
 }
 
 Sankey.displayName = 'Sankey';
