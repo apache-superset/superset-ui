@@ -89,7 +89,7 @@ export function extractGroupbyLabel({
   groupby?: string[] | null;
   numberFormatter?: NumberFormatter;
   timeFormatter?: TimeFormatter;
-  coltypes?: Array<GenericDataType>;
+  coltypes?: GenericDataType[];
 }): string {
   return (groupby || [])
     .map((val, index) =>
