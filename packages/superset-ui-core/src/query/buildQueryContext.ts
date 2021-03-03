@@ -4,21 +4,21 @@ import { QueryFieldAliases, QueryFormData } from './types/QueryFormData';
 import { QueryContext, QueryObject } from './types/Query';
 import { SetDataMaskHook } from '../chart';
 
-const WRAP_IN_ARRAY = (baseQueryObject: QueryObject, hooks?: { setDataMask: SetDataMaskHook }) => [
+const WRAP_IN_ARRAY = (baseQueryObject: QueryObject, hooks?: { setDataMask?: SetDataMaskHook }) => [
   baseQueryObject,
 ];
 
-export type BuildFinalQuerieObjects = (baseQueryObject: QueryObject) => QueryObject[];
+export type BuildFinalQueryObjects = (baseQueryObject: QueryObject) => QueryObject[];
 
 export default function buildQueryContext(
   formData: QueryFormData,
   options?:
     | {
-        buildQuery?: BuildFinalQuerieObjects;
+        buildQuery?: BuildFinalQueryObjects;
         queryFields?: QueryFieldAliases;
         hooks?: { setDataMask?: SetDataMaskHook };
       }
-    | BuildFinalQuerieObjects,
+    | BuildFinalQueryObjects,
 ): QueryContext {
   const { queryFields, buildQuery = WRAP_IN_ARRAY, hooks = {} } =
     typeof options === 'function' ? { buildQuery: options, queryFields: {} } : options || {};

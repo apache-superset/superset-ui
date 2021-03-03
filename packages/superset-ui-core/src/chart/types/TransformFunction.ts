@@ -12,7 +12,7 @@ export type PostTransformProps = TransformFunction;
 
 export type BuildQueryFunction<T extends QueryFormData> = (
   formData: T,
-  options?: { hooks?: { setDataMask?: SetDataMaskHook } },
+  options: { hooks: { setDataMask: SetDataMaskHook; [key: string]: any } },
 ) => QueryContext;
 
 export default {};
