@@ -18,24 +18,21 @@
  */
 import {
   CategoricalColorNamespace,
-  ChartProps,
-  DataRecord,
-  GenericDataType,
   getMetricLabel,
   getNumberFormatter,
   getTimeFormatter,
 } from '@superset-ui/core';
 import { EChartsOption, BoxplotSeriesOption } from 'echarts';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
-import { BoxPlotQueryFormData } from './types';
+import { BoxPlotQueryFormData, EchartsBoxPlotChartProps } from './types';
 import { EchartsProps } from '../types';
-import { extractGroupbyLabel } from '../utils/series';
+import { extractGroupbyLabel, getColtypesMapping } from '../utils/series';
 import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
 
-export default function transformProps(chartProps: ChartProps): EchartsProps {
+export default function transformProps(chartProps: EchartsBoxPlotChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
-  const data: DataRecord[] = queriesData[0].data || [];
-  const coltypes: GenericDataType[] = queriesData[0].coltypes || [];
+  const { data = [], coltypes = [], colnames = [] } = queriesData[0];
+  const coltypeMapping = getColtypesMapping({ coltypes, colnames });
   const {
     colorScheme,
     groupby = [],
@@ -53,7 +50,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       const groupbyLabel = extractGroupbyLabel({
         datum,
         groupby,
-        coltypes,
+        coltypeMapping,
         timeFormatter: getTimeFormatter(dateFormat),
       });
       return metricLabels.map(metric => {
@@ -85,7 +82,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         const groupbyLabel = extractGroupbyLabel({
           datum,
           groupby,
-          coltypes,
+          coltypeMapping,
           timeFormatter: getTimeFormatter(dateFormat),
         });
         const name = metricLabels.length === 1 ? groupbyLabel : `${groupbyLabel}, ${metric}`;

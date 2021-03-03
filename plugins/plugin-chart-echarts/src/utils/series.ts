@@ -78,25 +78,34 @@ export function formatSeriesName(
   return name;
 }
 
+export const getColtypesMapping = ({
+  coltypes = [],
+  colnames = [],
+}: {
+  coltypes: GenericDataType[];
+  colnames: string[];
+}): Record<string, number> =>
+  colnames.reduce((accumulator, item, index) => ({ ...accumulator, [item]: coltypes[index] }), {});
+
 export function extractGroupbyLabel({
   datum = {},
   groupby,
   numberFormatter,
   timeFormatter,
-  coltypes,
+  coltypeMapping = {},
 }: {
   datum?: DataRecord;
   groupby?: string[] | null;
   numberFormatter?: NumberFormatter;
   timeFormatter?: TimeFormatter;
-  coltypes?: GenericDataType[];
+  coltypeMapping: Record<string, number>;
 }): string {
   return (groupby || [])
-    .map((val, index) =>
+    .map(val =>
       formatSeriesName(datum[val], {
         numberFormatter,
         timeFormatter,
-        ...(coltypes && { coltype: coltypes[index] }),
+        ...(coltypeMapping[val] && { coltype: coltypeMapping[val] }),
       }),
     )
     .join(', ');

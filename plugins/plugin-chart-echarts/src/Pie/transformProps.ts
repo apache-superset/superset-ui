@@ -18,9 +18,6 @@
  */
 import {
   CategoricalColorNamespace,
-  ChartProps,
-  DataRecord,
-  GenericDataType,
   getMetricLabel,
   getNumberFormatter,
   getTimeFormatter,
@@ -34,8 +31,13 @@ import {
   EchartsPieFormData,
   EchartsPieLabelType,
 } from './types';
-import { DEFAULT_LEGEND_FORM_DATA, EchartsProps } from '../types';
-import { extractGroupbyLabel, getChartPadding, getLegendProps } from '../utils/series';
+import { DEFAULT_LEGEND_FORM_DATA, EchartsPieChartProps, EchartsProps } from '../types';
+import {
+  extractGroupbyLabel,
+  getChartPadding,
+  getColtypesMapping,
+  getLegendProps,
+} from '../utils/series';
 import { defaultGrid, defaultTooltip } from '../defaults';
 
 const percentFormatter = getNumberFormatter(NumberFormats.PERCENT_2_POINT);
@@ -71,10 +73,10 @@ export function formatPieLabel({
   }
 }
 
-export default function transformProps(chartProps: ChartProps): EchartsProps {
+export default function transformProps(chartProps: EchartsPieChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
-  const data: DataRecord[] = queriesData[0].data || [];
-  const coltypes: GenericDataType[] = queriesData[0].coltypes || [];
+  const { data = [], coltypes = [], colnames = [] } = queriesData[0];
+  const coltypeMapping = getColtypesMapping({ coltypes, colnames });
 
   const {
     colorScheme,
@@ -98,7 +100,12 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const metricLabel = getMetricLabel(metric);
 
   const keys = data.map(datum =>
-    extractGroupbyLabel({ datum, groupby, coltypes, timeFormatter: getTimeFormatter(dateFormat) }),
+    extractGroupbyLabel({
+      datum,
+      groupby,
+      coltypeMapping,
+      timeFormatter: getTimeFormatter(dateFormat),
+    }),
   );
 
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
@@ -108,7 +115,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     const name = extractGroupbyLabel({
       datum,
       groupby,
-      coltypes,
+      coltypeMapping,
       timeFormatter: getTimeFormatter(dateFormat),
     });
 
