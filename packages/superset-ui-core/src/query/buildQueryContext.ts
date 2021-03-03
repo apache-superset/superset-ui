@@ -4,7 +4,7 @@ import { QueryFieldAliases, QueryFormData } from './types/QueryFormData';
 import { QueryContext, QueryObject } from './types/Query';
 import { SetDataMaskHook } from '../chart';
 
-const WRAP_IN_ARRAY = (baseQueryObject: QueryObject, hooks: { setDataMask: SetDataMaskHook }) => [
+const WRAP_IN_ARRAY = (baseQueryObject: QueryObject, hooks?: { setDataMask: SetDataMaskHook }) => [
   baseQueryObject,
 ];
 
@@ -16,7 +16,7 @@ export default function buildQueryContext(
     | {
         buildQuery?: BuildFinalQuerieObjects;
         queryFields?: QueryFieldAliases;
-        hooks?: { setDataMask: SetDataMaskHook };
+        hooks?: { setDataMask?: SetDataMaskHook };
       }
     | BuildFinalQuerieObjects,
 ): QueryContext {
