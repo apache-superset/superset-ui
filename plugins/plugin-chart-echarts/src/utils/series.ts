@@ -18,6 +18,7 @@
  * under the License.
  */
 import {
+  ChartDataResponseResult,
   DataRecord,
   DataRecordValue,
   GenericDataType,
@@ -81,10 +82,7 @@ export function formatSeriesName(
 export const getColtypesMapping = ({
   coltypes = [],
   colnames = [],
-}: {
-  coltypes: GenericDataType[];
-  colnames: string[];
-}): Record<string, number> =>
+}: ChartDataResponseResult): Record<string, GenericDataType> =>
   colnames.reduce((accumulator, item, index) => ({ ...accumulator, [item]: coltypes[index] }), {});
 
 export function extractGroupbyLabel({
@@ -98,7 +96,7 @@ export function extractGroupbyLabel({
   groupby?: string[] | null;
   numberFormatter?: NumberFormatter;
   timeFormatter?: TimeFormatter;
-  coltypeMapping: Record<string, number>;
+  coltypeMapping: Record<string, GenericDataType>;
 }): string {
   return (groupby || [])
     .map(val =>
