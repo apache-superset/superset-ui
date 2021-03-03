@@ -5,7 +5,7 @@ type BuildQuery = (
   formData: any,
   {
     hooks: { setDataMask },
-  }: { hooks: { setDataMask: SetDataMaskHook; [key: string]: any } },
+  }?: { hooks: { setDataMask: SetDataMaskHook; [key: string]: any } },
 ) => QueryContext;
 
 class ChartBuildQueryRegistry extends Registry<BuildQuery> {
