@@ -18,8 +18,6 @@
  */
 import { EChartsOption } from 'echarts';
 import { TooltipMarker } from 'echarts/types/src/util/format';
-import { ChartDataResponseResult, ChartProps } from '@superset-ui/core';
-import { EchartsPieFormData } from './Pie/types';
 
 export type EchartsStylesProps = {
   height: number;
@@ -70,11 +68,6 @@ export type EchartsLegendFormData = {
   legendType: LegendType;
   showLegend: boolean;
 };
-
-export interface EchartsPieChartProps extends ChartProps {
-  rawFormData: EchartsPieFormData;
-  queriesData: ChartDataResponseResult[];
-}
 
 export const DEFAULT_LEGEND_FORM_DATA: EchartsLegendFormData = {
   legendMargin: null,

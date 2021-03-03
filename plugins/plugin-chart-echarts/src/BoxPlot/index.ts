@@ -44,6 +44,7 @@ export default class EchartsBoxPlotChartPlugin extends ChartPlugin {
         name: t('Box Plot'),
         thumbnail,
       }),
+      // @ts-ignore
       transformProps,
     });
   }

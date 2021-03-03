@@ -22,6 +22,7 @@ import {
   LegendOrientation,
   LegendType,
 } from '../types';
+import { ChartDataResponseResult, ChartProps } from '@superset-ui/core';
 
 export type EchartsPieFormData = EchartsLegendFormData & {
   colorScheme?: string;
@@ -46,6 +47,11 @@ export enum EchartsPieLabelType {
   KeyValue = 'key_value',
   KeyPercent = 'key_percent',
   KeyValuePercent = 'key_value_percent',
+}
+
+export interface EchartsPieChartProps extends ChartProps {
+  rawFormData: EchartsPieFormData;
+  queriesData: ChartDataResponseResult[];
 }
 
 export const DEFAULT_FORM_DATA: EchartsPieFormData = {

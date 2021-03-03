@@ -28,10 +28,11 @@ import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { EChartsOption, PieSeriesOption } from 'echarts';
 import {
   DEFAULT_FORM_DATA as DEFAULT_PIE_FORM_DATA,
+  EchartsPieChartProps,
   EchartsPieFormData,
   EchartsPieLabelType,
 } from './types';
-import { DEFAULT_LEGEND_FORM_DATA, EchartsPieChartProps, EchartsProps } from '../types';
+import { DEFAULT_LEGEND_FORM_DATA, EchartsProps } from '../types';
 import {
   extractGroupbyLabel,
   getChartPadding,

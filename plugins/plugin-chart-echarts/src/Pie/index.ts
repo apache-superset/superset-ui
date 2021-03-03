@@ -44,6 +44,7 @@ export default class EchartsPieChartPlugin extends ChartPlugin {
         name: t('Pie Chart'),
         thumbnail,
       }),
+      // @ts-ignore
       transformProps,
     });
   }
