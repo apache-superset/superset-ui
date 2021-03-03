@@ -4,9 +4,10 @@ import { QueryFieldAliases, QueryFormData } from './types/QueryFormData';
 import { QueryContext, QueryObject } from './types/Query';
 import { SetDataMaskHook } from '../chart';
 
-const WRAP_IN_ARRAY = (baseQueryObject: QueryObject, hooks?: { setDataMask?: SetDataMaskHook }) => [
-  baseQueryObject,
-];
+const WRAP_IN_ARRAY = (
+  baseQueryObject: QueryObject,
+  options?: { hooks?: { setDataMask?: SetDataMaskHook } },
+) => [baseQueryObject];
 
 export type BuildFinalQueryObjects = (baseQueryObject: QueryObject) => QueryObject[];
 
@@ -26,8 +27,10 @@ export default function buildQueryContext(
     datasource: new DatasourceKey(formData.datasource).toObject(),
     force: formData.force || false,
     queries: buildQuery(buildQueryObject(formData, queryFields), {
-      setDataMask: () => {},
-      ...hooks,
+      hooks: {
+        setDataMask: () => {},
+        ...hooks,
+      },
     }),
     result_format: formData.result_format || 'json',
     result_type: formData.result_type || 'full',

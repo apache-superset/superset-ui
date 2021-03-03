@@ -51,7 +51,7 @@ type Hooks = {
   setCachedChanges: (newChanges: any) => void;
 };
 
-function buildQuery(formData: TableChartFormData, hooks: Hooks) {
+function buildQuery(formData: TableChartFormData, { hooks }: { hooks: Hooks }) {
   const { percent_metrics: percentMetrics, order_desc: orderDesc = false } = formData;
   const queryMode = getQueryMode(formData);
   const sortByMetric = ensureIsArray(formData.timeseries_limit_metric)[0];
@@ -137,8 +137,9 @@ const cachedBuildQuery = () => {
   const setCachedChanges = (newChanges: any) => {
     cachedChanges = { ...cachedChanges, ...newChanges };
   };
+
   return (formData: TableChartFormData, { hooks }: { hooks: { setDataMask: SetDataMaskHook } }) =>
-    buildQuery({ ...formData }, { ...hooks, cachedChanges, setCachedChanges });
+    buildQuery({ ...formData }, { hooks: { ...hooks, cachedChanges, setCachedChanges } });
 };
 
 export default cachedBuildQuery;
