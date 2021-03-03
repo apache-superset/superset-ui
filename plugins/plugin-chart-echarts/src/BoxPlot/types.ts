@@ -18,7 +18,6 @@
  */
 import { ChartDataResponseResult, ChartProps, QueryFormData } from '@superset-ui/core';
 import { PostProcessingBoxplot } from '@superset-ui/core/lib/query/types/PostProcessing';
-import { EchartsPieFormData } from '../Pie/types';
 
 export type BoxPlotQueryFormData = QueryFormData & {
   numberFormat?: string;
@@ -35,7 +34,7 @@ export type BoxPlotFormDataWhiskerOptions =
 export type BoxPlotFormXTickLayout = '45°' | '90°' | 'auto' | 'flat' | 'staggered';
 
 export interface EchartsBoxPlotChartProps extends ChartProps {
-  rawFormData: EchartsPieFormData;
+  rawFormData: BoxPlotQueryFormData;
   queriesData: ChartDataResponseResult[];
 }
 
