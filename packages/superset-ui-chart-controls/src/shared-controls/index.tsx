@@ -35,9 +35,11 @@
  */
 import React from 'react';
 import {
+  FeatureFlag,
   t,
   getCategoricalSchemeRegistry,
   getSequentialSchemeRegistry,
+  isFeatureEnabled,
   SequentialScheme,
   legacyValidateInteger,
   validateNonEmpty,
@@ -54,6 +56,13 @@ import {
   SelectControlConfig,
 } from '../types';
 import { ColumnOption } from '../components/ColumnOption';
+import {
+  dnd_adhoc_filters,
+  dndColumnsControl,
+  dndEntity,
+  dndGroupByControl,
+  dndSeries,
+} from './dndControls';
 
 const categoricalSchemeRegistry = getCategoricalSchemeRegistry();
 const sequentialSchemeRegistry = getSequentialSchemeRegistry();
@@ -476,6 +485,8 @@ const label_colors: SharedControlConfig<'ColorMapControl'> = {
   }),
 };
 
+const enableExploreDnd = isFeatureEnabled(FeatureFlag.ENABLE_EXPLORE_DRAG_AND_DROP);
+
 const sharedControls = {
   metrics,
   metric,
@@ -485,8 +496,8 @@ const sharedControls = {
   metric_2,
   linear_color_scheme,
   secondary_metric,
-  groupby: groupByControl,
-  columns: columnsControl,
+  groupby: enableExploreDnd ? dndGroupByControl : groupByControl,
+  columns: enableExploreDnd ? dndColumnsControl : columnsControl,
   druid_time_origin,
   granularity,
   granularity_sqla,
@@ -495,14 +506,14 @@ const sharedControls = {
   row_limit,
   limit,
   timeseries_limit_metric,
-  series,
-  entity,
+  series: enableExploreDnd ? dndSeries : series,
+  entity: enableExploreDnd ? dndEntity : entity,
   x,
   y,
   size,
   y_axis_format,
   x_axis_time_format,
-  adhoc_filters,
+  adhoc_filters: enableExploreDnd ? dnd_adhoc_filters : adhoc_filters,
   color_scheme,
   label_colors,
 };

@@ -16,13 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import fetchMock from 'fetch-mock';
-import { SupersetClient } from '@superset-ui/core/src/connection';
 
-const LOGIN_GLOB = 'glob:*api/v1/security/csrf_token/*';
+import { SetDataMaskHook } from '@superset-ui/core';
 
-export default function setupClientForTest() {
-  fetchMock.get(LOGIN_GLOB, { result: '1234' });
-  SupersetClient.reset();
-  SupersetClient.configure().init();
-}
+export const updateExternalFormData = (
+  setDataMask: SetDataMaskHook,
+  pageNumber: number,
+  pageSize: number,
+) =>
+  setDataMask({
+    ownFilters: {
+      extraFormData: {
+        custom_form_data: {
+          row_offset: pageNumber * pageSize,
+          row_limit: pageSize + 1,
+        },
+      },
+      currentState: {
+        currentPage: pageNumber,
+        pageSize,
+      },
+    },
+  });
