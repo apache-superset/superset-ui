@@ -23,6 +23,7 @@ import {
   removeDuplicates,
   ensureIsArray,
   QueryObject,
+  SetDataMaskHook,
 } from '@superset-ui/core';
 import { PostProcessingRule } from '@superset-ui/core/src/query/types/PostProcessing';
 import { TableChartFormData } from './types';
@@ -44,7 +45,13 @@ export function getQueryMode(formData: TableChartFormData) {
   return hasRawColumns ? QueryMode.raw : QueryMode.aggregate;
 }
 
-function buildQuery(formData: TableChartFormData) {
+type Hooks = {
+  setDataMask: SetDataMaskHook;
+  cachedChanges: any;
+  setCachedChanges: (newChanges: any) => void;
+};
+
+function buildQuery(formData: TableChartFormData, hooks: Hooks) {
   const { percent_metrics: percentMetrics, order_desc: orderDesc = false } = formData;
   const queryMode = getQueryMode(formData);
   const sortByMetric = ensureIsArray(formData.timeseries_limit_metric)[0];
@@ -103,15 +110,15 @@ function buildQuery(formData: TableChartFormData) {
 
     if (
       formData.server_pagination &&
-      formData?.cachedChanges?.[formData.slice_id] &&
-      JSON.stringify(formData?.cachedChanges?.[formData.slice_id]) !==
+      hooks?.cachedChanges?.[formData.slice_id] &&
+      JSON.stringify(hooks?.cachedChanges?.[formData.slice_id]) !==
         JSON.stringify(queryObject.filters)
     ) {
       queryObject = { ...queryObject, row_offset: 0 };
-      updateExternalFormData(formData.setDataMask, 0, queryObject.row_limit ?? 0);
+      updateExternalFormData(hooks.setDataMask, 0, queryObject.row_limit ?? 0);
     }
     // Because we use same buildQuery for all table on the page we need split them by id
-    formData.setCachedChanges({ [formData.slice_id]: queryObject.filters });
+    hooks.setCachedChanges({ [formData.slice_id]: queryObject.filters });
 
     if (formData.server_pagination) {
       return [
@@ -127,11 +134,11 @@ function buildQuery(formData: TableChartFormData) {
 // external filter changed
 const cachedBuildQuery = () => {
   let cachedChanges: any = {};
-  const setCachedChanges = (_cachedChanges: any) => {
-    cachedChanges = { ...cachedChanges, ..._cachedChanges };
+  const setCachedChanges = (newChanges: any) => {
+    cachedChanges = { ...cachedChanges, ...newChanges };
   };
-  return (formData: TableChartFormData) =>
-    buildQuery({ ...formData, cachedChanges, setCachedChanges });
+  return (formData: TableChartFormData, { hooks }: { hooks: { setDataMask: SetDataMaskHook } }) =>
+    buildQuery({ ...formData }, { ...hooks, cachedChanges, setCachedChanges });
 };
 
 export default cachedBuildQuery;

@@ -36,13 +36,11 @@ import {
   Row,
 } from 'react-table';
 import { matchSorter, rankings } from 'match-sorter';
-import { SetDataMaskHook } from '@superset-ui/core';
 import GlobalFilter, { GlobalFilterProps } from './components/GlobalFilter';
 import SelectPageSize, { SelectPageSizeProps, SizeOption } from './components/SelectPageSize';
 import SimplePagination from './components/Pagination';
 import useSticky from './hooks/useSticky';
-import { updateExternalFormData } from './utils/externalAPIs';
-import { PAGE_SIZE_OPTIONS } from '../controlPanel';
+import { PAGE_SIZE_OPTIONS } from '../consts';
 
 export interface DataTableProps<D extends object> extends TableOptions<D> {
   tableClassName?: string;
@@ -54,8 +52,8 @@ export interface DataTableProps<D extends object> extends TableOptions<D> {
   width?: string | number;
   height?: string | number;
   serverPagination?: boolean;
-  setDataMask: SetDataMaskHook;
-  ownCurrentState: { pageSize?: number; currentPage?: number };
+  onServerPaginationChange: (pageNumber: number, pageSize: number) => void;
+  serverPaginationData: { pageSize?: number; currentPage?: number };
   pageSize?: number;
   noResults?: string | ((filterString: string) => ReactNode);
   sticky?: boolean;
@@ -72,7 +70,7 @@ export default function DataTable<D extends object>({
   tableClassName,
   columns,
   data,
-  ownCurrentState,
+  serverPaginationData,
   width: initialWidth = '100%',
   height: initialHeight = 300,
   pageSize: initialPageSize = 0,
@@ -81,7 +79,7 @@ export default function DataTable<D extends object>({
   maxPageItemCount = 9,
   sticky: doSticky,
   searchInput = true,
-  setDataMask,
+  onServerPaginationChange,
   rowCount,
   selectPageSize,
   noResults: noResultsText = 'No data found',
@@ -136,7 +134,7 @@ export default function DataTable<D extends object>({
     hasGlobalControl,
     paginationRef,
     resultsSize,
-    JSON.stringify(ownCurrentState),
+    JSON.stringify(serverPaginationData),
   ]);
 
   const defaultGlobalFilter: FilterType<D> = useCallback(
@@ -178,7 +176,7 @@ export default function DataTable<D extends object>({
   // make setPageSize accept 0
   const setPageSize = (size: number) => {
     if (serverPagination) {
-      updateExternalFormData(setDataMask, 0, size);
+      onServerPaginationChange(0, size);
     }
     // keep the original size if data is empty
     if (size || resultsSize !== 0) {
@@ -250,7 +248,7 @@ export default function DataTable<D extends object>({
   let resultCurrentPage = pageIndex;
   let resultOnPageChange: (page: number) => void = gotoPage;
   if (serverPagination) {
-    const serverPageSize = ownCurrentState.pageSize ?? initialPageSize;
+    const serverPageSize = serverPaginationData.pageSize ?? initialPageSize;
     resultPageCount = Math.ceil(rowCount / serverPageSize);
     if (!Number.isFinite(resultPageCount)) {
       resultPageCount = 0;
@@ -262,9 +260,9 @@ export default function DataTable<D extends object>({
     if (foundPageSizeIndex === -1) {
       resultCurrentPageSize = 0;
     }
-    resultCurrentPage = ownCurrentState.currentPage ?? 0;
+    resultCurrentPage = serverPaginationData.currentPage ?? 0;
     resultOnPageChange = (pageNumber: number) =>
-      updateExternalFormData(setDataMask, pageNumber, serverPageSize);
+      onServerPaginationChange(pageNumber, serverPageSize);
   }
   return (
     <div ref={wrapperRef} style={{ width: initialWidth, height: initialHeight }}>

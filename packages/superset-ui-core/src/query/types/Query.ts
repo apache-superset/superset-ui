@@ -24,7 +24,6 @@ import { AnnotationLayer } from './AnnotationLayer';
 import { QueryFields, QueryFormMetric } from './QueryFormData';
 import { Maybe } from '../../types';
 import { PostProcessingRule } from './PostProcessing';
-import { SetDataMaskHook } from '../../chart';
 
 export type QueryObjectFilterClause = {
   col: string;
@@ -135,7 +134,6 @@ export interface QueryContext {
   /** Response format */
   result_format: string;
   queries: QueryObject[];
-  setDataMask: SetDataMaskHook;
 }
 
 export default {};

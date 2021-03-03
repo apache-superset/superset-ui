@@ -74,8 +74,6 @@ export interface TableChartProps extends ChartProps {
     pageSize?: number;
     currentPage?: number;
   };
-  cachedChanges: any;
-  setCachedChanges: Function;
   rawFormData: TableChartFormData;
   queriesData: ChartDataResponseResult[];
 }
@@ -85,7 +83,7 @@ export interface TableChartTransformedProps<D extends DataRecord = DataRecord> {
   width: number;
   rowCount?: number;
   serverPagination: boolean;
-  ownCurrentState: { pageSize?: number; currentPage?: number };
+  serverPaginationData: { pageSize?: number; currentPage?: number };
   setDataMask: SetDataMaskHook;
   isRawRecords?: boolean;
   data: D[];
@@ -104,11 +102,6 @@ export interface TableChartTransformedProps<D extends DataRecord = DataRecord> {
   filters?: DataRecordFilters;
   emitFilter?: boolean;
   onChangeFilter?: ChartProps['hooks']['onAddFilter'];
-}
-
-export enum ServerPage {
-  NEXT = 'next',
-  PREVIOUS = 'previous',
 }
 
 export default {};

@@ -32,7 +32,8 @@ import DataTable, {
 
 import Styles from './Styles';
 import formatValue from './utils/formatValue';
-import { PAGE_SIZE_OPTIONS } from './controlPanel';
+import { PAGE_SIZE_OPTIONS } from './consts';
+import { updateExternalFormData } from './DataTable/utils/externalAPIs';
 
 type ValueRange = [number, number];
 
@@ -154,7 +155,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     includeSearch = false,
     pageSize = 0,
     serverPagination = false,
-    ownCurrentState,
+    serverPaginationData,
     setDataMask,
     showCellBars = true,
     emitFilter = false,
@@ -285,6 +286,10 @@ export default function TableChart<D extends DataRecord = DataRecord>(
 
   const columns = useMemo(() => columnsMeta.map(getColumnConfigs), [columnsMeta, getColumnConfigs]);
 
+  const handleServerPaginationChange = (pageNumber: number, pageSize: number) => {
+    updateExternalFormData(setDataMask, pageNumber, pageSize);
+  };
+
   return (
     <Styles>
       <DataTable<D>
@@ -293,12 +298,12 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         rowCount={rowCount}
         tableClassName="table table-striped table-condensed"
         pageSize={pageSize}
-        ownCurrentState={ownCurrentState}
+        serverPaginationData={serverPaginationData}
         pageSizeOptions={pageSizeOptions}
         width={width}
         height={height}
         serverPagination={serverPagination}
-        setDataMask={setDataMask}
+        onServerPaginationChange={handleServerPaginationChange}
         // 9 page items in > 340px works well even for 100+ pages
         maxPageItemCount={width > 340 ? 9 : 7}
         noResults={(filter: string) => t(filter ? 'No matching records found' : 'No records found')}

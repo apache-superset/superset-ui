@@ -175,7 +175,7 @@ const transformProps = (chartProps: TableChartProps): TableChartTransformedProps
     rawFormData: formData,
     queriesData,
     initialValues: filters = {},
-    ownCurrentState = {},
+    ownCurrentState: serverPaginationData = {},
     hooks: { onAddFilter: onChangeFilter, setDataMask = () => {} },
   } = chartProps;
 
@@ -205,7 +205,7 @@ const transformProps = (chartProps: TableChartProps): TableChartTransformedProps
     serverPagination,
     metrics,
     percentMetrics,
-    ownCurrentState,
+    serverPaginationData,
     setDataMask,
     alignPositiveNegative,
     colorPositiveNegative,
