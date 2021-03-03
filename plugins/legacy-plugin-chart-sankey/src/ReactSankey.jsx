@@ -44,6 +44,7 @@ export default styled(SankeyComponent)`
       text {
         pointer-events: none;
         text-shadow: 0 1px 0 #fff;
+        font-size: ${({ fontSize }) => fontSize}em;
       }
     }
     .link {
@@ -53,6 +54,9 @@ export default styled(SankeyComponent)`
       &:hover {
         stroke-opacity: 0.5;
       }
+    }
+    .opacity-0 {
+      opacity: 0;
     }
   }
   .superset-legacy-chart-sankey-tooltip {

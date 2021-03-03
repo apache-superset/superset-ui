@@ -23,6 +23,18 @@ type Rect = {
   height: number;
 };
 
+export function getLabelFontSize(width: number): number {
+  if (width > 550) {
+    return 0.8;
+  }
+
+  if (width > 400 && width <= 550) {
+    return 0.55;
+  }
+
+  return 0.45;
+}
+
 export const isOverlapping = (rect1: Rect, rect2: Rect): boolean => {
   const { x: x1, y: y1, width: width1, height: height1 } = rect1;
   const { x: x2, y: y2, width: width2, height: height2 } = rect2;

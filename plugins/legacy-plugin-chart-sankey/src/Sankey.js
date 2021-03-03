@@ -22,7 +22,6 @@ import d3 from 'd3';
 import PropTypes from 'prop-types';
 import { sankey as d3Sankey } from 'd3-sankey';
 import { getNumberFormatter, NumberFormats, CategoricalColorNamespace } from '@superset-ui/core';
-import './Sankey.css';
 import { elementsAreOverlapping } from './utils';
 
 const propTypes = {
@@ -40,27 +39,10 @@ const propTypes = {
 
 const formatNumber = getNumberFormatter(NumberFormats.FLOAT);
 
-function getResponsiveContainereClass(width) {
-  if (width > 550) {
-    return 'l';
-  }
-
-  if (width > 400 && width <= 550) {
-    return 'm';
-  }
-
-  if (width > 300 && width <= 400) {
-    return 's';
-  }
-
-  return 'xs';
-}
-
 function Sankey(element, props) {
   const { data, width, height, colorScheme } = props;
   const div = d3.select(element);
-  const responsiveClass = getResponsiveContainereClass(width);
-  div.classed(`superset-legacy-chart-sankey ${responsiveClass}`, true);
+  div.classed(`superset-legacy-chart-sankey`, true);
   const margin = {
     top: 20,
     right: 5,
