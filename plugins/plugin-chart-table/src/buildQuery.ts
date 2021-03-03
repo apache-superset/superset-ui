@@ -46,7 +46,7 @@ export function getQueryMode(formData: TableChartFormData) {
 }
 
 type Hooks = {
-  setDataMask: SetDataMaskHook;
+  setDataMask?: SetDataMaskHook;
   cachedChanges: any;
   setCachedChanges: (newChanges: any) => void;
 };
@@ -115,7 +115,7 @@ function buildQuery(formData: TableChartFormData, { hooks }: { hooks: Hooks }) {
         JSON.stringify(queryObject.filters)
     ) {
       queryObject = { ...queryObject, row_offset: 0 };
-      updateExternalFormData(hooks.setDataMask, 0, queryObject.row_limit ?? 0);
+      updateExternalFormData(hooks?.setDataMask, 0, queryObject.row_limit ?? 0);
     }
     // Because we use same buildQuery for all table on the page we need split them by id
     hooks.setCachedChanges({ [formData.slice_id]: queryObject.filters });
@@ -138,8 +138,10 @@ const cachedBuildQuery = () => {
     cachedChanges = { ...cachedChanges, ...newChanges };
   };
 
-  return (formData: TableChartFormData, { hooks }: { hooks: { setDataMask: SetDataMaskHook } }) =>
-    buildQuery({ ...formData }, { hooks: { ...hooks, cachedChanges, setCachedChanges } });
+  return (
+    formData: TableChartFormData,
+    { hooks }: { hooks?: { setDataMask?: SetDataMaskHook } } = { hooks: {} },
+  ) => buildQuery({ ...formData }, { hooks: { ...hooks, cachedChanges, setCachedChanges } });
 };
 
 export default cachedBuildQuery;
