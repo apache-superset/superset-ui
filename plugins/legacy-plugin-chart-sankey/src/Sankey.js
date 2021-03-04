@@ -146,8 +146,9 @@ function Sankey(element, props) {
     link.attr('d', path);
   }
 
-  function checkVisibility() {
-    const elements = Array.from(document.getElementsByClassName('sankey-text'));
+  function checkVisibility(container) {
+    const elements = container.selectAll('.sankey-text')[0] ?? [];
+
     const areOverlapping = elementsAreOverlapping(elements);
 
     if (!areOverlapping) {
@@ -200,7 +201,7 @@ function Sankey(element, props) {
     .attr('x', 6 + sankey.nodeWidth())
     .attr('text-anchor', 'start');
 
-  checkVisibility();
+  checkVisibility(div);
 }
 
 Sankey.displayName = 'Sankey';
