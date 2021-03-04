@@ -51,7 +51,7 @@ export enum EchartsPieLabelType {
 }
 
 export interface EchartsPieChartProps extends ChartProps {
-  rawFormData: EchartsPieFormData;
+  formData: EchartsPieFormData;
   queriesData: ChartDataResponseResult[];
 }
 

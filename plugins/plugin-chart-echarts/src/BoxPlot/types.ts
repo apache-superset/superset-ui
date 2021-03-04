@@ -34,7 +34,7 @@ export type BoxPlotFormDataWhiskerOptions =
 export type BoxPlotFormXTickLayout = '45°' | '90°' | 'auto' | 'flat' | 'staggered';
 
 export interface EchartsBoxPlotChartProps extends ChartProps {
-  rawFormData: BoxPlotQueryFormData;
+  formData: BoxPlotQueryFormData;
   queriesData: ChartDataResponseResult[];
 }
 
