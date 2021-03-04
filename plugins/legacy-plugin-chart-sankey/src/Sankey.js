@@ -22,7 +22,7 @@ import d3 from 'd3';
 import PropTypes from 'prop-types';
 import { sankey as d3Sankey } from 'd3-sankey';
 import { getNumberFormatter, NumberFormats, CategoricalColorNamespace } from '@superset-ui/core';
-import { getOverlappingElements, getRectangle } from './utils';
+import { getOverlappingElements } from './utils';
 
 const propTypes = {
   data: PropTypes.arrayOf(
