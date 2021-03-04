@@ -104,8 +104,8 @@ const buildQuery: BuildQuery<TableChartFormData> = (formData: TableChartFormData
 
     if (
       formData.server_pagination &&
-      options?.hooks?.cachedChanges?.[formData.slice_id] &&
-      JSON.stringify(options?.hooks?.cachedChanges?.[formData.slice_id]) !==
+      options?.extras?.cachedChanges?.[formData.slice_id] &&
+      JSON.stringify(options?.extras?.cachedChanges?.[formData.slice_id]) !==
         JSON.stringify(queryObject.filters)
     ) {
       queryObject = { ...queryObject, row_offset: 0 };
@@ -135,7 +135,14 @@ const cachedBuildQuery = (): BuildQuery<TableChartFormData> => {
   return (formData, options) =>
     buildQuery(
       { ...formData },
-      { hooks: { ...options?.hooks, setDataMask: () => {}, cachedChanges, setCachedChanges } },
+      {
+        extras: { cachedChanges },
+        hooks: {
+          ...options?.hooks,
+          setDataMask: () => {},
+          setCachedChanges,
+        },
+      },
     );
 };
 

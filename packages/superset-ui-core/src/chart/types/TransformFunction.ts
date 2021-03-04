@@ -13,9 +13,11 @@ export type PostTransformProps = TransformFunction;
 export type BuildQueryFunction<T extends QueryFormData> = (
   formData: T,
   options?: {
+    extras?: {
+      cachedChanges?: any;
+    };
     hooks?: {
       setDataMask: SetDataMaskHook;
-      cachedChanges?: any;
       setCachedChanges: (newChanges: any) => void;
     };
   },

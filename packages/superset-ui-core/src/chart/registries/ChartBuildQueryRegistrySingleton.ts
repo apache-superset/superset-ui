@@ -4,9 +4,11 @@ import { Registry, makeSingleton, OverwritePolicy, QueryContext, SetDataMaskHook
 export type BuildQuery<T = any> = (
   formData: T,
   options?: {
+    extras?: {
+      cachedChanges?: any;
+    };
     hooks?: {
       setDataMask: SetDataMaskHook;
-      cachedChanges?: any;
       setCachedChanges: (newChanges: any) => void;
     };
   },
