@@ -26,6 +26,7 @@ import {
   SetDataMaskHook,
 } from '@superset-ui/core';
 import { PostProcessingRule } from '@superset-ui/core/src/query/types/PostProcessing';
+import { BuildQuery } from '@superset-ui/core/src/chart/registries/ChartBuildQueryRegistrySingleton';
 import { TableChartFormData } from './types';
 import { updateExternalFormData } from './DataTable/utils/externalAPIs';
 
@@ -45,13 +46,7 @@ export function getQueryMode(formData: TableChartFormData) {
   return hasRawColumns ? QueryMode.raw : QueryMode.aggregate;
 }
 
-type Hooks = {
-  setDataMask?: SetDataMaskHook;
-  cachedChanges: any;
-  setCachedChanges: (newChanges: any) => void;
-};
-
-function buildQuery(formData: TableChartFormData, { hooks }: { hooks: Hooks }) {
+const buildQuery: BuildQuery = (formData: TableChartFormData, { hooks } = { hooks: {} }) => {
   const { percent_metrics: percentMetrics, order_desc: orderDesc = false } = formData;
   const queryMode = getQueryMode(formData);
   const sortByMetric = ensureIsArray(formData.timeseries_limit_metric)[0];
@@ -118,7 +113,7 @@ function buildQuery(formData: TableChartFormData, { hooks }: { hooks: Hooks }) {
       updateExternalFormData(hooks?.setDataMask, 0, queryObject.row_limit ?? 0);
     }
     // Because we use same buildQuery for all table on the page we need split them by id
-    hooks.setCachedChanges({ [formData.slice_id]: queryObject.filters });
+    hooks?.setCachedChanges({ [formData.slice_id]: queryObject.filters });
 
     if (formData.server_pagination) {
       return [
@@ -128,7 +123,7 @@ function buildQuery(formData: TableChartFormData, { hooks }: { hooks: Hooks }) {
     }
     return [queryObject];
   });
-}
+};
 
 // Use this closure to cache changing of external filters, if we have server pagination we need reset page to 0, after
 // external filter changed
