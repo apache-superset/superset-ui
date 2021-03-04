@@ -83,7 +83,7 @@ describe('legacy-plugin-chart-sankey/utils', () => {
 
   it('getOverlappingElements to be truthy', () => {
     const elements = createSVGs(overlapRects);
-    expect(getOverlappingElements(elements).length).toBe(1);
+    expect(getOverlappingElements(elements).length).toBe(2);
   });
 
   it('getOverlappingElements to be falsy', () => {

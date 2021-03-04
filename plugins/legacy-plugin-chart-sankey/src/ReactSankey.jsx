@@ -66,7 +66,7 @@ export default styled(SankeyComponent)`
     padding: 10px;
     font-size: ${({ fontSize }) => fontSize}em;
     font-weight: ${({ theme }) => theme.typography.weights.light};
-    color: #333;
+    color: #000;
     border: 1px solid #fff;
     text-align: center;
     pointer-events: none;

@@ -44,7 +44,7 @@ function Sankey(element, props) {
   const div = d3.select(element);
   div.classed(`superset-legacy-chart-sankey`, true);
   const margin = {
-    top: 20,
+    top: 5,
     right: 5,
     bottom: 5,
     left: 5,
@@ -116,6 +116,8 @@ function Sankey(element, props) {
       .html(() => getTooltipHtml(d))
       .transition()
       .duration(200)
+      .style('left', `${d3.event.offsetX + 10}px`)
+      .style('top', `${d3.event.offsetY + 10}px`)
       .style('position', 'absolute')
       .style('opacity', 0.95);
   }
@@ -204,7 +206,7 @@ function Sankey(element, props) {
     .attr('text-anchor', 'end')
     .attr('transform', null)
     .text(d => d.name)
-    .attr('class', 'sankey-text opacity-0')
+    .attr('class', 'opacity-0')
     .filter(d => d.x < innerWidth / 2)
     .attr('x', 6 + sankey.nodeWidth())
     .attr('text-anchor', 'start');
