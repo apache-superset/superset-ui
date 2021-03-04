@@ -6,7 +6,14 @@ import { SetDataMaskHook } from '../chart';
 
 const WRAP_IN_ARRAY = (
   baseQueryObject: QueryObject,
-  options?: { hooks?: { setDataMask?: SetDataMaskHook } },
+  options?: {
+    hooks?: {
+      [key: string]: any;
+      setDataMask: SetDataMaskHook;
+      cachedChanges?: any;
+      setCachedChanges: (newChanges: any) => void;
+    };
+  },
 ) => [baseQueryObject];
 
 export type BuildFinalQueryObjects = (baseQueryObject: QueryObject) => QueryObject[];
@@ -17,7 +24,7 @@ export default function buildQueryContext(
     | {
         buildQuery?: BuildFinalQueryObjects;
         queryFields?: QueryFieldAliases;
-        hooks?: { setDataMask?: SetDataMaskHook };
+        hooks?: { setDataMask: SetDataMaskHook };
       }
     | BuildFinalQueryObjects,
 ): QueryContext {
@@ -29,6 +36,7 @@ export default function buildQueryContext(
     queries: buildQuery(buildQueryObject(formData, queryFields), {
       hooks: {
         setDataMask: () => {},
+        setCachedChanges: () => {},
         ...hooks,
       },
     }),

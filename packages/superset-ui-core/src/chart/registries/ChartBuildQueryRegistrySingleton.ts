@@ -1,14 +1,14 @@
 import { Registry, makeSingleton, OverwritePolicy, QueryContext, SetDataMaskHook } from '../..';
 
 // Ideally this would be <T extends QueryFormData>
-export type BuildQuery = (
-  formData: any,
+export type BuildQuery<T = any> = (
+  formData: T,
   options?: {
     hooks?: {
       [key: string]: any;
-      setDataMask?: SetDataMaskHook;
+      setDataMask: SetDataMaskHook;
       cachedChanges?: any;
-      setCachedChanges?: (newChanges: any) => void;
+      setCachedChanges: (newChanges: any) => void;
     };
   },
 ) => QueryContext;

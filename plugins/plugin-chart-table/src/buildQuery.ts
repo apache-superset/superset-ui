@@ -23,7 +23,6 @@ import {
   removeDuplicates,
   ensureIsArray,
   QueryObject,
-  SetDataMaskHook,
 } from '@superset-ui/core';
 import { PostProcessingRule } from '@superset-ui/core/src/query/types/PostProcessing';
 import { BuildQuery } from '@superset-ui/core/src/chart/registries/ChartBuildQueryRegistrySingleton';
@@ -46,7 +45,7 @@ export function getQueryMode(formData: TableChartFormData) {
   return hasRawColumns ? QueryMode.raw : QueryMode.aggregate;
 }
 
-const buildQuery: BuildQuery = (formData: TableChartFormData, { hooks } = { hooks: {} }) => {
+const buildQuery: BuildQuery<TableChartFormData> = (formData: TableChartFormData, options) => {
   const { percent_metrics: percentMetrics, order_desc: orderDesc = false } = formData;
   const queryMode = getQueryMode(formData);
   const sortByMetric = ensureIsArray(formData.timeseries_limit_metric)[0];
@@ -105,15 +104,15 @@ const buildQuery: BuildQuery = (formData: TableChartFormData, { hooks } = { hook
 
     if (
       formData.server_pagination &&
-      hooks?.cachedChanges?.[formData.slice_id] &&
-      JSON.stringify(hooks?.cachedChanges?.[formData.slice_id]) !==
+      options?.hooks?.cachedChanges?.[formData.slice_id] &&
+      JSON.stringify(options?.hooks?.cachedChanges?.[formData.slice_id]) !==
         JSON.stringify(queryObject.filters)
     ) {
       queryObject = { ...queryObject, row_offset: 0 };
-      updateExternalFormData(hooks?.setDataMask, 0, queryObject.row_limit ?? 0);
+      updateExternalFormData(options?.hooks?.setDataMask, 0, queryObject.row_limit ?? 0);
     }
     // Because we use same buildQuery for all table on the page we need split them by id
-    hooks?.setCachedChanges({ [formData.slice_id]: queryObject.filters });
+    options?.hooks?.setCachedChanges({ [formData.slice_id]: queryObject.filters });
 
     if (formData.server_pagination) {
       return [
@@ -127,16 +126,17 @@ const buildQuery: BuildQuery = (formData: TableChartFormData, { hooks } = { hook
 
 // Use this closure to cache changing of external filters, if we have server pagination we need reset page to 0, after
 // external filter changed
-const cachedBuildQuery = () => {
+const cachedBuildQuery = (): BuildQuery<TableChartFormData> => {
   let cachedChanges: any = {};
   const setCachedChanges = (newChanges: any) => {
     cachedChanges = { ...cachedChanges, ...newChanges };
   };
 
-  return (
-    formData: TableChartFormData,
-    { hooks }: { hooks?: { setDataMask?: SetDataMaskHook } } = { hooks: {} },
-  ) => buildQuery({ ...formData }, { hooks: { ...hooks, cachedChanges, setCachedChanges } });
+  return (formData, options) =>
+    buildQuery(
+      { ...formData },
+      { hooks: { ...options?.hooks, setDataMask: () => {}, cachedChanges, setCachedChanges } },
+    );
 };
 
 export default cachedBuildQuery;
