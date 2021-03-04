@@ -22,7 +22,7 @@ import d3 from 'd3';
 import PropTypes from 'prop-types';
 import { sankey as d3Sankey } from 'd3-sankey';
 import { getNumberFormatter, NumberFormats, CategoricalColorNamespace } from '@superset-ui/core';
-import { getOverlappingElements } from './utils';
+import { getOverlappingElements, getRectangle } from './utils';
 
 const propTypes = {
   data: PropTypes.arrayOf(
@@ -146,13 +146,21 @@ function Sankey(element, props) {
     link.attr('d', path);
   }
 
-  function checkVisibility(container) {
-    const elements = container.selectAll('.sankey-text')[0] ?? [];
+  function checkVisibility() {
+    const elements = div.selectAll('.node')[0] ?? [];
     const overlappingElements = getOverlappingElements(elements);
 
-    elements
-      .filter(e => !overlappingElements.includes(e))
-      .forEach(el => el.classList.remove('opacity-0'));
+    elements.forEach(el => {
+      const text = el.getElementsByTagName('text')[0];
+
+      if (text) {
+        if (overlappingElements.includes(el)) {
+          text.classList.add('opacity-0');
+        } else {
+          text.classList.remove('opacity-0');
+        }
+      }
+    });
   }
 
   const node = svg
@@ -170,7 +178,8 @@ function Sankey(element, props) {
         .on('dragstart', function dragStart() {
           this.parentNode.append(this);
         })
-        .on('drag', dragmove),
+        .on('drag', dragmove)
+        .on('dragend', checkVisibility),
     );
   const minRectHeight = 5;
   node
@@ -200,7 +209,7 @@ function Sankey(element, props) {
     .attr('x', 6 + sankey.nodeWidth())
     .attr('text-anchor', 'start');
 
-  checkVisibility(div);
+  checkVisibility();
 }
 
 Sankey.displayName = 'Sankey';

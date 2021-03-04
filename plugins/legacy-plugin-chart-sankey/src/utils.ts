@@ -42,7 +42,7 @@ export const isOverlapping = (rect1: Rect, rect2: Rect): boolean => {
   return !(x1 > x2 + width2 || x1 + width1 < x2 || y1 > y2 + height2 || y1 + height1 < y2);
 };
 
-const getRectangle = (element: SVGElement, offset = 0): Rect => {
+export const getRectangle = (element: SVGElement, offset = 0): Rect => {
   const { x, y, width, height } = element.getBoundingClientRect();
 
   return {
@@ -57,13 +57,15 @@ export const getOverlappingElements = (elements: SVGElement[]): SVGElement[] => 
   const overlappingElements: SVGElement[] = [];
 
   elements.forEach((e1, index1) => {
-    const rect1: Rect = getRectangle(e1, 3);
+    const rect1: Rect = getRectangle(e1, 1);
+
     elements.forEach((e2, index2) => {
       if (index2 <= index1) return;
+      const rect2: Rect = getRectangle(e2, 1);
 
-      const rect2: Rect = getRectangle(e2, 3);
       if (isOverlapping(rect1, rect2)) {
-        overlappingElements.push(e2);
+        overlappingElements.push(elements[index2]);
+        overlappingElements.push(elements[index1]);
       }
     });
   });

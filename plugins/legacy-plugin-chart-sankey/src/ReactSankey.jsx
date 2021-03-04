@@ -59,12 +59,12 @@ export default styled(SankeyComponent)`
       opacity: 0;
     }
   }
-  .superset-legacy-chart-sankey-tooltip {
+  .sankey-tooltip {
     position: absolute;
     width: auto;
     background: #ddd;
     padding: 10px;
-    font-size: ${({ theme }) => theme.typography.sizes.s};
+    font-size: ${({ fontSize }) => fontSize}em;
     font-weight: ${({ theme }) => theme.typography.weights.light};
     color: #333;
     border: 1px solid #fff;
