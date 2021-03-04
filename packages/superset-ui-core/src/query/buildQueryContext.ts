@@ -8,7 +8,6 @@ const WRAP_IN_ARRAY = (
   baseQueryObject: QueryObject,
   options?: {
     hooks?: {
-      [key: string]: any;
       setDataMask: SetDataMaskHook;
       cachedChanges?: any;
       setCachedChanges: (newChanges: any) => void;

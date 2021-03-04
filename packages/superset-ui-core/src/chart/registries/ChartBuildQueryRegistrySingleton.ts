@@ -5,7 +5,6 @@ export type BuildQuery<T = any> = (
   formData: T,
   options?: {
     hooks?: {
-      [key: string]: any;
       setDataMask: SetDataMaskHook;
       cachedChanges?: any;
       setCachedChanges: (newChanges: any) => void;
