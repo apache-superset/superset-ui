@@ -3,7 +3,14 @@ import { Registry, makeSingleton, OverwritePolicy, QueryContext, SetDataMaskHook
 // Ideally this would be <T extends QueryFormData>
 export type BuildQuery = (
   formData: any,
-  options?: { hooks?: { [key: string]: any; setDataMask?: SetDataMaskHook } },
+  options?: {
+    hooks?: {
+      [key: string]: any;
+      setDataMask?: SetDataMaskHook;
+      cachedChanges?: any;
+      setCachedChanges?: (newChanges: any) => void;
+    };
+  },
 ) => QueryContext;
 
 class ChartBuildQueryRegistry extends Registry<BuildQuery> {
