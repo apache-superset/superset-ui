@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { elementsAreOverlapping, isOverlapping } from '../utils';
+import { getOverlappingElements, isOverlapping } from '../utils';
 
 const overlapRects = [
   {
@@ -81,13 +81,13 @@ describe('legacy-plugin-chart-sankey/utils', () => {
     expect(isOverlapping(rect1, rect2)).toBeFalsy();
   });
 
-  it('elementsAreOverlapping to be truthy', () => {
+  it('getOverlappingElements to be truthy', () => {
     const elements = createSVGs(overlapRects);
-    expect(elementsAreOverlapping(elements)).toBeTruthy();
+    expect(getOverlappingElements(elements).length).toBe(1);
   });
 
-  it('elementsAreOverlapping to be falsy', () => {
+  it('getOverlappingElements to be falsy', () => {
     const elements = createSVGs(notOverlapRects);
-    expect(elementsAreOverlapping(elements)).toBeFalsy();
+    expect(getOverlappingElements(elements).length).toBe(0);
   });
 });

@@ -53,30 +53,20 @@ const getRectangle = (element: SVGElement, offset = 0): Rect => {
   };
 };
 
-export const elementsAreOverlapping = (elements: SVGElement[]) => {
-  let areOverlapping = false;
+export const getOverlappingElements = (elements: SVGElement[]): SVGElement[] => {
+  const overlappingElements: SVGElement[] = [];
 
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < elements.length - 1; i++) {
-    const rect1: Rect = getRectangle(elements[i], 3);
+  elements.forEach((e1, index1) => {
+    const rect1: Rect = getRectangle(e1, 3);
+    elements.forEach((e2, index2) => {
+      if (index2 <= index1) return;
 
-    // eslint-disable-next-line no-plusplus
-    for (let j = i + 1; j < elements.length - 1; j++) {
-      if (!elements[j]) continue;
-
-      const rect2: Rect = getRectangle(elements[j], 3);
-      const result = isOverlapping(rect1, rect2);
-
-      if (result) {
-        areOverlapping = true;
-        break;
+      const rect2: Rect = getRectangle(e2, 3);
+      if (isOverlapping(rect1, rect2)) {
+        overlappingElements.push(e2);
       }
-    }
+    });
+  });
 
-    if (areOverlapping) {
-      break;
-    }
-  }
-
-  return areOverlapping;
+  return overlappingElements;
 };

@@ -22,7 +22,7 @@ import d3 from 'd3';
 import PropTypes from 'prop-types';
 import { sankey as d3Sankey } from 'd3-sankey';
 import { getNumberFormatter, NumberFormats, CategoricalColorNamespace } from '@superset-ui/core';
-import { elementsAreOverlapping } from './utils';
+import { getOverlappingElements } from './utils';
 
 const propTypes = {
   data: PropTypes.arrayOf(
@@ -148,12 +148,11 @@ function Sankey(element, props) {
 
   function checkVisibility(container) {
     const elements = container.selectAll('.sankey-text')[0] ?? [];
+    const overlappingElements = getOverlappingElements(elements);
 
-    const areOverlapping = elementsAreOverlapping(elements);
-
-    if (!areOverlapping) {
-      elements.forEach(el => el.classList.remove('opacity-0'));
-    }
+    elements
+      .filter(e => !overlappingElements.includes(e))
+      .forEach(el => el.classList.remove('opacity-0'));
   }
 
   const node = svg
