@@ -140,6 +140,25 @@ function Heatmap(element, props) {
         : bottomMargin;
   }
 
+  // Check if x axis "x" position is outside of the container and rotate labels 90deg
+  function checkLabelPosition(container) {
+    const xAxisNode = container.select('.x.axis').node();
+
+    if (!xAxisNode) {
+      return;
+    }
+
+    if (xAxisNode.getBoundingClientRect().x + 4 < container.node().getBoundingClientRect().x) {
+      container
+        .selectAll('.x.axis')
+        .selectAll('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('x', -6)
+        .attr('y', 0)
+        .attr('dy', '0.3em');
+    }
+  }
+
   function ordScale(k, rangeBands, sortMethod) {
     let domain = {};
     const actualKeys = {}; // hack to preserve type of keys when number
@@ -187,7 +206,7 @@ function Heatmap(element, props) {
   }
 
   // Hide X Labels
-  if (hmHeight < DEFAULT_PROPERTIES.minChartHeight) {
+  if (hmHeight < DEFAULT_PROPERTIES.minChartHeight || hmWidth < DEFAULT_PROPERTIES.minChartWidth) {
     margin.bottom = bottomMargin === 'auto' ? DEFAULT_PROPERTIES.marginBottom : bottomMargin;
     hmHeight = height - (margin.bottom + margin.top);
     showX = false;
@@ -232,6 +251,7 @@ function Heatmap(element, props) {
     .append('svg')
     .attr('width', width)
     .attr('height', height)
+    .attr('class', 'heatmap-container')
     .style('position', 'relative');
 
   if (showValues) {
@@ -351,6 +371,7 @@ function Heatmap(element, props) {
       .call(yAxis);
   }
 
+  checkLabelPosition(container);
   const context = canvas.node().getContext('2d');
   context.imageSmoothingEnabled = false;
 
