@@ -63,6 +63,15 @@ function cmp(a, b) {
   return a > b ? 1 : -1;
 }
 
+const DEFAULT_PROPERTIES = {
+  minChartWidth: 80,
+  minChartHeight: 80,
+  marginLeft: 35,
+  marginBottom: 35,
+  marginTop: 10,
+  marginRight: 10,
+};
+
 // Inspired from http://bl.ocks.org/mbostock/3074470
 // https://jsfiddle.net/cyril123/h0reyumq/
 function Heatmap(element, props) {
@@ -97,12 +106,16 @@ function Heatmap(element, props) {
     bottom: 35,
     left: 35,
   };
+
+  let showY = true;
+  let showX = true;
+  const pixelsPerCharX = 4.5; // approx, depends on font size
+  const pixelsPerCharY = 6; // approx, depends on font size
+
   const valueFormatter = getNumberFormatter(numberFormat);
 
   // Dynamically adjusts  based on max x / y category lengths
   function adjustMargins() {
-    const pixelsPerCharX = 4.5; // approx, depends on font size
-    const pixelsPerCharY = 6; // approx, depends on font size
     let longestX = 1;
     let longestY = 1;
 
@@ -163,8 +176,23 @@ function Heatmap(element, props) {
 
   adjustMargins();
 
-  const hmWidth = width - (margin.left + margin.right);
-  const hmHeight = height - (margin.bottom + margin.top);
+  let hmWidth = width - (margin.left + margin.right);
+  let hmHeight = height - (margin.bottom + margin.top);
+
+  // Hide Y Labels
+  if (hmWidth < DEFAULT_PROPERTIES.minChartWidth) {
+    margin.left = leftMargin === 'auto' ? DEFAULT_PROPERTIES.marginLeft : leftMargin;
+    hmWidth = width - (margin.left + margin.right);
+    showY = false;
+  }
+
+  // Hide X Labels
+  if (hmHeight < DEFAULT_PROPERTIES.minChartHeight) {
+    margin.bottom = bottomMargin === 'auto' ? DEFAULT_PROPERTIES.marginBottom : bottomMargin;
+    hmHeight = height - (margin.bottom + margin.top);
+    showX = false;
+  }
+
   const fp = getNumberFormatter(NumberFormats.PERCENT);
 
   const xScale = ordScale('x', null, sortXAxis);
@@ -287,37 +315,41 @@ function Heatmap(element, props) {
 
   rect.call(tip);
 
-  const xAxis = d3.svg
-    .axis()
-    .scale(xRbScale)
-    .outerTickSize(0)
-    .tickValues(xRbScale.domain().filter((d, i) => !(i % xScaleInterval)))
-    .orient('bottom');
+  if (showX) {
+    const xAxis = d3.svg
+      .axis()
+      .scale(xRbScale)
+      .outerTickSize(0)
+      .tickValues(xRbScale.domain().filter((d, i) => !(i % xScaleInterval)))
+      .orient('bottom');
 
-  const yAxis = d3.svg
-    .axis()
-    .scale(yRbScale)
-    .outerTickSize(0)
-    .tickValues(yRbScale.domain().filter((d, i) => !(i % yScaleInterval)))
-    .orient('left');
+    svg
+      .append('g')
+      .attr('class', 'x axis')
+      .attr('transform', `translate(${margin.left},${margin.top + hmHeight})`)
+      .call(xAxis)
+      .selectAll('text')
+      .attr('x', -4)
+      .attr('y', 10)
+      .attr('dy', '0.3em')
+      .style('text-anchor', 'end')
+      .attr('transform', 'rotate(-45)');
+  }
 
-  svg
-    .append('g')
-    .attr('class', 'x axis')
-    .attr('transform', `translate(${margin.left},${margin.top + hmHeight})`)
-    .call(xAxis)
-    .selectAll('text')
-    .attr('x', -4)
-    .attr('y', 10)
-    .attr('dy', '0.3em')
-    .style('text-anchor', 'end')
-    .attr('transform', 'rotate(-45)');
+  if (showY) {
+    const yAxis = d3.svg
+      .axis()
+      .scale(yRbScale)
+      .outerTickSize(0)
+      .tickValues(yRbScale.domain().filter((d, i) => !(i % yScaleInterval)))
+      .orient('left');
 
-  svg
-    .append('g')
-    .attr('class', 'y axis')
-    .attr('transform', `translate(${margin.left},${margin.top})`)
-    .call(yAxis);
+    svg
+      .append('g')
+      .attr('class', 'y axis')
+      .attr('transform', `translate(${margin.left},${margin.top})`)
+      .call(yAxis);
+  }
 
   const context = canvas.node().getContext('2d');
   context.imageSmoothingEnabled = false;
