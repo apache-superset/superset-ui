@@ -16,16 +16,53 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export { default as EchartsBoxPlotChartPlugin } from './BoxPlot';
-export { default as EchartsTimeseriesChartPlugin } from './Timeseries';
-export { default as EchartsPieChartPlugin } from './Pie';
-export { default as EchartsGraphChartPlugin } from './Graph';
-export { default as EchartsGaugeChartPlugin } from './Gauge';
+import { GaugeSeriesOption } from 'echarts';
 
-/**
- * Note: this file exports the default export from EchartsTimeseries.tsx.
- * If you want to export multiple visualization modules, you will need to
- * either add additional plugin folders (similar in structure to ./plugin)
- * OR export multiple instances of `ChartPlugin` extensions in ./plugin/index.ts
- * which in turn load exports from EchartsTimeseries.tsx
- */
+export const DEFAULT_GAUGE_SERIES_OPTION: GaugeSeriesOption = {
+  splitLine: {
+    lineStyle: {
+      color: '#63677A',
+    },
+  },
+  axisLine: {
+    lineStyle: {
+      color: [[1, '#E6EBF8']],
+    },
+  },
+  axisLabel: {
+    color: '#464646',
+  },
+  axisTick: {
+    lineStyle: {
+      width: 2,
+      color: '#63677A',
+    },
+  },
+  detail: {
+    color: 'auto',
+  },
+};
+
+export const INTERVAL_GAUGE_SERIES_OPTION: GaugeSeriesOption = {
+  splitLine: {
+    lineStyle: {
+      color: 'auto',
+    },
+  },
+  axisTick: {
+    lineStyle: {
+      color: 'auto',
+    },
+  },
+  axisLabel: {
+    color: 'auto',
+  },
+  pointer: {
+    itemStyle: {
+      color: 'auto',
+    },
+  },
+};
+
+export const TICKS_DISTANCE_FROM_LINE = 10;
+export const TITLE_OFFSET_FROM_CENTER = 20;
