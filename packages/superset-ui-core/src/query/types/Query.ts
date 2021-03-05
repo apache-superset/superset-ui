@@ -76,6 +76,9 @@ export interface QueryObject extends QueryFields, TimeRange, ResidualQueryObject
   /** Time filters that have been applied to the query object */
   applied_time_extras?: AppliedTimeExtras;
 
+  /** add fetch value predicate to query if defined in datasource */
+  apply_fetch_values_predicate?: boolean;
+
   /**
    * Extra form data. Current stores information about time granularity, may be
    * cleaned up in the future.

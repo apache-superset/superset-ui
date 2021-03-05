@@ -1,7 +1,11 @@
 /* eslint-disable camelcase */
-import { isDruidFormData, QueryFormData } from './types/QueryFormData';
-import { QueryObject } from './types/Query';
-import { AppliedTimeExtras, TimeColumnConfigKey } from './types/Time';
+import {
+  AppliedTimeExtras,
+  isDruidFormData,
+  QueryFormData,
+  QueryObject,
+  TimeColumnConfigKey,
+} from './types';
 
 export default function extractExtras(formData: QueryFormData): Partial<QueryObject> {
   const applied_time_extras: AppliedTimeExtras = {};

@@ -44,17 +44,19 @@ export default function buildQueryObject<T extends QueryFormData>(
 
   const extras = extractExtras(formData);
   // collect all filters for conversion to simple filters/freeform clauses
+  const { filters: extraFilters = [] } = extras;
+  const { adhoc_filters: appendAdhocFilters = [], filters: appendFilters = [] } = append_form_data;
   const filterFormData: {
     filters: QueryObjectFilterClause[];
     adhoc_filters: AdhocFilter[];
   } = {
-    filters: [...(formData.filters || []), ...(append_form_data.filters || [])],
-    adhoc_filters: [...(formData.adhoc_filters || []), ...(append_form_data.adhoc_filters || [])],
+    filters: [...extraFilters, ...appendFilters],
+    adhoc_filters: [...(formData.adhoc_filters || []), ...appendAdhocFilters],
   };
   const extrasAndfilters = processFilters({
     ...formData,
-    ...filterFormData,
     ...extras,
+    ...filterFormData,
   });
 
   let queryObject: QueryObject = {
@@ -80,5 +82,6 @@ export default function buildQueryObject<T extends QueryFormData>(
   };
   // override extra form data used by native and cross filters
   queryObject = overrideExtraFormData(queryObject, override_form_data);
+
   return { ...queryObject, custom_form_data };
 }
