@@ -32,12 +32,16 @@ const noopControl = { name: 'noop', config: { type: '', renderTrigger: true } };
 const requiredEntity = {
   ...sharedControls.entity,
   clearable: false,
+  // do not export private name 'filterOption'
+  filterOption: sharedControls.entity,
 };
 
 const optionalEntity = {
   ...sharedControls.entity,
   clearable: true,
   validators: [],
+  // do not export private name 'filterOption'
+  filterOption: sharedControls.entity,
 };
 
 export default {
