@@ -46,11 +46,11 @@ export const basic = ({ width, height }) => (
   />
 );
 
-export const withNullData = () => (
+export const withNullData = ({ width, height }) => (
   <SuperChart
     chartType="heatmap"
-    width={400}
-    height={400}
+    width={width}
+    height={height}
     formData={{
       allColumnsX: 'source',
       allColumnsY: 'target',
