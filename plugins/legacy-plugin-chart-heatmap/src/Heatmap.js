@@ -64,8 +64,8 @@ function cmp(a, b) {
 }
 
 const DEFAULT_PROPERTIES = {
-  minChartWidth: 80,
-  minChartHeight: 80,
+  minChartWidth: 150,
+  minChartHeight: 150,
   marginLeft: 35,
   marginBottom: 35,
   marginTop: 10,
@@ -197,19 +197,30 @@ function Heatmap(element, props) {
 
   let hmWidth = width - (margin.left + margin.right);
   let hmHeight = height - (margin.bottom + margin.top);
-
-  // Hide Y Labels
-  if (hmWidth < DEFAULT_PROPERTIES.minChartWidth) {
+  const hideYLabel = () => {
     margin.left = leftMargin === 'auto' ? DEFAULT_PROPERTIES.marginLeft : leftMargin;
     hmWidth = width - (margin.left + margin.right);
     showY = false;
+  };
+
+  const hideXLabel = () => {
+    margin.bottom = bottomMargin === 'auto' ? DEFAULT_PROPERTIES.marginBottom : bottomMargin;
+    hmHeight = height - (margin.bottom + margin.top);
+    showX = false;
+  };
+
+  // Hide Y Labels
+  if (hmWidth < DEFAULT_PROPERTIES.minChartWidth) {
+    hideYLabel();
   }
 
   // Hide X Labels
   if (hmHeight < DEFAULT_PROPERTIES.minChartHeight || hmWidth < DEFAULT_PROPERTIES.minChartWidth) {
-    margin.bottom = bottomMargin === 'auto' ? DEFAULT_PROPERTIES.marginBottom : bottomMargin;
-    hmHeight = height - (margin.bottom + margin.top);
-    showX = false;
+    hideXLabel();
+  }
+
+  if (showY && hmHeight < DEFAULT_PROPERTIES.minChartHeight) {
+    hideYLabel();
   }
 
   const fp = getNumberFormatter(NumberFormats.PERCENT);

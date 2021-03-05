@@ -2,18 +2,20 @@ import React from 'react';
 import { SuperChart } from '@superset-ui/core';
 import HeatmapChartPlugin from '@superset-ui/legacy-plugin-chart-heatmap';
 import data from './data';
+import { withResizableChartDemo } from '../../../shared/components/ResizableChartDemo';
 
 new HeatmapChartPlugin().configure({ key: 'heatmap' }).register();
 
 export default {
   title: 'Legacy Chart Plugins|legacy-plugin-chart-heatmap',
+  decorators: [withResizableChartDemo],
 };
 
-export const basic = () => (
+export const basic = ({ width, height }) => (
   <SuperChart
     chartType="heatmap"
-    width={400}
-    height={400}
+    width={width}
+    height={height}
     formData={{
       allColumnsX: 'source',
       allColumnsY: 'target',
