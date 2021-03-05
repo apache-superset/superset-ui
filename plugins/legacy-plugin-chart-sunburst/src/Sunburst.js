@@ -131,7 +131,7 @@ function buildHierarchy(rows) {
   return root;
 }
 
-function getResponsiveContainereClass(width) {
+function getResponsiveContainerClass(width) {
   if (width > 500) {
     return 'l';
   }
@@ -159,7 +159,7 @@ function getYOffset(width) {
 function Sunburst(element, props) {
   const container = d3.select(element);
   const { data, width, height, colorScheme, linearColorScheme, metrics, numberFormat } = props;
-  const responsiveClass = getResponsiveContainereClass(width);
+  const responsiveClass = getResponsiveContainerClass(width);
   const isSmallWidth = responsiveClass === 's';
   container.attr('class', `superset-legacy-chart-sunburst ${responsiveClass}`);
   // vars with shared scope within this function
