@@ -38,7 +38,10 @@ export type SharedControlComponents = typeof sharedControlComponents;
 /** ----------------------------------------------
  * Input data/props while rendering
  * ---------------------------------------------*/
-export type ColumnMeta = Column & AnyDict;
+export type ColumnMeta = Omit<Column, 'id' | 'type'> & {
+  id?: number;
+  type?: string;
+} & AnyDict;
 
 export interface DatasourceMeta {
   id: number;

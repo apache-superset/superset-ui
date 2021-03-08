@@ -29,7 +29,9 @@ export interface AdhocMetricBase {
 
 export interface AdhocMetricSimple extends AdhocMetricBase {
   expressionType: 'SIMPLE';
-  column: Column;
+  column: Column & {
+    columnName?: string;
+  };
   aggregate: Aggregate;
 }
 
