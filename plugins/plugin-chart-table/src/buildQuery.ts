@@ -126,7 +126,7 @@ const buildQuery: BuildQuery<TableChartFormData> = (formData: TableChartFormData
 
 // Use this closure to cache changing of external filters, if we have server pagination we need reset page to 0, after
 // external filter changed
-const cachedBuildQuery = (): BuildQuery<TableChartFormData> => {
+export const cachedBuildQuery = (): BuildQuery<TableChartFormData> => {
   let cachedChanges: any = {};
   const setCachedChanges = (newChanges: any) => {
     cachedChanges = { ...cachedChanges, ...newChanges };
@@ -146,4 +146,4 @@ const cachedBuildQuery = (): BuildQuery<TableChartFormData> => {
     );
 };
 
-export default cachedBuildQuery;
+export default cachedBuildQuery();
