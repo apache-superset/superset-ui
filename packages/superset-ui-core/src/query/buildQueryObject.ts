@@ -42,9 +42,9 @@ export default function buildQueryObject<T extends QueryFormData>(
   const numericRowOffset = Number(row_offset);
   const { metrics, columns, orderby } = extractQueryFields(residualFormData, queryFields);
 
-  const extras = extractExtras(formData);
   // collect all filters for conversion to simple filters/freeform clauses
-  const { filters: extraFilters = [] } = extras;
+  const extras = extractExtras(formData);
+  const { filters: extraFilters } = extras;
   const { adhoc_filters: appendAdhocFilters = [], filters: appendFilters = [] } = append_form_data;
   const filterFormData: {
     filters: QueryObjectFilterClause[];

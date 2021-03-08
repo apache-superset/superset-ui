@@ -63,7 +63,7 @@ describe('buildQueryObject', () => {
       datasource: '5__table',
       granularity_sqla: 'ds',
       viz_type: 'table',
-      filters: [{ col: 'abc', op: '==', val: 'qwerty' }],
+      extra_filters: [{ col: 'abc', op: '==', val: 'qwerty' }],
       adhoc_filters: [
         {
           expressionType: 'SIMPLE',
