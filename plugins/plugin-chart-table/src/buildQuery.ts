@@ -73,7 +73,7 @@ const buildQuery: BuildQuery<TableChartFormData> = (formData: TableChartFormData
       }
       // add postprocessing for percent metrics only when in aggregation mode
       if (percentMetrics && percentMetrics.length > 0) {
-        const percentMetricLabels = percentMetrics.map(getMetricLabel);
+        const percentMetricLabels = removeDuplicates(percentMetrics.map(getMetricLabel));
         metrics = removeDuplicates(metrics.concat(percentMetrics), getMetricLabel);
         postProcessing = [
           {
