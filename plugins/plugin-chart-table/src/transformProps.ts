@@ -24,6 +24,7 @@ import {
   getNumberFormatter,
   getTimeFormatter,
   getTimeFormatterForGranularity,
+  LOCAL_PREFIX,
   NumberFormats,
   QueryMode,
   smartDateFormatter,
@@ -116,7 +117,7 @@ const processColumns = memoizeOne(function processColumns(props: TableChartProps
             formatter = getTimeFormatterForGranularity(granularity);
           } else if (format) {
             // other columns respect the column-specific format
-            formatter = getTimeFormatter(format);
+            formatter = getTimeFormatter(LOCAL_PREFIX + format);
           } else if (isNumeric(key, records)) {
             // if column is numeric values, it is considered a timestamp64
             formatter = getTimeFormatter(DATABASE_DATETIME);
@@ -125,7 +126,7 @@ const processColumns = memoizeOne(function processColumns(props: TableChartProps
             formatter = String;
           }
         } else if (timeFormat) {
-          formatter = getTimeFormatter(timeFormat);
+          formatter = getTimeFormatter(LOCAL_PREFIX + timeFormat);
         }
       } else if (isMetric) {
         formatter = getNumberFormatter(format);
