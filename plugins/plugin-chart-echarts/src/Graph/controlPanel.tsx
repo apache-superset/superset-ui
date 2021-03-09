@@ -18,8 +18,8 @@
  */
 import React from 'react';
 import { t } from '@superset-ui/core';
-import { sections, sharedControls } from '@superset-ui/chart-controls';
-import { DEFAULT_FORM_DATA, EchartsGraphFormData } from './types';
+import { ControlPanelConfig, sections, sharedControls } from '@superset-ui/chart-controls';
+import { DEFAULT_FORM_DATA } from './types';
 import {
   legendMarginControl,
   legendOrientationControl,
@@ -32,19 +32,15 @@ const noopControl = { name: 'noop', config: { type: '', renderTrigger: true } };
 const requiredEntity = {
   ...sharedControls.entity,
   clearable: false,
-  // do not export private name 'filterOption'
-  filterOption: sharedControls.entity,
 };
 
 const optionalEntity = {
   ...sharedControls.entity,
   clearable: true,
   validators: [],
-  // do not export private name 'filterOption'
-  filterOption: sharedControls.entity,
 };
 
-export default {
+const controlPanel: ControlPanelConfig = {
   controlPanelSections: [
     sections.legacyRegularTime,
     {
@@ -140,7 +136,7 @@ export default {
               renderTrigger: true,
               default: DEFAULT_FORM_DATA.draggable,
               description: t('Whether to enable node dragging in force layout mode.'),
-              visibility({ form_data: { layout } }: { form_data: EchartsGraphFormData }) {
+              visibility({ form_data: { layout } }) {
                 return layout === 'force' || (!layout && DEFAULT_FORM_DATA.layout === 'force');
               },
             },
@@ -206,7 +202,7 @@ export default {
               step: 50,
               default: DEFAULT_FORM_DATA.edgeLength,
               description: t('Edge length between nodes'),
-              visibility({ form_data: { layout } }: { form_data: EchartsGraphFormData }) {
+              visibility({ form_data: { layout } }) {
                 return layout === 'force' || (!layout && DEFAULT_FORM_DATA.layout === 'force');
               },
             },
@@ -224,7 +220,7 @@ export default {
               step: 0.1,
               default: DEFAULT_FORM_DATA.gravity,
               description: t('Strength to pull the graph toward center'),
-              visibility({ form_data: { layout } }: { form_data: EchartsGraphFormData }) {
+              visibility({ form_data: { layout } }) {
                 return layout === 'force' || (!layout && DEFAULT_FORM_DATA.layout === 'force');
               },
             },
@@ -242,7 +238,7 @@ export default {
               step: 50,
               default: DEFAULT_FORM_DATA.repulsion,
               description: t('Repulsion strength between nodes'),
-              visibility({ form_data: { layout } }: { form_data: EchartsGraphFormData }) {
+              visibility({ form_data: { layout } }) {
                 return layout === 'force' || (!layout && DEFAULT_FORM_DATA.layout === 'force');
               },
             },
@@ -260,7 +256,7 @@ export default {
               step: 0.1,
               default: DEFAULT_FORM_DATA.friction,
               description: t('Friction between nodes'),
-              visibility({ form_data: { layout } }: { form_data: EchartsGraphFormData }) {
+              visibility({ form_data: { layout } }) {
                 return layout === 'force' || (!layout && DEFAULT_FORM_DATA.layout === 'force');
               },
             },
@@ -270,3 +266,5 @@ export default {
     },
   ],
 };
+
+export default controlPanel;
