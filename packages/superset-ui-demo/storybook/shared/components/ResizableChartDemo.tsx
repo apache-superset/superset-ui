@@ -26,7 +26,7 @@ export default function ResizableChartDemo({
   const [size, setSize] = useState(initialSize);
   return (
     <SupersetBody>
-      <ResizablePanel initialSize={initialSize} onResize={(e, data) => setSize(data.size)}>
+      <ResizablePanel initialSize={initialSize} onResizeStop={(e, data) => setSize(data.size)}>
         {children({ width: size.width - panelPadding, height: size.height - panelPadding })}
       </ResizablePanel>
     </SupersetBody>

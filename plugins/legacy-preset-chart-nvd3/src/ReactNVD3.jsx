@@ -54,6 +54,11 @@ export default styled(NVD3)`
     }
   }
   .superset-legacy-chart-nvd3 {
+    svg {
+      &.nvd3-svg {
+        overflow: visible;
+      }
+    }
     nv-x text {
       font-size: ${({ theme }) => theme.typography.sizes.m};
     }
