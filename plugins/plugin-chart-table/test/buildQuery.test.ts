@@ -77,7 +77,7 @@ describe('plugin-chart-table', () => {
         columns: ['rawcol'],
         percent_metrics: ['ccc'],
       }).queries[0];
-      expect(query.metrics).toEqual([]);
+      expect(query.metrics).toBeUndefined();
       expect(query.columns).toEqual(['rawcol']);
       expect(query.post_processing).toEqual([]);
     });
