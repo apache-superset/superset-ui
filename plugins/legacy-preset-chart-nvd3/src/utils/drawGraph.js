@@ -370,6 +370,10 @@ export function drawGraph(element, props, onComplete) {
         chart = nv.models.stackedAreaChart();
         chart.showControls(showControls);
         chart.style(areaStackedStyle);
+        if (showLegend) {
+          const margins = chart.margin();
+          chart.margin({ ...margins, top: margins.top + 50 });
+        }
         chart.xScale(d3.time.scale.utc());
         break;
 

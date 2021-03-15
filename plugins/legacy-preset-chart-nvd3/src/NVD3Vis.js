@@ -152,12 +152,14 @@ const propTypes = {
 function nvd3Vis(element, props) {
   const onComplete = d3Element => {
     const xTicks = d3Element.select('.nv-x.nv-axis').selectAll('.tick');
-    const overlapLabels = getOverlappingElements(xTicks[0] ?? [], 0, 0);
-
+    const overlapLabels = getOverlappingElements(xTicks[0] ?? [], 10, 0);
     const isLegendOverlap = () => {
       const legend = d3Element.select('.nv-legend')[0][0] ?? null;
       const focus = d3Element.select('.nv-axis.nvd3-svg')[0][0] ?? null;
       const el = [legend, focus].filter(data => data);
+      if (el.length !== 2) {
+        return true;
+      }
       const overlapLegend = getOverlappingElements(el, 0, 0);
 
       return overlapLegend.length > 0;
