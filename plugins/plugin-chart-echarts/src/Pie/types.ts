@@ -16,7 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartDataResponseResult, ChartProps, QueryFormData } from '@superset-ui/core';
+import { EChartsOption } from 'echarts';
+import {
+  ChartDataResponseResult,
+  ChartProps,
+  DataRecordValue,
+  QueryFormData,
+  SetDataMaskHook,
+} from '@superset-ui/core';
 import {
   DEFAULT_LEGEND_FORM_DATA,
   EchartsLegendFormData,
@@ -72,3 +79,12 @@ export const DEFAULT_FORM_DATA: EchartsPieFormData = {
   showLabelsThreshold: 5,
   dateFormat: 'smart_date',
 };
+
+export interface PieChartTransformedProps {
+  height: number;
+  width: number;
+  echartOptions: EChartsOption;
+  setDataMask: SetDataMaskHook;
+  labelMap: Record<string, DataRecordValue[]>;
+  groupby: string[];
+}

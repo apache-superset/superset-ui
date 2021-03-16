@@ -18,6 +18,7 @@
  */
 import {
   CategoricalColorNamespace,
+  DataRecordValue,
   getMetricLabel,
   getNumberFormatter,
   getTimeFormatter,
@@ -31,8 +32,9 @@ import {
   EchartsPieChartProps,
   EchartsPieFormData,
   EchartsPieLabelType,
+  PieChartTransformedProps,
 } from './types';
-import { DEFAULT_LEGEND_FORM_DATA, EchartsProps } from '../types';
+import { DEFAULT_LEGEND_FORM_DATA } from '../types';
 import {
   extractGroupbyLabel,
   getChartPadding,
@@ -74,8 +76,8 @@ export function formatPieLabel({
   }
 }
 
-export default function transformProps(chartProps: EchartsPieChartProps): EchartsProps {
-  const { width, height, formData, queriesData } = chartProps;
+export default function transformProps(chartProps: EchartsPieChartProps): PieChartTransformedProps {
+  const { formData, height, hooks, queriesData, width } = chartProps;
   const { data = [] } = queriesData[0];
   const coltypeMapping = getColtypesMapping(queriesData[0]);
 
@@ -108,6 +110,20 @@ export default function transformProps(chartProps: EchartsPieChartProps): Echart
       timeFormatter: getTimeFormatter(dateFormat),
     }),
   );
+  const labelMap = data.reduce((acc: Record<string, DataRecordValue[]>, datum) => {
+    const label = extractGroupbyLabel({
+      datum,
+      groupby,
+      coltypeMapping,
+      timeFormatter: getTimeFormatter(dateFormat),
+    });
+    return {
+      ...acc,
+      [label]: groupby.map(col => datum[col]),
+    };
+  }, {});
+
+  const { setDataMask = () => {} } = hooks;
 
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const numberFormatter = getNumberFormatter(numberFormat);
@@ -201,5 +217,8 @@ export default function transformProps(chartProps: EchartsPieChartProps): Echart
     width,
     height,
     echartOptions,
+    setDataMask,
+    labelMap,
+    groupby,
   };
 }

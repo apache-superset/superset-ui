@@ -26,17 +26,21 @@ const Styles = styled.div<EchartsStylesProps>`
   width: ${({ width }) => width};
 `;
 
-export default function Echart({ width, height, echartOptions }: EchartsProps) {
+export default function Echart({ width, height, echartOptions, eventHandlers }: EchartsProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ECharts>();
 
   useEffect(() => {
     if (!divRef.current) return;
     if (!chartRef.current) {
-      chartRef.current = init(divRef.current);
+      const chart = init(divRef.current);
+      chartRef.current = chart;
+      Object.entries(eventHandlers || {}).forEach(([name, handler]) => {
+        chart.on(name, handler);
+      });
     }
     chartRef.current.setOption(echartOptions, true);
-  }, [echartOptions]);
+  }, [echartOptions, eventHandlers]);
 
   useEffect(() => {
     if (chartRef.current) {

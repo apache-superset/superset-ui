@@ -17,9 +17,52 @@
  * under the License.
  */
 import React from 'react';
-import { EchartsProps } from '../types';
+import { PieChartTransformedProps } from './types';
 import Echart from '../components/Echart';
+import { EventHandlers } from '../types';
 
-export default function EchartsPie({ height, width, echartOptions }: EchartsProps) {
-  return <Echart height={height} width={width} echartOptions={echartOptions} />;
+export default function EchartsPie({
+  height,
+  width,
+  echartOptions,
+  setDataMask,
+  labelMap,
+  groupby,
+}: PieChartTransformedProps) {
+  const eventHandlers: EventHandlers = {
+    click: props => {
+      const { name } = props;
+      setDataMask({
+        crossFilters: {
+          extraFormData: {
+            append_form_data: {
+              filters: groupby.map((col, idx) => {
+                const val = labelMap[name][idx];
+                if (val === null || val === undefined)
+                  return {
+                    col,
+                    op: 'IS NULL',
+                  };
+                return {
+                  col,
+                  op: '==',
+                  val: val as string | number | boolean,
+                };
+              }),
+            },
+          },
+          currentState: name,
+        },
+      });
+    },
+  };
+
+  return (
+    <Echart
+      height={height}
+      width={width}
+      echartOptions={echartOptions}
+      eventHandlers={eventHandlers}
+    />
+  );
 }
