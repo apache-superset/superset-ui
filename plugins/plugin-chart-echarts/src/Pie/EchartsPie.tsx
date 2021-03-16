@@ -25,38 +25,41 @@ export default function EchartsPie({
   height,
   width,
   echartOptions,
+  emitFilter,
   setDataMask,
   labelMap,
   groupby,
 }: PieChartTransformedProps) {
-  const eventHandlers: EventHandlers = {
-    click: props => {
-      const { name } = props;
-      setDataMask({
-        crossFilters: {
-          extraFormData: {
-            append_form_data: {
-              filters: groupby.map((col, idx) => {
-                const val = labelMap[name][idx];
-                if (val === null || val === undefined)
-                  return {
-                    col,
-                    op: 'IS NULL',
-                  };
-                return {
-                  col,
-                  op: '==',
-                  val: val as string | number | boolean,
-                };
-              }),
+  const eventHandlers: EventHandlers = emitFilter
+    ? {
+        click: props => {
+          const { name } = props;
+          setDataMask({
+            crossFilters: {
+              extraFormData: {
+                append_form_data: {
+                  filters: groupby.map((col, idx) => {
+                    const val = labelMap[name][idx];
+                    if (val === null || val === undefined)
+                      return {
+                        col,
+                        op: 'IS NULL',
+                      };
+                    return {
+                      col,
+                      op: '==',
+                      val: val as string | number | boolean,
+                    };
+                  }),
+                },
+              },
+              currentState: name,
             },
-          },
-          currentState: name,
+          });
         },
-      });
-    },
-  };
-
+      }
+    : {};
+  console.log({ eventHandlers });
   return (
     <Echart
       height={height}

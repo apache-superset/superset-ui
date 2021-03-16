@@ -42,6 +42,7 @@ const {
   outerRadius,
   numberFormat,
   showLabels,
+  emitFilter,
 } = DEFAULT_FORM_DATA;
 
 const config: ControlPanelConfig = {
@@ -82,6 +83,18 @@ const config: ControlPanelConfig = {
               isFloat: true,
               default: 5,
               description: t('Minimum threshold in percentage points for showing labels.'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'emit_filter',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Enable emitting filters'),
+              default: emitFilter,
+              renderTrigger: true,
+              description: t('Enable emmiting filters.'),
             },
           },
         ],

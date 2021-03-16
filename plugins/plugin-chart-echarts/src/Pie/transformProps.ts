@@ -99,6 +99,7 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
     showLabels,
     showLegend,
     showLabelsThreshold,
+    emitFilter,
   }: EchartsPieFormData = { ...DEFAULT_LEGEND_FORM_DATA, ...DEFAULT_PIE_FORM_DATA, ...formData };
   const metricLabel = getMetricLabel(metric);
 
@@ -218,6 +219,7 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
     height,
     echartOptions,
     setDataMask,
+    emitFilter,
     labelMap,
     groupby,
   };
