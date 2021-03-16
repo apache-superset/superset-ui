@@ -34,6 +34,10 @@ export default function EchartsPie({
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
   useEffect(() => {
+    if (!emitFilter) {
+      return;
+    }
+
     // TODO: for now only process first selection - add support for nested
     //  ANDs in ORs to enable multiple selection
     const [groupbyValues] = selectedValues.map(value => labelMap[value]);
@@ -64,13 +68,15 @@ export default function EchartsPie({
     });
   }, [selectedValues]);
 
-  const eventHandlers: EventHandlers = {
-    click: props => {
-      const { name } = props;
-      const value = ensureIsArray<string>(name);
-      setSelectedValues(value);
-    },
-  };
+  const eventHandlers: EventHandlers = emitFilter
+    ? {
+        click: props => {
+          const { name } = props;
+          const value = ensureIsArray<string>(name);
+          setSelectedValues(value);
+        },
+      }
+    : {};
 
   return (
     <Echart
