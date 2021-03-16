@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from 'react';
+import { ensureIsArray } from '@superset-ui/core';
+import React, { useState, useEffect } from 'react';
 import { PieChartTransformedProps } from './types';
 import Echart from '../components/Echart';
 import { EventHandlers } from '../types';
@@ -30,36 +31,47 @@ export default function EchartsPie({
   labelMap,
   groupby,
 }: PieChartTransformedProps) {
-  const eventHandlers: EventHandlers = emitFilter
-    ? {
-        click: props => {
-          const { name } = props;
-          setDataMask({
-            crossFilters: {
-              extraFormData: {
-                append_form_data: {
-                  filters: groupby.map((col, idx) => {
-                    const val = labelMap[name][idx];
-                    if (val === null || val === undefined)
-                      return {
-                        col,
-                        op: 'IS NULL',
-                      };
-                    return {
-                      col,
-                      op: '==',
-                      val: val as string | number | boolean,
-                    };
-                  }),
-                },
-              },
-              currentState: name,
-            },
-          });
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+
+  useEffect(() => {
+    // TODO: for now only process first selection - add support for nested
+    //  ANDs in ORs to enable multiple selection
+    const [groupbyValues] = selectedValues.map(value => labelMap[value]);
+    if (selectedValues.length === 0) return;
+    setDataMask({
+      crossFilters: {
+        extraFormData: {
+          append_form_data: {
+            filters: groupby.map((col, idx) => {
+              const val = groupbyValues[idx];
+              if (val === null || val === undefined)
+                return {
+                  col,
+                  op: 'IS NULL',
+                };
+              return {
+                col,
+                op: '==',
+                val: val as string | number | boolean,
+              };
+            }),
+          },
         },
-      }
-    : {};
-  console.log({ eventHandlers });
+        currentState: {
+          value: groupbyValues ?? null,
+        },
+      },
+    });
+  }, [selectedValues]);
+
+  const eventHandlers: EventHandlers = {
+    click: props => {
+      const { name } = props;
+      const value = ensureIsArray<string>(name);
+      setSelectedValues(value);
+    },
+  };
+
   return (
     <Echart
       height={height}
