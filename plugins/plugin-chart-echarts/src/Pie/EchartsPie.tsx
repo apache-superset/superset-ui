@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ensureIsArray } from '@superset-ui/core';
 import React, { useState, useEffect } from 'react';
 import { PieChartTransformedProps } from './types';
 import Echart from '../components/Echart';
@@ -40,14 +39,15 @@ export default function EchartsPie({
 
     // TODO: for now only process first selection - add support for nested
     //  ANDs in ORs to enable multiple selection
-    const [groupbyValues] = selectedValues.map(value => labelMap[value]);
+    const groupbyValues = selectedValues.map(value => labelMap[value]);
+
     if (selectedValues.length === 0) return;
     setDataMask({
       crossFilters: {
         extraFormData: {
           append_form_data: {
             filters: groupby.map((col, idx) => {
-              const val = groupbyValues[idx];
+              const val = groupbyValues.map(val => val[idx]);
               if (val === null || val === undefined)
                 return {
                   col,
@@ -55,8 +55,8 @@ export default function EchartsPie({
                 };
               return {
                 col,
-                op: '==',
-                val: val as string | number | boolean,
+                op: 'IN',
+                val: val as (string | number | boolean)[],
               };
             }),
           },
@@ -72,8 +72,12 @@ export default function EchartsPie({
     ? {
         click: props => {
           const { name } = props;
-          const value = ensureIsArray<string>(name);
-          setSelectedValues(value);
+          setSelectedValues(prev => {
+            if (prev.includes(name)) {
+              return prev.filter(value => value !== name);
+            }
+            return [...prev, name];
+          });
         },
       }
     : {};
