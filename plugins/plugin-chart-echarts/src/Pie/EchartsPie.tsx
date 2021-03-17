@@ -17,7 +17,7 @@
  * under the License.
  */
 import { ensureIsArray } from '@superset-ui/core';
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { PieChartTransformedProps } from './types';
 import Echart from '../components/Echart';
 import { EventHandlers } from '../types';
@@ -25,49 +25,66 @@ import { EventHandlers } from '../types';
 export default function EchartsPie({
   height,
   width,
+  formData,
   echartOptions,
   setDataMask,
   labelMap,
   groupby,
 }: PieChartTransformedProps) {
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const { currentValue, defaultValue } = formData;
 
-  useEffect(() => {
-    // TODO: for now only process first selection - add support for nested
-    //  ANDs in ORs to enable multiple selection
-    const [groupbyValues] = selectedValues.map(value => labelMap[value]);
-    if (selectedValues.length === 0) return;
-    setDataMask({
-      crossFilters: {
-        extraFormData: {
-          append_form_data: {
-            filters: groupby.map((col, idx) => {
-              const val = groupbyValues[idx];
-              if (val === null || val === undefined)
+  const handleChange = useCallback(
+    (selectedValues: string[]) => {
+      // TODO: for now only process first selection - add support for nested
+      //  ANDs in ORs to enable multiple selection
+      const [groupbyValues] = selectedValues.map(value => labelMap[value]);
+      if (selectedValues.length === 0) return;
+      setDataMask({
+        crossFilters: {
+          extraFormData: {
+            append_form_data: {
+              filters: groupby.map((col, idx) => {
+                const val = groupbyValues[idx];
+                if (val === null || val === undefined)
+                  return {
+                    col,
+                    op: 'IS NULL',
+                  };
                 return {
                   col,
-                  op: 'IS NULL',
+                  op: '==',
+                  val: val as string | number | boolean,
                 };
-              return {
-                col,
-                op: '==',
-                val: val as string | number | boolean,
-              };
-            }),
+              }),
+            },
+          },
+          currentState: {
+            value: groupbyValues ?? null,
           },
         },
-        currentState: {
-          value: groupbyValues ?? null,
+        ownFilters: {
+          currentState: {
+            selectedValues,
+          },
         },
-      },
-    });
-  }, [selectedValues]);
+      });
+    },
+    [groupby, labelMap, setDataMask],
+  );
+
+  useEffect(() => {
+    handleChange(currentValue || []);
+  }, [JSON.stringify(currentValue), handleChange]);
+
+  useEffect(() => {
+    handleChange(defaultValue || []);
+  }, [JSON.stringify(defaultValue), handleChange]);
 
   const eventHandlers: EventHandlers = {
     click: props => {
       const { name } = props;
       const value = ensureIsArray<string>(name);
-      setSelectedValues(value);
+      handleChange(value);
     },
   };
 
