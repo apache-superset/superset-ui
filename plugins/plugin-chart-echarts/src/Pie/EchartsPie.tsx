@@ -16,8 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ensureIsArray } from '@superset-ui/core';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { PieChartTransformedProps } from './types';
 import Echart from '../components/Echart';
 import { EventHandlers } from '../types';
@@ -25,40 +24,37 @@ import { EventHandlers } from '../types';
 export default function EchartsPie({
   height,
   width,
-  formData,
   echartOptions,
-  emitFilter,
   setDataMask,
   labelMap,
   groupby,
   selectedValues,
+  selectedValuesIndexes,
 }: PieChartTransformedProps) {
-  const { currentValue, defaultValue } = formData;
-  console.log('Val', selectedValues);
   const handleChange = useCallback(
     (values: string[]) => {
-      // TODO: for now only process first selection - add support for nested
-      //  ANDs in ORs to enable multiple selection
-      const [groupbyValues] = values.map(value => labelMap[value]);
-      // if (values.length === 0) return;
+      const groupbyValues = values.map(value => labelMap[value]);
+
       setDataMask({
         crossFilters: {
           extraFormData: {
             append_form_data: {
-              filters: groupby.map((col, idx) => {
-                console.log(groupbyValues);
-                const val = groupbyValues[idx];
-                if (val === null || val === undefined)
-                  return {
-                    col,
-                    op: 'IS NULL',
-                  };
-                return {
-                  col,
-                  op: '==',
-                  val: val as string | number | boolean,
-                };
-              }),
+              filters:
+                values.length === 0
+                  ? []
+                  : groupby.map((col, idx) => {
+                      const val = groupbyValues.map(v => v[idx]);
+                      if (val === null || val === undefined)
+                        return {
+                          col,
+                          op: 'IS NULL',
+                        };
+                      return {
+                        col,
+                        op: 'IN',
+                        val: val as (string | number | boolean)[],
+                      };
+                    }),
             },
           },
           currentState: {
@@ -72,34 +68,15 @@ export default function EchartsPie({
         },
       });
     },
-    [groupby, labelMap, setDataMask],
+    [groupby, labelMap, setDataMask, selectedValues],
   );
-
-  useEffect(() => {
-    handleChange(currentValue || []);
-  }, [JSON.stringify(currentValue), handleChange]);
-
-  useEffect(() => {
-    handleChange(defaultValue || []);
-  }, [JSON.stringify(defaultValue), handleChange]);
 
   const eventHandlers: EventHandlers = {
     click: props => {
       const { name } = props;
-      console.group('Click');
-
-      console.log('selectedValues', selectedValues);
-      console.log('name', name);
-      console.log(
-        'Update',
-        selectedValues.filter(value => value !== name),
-      );
-      console.groupEnd('Click');
       if (selectedValues.includes(name)) {
-        console.log('Includes');
-        handleChange(selectedValues.filter(value => value !== name));
+        handleChange(selectedValues.filter(v => v !== name));
       } else {
-        console.log('Not includes');
         handleChange([...selectedValues, name]);
       }
     },
@@ -111,6 +88,8 @@ export default function EchartsPie({
       width={width}
       echartOptions={echartOptions}
       eventHandlers={eventHandlers}
+      selectedValuesIndexes={selectedValuesIndexes}
+      selectedValues={selectedValues}
     />
   );
 }

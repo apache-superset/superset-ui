@@ -26,7 +26,14 @@ const Styles = styled.div<EchartsStylesProps>`
   width: ${({ width }) => width};
 `;
 
-export default function Echart({ width, height, echartOptions, eventHandlers }: EchartsProps) {
+export default function Echart({
+  width,
+  height,
+  echartOptions,
+  eventHandlers,
+  selectedValues,
+  selectedValuesIndexes,
+}: EchartsProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ECharts>();
 
@@ -35,12 +42,20 @@ export default function Echart({ width, height, echartOptions, eventHandlers }: 
     if (!chartRef.current) {
       const chart = init(divRef.current);
       chartRef.current = chart;
-      Object.entries(eventHandlers || {}).forEach(([name, handler]) => {
-        chart.on(name, handler);
-      });
     }
+
+    Object.entries(eventHandlers || {}).forEach(([name, handler]) => {
+      chartRef?.current?.off(name);
+      chartRef?.current?.on(name, handler);
+    });
+
+    chartRef.current.clear();
     chartRef.current.setOption(echartOptions, true);
-  }, [echartOptions, eventHandlers]);
+    chartRef.current.dispatchAction({
+      type: 'highlight',
+      dataIndex: selectedValuesIndexes,
+    });
+  }, [echartOptions, eventHandlers, selectedValuesIndexes]);
 
   useEffect(() => {
     if (chartRef.current) {

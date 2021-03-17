@@ -79,10 +79,8 @@ export function formatPieLabel({
 export default function transformProps(chartProps: EchartsPieChartProps): PieChartTransformedProps {
   const { formData, height, hooks, ownCurrentState, queriesData, width } = chartProps;
   const { selectedValues = [] } = ownCurrentState;
-  console.log('selectedValues........', selectedValues);
   const { data = [] } = queriesData[0];
   const coltypeMapping = getColtypesMapping(queriesData[0]);
-
   const {
     colorScheme,
     donut,
@@ -163,6 +161,9 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
     show: showLabels,
     color: '#000000',
   };
+  const selectedValuesIndexes = selectedValues.map((selectedValue: string) =>
+    transformedData.findIndex(({ name }) => name === selectedValue),
+  );
 
   const series: PieSeriesOption[] = [
     {
@@ -226,5 +227,6 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
     labelMap,
     groupby,
     selectedValues,
+    selectedValuesIndexes,
   };
 }

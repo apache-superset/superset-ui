@@ -29,6 +29,8 @@ export interface EchartsProps {
   width: number;
   echartOptions: EChartsOption;
   eventHandlers?: EventHandlers;
+  selectedValuesIndexes?: number[];
+  selectedValues?: string[];
 }
 
 export enum ForecastSeriesEnum {

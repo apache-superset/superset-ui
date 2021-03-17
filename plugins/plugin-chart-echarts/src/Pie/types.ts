@@ -95,4 +95,5 @@ export interface PieChartTransformedProps {
   labelMap: Record<string, DataRecordValue[]>;
   groupby: string[];
   selectedValues: string[];
+  selectedValuesIndexes?: number[];
 }
