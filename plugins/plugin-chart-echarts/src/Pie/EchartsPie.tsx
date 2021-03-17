@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState, useEffect } from 'react';
+import { ensureIsArray } from '@superset-ui/core';
+import React, { useCallback, useEffect } from 'react';
 import { PieChartTransformedProps } from './types';
 import Echart from '../components/Echart';
 import { EventHandlers } from '../types';
@@ -24,63 +25,85 @@ import { EventHandlers } from '../types';
 export default function EchartsPie({
   height,
   width,
+  formData,
   echartOptions,
   emitFilter,
   setDataMask,
   labelMap,
   groupby,
+  selectedValues,
 }: PieChartTransformedProps) {
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (!emitFilter) {
-      return;
-    }
-
-    // TODO: for now only process first selection - add support for nested
-    //  ANDs in ORs to enable multiple selection
-    const groupbyValues = selectedValues.map(value => labelMap[value]);
-
-    if (selectedValues.length === 0) return;
-    setDataMask({
-      crossFilters: {
-        extraFormData: {
-          append_form_data: {
-            filters: groupby.map((col, idx) => {
-              const val = groupbyValues.map(val => val[idx]);
-              if (val === null || val === undefined)
+  const { currentValue, defaultValue } = formData;
+  console.log('Val', selectedValues);
+  const handleChange = useCallback(
+    (values: string[]) => {
+      // TODO: for now only process first selection - add support for nested
+      //  ANDs in ORs to enable multiple selection
+      const [groupbyValues] = values.map(value => labelMap[value]);
+      // if (values.length === 0) return;
+      setDataMask({
+        crossFilters: {
+          extraFormData: {
+            append_form_data: {
+              filters: groupby.map((col, idx) => {
+                console.log(groupbyValues);
+                const val = groupbyValues[idx];
+                if (val === null || val === undefined)
+                  return {
+                    col,
+                    op: 'IS NULL',
+                  };
                 return {
                   col,
-                  op: 'IS NULL',
+                  op: '==',
+                  val: val as string | number | boolean,
                 };
-              return {
-                col,
-                op: 'IN',
-                val: val as (string | number | boolean)[],
-              };
-            }),
+              }),
+            },
+          },
+          currentState: {
+            value: groupbyValues ?? null,
           },
         },
-        currentState: {
-          value: groupbyValues ?? null,
+        ownFilters: {
+          currentState: {
+            selectedValues: values,
+          },
         },
-      },
-    });
-  }, [selectedValues]);
+      });
+    },
+    [groupby, labelMap, setDataMask],
+  );
 
-  const eventHandlers: EventHandlers = emitFilter
-    ? {
-        click: props => {
-          const { name } = props;
-          setSelectedValues(prev => {
-            if (prev.includes(name)) {
-              return prev.filter(value => value !== name);
-            }
-            return [...prev, name];
-          });
-        },
+  useEffect(() => {
+    handleChange(currentValue || []);
+  }, [JSON.stringify(currentValue), handleChange]);
+
+  useEffect(() => {
+    handleChange(defaultValue || []);
+  }, [JSON.stringify(defaultValue), handleChange]);
+
+  const eventHandlers: EventHandlers = {
+    click: props => {
+      const { name } = props;
+      console.group('Click');
+
+      console.log('selectedValues', selectedValues);
+      console.log('name', name);
+      console.log(
+        'Update',
+        selectedValues.filter(value => value !== name),
+      );
+      console.groupEnd('Click');
+      if (selectedValues.includes(name)) {
+        console.log('Includes');
+        handleChange(selectedValues.filter(value => value !== name));
+      } else {
+        console.log('Not includes');
+        handleChange([...selectedValues, name]);
       }
-    : {};
+    },
+  };
 
   return (
     <Echart

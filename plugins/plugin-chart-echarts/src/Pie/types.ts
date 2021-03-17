@@ -34,7 +34,10 @@ import {
 export type EchartsPieFormData = QueryFormData &
   EchartsLegendFormData & {
     colorScheme?: string;
+    currentOwnValue?: string[] | null;
+    currentValue?: string[] | null;
     donut: boolean;
+    defaultValue?: string[] | null;
     groupby: string[];
     innerRadius: number;
     labelLine: boolean;
@@ -83,6 +86,7 @@ export const DEFAULT_FORM_DATA: EchartsPieFormData = {
 };
 
 export interface PieChartTransformedProps {
+  formData: EchartsPieFormData;
   height: number;
   width: number;
   echartOptions: EChartsOption;
@@ -90,4 +94,5 @@ export interface PieChartTransformedProps {
   setDataMask: SetDataMaskHook;
   labelMap: Record<string, DataRecordValue[]>;
   groupby: string[];
+  selectedValues: string[];
 }
