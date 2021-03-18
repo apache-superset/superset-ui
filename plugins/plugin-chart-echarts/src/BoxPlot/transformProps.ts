@@ -18,20 +18,29 @@
  */
 import {
   CategoricalColorNamespace,
+  DataRecordValue,
   getMetricLabel,
   getNumberFormatter,
   getTimeFormatter,
 } from '@superset-ui/core';
 import { EChartsOption, BoxplotSeriesOption } from 'echarts';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
-import { BoxPlotQueryFormData, EchartsBoxPlotChartProps } from './types';
-import { EchartsProps } from '../types';
+import {
+  BoxPlotChartTransformedProps,
+  BoxPlotQueryFormData,
+  EchartsBoxPlotChartProps,
+} from './types';
 import { extractGroupbyLabel, getColtypesMapping } from '../utils/series';
 import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
 
-export default function transformProps(chartProps: EchartsBoxPlotChartProps): EchartsProps {
-  const { width, height, formData, queriesData } = chartProps;
+export default function transformProps(
+  chartProps: EchartsBoxPlotChartProps,
+): BoxPlotChartTransformedProps {
+  const { width, height, formData, hooks, ownCurrentState, queriesData } = chartProps;
+  const { selectedValues = [] } = ownCurrentState;
+  console.log('selectedValues', selectedValues);
   const { data = [] } = queriesData[0];
+  const { setDataMask = () => {} } = hooks;
   const coltypeMapping = getColtypesMapping(queriesData[0]);
   const {
     colorScheme,
@@ -40,6 +49,7 @@ export default function transformProps(chartProps: EchartsBoxPlotChartProps): Ec
     numberFormat,
     dateFormat,
     xTicksLayout,
+    emitFilter,
   } = formData as BoxPlotQueryFormData;
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const numberFormatter = getNumberFormatter(numberFormat);
@@ -106,6 +116,24 @@ export default function transformProps(chartProps: EchartsBoxPlotChartProps): Ec
       }),
     )
     .flat(2);
+
+  const labelMap = data.reduce((acc: Record<string, DataRecordValue[]>, datum) => {
+    const label = extractGroupbyLabel({
+      datum,
+      groupby,
+      coltypeMapping,
+      timeFormatter: getTimeFormatter(dateFormat),
+    });
+    return {
+      ...acc,
+      [label]: groupby.map(col => datum[col]),
+    };
+  }, {});
+
+  const selectedValuesIndexes = selectedValues.map((selectedValue: string) =>
+    transformedData.findIndex(({ name }) => name === selectedValue),
+  );
+
   let axisLabel;
   if (xTicksLayout === '45°') axisLabel = { rotate: -45 };
   else if (xTicksLayout === '90°') axisLabel = { rotate: -90 };
@@ -178,8 +206,15 @@ export default function transformProps(chartProps: EchartsBoxPlotChartProps): Ec
   };
 
   return {
+    formData,
     width,
     height,
     echartOptions,
+    setDataMask,
+    emitFilter,
+    labelMap,
+    groupby,
+    selectedValues,
+    selectedValuesIndexes,
   };
 }
