@@ -37,8 +37,6 @@ export default function transformProps(
   chartProps: EchartsBoxPlotChartProps,
 ): BoxPlotChartTransformedProps {
   const { width, height, formData, hooks, ownCurrentState, queriesData } = chartProps;
-  const { selectedValues = [] } = ownCurrentState;
-  console.log('selectedValues', selectedValues);
   const { data = [] } = queriesData[0];
   const { setDataMask = () => {} } = hooks;
   const coltypeMapping = getColtypesMapping(queriesData[0]);
@@ -130,8 +128,15 @@ export default function transformProps(
     };
   }, {});
 
-  const selectedValuesIndexes = selectedValues.map((selectedValue: string) =>
-    transformedData.findIndex(({ name }) => name === selectedValue),
+  const selectedValues = (ownCurrentState.selectedValues || []).reduce(
+    (acc: Record<string, number>, selectedValue: string) => {
+      const index = transformedData.findIndex(({ name }) => name === selectedValue);
+      return {
+        ...acc,
+        [index]: selectedValue,
+      };
+    },
+    {},
   );
 
   let axisLabel;
@@ -215,6 +220,5 @@ export default function transformProps(
     labelMap,
     groupby,
     selectedValues,
-    selectedValuesIndexes,
   };
 }

@@ -56,8 +56,7 @@ export interface BoxPlotChartTransformedProps {
   setDataMask: SetDataMaskHook;
   labelMap: Record<string, DataRecordValue[]>;
   groupby: string[];
-  selectedValues: string[];
-  selectedValuesIndexes?: number[];
+  selectedValues: Record<number, string>;
 }
 
 export interface BoxPlotChartTransformedProps {
@@ -69,6 +68,5 @@ export interface BoxPlotChartTransformedProps {
   setDataMask: SetDataMaskHook;
   labelMap: Record<string, DataRecordValue[]>;
   groupby: string[];
-  selectedValues: string[];
-  selectedValuesIndexes?: number[];
+  selectedValues: Record<number, string>;
 }

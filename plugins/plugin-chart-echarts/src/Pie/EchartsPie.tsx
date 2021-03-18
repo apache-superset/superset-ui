@@ -29,7 +29,6 @@ export default function EchartsPie({
   labelMap,
   groupby,
   selectedValues,
-  selectedValuesIndexes,
 }: PieChartTransformedProps) {
   const handleChange = useCallback(
     (values: string[]) => {
@@ -74,10 +73,11 @@ export default function EchartsPie({
   const eventHandlers: EventHandlers = {
     click: props => {
       const { name } = props;
-      if (selectedValues.includes(name)) {
-        handleChange(selectedValues.filter(v => v !== name));
+      const values = Object.values(selectedValues);
+      if (values.includes(name)) {
+        handleChange(values.filter(v => v !== name));
       } else {
-        handleChange([...selectedValues, name]);
+        handleChange([...values, name]);
       }
     },
   };
@@ -88,7 +88,6 @@ export default function EchartsPie({
       width={width}
       echartOptions={echartOptions}
       eventHandlers={eventHandlers}
-      selectedValuesIndexes={selectedValuesIndexes}
       selectedValues={selectedValues}
     />
   );

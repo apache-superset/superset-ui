@@ -94,6 +94,5 @@ export interface PieChartTransformedProps {
   setDataMask: SetDataMaskHook;
   labelMap: Record<string, DataRecordValue[]>;
   groupby: string[];
-  selectedValues: string[];
-  selectedValuesIndexes?: number[];
+  selectedValues: Record<number, string>;
 }

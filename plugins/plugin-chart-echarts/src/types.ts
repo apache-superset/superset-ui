@@ -29,8 +29,7 @@ export interface EchartsProps {
   width: number;
   echartOptions: EChartsOption;
   eventHandlers?: EventHandlers;
-  selectedValuesIndexes?: number[];
-  selectedValues?: string[];
+  selectedValues?: Record<number, string>;
 }
 
 export enum ForecastSeriesEnum {
