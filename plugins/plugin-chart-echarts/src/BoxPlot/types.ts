@@ -58,15 +58,3 @@ export interface BoxPlotChartTransformedProps {
   groupby: string[];
   selectedValues: Record<number, string>;
 }
-
-export interface BoxPlotChartTransformedProps {
-  formData: BoxPlotQueryFormData;
-  height: number;
-  width: number;
-  echartOptions: EChartsOption;
-  emitFilter: boolean;
-  setDataMask: SetDataMaskHook;
-  labelMap: Record<string, DataRecordValue[]>;
-  groupby: string[];
-  selectedValues: Record<number, string>;
-}
