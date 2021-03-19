@@ -29,9 +29,14 @@ export default function EchartsBoxPlot({
   labelMap,
   groupby,
   selectedValues,
+  formData,
 }: BoxPlotChartTransformedProps) {
   const handleChange = useCallback(
     (values: string[]) => {
+      if (!formData.emitFilter) {
+        return;
+      }
+
       const groupbyValues = values.map(value => labelMap[value]);
 
       setDataMask({
@@ -57,12 +62,12 @@ export default function EchartsBoxPlot({
             },
           },
           currentState: {
-            value: groupbyValues ?? null,
+            value: groupbyValues.length ? groupbyValues : null,
           },
         },
         ownFilters: {
           currentState: {
-            selectedValues: values,
+            selectedValues: values.length ? values : null,
           },
         },
       });

@@ -24,6 +24,9 @@ import {
   formatSelectOptions,
   sections,
 } from '@superset-ui/chart-controls';
+import { DEFAULT_FORM_DATA } from '../Pie/types';
+
+const { emitFilter } = DEFAULT_FORM_DATA;
 
 export default {
   controlPanelSections: [
@@ -69,7 +72,7 @@ export default {
                 config: {
                   type: 'CheckboxControl',
                   label: t('Enable emitting filters'),
-                  default: false,
+                  default: emitFilter,
                   renderTrigger: true,
                   description: t('Enable emmiting filters.'),
                 },

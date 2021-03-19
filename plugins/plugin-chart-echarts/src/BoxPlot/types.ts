@@ -30,6 +30,7 @@ export type BoxPlotQueryFormData = QueryFormData & {
   numberFormat?: string;
   whiskerOptions?: BoxPlotFormDataWhiskerOptions;
   xTickLayout?: BoxPlotFormXTickLayout;
+  emitFilter: boolean;
 };
 
 export type BoxPlotFormDataWhiskerOptions =
@@ -39,6 +40,11 @@ export type BoxPlotFormDataWhiskerOptions =
   | '9/91 percentiles';
 
 export type BoxPlotFormXTickLayout = '45°' | '90°' | 'auto' | 'flat' | 'staggered';
+
+// @ts-ignore
+export const DEFAULT_FORM_DATA: BoxPlotQueryFormData = {
+  emitFilter: false,
+};
 
 export interface EchartsBoxPlotChartProps extends ChartProps {
   formData: BoxPlotQueryFormData;
