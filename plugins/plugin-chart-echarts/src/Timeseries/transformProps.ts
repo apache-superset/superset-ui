@@ -20,7 +20,6 @@
 import {
   AnnotationLayer,
   CategoricalColorNamespace,
-  ChartProps,
   getNumberFormatter,
   isEventAnnotationLayer,
   isFormulaAnnotationLayer,
@@ -31,10 +30,16 @@ import {
   smartDateFormatter,
   TimeseriesChartDataResponseResult,
   TimeFormatter,
+  DataRecordValue,
 } from '@superset-ui/core';
 import { EChartsOption, SeriesOption } from 'echarts';
-import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
-import { EchartsProps, ForecastSeriesEnum, ProphetValue, LegendOrientation } from '../types';
+import {
+  DEFAULT_FORM_DATA,
+  EchartsTimeseriesChartProps,
+  EchartsTimeseriesFormData,
+  TimeseriesChartTransformedProps,
+} from './types';
+import { ForecastSeriesEnum, ProphetValue, LegendOrientation } from '../types';
 import { parseYAxisBound } from '../utils/controls';
 import { extractTimeseriesSeries, getChartPadding, getLegendProps } from '../utils/series';
 import { extractAnnotationLabels } from '../utils/annotation';
@@ -54,8 +59,10 @@ import {
 } from './transformers';
 import { TIMESERIES_CONSTANTS } from '../constants';
 
-export default function transformProps(chartProps: ChartProps): EchartsProps {
-  const { width, height, formData, queriesData } = chartProps;
+export default function transformProps(
+  chartProps: EchartsTimeseriesChartProps,
+): TimeseriesChartTransformedProps {
+  const { width, height, formData, hooks, queriesData, ownCurrentState } = chartProps;
   const {
     annotation_data: annotationData_,
     data = [],
@@ -83,6 +90,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     zoomable,
     richTooltip,
     xAxisLabelRotation,
+    emitFilter,
+    groupby,
   }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
@@ -138,6 +147,26 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   } else {
     xAxisFormatter = String;
   }
+
+  const labelMap = series.reduce((acc: Record<string, DataRecordValue[]>, datum) => {
+    const name: string = datum.name as string;
+    return {
+      ...acc,
+      [name]: [name],
+    };
+  }, {});
+  const selectedValues = (ownCurrentState.selectedValues || []).reduce(
+    (acc: Record<string, number>, selectedValue: string) => {
+      const index = Object.keys(labelMap).indexOf(selectedValue);
+      return {
+        ...acc,
+        [index]: selectedValue,
+      };
+    },
+    {},
+  );
+
+  const { setDataMask = () => {} } = hooks;
 
   const echartOptions: EChartsOption = {
     useUTC: true,
@@ -239,8 +268,14 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   };
 
   return {
-    echartOptions,
+    formData,
     width,
     height,
+    echartOptions,
+    setDataMask,
+    emitFilter,
+    labelMap,
+    groupby,
+    selectedValues,
   };
 }

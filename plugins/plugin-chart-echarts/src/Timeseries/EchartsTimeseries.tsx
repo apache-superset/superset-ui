@@ -16,10 +16,84 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from 'react';
-import { EchartsProps } from '../types';
+import React, { useCallback } from 'react';
+import { EventHandlers } from '../types';
 import Echart from '../components/Echart';
+import { TimeseriesChartTransformedProps } from './types';
 
-export default function EchartsTimeseries({ height, width, echartOptions }: EchartsProps) {
-  return <Echart height={height} width={width} echartOptions={echartOptions} />;
+// @ts-ignore
+export default function EchartsTimeseries({
+  formData,
+  height,
+  width,
+  echartOptions,
+  groupby,
+  labelMap,
+  setDataMask,
+  selectedValues,
+}: TimeseriesChartTransformedProps) {
+  const handleChange = useCallback(
+    (values: string[]) => {
+      if (!formData.emitFilter) {
+        return;
+      }
+      const groupbyValues = values.map(value => labelMap[value]);
+
+      setDataMask({
+        crossFilters: {
+          extraFormData: {
+            append_form_data: {
+              filters:
+                values.length === 0
+                  ? []
+                  : groupby.map((col, idx) => {
+                      const val = groupbyValues.map(v => v[idx]);
+                      if (val === null || val === undefined)
+                        return {
+                          col,
+                          op: 'IS NULL',
+                        };
+                      return {
+                        col,
+                        op: 'IN',
+                        val: val as (string | number | boolean)[],
+                      };
+                    }),
+            },
+          },
+          currentState: {
+            value: groupbyValues.length ? groupbyValues : null,
+          },
+        },
+        ownFilters: {
+          currentState: {
+            selectedValues: values.length ? values : null,
+          },
+        },
+      });
+    },
+    [groupby, labelMap, setDataMask, selectedValues],
+  );
+
+  const eventHandlers: EventHandlers = {
+    click: props => {
+      const { seriesId } = props;
+      const values = Object.values(selectedValues);
+      if (values.includes(seriesId)) {
+        handleChange(values.filter(v => v !== seriesId));
+      } else {
+        handleChange([...values, seriesId]);
+      }
+    },
+  };
+
+  return (
+    <Echart
+      height={height}
+      width={width}
+      echartOptions={echartOptions}
+      eventHandlers={eventHandlers}
+      selectedValues={selectedValues}
+    />
+  );
 }
