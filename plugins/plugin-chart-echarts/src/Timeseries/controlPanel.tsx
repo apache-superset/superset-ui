@@ -17,7 +17,13 @@
  * under the License.
  */
 import React from 'react';
-import { legacyValidateInteger, legacyValidateNumber, t } from '@superset-ui/core';
+import {
+  FeatureFlag,
+  isFeatureEnabled,
+  legacyValidateInteger,
+  legacyValidateNumber,
+  t,
+} from '@superset-ui/core';
 import { ControlPanelConfig, sections } from '@superset-ui/chart-controls';
 
 import {
@@ -55,6 +61,7 @@ const {
   yAxisBounds,
   zoomable,
   xAxisLabelRotation,
+  emitFilter,
 } = DEFAULT_FORM_DATA;
 
 const config: ControlPanelConfig = {
@@ -309,6 +316,20 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+        isFeatureEnabled(FeatureFlag.DASHBOARD_CROSS_FILTERS)
+          ? [
+              {
+                name: 'emit_filter',
+                config: {
+                  type: 'CheckboxControl',
+                  label: t('Enable emitting filters'),
+                  default: emitFilter,
+                  renderTrigger: true,
+                  description: t('Enable emmiting filters.'),
+                },
+              },
+            ]
+          : [],
         [<h1 className="section-header">{t('Legend')}</h1>],
         [showLegendControl],
         [legendTypeControl, legendOrientationControl],
