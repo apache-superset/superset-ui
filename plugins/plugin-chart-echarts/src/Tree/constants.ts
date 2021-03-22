@@ -32,11 +32,7 @@ export const DEFAULT_TREE_SERIES_OPTION: TreeSeriesOption = {
   animation: true,
   animationDuration: 500,
   animationEasing: 'cubicOut',
-  lineStyle: { color: 'source', curveness: 0.1, width: 1.5 },
-  tooltip: {
-    trigger: 'item',
-    triggerOn: 'mousemove',
-  },
+  lineStyle: { color: 'source', curveness: 0.1, width: 1.5 }
 };
 
 export const tooltip: TooltipOption = {
