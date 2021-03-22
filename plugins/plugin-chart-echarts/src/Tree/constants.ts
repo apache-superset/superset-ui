@@ -22,14 +22,13 @@ import { SeriesTooltipOption } from 'echarts/types/src/util/types';
 
 export const DEFAULT_TREE_SERIES_OPTION: TreeSeriesOption = {
   label: {
-
     position: 'left',
     verticalAlign: 'middle',
     align: 'right',
-    fontSize: 15
+    fontSize: 15,
   },
   emphasis: {
-    focus: 'descendant'
+    focus: 'descendant',
   },
   animation: true,
   animationDuration: 500,
@@ -37,12 +36,11 @@ export const DEFAULT_TREE_SERIES_OPTION: TreeSeriesOption = {
   lineStyle: { color: 'source', curveness: 0.1, width: 1.5 },
   tooltip: {
     trigger: 'item',
-    triggerOn: 'mousemove'
+    triggerOn: 'mousemove',
   },
 };
 
 export const tooltip: Pick<SeriesTooltipOption, 'formatter'> = {
   trigger: 'item',
-  triggerOn: 'mousemove'
-
-}
+  triggerOn: 'mousemove',
+};

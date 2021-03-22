@@ -16,18 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {
-  ChartProps,
-  getMetricLabel,
-  DataRecord,
-  DataRecordValue,
-} from '@superset-ui/core';
+import { ChartProps, getMetricLabel, DataRecord } from '@superset-ui/core';
 import { EChartsOption, TreeSeriesOption } from 'echarts';
-import { TreeSeriesNodeItemOption } from 'echarts/types/src/chart/tree/TreeSeries'
-import {
-  EchartsTreeFormData,
-  DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA,
-} from './types';
+import { TreeSeriesNodeItemOption } from 'echarts/types/src/chart/tree/TreeSeries';
+import { EchartsTreeFormData, DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA } from './types';
 import { DEFAULT_TREE_SERIES_OPTION, tooltip } from './constants';
 import { EchartsProps } from '../types';
 import { OptionDataValue, OptionName } from 'echarts/types/src/util/types';
@@ -46,45 +38,57 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     orient,
     symbol,
     symbolSize,
-    roam
+    roam,
   }: EchartsTreeFormData = { ...DEFAULT_GRAPH_FORM_DATA, ...formData };
 
   const metricLabel = getMetricLabel(metric);
-  const tree: TreeSeriesNodeItemOption = { name: rootNode, children: [] }
-  const indexMap: { [name: string]: number } = {}
+  const tree: TreeSeriesNodeItemOption = { name: rootNode, children: [] };
+  const indexMap: { [name: string]: number } = {};
   let rootNodeId: null | string = null;
   for (let i = 0; i < data.length; i++) {
-    const nodeId = data[i][id] as string
+    const nodeId = data[i][id] as string;
     indexMap[nodeId] = i;
-    data[i].children = [] as any
+    data[i].children = [] as any;
     if (data[i][name] == rootNode) {
-      rootNodeId = nodeId
+      rootNodeId = nodeId;
     }
   }
 
-  function getNode(name: OptionName, children: TreeSeriesNodeItemOption[], value: OptionDataValue):TreeSeriesNodeItemOption {
-    return { name, children, value }
+  function getNode(
+    name: OptionName,
+    children: TreeSeriesNodeItemOption[],
+    value: OptionDataValue,
+  ): TreeSeriesNodeItemOption {
+    return { name, children, value };
   }
   if (rootNodeId) {
     data.forEach(node => {
-      console.log("loop ", node[name])
       if (node[relation] == rootNodeId) {
-        tree.children!.push(getNode(node[name] as OptionName, node.children as any, node[metricLabel] as OptionDataValue))
-      }
-      else {
-        const parentId = node[relation] as string
+        tree.children!.push(
+          getNode(
+            node[name] as OptionName,
+            node.children as any,
+            node[metricLabel] as OptionDataValue,
+          ),
+        );
+      } else {
+        const parentId = node[relation] as string;
         if (data[indexMap[parentId]]) {
-          console.log("put on ", node[relation])
-          //Check parent exists,and child is not dangling due to bad/row-limited data
-          const parentIndex: number = indexMap[parentId]
+          //Check if parent exists,and child is not dangling due to bad/row-limited data
+          const parentIndex: number = indexMap[parentId];
 
-          data[parentIndex].children!.push(getNode(node[name] as OptionName, node.children as any, node[metricLabel] as OptionDataValue))
+          data[parentIndex].children!.push(
+            getNode(
+              node[name] as OptionName,
+              node.children as any,
+              node[metricLabel] as OptionDataValue,
+            ),
+          );
         }
-
       }
     });
   }
-
+  console.log('tree ', JSON.stringify(tree));
   const series: TreeSeriesOption[] = [
     {
       type: 'tree',
@@ -99,7 +103,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       symbolSize,
       lineStyle: DEFAULT_TREE_SERIES_OPTION.lineStyle,
       select: DEFAULT_TREE_SERIES_OPTION.select,
-
     },
   ];
 

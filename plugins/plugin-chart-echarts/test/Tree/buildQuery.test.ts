@@ -16,14 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { buildQueryContext, QueryFormData } from '@superset-ui/core';
+import buildQuery from '../../src/Tree/buildQuery';
 
-export default function buildQuery(formData: QueryFormData) {
-  return buildQueryContext(formData, {
-    queryFields: {
-      id: 'columns',
-      relation: 'columns',
-      name: 'columns',
-    },
+describe('Graph buildQuery', () => {
+  const formData = {
+    datasource: '5__table',
+    granularity_sqla: 'ds',
+    id: 'id_col',
+    relation: 'relation_col',
+    name: 'name_col',
+    metrics: ['foo', 'bar'],
+    viz_type: 'my_chart',
+  };
+
+  it('should build query', () => {
+    const queryContext = buildQuery(formData);
+    const [query] = queryContext.queries;
+    expect(query.columns).toEqual(['id_col', 'relation_col', 'name_col']);
+    expect(query.metrics).toEqual(['foo', 'bar']);
   });
-}
+});

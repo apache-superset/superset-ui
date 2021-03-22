@@ -144,7 +144,9 @@ const controlPanel: ControlPanelConfig = {
               ],
               description: t('Orientation of tree'),
               visibility({ form_data: { layout } }) {
-                return layout === 'orthogonal' || (!layout && DEFAULT_FORM_DATA.layout === 'orthogonal');
+                return (
+                  layout === 'orthogonal' || (!layout && DEFAULT_FORM_DATA.layout === 'orthogonal')
+                );
               },
             },
           },

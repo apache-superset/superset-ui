@@ -17,13 +17,13 @@
  * under the License.
  */
 export type EchartsTreeFormData = {
-  id: string|number,
-  relation: string | number,
-  name: string,
-  rootNode: string,
-  orient: 'LR' | 'RL' | 'TB' | 'BT',
-  symbol: string,
-  symbolSize: number,
+  id: string | number;
+  relation: string | number;
+  name: string;
+  rootNode: string;
+  orient: 'LR' | 'RL' | 'TB' | 'BT';
+  symbol: string;
+  symbolSize: number;
   colorScheme?: string;
   metric?: string;
   layout: 'orthogonal' | 'radial';
