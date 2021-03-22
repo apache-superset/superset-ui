@@ -20,14 +20,6 @@ import React from 'react';
 import { t } from '@superset-ui/core';
 import { ControlPanelConfig, sections, sharedControls } from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from './types';
-import {
-  legendMarginControl,
-  legendOrientationControl,
-  legendTypeControl,
-  showLegendControl,
-} from '../controls';
-
-const noopControl = { name: 'noop', config: { type: '', renderTrigger: true } };
 
 const requiredEntity = {
   ...sharedControls.entity,
@@ -91,7 +83,6 @@ const controlPanel: ControlPanelConfig = {
       label: t('Chart options'),
       expanded: true,
       controlSetRows: [
-        ['color_scheme'],
         [<h1 className="section-header">{t('Layout')}</h1>],
         [
           {

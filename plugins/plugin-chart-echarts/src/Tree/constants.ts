@@ -18,7 +18,6 @@
  */
 import { TreeSeriesOption } from 'echarts';
 import { TooltipOption } from 'echarts/types/src/component/tooltip/TooltipModel';
-import { SeriesTooltipOption } from 'echarts/types/src/util/types';
 
 export const DEFAULT_TREE_SERIES_OPTION: TreeSeriesOption = {
   label: {
@@ -40,7 +39,7 @@ export const DEFAULT_TREE_SERIES_OPTION: TreeSeriesOption = {
   },
 };
 
-export const tooltip: Pick<SeriesTooltipOption, 'formatter'> = {
+export const tooltip: TooltipOption = {
   trigger: 'item',
   triggerOn: 'mousemove',
 };
