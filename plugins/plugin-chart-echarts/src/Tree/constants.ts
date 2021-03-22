@@ -16,16 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export { default as EchartsBoxPlotChartPlugin } from './BoxPlot';
-export { default as EchartsTimeseriesChartPlugin } from './Timeseries';
-export { default as EchartsPieChartPlugin } from './Pie';
-export { default as EchartsGraphChartPlugin } from './Graph';
-export { default as EchartsTreeChartPlugin } from './Tree';
+import { TreeSeriesOption } from 'echarts';
+import { TooltipOption } from 'echarts/types/src/component/tooltip/TooltipModel';
+import { SeriesTooltipOption } from 'echarts/types/src/util/types';
 
-/**
- * Note: this file exports the default export from EchartsTimeseries.tsx.
- * If you want to export multiple visualization modules, you will need to
- * either add additional plugin folders (similar in structure to ./plugin)
- * OR export multiple instances of `ChartPlugin` extensions in ./plugin/index.ts
- * which in turn load exports from EchartsTimeseries.tsx
- */
+export const DEFAULT_TREE_SERIES_OPTION: TreeSeriesOption = {
+  label: {
+
+    position: 'left',
+    verticalAlign: 'middle',
+    align: 'right',
+    fontSize: 15
+  },
+  emphasis: {
+    focus: 'descendant'
+  },
+  animation: true,
+  animationDuration: 500,
+  animationEasing: 'cubicOut',
+  lineStyle: { color: 'source', curveness: 0.1, width: 1.5 },
+  tooltip: {
+    trigger: 'item',
+    triggerOn: 'mousemove'
+  },
+};
+
+export const tooltip: Pick<SeriesTooltipOption, 'formatter'> = {
+  trigger: 'item',
+  triggerOn: 'mousemove'
+
+}

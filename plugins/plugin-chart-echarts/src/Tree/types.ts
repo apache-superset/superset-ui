@@ -16,16 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export { default as EchartsBoxPlotChartPlugin } from './BoxPlot';
-export { default as EchartsTimeseriesChartPlugin } from './Timeseries';
-export { default as EchartsPieChartPlugin } from './Pie';
-export { default as EchartsGraphChartPlugin } from './Graph';
-export { default as EchartsTreeChartPlugin } from './Tree';
+export type EchartsTreeFormData = {
+  id: string|number,
+  relation: string | number,
+  name: string,
+  rootNode: string,
+  orient: 'LR' | 'RL' | 'TB' | 'BT',
+  symbol: string,
+  symbolSize: number,
+  colorScheme?: string;
+  metric?: string;
+  layout: 'orthogonal' | 'radial';
+  roam: boolean | 'scale' | 'move';
+};
 
-/**
- * Note: this file exports the default export from EchartsTimeseries.tsx.
- * If you want to export multiple visualization modules, you will need to
- * either add additional plugin folders (similar in structure to ./plugin)
- * OR export multiple instances of `ChartPlugin` extensions in ./plugin/index.ts
- * which in turn load exports from EchartsTimeseries.tsx
- */
+export const DEFAULT_FORM_DATA: EchartsTreeFormData = {
+  layout: 'orthogonal',
+  orient: 'LR',
+  symbol: 'emptyCircle',
+  symbolSize: 7,
+  roam: true,
+};
+
+export type tooltipFormatParams = {
+  data: { [name: string]: string };
+};
