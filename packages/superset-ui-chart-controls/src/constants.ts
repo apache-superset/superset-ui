@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { t } from '@superset-ui/core';
+import { t, QueryMode } from '@superset-ui/core';
 import { ColumnMeta } from './types';
 
 // eslint-disable-next-line import/prefer-default-export
@@ -32,4 +32,9 @@ export const TIME_COLUMN_OPTION: ColumnMeta = {
   verbose_name: t('Time'),
   column_name: '__timestamp',
   description: t('A reference to the [Time] configuration, taking granularity into account'),
+};
+
+export const QueryModeLabel = {
+  [QueryMode.aggregate]: t('Aggregate'),
+  [QueryMode.raw]: t('Raw records'),
 };

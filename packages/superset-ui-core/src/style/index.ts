@@ -36,6 +36,10 @@ export function useTheme() {
 const defaultTheme = {
   borderRadius: 4,
   colors: {
+    text: {
+      label: '#879399',
+      help: '#737373',
+    },
     primary: {
       base: '#20A7C9',
       dark1: '#1A85A0',
