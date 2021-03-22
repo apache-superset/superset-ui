@@ -88,7 +88,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       }
     });
   }
-  console.log('tree ', JSON.stringify(tree));
   const series: TreeSeriesOption[] = [
     {
       type: 'tree',
