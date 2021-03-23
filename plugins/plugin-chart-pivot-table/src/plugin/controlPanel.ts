@@ -121,7 +121,7 @@ const config: ControlPanelConfig = {
               default: 'Table With Subtotal',
               choices: [
                 // [value, label]
-                ['Table With Subtotal', 'Table With Subtotal'],
+                ['Table With Subtotal', 'Table'],
                 ['Table With Subtotal Heatmap', 'Table Heatmap'],
                 ['Table With Subtotal Col Heatmap', 'Table Col Heatmap'],
                 ['Table With Subtotal Row Heatmap', 'Table Row Heatmap'],
@@ -202,7 +202,7 @@ const config: ControlPanelConfig = {
             name: 'rowTotals',
             config: {
               type: 'CheckboxControl',
-              label: t('Display rows grand totals'),
+              label: t('Show rows grand totals'),
               default: true,
               renderTrigger: true,
               description: t('Display row level grand totals'),
@@ -212,7 +212,7 @@ const config: ControlPanelConfig = {
             name: 'colTotals',
             config: {
               type: 'CheckboxControl',
-              label: t('Display cols grand totals'),
+              label: t('Show cols grand totals'),
               default: true,
               renderTrigger: true,
               description: t('Display column level grand totals'),
