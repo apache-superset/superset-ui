@@ -35,7 +35,7 @@ describe('buildQueryContext', () => {
     const queryContext = buildQueryContext({
       datasource: '5__table',
       viz_type: 'table',
-      custom_jwt: 'ABCDEFG',
+      extra_jwt: 'ABCDEFG',
     });
     expect(queryContext.datasource.id).toBe(5);
     expect(queryContext.datasource.type).toBe('table');
