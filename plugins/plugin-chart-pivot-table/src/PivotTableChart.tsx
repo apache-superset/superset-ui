@@ -21,8 +21,9 @@ import { styled } from '@superset-ui/core';
 // @ts-ignore
 import PivotTable from '@kgabryje/react-pivottable/PivotTable';
 import '@kgabryje/react-pivottable/pivottable.css';
+import { PivotTableStylesProps } from './types';
 
-const Styles = styled.div<any>`
+const Styles = styled.div<PivotTableStylesProps>`
   padding: ${({ theme }) => theme.gridUnit * 4}px;
   height: ${({ height }) => height}px;
   width: ${({ width }) => width}px;

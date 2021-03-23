@@ -26,9 +26,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@superset-ui/chart-controls": "0.17.19",
-    "@superset-ui/core": "0.17.18",
-    "@kgabryje/react-pivottable": "^0.12.0"
+    "@superset-ui/chart-controls": "0.17.22",
+    "@superset-ui/core": "0.17.22",
+    "@kgabryje/react-pivottable": "^0.12.2"
   },
   "peerDependencies": {
     "react": "^16.13.1"
