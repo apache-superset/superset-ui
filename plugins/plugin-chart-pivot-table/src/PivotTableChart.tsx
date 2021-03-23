@@ -17,11 +17,11 @@
  * under the License.
  */
 import React from 'react';
-import { styled } from '@superset-ui/core';
+import { styled, AdhocMetric } from '@superset-ui/core';
 // @ts-ignore
 import PivotTable from '@kgabryje/react-pivottable/PivotTable';
 import '@kgabryje/react-pivottable/pivottable.css';
-import { PivotTableStylesProps } from './types';
+import { PivotTableProps, PivotTableStylesProps } from './types';
 
 const Styles = styled.div<PivotTableStylesProps>`
   padding: ${({ theme }) => theme.gridUnit * 4}px;
@@ -62,7 +62,7 @@ const clickRowHeaderCallback = (
   console.log('ROW CLICKED', { e, value, filters, pivotData, isSubtotal, isGrandTotal });
 };
 
-export default function PivotTableChart(props: any) {
+export default function PivotTableChart(props: PivotTableProps) {
   const {
     data,
     height,
@@ -80,14 +80,18 @@ export default function PivotTableChart(props: any) {
     rowTotals,
   } = props;
 
-  const metricNames = metrics.map((metric: string | Record<string, any>) =>
-    typeof metric === 'string' ? metric : metric.label,
+  const metricNames = metrics.map((metric: string | AdhocMetric) =>
+    typeof metric === 'string' ? metric : (metric.label as string),
   );
 
   const unpivotedData = data.reduce(
     (acc: Record<string, any>[], record: Record<string, any>) => [
       ...acc,
-      ...metricNames.map((name: string) => ({ ...record, metric: name, value: record[name] })),
+      ...metricNames.map((name: string) => ({
+        ...record,
+        metric: name,
+        value: record[name],
+      })),
     ],
     [],
   );

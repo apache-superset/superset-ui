@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { QueryFormData, DataRecord } from '@superset-ui/core';
+import { QueryFormData, DataRecord, AdhocMetric } from '@superset-ui/core';
 
 export interface PivotTableStylesProps {
   height: number;
@@ -26,6 +26,15 @@ export interface PivotTableStylesProps {
 interface PivotTableCustomizeProps {
   groupbyRows: string[];
   groupbyColumns: string[];
+  metrics: (string | AdhocMetric)[];
+  tableRenderer: string;
+  colOrder: string;
+  rowOrder: string;
+  aggregateFunction: string;
+  rowSubtotalPosition: boolean;
+  colSubtotalPosition: boolean;
+  colTotals: boolean;
+  rowTotals: boolean;
 }
 
 export type PivotTableQueryFormData = QueryFormData &

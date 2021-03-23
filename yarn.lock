@@ -2640,16 +2640,16 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@kgabryje/react-pivottable@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@kgabryje/react-pivottable/-/react-pivottable-0.12.0.tgz#0601d2b0284d39890f7e0fdcd2732a2f53b7676b"
-  integrity sha512-c+CqpniJdvLTqYrIR/1znjUZt9aS/twpeQnMnajRurE1xb9wI9FxFPQqc97+UCISOCjbk3LEaf3GvD3w4G0mQw==
+"@kgabryje/react-pivottable@^0.12.2":
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/@kgabryje/react-pivottable/-/react-pivottable-0.12.2.tgz#b109e6de1cd5e7d9c61e1764923a5bc73373ab5e"
+  integrity sha512-jgSyOd65vA7Etqx+BV9bV8vG5BPy+xyGVlzbnwhFiBkrLCYG9MHXHICtpIua7nRC8kHDZuSkBoCqAc+kJOJmGA==
   dependencies:
-    immutability-helper "^2.3.1"
-    prop-types "^15.5.10"
-    react-draggable "^3.0.3"
-    react-sortablejs "^1.3.4"
-    sortablejs "^1.6.1"
+    immutability-helper "^3.1.1"
+    prop-types "^15.7.2"
+    react-draggable "^4.4.3"
+    react-sortablejs "^6.0.0"
+    sortablejs "^1.13.0"
 
 "@lerna/add@3.21.0":
   version "3.21.0"
@@ -4435,15 +4435,6 @@
     resolve-from "^5.0.0"
     store2 "^2.7.1"
 
-"@superset-ui/chart-controls@0.17.19":
-  version "0.17.19"
-  resolved "https://registry.yarnpkg.com/@superset-ui/chart-controls/-/chart-controls-0.17.19.tgz#d5bced1c81f52ae8faa6d7fc4cfa5a2cd7bb0f7e"
-  integrity sha512-27nR2BKm+Eskk/IQJ461MTkZQ0kLUhMTl94yZ4qKS7heh36MrEhCT/eJugCnimiUaUkWsyTW254KySEJty75vg==
-  dependencies:
-    "@superset-ui/core" "0.17.18"
-    lodash "^4.17.15"
-    prop-types "^15.7.2"
-
 "@superset-ui/commit-config@^0.0.9":
   version "0.0.9"
   resolved "https://registry.yarnpkg.com/@superset-ui/commit-config/-/commit-config-0.0.9.tgz#f0149945185e0908e14fec46bdc1498aa026ada7"
@@ -4456,40 +4447,6 @@
     conventional-changelog "^3.0.6"
     conventional-changelog-cli "^2.0.12"
     cz-conventional-changelog "^2.1.0"
-
-"@superset-ui/core@0.17.18":
-  version "0.17.18"
-  resolved "https://registry.yarnpkg.com/@superset-ui/core/-/core-0.17.18.tgz#698d84a0855265fdf0ad94e51a039300f710d54c"
-  integrity sha512-7k06rxn9SxIg6H8HUZAoXtVGxhCiQtQ9hkycBpekTDX+UtjGlXi641abo+8A13Lx4uM8d86/fgmu6nhwEm/ZfA==
-  dependencies:
-    "@babel/runtime" "^7.1.2"
-    "@emotion/core" "^10.0.28"
-    "@emotion/styled" "^10.0.27"
-    "@types/d3-format" "^1.3.0"
-    "@types/d3-interpolate" "^1.3.1"
-    "@types/d3-scale" "^2.1.1"
-    "@types/d3-time" "^1.0.9"
-    "@types/d3-time-format" "^2.1.0"
-    "@types/lodash" "^4.14.149"
-    "@types/rison" "0.0.6"
-    "@types/seedrandom" "^2.4.28"
-    "@vx/responsive" "^0.0.199"
-    csstype "^2.6.4"
-    d3-format "^1.3.2"
-    d3-interpolate "^1.4.0"
-    d3-scale "^3.0.0"
-    d3-time "^1.0.10"
-    d3-time-format "^2.2.0"
-    emotion-theming "^10.0.27"
-    fetch-retry "^4.0.1"
-    jed "^1.1.1"
-    lodash "^4.17.11"
-    pretty-ms "^7.0.0"
-    react-error-boundary "^1.2.5"
-    reselect "^4.0.0"
-    rison "^0.1.1"
-    seedrandom "^3.0.5"
-    whatwg-fetch "^3.0.0"
 
 "@superset-ui/core@file:packages/superset-ui-core/src":
   version "0.0.0"
@@ -13188,12 +13145,10 @@ immer@8.0.1:
   resolved "https://registry.yarnpkg.com/immer/-/immer-8.0.1.tgz#9c73db683e2b3975c424fb0572af5889877ae656"
   integrity sha512-aqXhGP7//Gui2+UrEtvxZxSquQVXTpZ7KDxfCcKAF3Vysvw0CViVaW9RZ1j1xlIYqaaaipBoqdqeibkc18PNvA==
 
-immutability-helper@^2.3.1:
-  version "2.9.1"
-  resolved "https://registry.yarnpkg.com/immutability-helper/-/immutability-helper-2.9.1.tgz#71c423ba387e67b6c6ceba0650572f2a2a6727df"
-  integrity sha512-r/RmRG8xO06s/k+PIaif2r5rGc3j4Yhc01jSBfwPCXDLYZwp/yxralI37Df1mwmuzcCsen/E/ITKcTEvc1PQmQ==
-  dependencies:
-    invariant "^2.2.0"
+immutability-helper@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/immutability-helper/-/immutability-helper-3.1.1.tgz#2b86b2286ed3b1241c9e23b7b21e0444f52f77b7"
+  integrity sha512-Q0QaXjPjwIju/28TsugCHNEASwoCcJSyJV3uO1sOIQGI0jKgm9f41Lvz0DZj3n46cNCyAZTsEYoY4C2bVRUzyQ==
 
 immutable@^3.8.1, immutable@^3.8.2:
   version "3.8.2"
@@ -13458,7 +13413,7 @@ interpret@^2.0.0:
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-2.2.0.tgz#1a78a0b5965c40a5416d007ad6f50ad27c417df9"
   integrity sha512-Ju0Bz/cEia55xDwUWEa8+olFpCiQoypjnQySseKtmjNrnps3P+xfpUmGr90T7yjlVJmOtybRvPXhKMbHr+fWnw==
 
-invariant@^2.2.0, invariant@^2.2.3, invariant@^2.2.4:
+invariant@^2.2.3, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   integrity sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==
@@ -18406,7 +18361,7 @@ prop-types@15.5.10:
     fbjs "^0.8.9"
     loose-envify "^1.3.1"
 
-prop-types@15.x, prop-types@>=15.0.0, prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@15.x, prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -19224,15 +19179,7 @@ react-dom@^16.13.1, react-dom@^16.8.3:
     prop-types "^15.6.2"
     scheduler "^0.19.1"
 
-react-draggable@^3.0.3:
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-3.3.2.tgz#966ef1d90f2387af3c2d8bd3516f601ea42ca359"
-  integrity sha512-oaz8a6enjbPtx5qb0oDWxtDNuybOylvto1QLydsXgKmwT7e3GXC2eMVDwEMIUYJIFqVG72XpOv673UuuAq6LhA==
-  dependencies:
-    classnames "^2.2.5"
-    prop-types "^15.6.0"
-
-react-draggable@^4.0.3:
+react-draggable@^4.0.3, react-draggable@^4.4.3:
   version "4.4.3"
   resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-4.4.3.tgz#0727f2cae5813e36b0e4962bf11b2f9ef2b406f3"
   integrity sha512-jV4TE59MBuWm7gb6Ns3Q1mxX8Azffb7oTtDtBgFkxRvhDp38YAARmRplrj0+XGkhOJB5XziArX+4HUUABtyZ0w==
@@ -19483,12 +19430,13 @@ react-sizeme@^2.6.7:
     shallowequal "^1.1.0"
     throttle-debounce "^2.1.0"
 
-react-sortablejs@^1.3.4:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/react-sortablejs/-/react-sortablejs-1.5.1.tgz#ba05a554548cf9733cc2d5411ece9b97f911b63e"
-  integrity sha512-bKIc1UVhjZt55Nb6WZFxZ8Jwyngg8CTt+w+iG1pA5k9LQsg1J0X6nLppHatSSDZDECtRZKp2z47tmmhPRJNj4g==
+react-sortablejs@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/react-sortablejs/-/react-sortablejs-6.0.0.tgz#ba75ded6dce3fa1b5b3b52c70d1928fcdee2003d"
+  integrity sha512-vzi+TWOnofcYg+dYnC/Iz/ZZkBGG76uM6KaLwuAqBk0349JQxIy3PZizbK0TJdLlK6NnLt4CiEyyQXSSnVYvEw==
   dependencies:
-    prop-types ">=15.0.0"
+    classnames "^2.2.6"
+    tiny-invariant "^1.1.0"
 
 react-split-pane@^0.1.63:
   version "0.1.92"
@@ -20985,7 +20933,7 @@ sort-keys@^2.0.0:
   dependencies:
     is-plain-obj "^1.0.0"
 
-sortablejs@^1.6.1:
+sortablejs@^1.13.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/sortablejs/-/sortablejs-1.13.0.tgz#3ab2473f8c69ca63569e80b1cd1b5669b51269e9"
   integrity sha512-RBJirPY0spWCrU5yCmWM1eFs/XgX2J5c6b275/YyxFRgnzPhKl/TDeU2hNR8Dt7ITq66NRPM4UlOt+e5O4CFHg==
@@ -21984,6 +21932,11 @@ tiny-emitter@^2.0.0, tiny-emitter@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
   integrity sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==
+
+tiny-invariant@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/tiny-invariant/-/tiny-invariant-1.1.0.tgz#634c5f8efdc27714b7f386c35e6760991d230875"
+  integrity sha512-ytxQvrb1cPc9WBEI/HSeYYoGD0kWnGEOR8RY6KomWLBVhqz0RgTwVO9dLrGz7dC+nN9llyI7OKAgRq8Vq4ZBSw==
 
 tinycolor2@^1.4.1:
   version "1.4.2"
