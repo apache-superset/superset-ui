@@ -42,7 +42,8 @@ import {
 } from 'echarts/types/src/component/marker/MarkAreaModel';
 import { extractForecastSeriesContext } from '../utils/prophet';
 import { ForecastSeriesEnum } from '../types';
-import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
+import { EchartsTimeseriesSeriesType } from './types';
+
 import {
   evalFormula,
   extractRecordAnnotations,
@@ -52,8 +53,18 @@ import {
 
 export function transformSeries(
   series: SeriesOption,
-  formData: EchartsTimeseriesFormData,
   colorScale: CategoricalColorScale,
+  opts: {
+    area?: boolean;
+    forecastEnabled?: boolean;
+    markerEnabled?: boolean;
+    markerSize?: number;
+    opacity?: number;
+    seriesType?: EchartsTimeseriesSeriesType;
+    stack?: boolean;
+    richTooltip?: boolean;
+    yAxisIndex?: number;
+  },
 ): SeriesOption | undefined {
   const { name } = series;
   const {
@@ -65,10 +76,8 @@ export function transformSeries(
     seriesType,
     stack,
     richTooltip,
-  }: EchartsTimeseriesFormData = {
-    ...DEFAULT_FORM_DATA,
-    ...formData,
-  };
+    yAxisIndex = 0,
+  } = opts;
   const forecastSeries = extractForecastSeriesContext(name || '');
   const isConfidenceBand =
     forecastSeries.type === ForecastSeriesEnum.ForecastLower ||
@@ -102,6 +111,7 @@ export function transformSeries(
 
   return {
     ...series,
+    yAxisIndex,
     name: forecastSeries.name,
     itemStyle: {
       color: colorScale(forecastSeries.name),
@@ -265,12 +275,11 @@ export function transformEventAnnotation(
 
 export function transformTimeseriesAnnotation(
   layer: TimeseriesAnnotationLayer,
-  formData: EchartsTimeseriesFormData,
+  markerSize: number,
   data: TimeseriesDataRecord[],
   annotationData: AnnotationData,
 ): SeriesOption[] {
   const series: SeriesOption[] = [];
-  const { markerSize } = formData;
   const { hideLine, name, opacity, showMarkers, style, width } = layer;
   const result = annotationData[name];
   if (isTimeseriesAnnotationResult(result)) {

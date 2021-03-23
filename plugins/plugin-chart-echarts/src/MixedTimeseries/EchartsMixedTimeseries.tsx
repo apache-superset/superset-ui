@@ -16,21 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-// eslint-disable-next-line import/prefer-default-export
-export const NULL_STRING = '<NULL>';
+import React from 'react';
+import { EchartsProps } from '../types';
+import Echart from '../components/Echart';
 
-export const TIMESERIES_CONSTANTS = {
-  gridOffsetRight: 40,
-  gridOffsetLeft: 20,
-  gridOffsetTop: 20,
-  gridOffsetBottom: 20,
-  gridOffsetBottomZoomable: 80,
-  legendRightTopOffset: 30,
-  legendTopRightOffset: 55,
-  zoomBottom: 30,
-  toolboxTop: 0,
-  toolboxRight: 5,
-  dataZoomStart: 0,
-  dataZoomEnd: 100,
-  yAxisLabelTopOffset: 20,
-};
+export default function EchartsMixedTimeseries({ height, width, echartOptions }: EchartsProps) {
+  return <Echart height={height} width={width} echartOptions={echartOptions} />;
+}

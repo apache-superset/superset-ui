@@ -27,13 +27,12 @@ import {
   isIntervalAnnotationLayer,
   isTimeseriesAnnotationLayer,
   getTimeFormatter,
+  getTimeFormatterForGranularity,
   smartDateFormatter,
-  smartDateDetailedFormatter,
-  TimeseriesChartDataResponseResult,
   TimeFormatter,
 } from '@superset-ui/core';
 import { EChartsOption, SeriesOption } from 'echarts';
-import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
+import { DEFAULT_FORM_DATA, EchartsMixedTimeseriesFormData } from './types';
 import { EchartsProps, ForecastSeriesEnum, ProphetValue, LegendOrientation } from '../types';
 import { parseYAxisBound } from '../utils/controls';
 import {
@@ -56,79 +55,106 @@ import {
   transformIntervalAnnotation,
   transformSeries,
   transformTimeseriesAnnotation,
-} from './transformers';
+} from '../Timeseries/transformers';
 import { TIMESERIES_CONSTANTS } from '../constants';
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
-  const {
-    annotation_data: annotationData_,
-    data = [],
-  } = queriesData[0] as TimeseriesChartDataResponseResult;
+  const { annotation_data: annotationData_, data: data1 = [] } = queriesData[0];
+  const { data: data2 = [] } = queriesData[1];
   const annotationData = annotationData_ || {};
 
   const {
     area,
+    areaB,
     annotationLayers,
     colorScheme,
     contributionMode,
-    forecastEnabled,
     legendMargin,
     legendOrientation,
     legendType,
     logAxis,
+    logAxisSecondary,
     markerEnabled,
+    markerEnabledB,
     markerSize,
+    markerSizeB,
     opacity,
+    opacityB,
     minorSplitLine,
     seriesType,
+    seriesTypeB,
     showLegend,
     stack,
+    stackB,
     truncateYAxis,
     yAxisFormat,
+    yAxisFormatSecondary,
     xAxisShowMinLabel,
     xAxisShowMaxLabel,
     xAxisTimeFormat,
     yAxisBounds,
-    tooltipTimeFormat,
+    yAxisIndex,
+    yAxisIndexB,
+    yAxisTitle,
+    yAxisTitleSecondary,
+    timeGrainSqla,
     zoomable,
     richTooltip,
     xAxisLabelRotation,
-  }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
+  }: EchartsMixedTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
-  const rebasedData = rebaseTimeseriesDatum(data);
-  const rawSeries = extractTimeseriesSeries(rebasedData, {
-    fillNeighborValue: stack && !forecastEnabled ? 0 : undefined,
+  const rawSeriesA = extractTimeseriesSeries(rebaseTimeseriesDatum(data1), {
+    fillNeighborValue: stack ? 0 : undefined,
   });
+  const rawSeriesB = extractTimeseriesSeries(rebaseTimeseriesDatum(data2), {
+    fillNeighborValue: stackB ? 0 : undefined,
+  });
+
   const series: SeriesOption[] = [];
   const formatter = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormat);
+  const formatterSecondary = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormatSecondary);
 
-  rawSeries.forEach(entry => {
+  rawSeriesA.forEach(entry => {
     const transformedSeries = transformSeries(entry, colorScale, {
       area,
-      forecastEnabled,
       markerEnabled,
       markerSize,
       opacity,
       seriesType,
       stack,
       richTooltip,
+      yAxisIndex,
     });
     if (transformedSeries) series.push(transformedSeries);
   });
+  rawSeriesB.forEach(entry => {
+    const transformedSeries = transformSeries(entry, colorScale, {
+      area: areaB,
+      markerEnabled: markerEnabledB,
+      markerSize: markerSizeB,
+      opacity: opacityB,
+      seriesType: seriesTypeB,
+      stack: stackB,
+      richTooltip,
+      yAxisIndex: yAxisIndexB,
+    });
+    if (transformedSeries) series.push(transformedSeries);
+  });
+  console.log(series);
 
   annotationLayers
     .filter((layer: AnnotationLayer) => layer.show)
     .forEach((layer: AnnotationLayer) => {
       if (isFormulaAnnotationLayer(layer))
-        series.push(transformFormulaAnnotation(layer, data, colorScale));
+        series.push(transformFormulaAnnotation(layer, data1, colorScale));
       else if (isIntervalAnnotationLayer(layer)) {
-        series.push(...transformIntervalAnnotation(layer, data, annotationData, colorScale));
+        series.push(...transformIntervalAnnotation(layer, data1, annotationData, colorScale));
       } else if (isEventAnnotationLayer(layer)) {
-        series.push(...transformEventAnnotation(layer, data, annotationData, colorScale));
+        series.push(...transformEventAnnotation(layer, data1, annotationData, colorScale));
       } else if (isTimeseriesAnnotationLayer(layer)) {
-        series.push(...transformTimeseriesAnnotation(layer, markerSize, data, annotationData));
+        series.push(...transformTimeseriesAnnotation(layer, markerSize, data1, annotationData));
       }
     });
 
@@ -141,30 +167,23 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     if (max === undefined) max = 1;
   }
 
-  let tooltipFormatter: TimeFormatter | StringConstructor;
-  if (tooltipTimeFormat === smartDateFormatter.id) {
-    tooltipFormatter = smartDateDetailedFormatter;
-  } else if (tooltipTimeFormat) {
-    tooltipFormatter = getTimeFormatter(xAxisTimeFormat);
-  } else {
-    tooltipFormatter = String;
-  }
-
-  let xAxisFormatter: TimeFormatter | StringConstructor | undefined;
-  if (xAxisTimeFormat === smartDateFormatter.id || !xAxisTimeFormat) {
-    xAxisFormatter = undefined;
+  let xAxisFormatter: TimeFormatter | StringConstructor;
+  if (xAxisTimeFormat === smartDateFormatter.id) {
+    xAxisFormatter = getTimeFormatterForGranularity(timeGrainSqla);
   } else if (xAxisTimeFormat) {
     xAxisFormatter = getTimeFormatter(xAxisTimeFormat);
   } else {
     xAxisFormatter = String;
   }
 
+  const yAxisOffset =
+    yAxisTitle || yAxisTitleSecondary ? TIMESERIES_CONSTANTS.yAxisLabelTopOffset : 0;
   const echartOptions: EChartsOption = {
     useUTC: true,
     grid: {
       ...defaultGrid,
       ...getChartPadding(showLegend, legendOrientation, legendMargin, {
-        top: TIMESERIES_CONSTANTS.gridOffsetTop,
+        top: TIMESERIES_CONSTANTS.gridOffsetTop + yAxisOffset,
         bottom: zoomable
           ? TIMESERIES_CONSTANTS.gridOffsetBottomZoomable
           : TIMESERIES_CONSTANTS.gridOffsetBottom,
@@ -184,16 +203,31 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         rotate: xAxisLabelRotation,
       },
     },
-    yAxis: {
-      ...defaultYAxis,
-      type: logAxis ? 'log' : 'value',
-      min,
-      max,
-      minorTick: { show: true },
-      minorSplitLine: { show: minorSplitLine },
-      axisLabel: { formatter },
-      scale: truncateYAxis,
-    },
+    yAxis: [
+      {
+        ...defaultYAxis,
+        type: logAxis ? 'log' : 'value',
+        min,
+        max,
+        minorTick: { show: true },
+        minorSplitLine: { show: minorSplitLine },
+        axisLabel: { formatter },
+        scale: truncateYAxis,
+        name: yAxisTitle,
+      },
+      {
+        ...defaultYAxis,
+        type: logAxisSecondary ? 'log' : 'value',
+        min,
+        max,
+        minorTick: { show: true },
+        splitLine: { show: false },
+        minorSplitLine: { show: minorSplitLine },
+        axisLabel: { formatter: formatterSecondary },
+        scale: truncateYAxis,
+        name: yAxisTitleSecondary,
+      },
+    ],
     tooltip: {
       ...defaultTooltip,
       trigger: richTooltip ? 'axis' : 'item',
@@ -201,7 +235,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         const value: number = !richTooltip ? params.value : params[0].value[0];
         const prophetValue = !richTooltip ? [params] : params;
 
-        const rows: Array<string> = [`${tooltipFormatter(value)}`];
+        const rows: Array<string> = [`${xAxisFormatter(value)}`];
         const prophetValues: Record<string, ProphetValue> = extractProphetValuesFromTooltipParams(
           prophetValue,
         );
@@ -222,7 +256,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     legend: {
       ...getLegendProps(legendType, legendOrientation, showLegend, zoomable),
       // @ts-ignore
-      data: rawSeries
+      data: rawSeriesA
+        .concat(rawSeriesB)
         .filter(
           entry =>
             extractForecastSeriesContext((entry.name || '') as string).type ===
