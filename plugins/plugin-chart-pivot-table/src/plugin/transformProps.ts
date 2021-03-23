@@ -26,7 +26,7 @@ export default function transformProps(chartProps: ChartProps) {
    *
    * The transformProps function is also quite useful to return
    * additional/modified props to your data viz component. The formData
-   * can also be accessed from your PivotTable.tsx file, but
+   * can also be accessed from your PivotTableChart.tsx file, but
    * doing supplying custom props here is often handy for integrating third
    * party libraries that rely on specific props.
    *
@@ -48,12 +48,32 @@ export default function transformProps(chartProps: ChartProps) {
    * function during development with hot reloading, changes won't
    * be seen until restarting the development server.
    */
-  const { width, height, queriesData } = chartProps;
+  const { width, height, queriesData, formData } = chartProps;
   const data = queriesData[0].data as DataRecord[];
+  const {
+    groupbyRows,
+    groupbyColumns,
+    metrics,
+    tableRenderer,
+    colOrder,
+    rowOrder,
+    aggregateFunction,
+    rowSubtotalPosition,
+    colSubtotalPosition,
+  } = formData;
 
   return {
     width,
     height,
     data,
+    groupbyRows,
+    groupbyColumns,
+    metrics,
+    tableRenderer,
+    colOrder,
+    rowOrder,
+    aggregateFunction,
+    rowSubtotalPosition,
+    colSubtotalPosition,
   };
 }

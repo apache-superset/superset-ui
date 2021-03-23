@@ -1,0 +1,115 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+import React from 'react';
+import { styled } from '@superset-ui/core';
+// @ts-ignore
+import PivotTable from '@kgabryje/react-pivottable/PivotTable';
+import '@kgabryje/react-pivottable/pivottable.css';
+
+const Styles = styled.div<any>`
+  padding: ${({ theme }) => theme.gridUnit * 4}px;
+  height: ${({ height }) => height}px;
+  width: ${({ width }) => width}px;
+  overflow-y: scroll;
+  }
+`;
+
+const clickCellCallback = (
+  e: MouseEvent,
+  value: number,
+  filters: Record<string, any>,
+  pivotData: Record<string, any>,
+) => {
+  console.log('CELL CLICKED', { e, value, filters, pivotData });
+};
+
+const clickColumnHeaderCallback = (
+  e: MouseEvent,
+  value: string,
+  filters: Record<string, any>,
+  pivotData: Record<string, any>,
+  isSubtotal: boolean,
+  isGrandTotal: boolean,
+) => {
+  console.log('COL CLICKED', { e, value, filters, pivotData, isSubtotal, isGrandTotal });
+};
+
+const clickRowHeaderCallback = (
+  e: MouseEvent,
+  value: string,
+  filters: Record<string, any>,
+  pivotData: Record<string, any>,
+  isSubtotal: boolean,
+  isGrandTotal: boolean,
+) => {
+  console.log('ROW CLICKED', { e, value, filters, pivotData, isSubtotal, isGrandTotal });
+};
+
+export default function PivotTableChart(props: any) {
+  const {
+    data,
+    height,
+    width,
+    groupbyRows,
+    groupbyColumns,
+    metrics,
+    tableRenderer,
+    colOrder,
+    rowOrder,
+    aggregateFunction,
+    rowSubtotalPosition,
+    colSubtotalPosition,
+  } = props;
+
+  const metricNames = metrics.map((metric: string | Record<string, any>) =>
+    typeof metric === 'string' ? metric : metric.label,
+  );
+
+  const unpivotedData = data.reduce(
+    (acc: Record<string, any>[], record: Record<string, any>) => [
+      ...acc,
+      ...metricNames.map((name: string) => ({ ...record, metric: name, value: record[name] })),
+    ],
+    [],
+  );
+
+  return (
+    <Styles height={height} width={width}>
+      <PivotTable
+        data={unpivotedData}
+        rows={groupbyRows}
+        cols={['metric', ...groupbyColumns]}
+        aggregatorName={aggregateFunction}
+        vals={['value']}
+        rendererName={tableRenderer}
+        colOrder={colOrder}
+        rowOrder={rowOrder}
+        tableOptions={{
+          clickCallback: clickCellCallback,
+          clickRowHeaderCallback,
+          clickColumnHeaderCallback,
+        }}
+        subtotalOptions={{
+          colSubtotalDisplay: { displayOnTop: colSubtotalPosition },
+          rowSubtotalDisplay: { displayOnTop: rowSubtotalPosition },
+        }}
+      />
+    </Styles>
+  );
+}

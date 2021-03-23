@@ -17,9 +17,8 @@
  * under the License.
  */
 import { buildQueryContext, ensureIsArray } from '@superset-ui/core';
-import { PivotTableQueryFormData } from '../types';
 
-export default function buildQuery(formData: PivotTableQueryFormData) {
+export default function buildQuery(formData: any) {
   const { groupbyColumns = [], groupbyRows = [] } = formData;
   const groupbySet = new Set([
     ...ensureIsArray<string>(groupbyColumns),

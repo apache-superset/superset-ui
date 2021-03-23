@@ -1,7 +1,7 @@
 import { ChartProps } from '@superset-ui/core';
 import transformProps from '../../src/plugin/transformProps';
 
-describe('PivotTable tranformProps', () => {
+describe('PivotTableChart tranformProps', () => {
   const formData = {
     colorScheme: 'bnbColors',
     datasource: '3__table',

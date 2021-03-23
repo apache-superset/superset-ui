@@ -1,6 +1,6 @@
 import buildQuery from '../../src/plugin/buildQuery';
 
-describe('PivotTable buildQuery', () => {
+describe('PivotTableChart buildQuery', () => {
   const formData = {
     datasource: '5__table',
     granularity_sqla: 'ds',

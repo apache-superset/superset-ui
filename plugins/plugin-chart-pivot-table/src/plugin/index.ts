@@ -43,7 +43,7 @@ export default class PivotTableChartPlugin extends ChartPlugin {
     super({
       buildQuery,
       controlPanel,
-      loadChart: () => import('../PivotTable'),
+      loadChart: () => import('../PivotTableChart'),
       metadata,
       transformProps,
     });

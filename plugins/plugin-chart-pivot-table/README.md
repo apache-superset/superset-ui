@@ -38,7 +38,7 @@ for more details.
 ├── README.md
 ├── tsconfig.json
 ├── src
-│   ├── PivotTable.tsx
+│   ├── PivotTableChart.tsx
 │   ├── images
 │   │   └── thumbnail.png
 │   ├── index.ts
