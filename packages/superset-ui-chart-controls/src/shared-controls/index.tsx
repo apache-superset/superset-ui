@@ -47,7 +47,7 @@ import {
 } from '@superset-ui/core';
 
 import { mainMetric, formatSelectOptions } from '../utils';
-import { TIME_FILTER_LABELS } from '../constants';
+import { TIME_FILTER_LABELS, TIME_COLUMN_OPTION } from '../constants';
 import {
   Metric,
   SharedControlConfig,
@@ -58,6 +58,8 @@ import {
 import { ColumnOption } from '../components/ColumnOption';
 import {
   dnd_adhoc_filters,
+  dnd_adhoc_metric,
+  dnd_adhoc_metrics,
   dndColumnsControl,
   dndEntity,
   dndGroupByControl,
@@ -103,12 +105,6 @@ export const D3_TIME_FORMAT_OPTIONS = [
 
 export const D3_TIME_FORMAT_DOCS = t('D3 time format syntax: https://github.com/d3/d3-time-format');
 
-const timeColumnOption = {
-  verbose_name: t('Time'),
-  column_name: '__timestamp',
-  description: t('A reference to the [Time] configuration, taking granularity into account'),
-};
-
 type Control = {
   savedMetrics?: Metric[] | null;
   default?: unknown;
@@ -137,7 +133,7 @@ const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
     if (state.datasource) {
       const options = state.datasource.columns.filter(c => c.groupby);
       if (includeTime) {
-        options.unshift(timeColumnOption);
+        options.unshift(TIME_COLUMN_OPTION);
       }
       newState.options = options;
     }
@@ -488,8 +484,8 @@ const label_colors: SharedControlConfig<'ColorMapControl'> = {
 const enableExploreDnd = isFeatureEnabled(FeatureFlag.ENABLE_EXPLORE_DRAG_AND_DROP);
 
 const sharedControls = {
-  metrics,
-  metric,
+  metrics: enableExploreDnd ? dnd_adhoc_metrics : metrics,
+  metric: enableExploreDnd ? dnd_adhoc_metric : metric,
   datasource: datasourceControl,
   viz_type,
   color_picker,

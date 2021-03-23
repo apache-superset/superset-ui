@@ -17,8 +17,14 @@
  * under the License.
  */
 import React from 'react';
-import { t, validateNonEmpty } from '@superset-ui/core';
-import { ControlPanelConfig, D3_FORMAT_OPTIONS, sections } from '@superset-ui/chart-controls';
+import { FeatureFlag, isFeatureEnabled, t, validateNonEmpty } from '@superset-ui/core';
+import {
+  ControlPanelConfig,
+  D3_FORMAT_DOCS,
+  D3_FORMAT_OPTIONS,
+  D3_TIME_FORMAT_OPTIONS,
+  sections,
+} from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from './types';
 import {
   legendMarginControl,
@@ -36,6 +42,7 @@ const {
   outerRadius,
   numberFormat,
   showLabels,
+  emitFilter,
 } = DEFAULT_FORM_DATA;
 
 const config: ControlPanelConfig = {
@@ -66,6 +73,35 @@ const config: ControlPanelConfig = {
       expanded: true,
       controlSetRows: [
         ['color_scheme'],
+        [
+          {
+            name: 'show_labels_threshold',
+            config: {
+              type: 'TextControl',
+              label: t('Percentage threshold'),
+              renderTrigger: true,
+              isFloat: true,
+              default: 5,
+              description: t('Minimum threshold in percentage points for showing labels.'),
+            },
+          },
+        ],
+
+        isFeatureEnabled(FeatureFlag.DASHBOARD_CROSS_FILTERS)
+          ? [
+              {
+                name: 'emit_filter',
+                config: {
+                  type: 'CheckboxControl',
+                  label: t('Enable emitting filters'),
+                  default: emitFilter,
+                  renderTrigger: true,
+                  description: t('Enable emmiting filters.'),
+                },
+              },
+            ]
+          : [],
+
         // eslint-disable-next-line react/jsx-key
         [<h1 className="section-header">{t('Legend')}</h1>],
         [showLegendControl],
@@ -107,6 +143,20 @@ const config: ControlPanelConfig = {
               description: `${t('D3 format syntax: https://github.com/d3/d3-format')} ${t(
                 'Only applies when "Label Type" is set to show values.',
               )}`,
+            },
+          },
+        ],
+        [
+          {
+            name: 'date_format',
+            config: {
+              type: 'SelectControl',
+              freeForm: true,
+              label: t('Date format'),
+              renderTrigger: true,
+              choices: D3_TIME_FORMAT_OPTIONS,
+              default: 'smart_date',
+              description: D3_FORMAT_DOCS,
             },
           },
         ],

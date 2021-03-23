@@ -17,13 +17,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { t, validateNonEmpty } from '@superset-ui/core';
+import { Metric, t, validateNonEmpty } from '@superset-ui/core';
 import { ExtraControlProps, SharedControlConfig } from '../types';
+import { mainMetric } from '../utils';
+import { TIME_COLUMN_OPTION } from '../constants';
 
-const timeColumnOption = {
-  verbose_name: t('Time'),
-  column_name: '__timestamp',
-  description: t('A reference to the [Time] configuration, taking granularity into account'),
+type Control = {
+  savedMetrics?: Metric[] | null;
+  default?: unknown;
 };
 
 export const dndGroupByControl: SharedControlConfig<'DndColumnSelect'> = {
@@ -36,7 +37,7 @@ export const dndGroupByControl: SharedControlConfig<'DndColumnSelect'> = {
     if (state.datasource) {
       const options = state.datasource.columns.filter(c => c.groupby);
       if (includeTime) {
-        options.unshift(timeColumnOption);
+        options.unshift(TIME_COLUMN_OPTION);
       }
       newState.options = Object.fromEntries(options.map(option => [option.column_name, option]));
     }
@@ -84,4 +85,29 @@ export const dnd_adhoc_filters: SharedControlConfig<'DndFilterSelect'> = {
     datasource,
   }),
   provideFormDataToProps: true,
+};
+
+export const dnd_adhoc_metrics: SharedControlConfig<'DndMetricSelect'> = {
+  type: 'DndMetricSelect',
+  multi: true,
+  label: t('Metrics'),
+  validators: [validateNonEmpty],
+  default: (c: Control) => {
+    const metric = mainMetric(c.savedMetrics);
+    return metric ? [metric] : null;
+  },
+  mapStateToProps: ({ datasource }) => ({
+    columns: datasource ? datasource.columns : [],
+    savedMetrics: datasource ? datasource.metrics : [],
+    datasourceType: datasource?.type,
+  }),
+  description: t('One or many metrics to display'),
+};
+
+export const dnd_adhoc_metric: SharedControlConfig<'DndMetricSelect'> = {
+  ...dnd_adhoc_metrics,
+  multi: false,
+  label: t('Metric'),
+  description: t('Metric'),
+  default: (c: Control) => mainMetric(c.savedMetrics),
 };
