@@ -75,6 +75,8 @@ export default function PivotTableChart(props: any) {
     aggregateFunction,
     rowSubtotalPosition,
     colSubtotalPosition,
+    colTotals,
+    rowTotals,
   } = props;
 
   const metricNames = metrics.map((metric: string | Record<string, any>) =>
@@ -104,6 +106,8 @@ export default function PivotTableChart(props: any) {
           clickCallback: clickCellCallback,
           clickRowHeaderCallback,
           clickColumnHeaderCallback,
+          colTotals,
+          rowTotals,
         }}
         subtotalOptions={{
           colSubtotalDisplay: { displayOnTop: colSubtotalPosition },

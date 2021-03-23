@@ -197,6 +197,28 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+        [
+          {
+            name: 'rowTotals',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Display rows grand totals'),
+              default: true,
+              renderTrigger: true,
+              description: t('Display row level grand totals'),
+            },
+          },
+          {
+            name: 'colTotals',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Display cols grand totals'),
+              default: true,
+              renderTrigger: true,
+              description: t('Display column level grand totals'),
+            },
+          },
+        ],
       ],
     },
   ],

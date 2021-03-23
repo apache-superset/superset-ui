@@ -60,6 +60,8 @@ export default function transformProps(chartProps: ChartProps) {
     aggregateFunction,
     rowSubtotalPosition,
     colSubtotalPosition,
+    colTotals,
+    rowTotals,
   } = formData;
 
   return {
@@ -75,5 +77,7 @@ export default function transformProps(chartProps: ChartProps) {
     aggregateFunction,
     rowSubtotalPosition,
     colSubtotalPosition,
+    colTotals,
+    rowTotals,
   };
 }
