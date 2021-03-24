@@ -74,6 +74,7 @@ export default function PivotTableChart(props: PivotTableProps) {
     colOrder,
     rowOrder,
     aggregateFunction,
+    transposePivot,
     rowSubtotalPosition,
     colSubtotalPosition,
     colTotals,
@@ -96,12 +97,16 @@ export default function PivotTableChart(props: PivotTableProps) {
     [],
   );
 
+  const [rows, cols] = transposePivot
+    ? [groupbyColumns, ['metric', ...groupbyRows]]
+    : [groupbyRows, ['metric', ...groupbyColumns]];
+
   return (
     <Styles height={height} width={width}>
       <PivotTable
         data={unpivotedData}
-        rows={groupbyRows}
-        cols={['metric', ...groupbyColumns]}
+        rows={rows}
+        cols={cols}
         aggregatorName={aggregateFunction}
         vals={['value']}
         rendererName={tableRenderer}

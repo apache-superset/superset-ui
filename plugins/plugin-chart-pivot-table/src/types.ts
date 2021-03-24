@@ -31,6 +31,7 @@ interface PivotTableCustomizeProps {
   colOrder: string;
   rowOrder: string;
   aggregateFunction: string;
+  transposePivot: boolean;
   rowSubtotalPosition: boolean;
   colSubtotalPosition: boolean;
   colTotals: boolean;

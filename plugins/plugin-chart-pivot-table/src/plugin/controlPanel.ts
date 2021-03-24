@@ -69,6 +69,13 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+      ],
+    },
+    {
+      label: t('Options'),
+      expanded: true,
+      tabOverride: 'data',
+      controlSetRows: [
         [
           {
             name: 'aggregateFunction',
@@ -99,9 +106,20 @@ const config: ControlPanelConfig = {
               ]),
               default: 'Sum',
               description: t(
-                'Aggregate function to apply when pivoting and ' +
-                  'computing the total rows and columns',
+                'Aggregate function to apply when pivoting and computing the total rows and columns',
               ),
+              renderTrigger: true,
+            },
+          },
+        ],
+        [
+          {
+            name: 'transposePivot',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Transpose pivot'),
+              default: false,
+              description: t('Swap rows and columns'),
               renderTrigger: true,
             },
           },
@@ -121,10 +139,10 @@ const config: ControlPanelConfig = {
               default: 'Table With Subtotal',
               choices: [
                 // [value, label]
-                ['Table With Subtotal', 'Table'],
-                ['Table With Subtotal Heatmap', 'Table Heatmap'],
-                ['Table With Subtotal Col Heatmap', 'Table Col Heatmap'],
-                ['Table With Subtotal Row Heatmap', 'Table Row Heatmap'],
+                ['Table With Subtotal', t('Table')],
+                ['Table With Subtotal Heatmap', t('Table Heatmap')],
+                ['Table With Subtotal Col Heatmap', t('Table Col Heatmap')],
+                ['Table With Subtotal Row Heatmap', t('Table Row Heatmap')],
               ],
               renderTrigger: true,
               description: t('The type of pivot table visualization'),
@@ -140,9 +158,9 @@ const config: ControlPanelConfig = {
               default: 'key_a_to_z',
               choices: [
                 // [value, label]
-                ['key_a_to_z', 'key alphabetically'],
-                ['value_a_to_z', 'value ascending'],
-                ['value_z_to_a', 'value descending'],
+                ['key_a_to_z', t('key alphabetically')],
+                ['value_a_to_z', t('value ascending')],
+                ['value_z_to_a', t('value descending')],
               ],
               renderTrigger: true,
               description: t('Order of rows'),
@@ -156,9 +174,9 @@ const config: ControlPanelConfig = {
               default: 'key_a_to_z',
               choices: [
                 // [value, label]
-                ['key_a_to_z', 'key alphabetically'],
-                ['value_a_to_z', 'value ascending'],
-                ['value_z_to_a', 'value descending'],
+                ['key_a_to_z', t('key alphabetically')],
+                ['value_a_to_z', t('value ascending')],
+                ['value_z_to_a', t('value descending')],
               ],
               renderTrigger: true,
               description: t('Order of columns'),
@@ -174,8 +192,8 @@ const config: ControlPanelConfig = {
               default: false,
               choices: [
                 // [value, label]
-                [true, 'Top'],
-                [false, 'Bottom'],
+                [true, t('Top')],
+                [false, t('Bottom')],
               ],
               renderTrigger: true,
               description: t('Position of row level subtotals'),
@@ -189,8 +207,8 @@ const config: ControlPanelConfig = {
               default: false,
               choices: [
                 // [value, label]
-                [true, 'Left'],
-                [false, 'Right'],
+                [true, t('Left')],
+                [false, t('Right')],
               ],
               renderTrigger: true,
               description: t('Position of column level subtotals'),
