@@ -213,14 +213,17 @@ export default function TableChart<D extends DataRecord = DataRecord>(
 
   const getColumnConfigs = useCallback(
     (column: DataColumnMeta, i: number): ColumnWithLooseAccessor<D> => {
-      const { key, label, dataType, isMetric } = column;
+      const { key, label, dataType, isMetric, config = {} } = column;
       let className = '';
       if (dataType === GenericDataType.NUMERIC) {
         className += ' dt-metric';
       } else if (emitFilter) {
         className += ' dt-is-filter';
       }
-      const valueRange = showCellBars && (isMetric || isRawRecords) && getValueRange(key);
+      const valueRange =
+        (config.showCellBars === undefined ? showCellBars : config.showCellBars) &&
+        (isMetric || isRawRecords) &&
+        getValueRange(key);
       return {
         id: String(i), // to allow duplicate column keys
         // must use custom accessor to allow `.` in column names

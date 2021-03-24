@@ -25,6 +25,7 @@ export type SelectOption<VT = string> = [VT, ReactNode];
 
 export type SelectProps<VT> = Omit<AntdSelectProps<VT>, 'options'> & {
   creatable?: boolean;
+  minWidth?: string | number;
   options?: SelectOption<VT>[];
 };
 
@@ -36,6 +37,7 @@ export default function Select<VT extends string | number>({
   children,
   onSearch,
   dropdownMatchSelectWidth = false,
+  minWidth = '100%',
   showSearch: showSearch_ = true,
   options,
   ...props
@@ -64,6 +66,9 @@ export default function Select<VT extends string | number>({
       showSearch={showSearch}
       onSearch={handleSearch}
       {...props}
+      css={{
+        minWidth,
+      }}
     >
       {options?.map(([val, label]) => (
         <Option value={val}>{label}</Option>

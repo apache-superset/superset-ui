@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { FunctionComponentElement } from 'react';
+import React, { FunctionComponentElement, useMemo } from 'react';
 import { FAST_DEBOUNCE, JsonObject, JsonValue, useTheme } from '@superset-ui/core';
-import { ControlFormItemNode } from './ControlFormItem';
 import { debounce } from 'lodash';
+import { ControlFormItemNode } from './ControlFormItem';
 
 export * from './ControlFormItem';
 
@@ -59,7 +59,14 @@ export type ControlFormProps = {
  */
 export default function ControlForm({ onChange, value, children }: ControlFormProps) {
   const theme = useTheme();
-  const debouncedOnChange = debounce(onChange, FAST_DEBOUNCE);
+  const debouncedOnChange = useMemo(
+    () =>
+      ({
+        0: onChange,
+        [FAST_DEBOUNCE]: debounce(onChange, FAST_DEBOUNCE),
+      } as Record<number, typeof onChange>),
+    [onChange],
+  );
 
   const updatedChildren = React.Children.map(children, row => {
     if ('children' in row.props) {
@@ -68,7 +75,12 @@ export default function ControlForm({ onChange, value, children }: ControlFormPr
         : undefined;
       return React.cloneElement(row, {
         children: React.Children.map(row.props.children, item => {
-          const { name, width, onChange: onItemValueChange } = item.props;
+          const {
+            name,
+            width,
+            debounceDelay = FAST_DEBOUNCE,
+            onChange: onItemValueChange,
+          } = item.props;
           return React.cloneElement(item, {
             width: width || defaultWidth,
             value: value?.[name],
@@ -78,7 +90,10 @@ export default function ControlForm({ onChange, value, children }: ControlFormPr
                 onItemValueChange(fieldValue);
               }
               // propagate to the form
-              debouncedOnChange({
+              if (!(debounceDelay in debouncedOnChange)) {
+                debouncedOnChange[debounceDelay] = debounce(onChange, debounceDelay);
+              }
+              debouncedOnChange[debounceDelay]({
                 ...value,
                 [name]: fieldValue,
               });

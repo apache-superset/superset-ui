@@ -48,7 +48,7 @@ const validateCssDimension = (value: string) => {
 /**
  * All configurable column formatting properties.
  */
-export const SHARED_COLUMN_CONFIG_PROPS: Record<SharedColumnConfigProp, ControlFormItemSpec> = {
+export const SHARED_COLUMN_CONFIG_PROPS = {
   d3NumberFormat: {
     controlType: 'Select',
     label: t('D3 format'),
@@ -56,7 +56,8 @@ export const SHARED_COLUMN_CONFIG_PROPS: Record<SharedColumnConfigProp, ControlF
     options: D3_FORMAT_OPTIONS,
     defaultValue: D3_FORMAT_OPTIONS[0][0],
     creatable: true,
-  },
+    minWidth: '10em',
+  } as ControlFormItemSpec<'Select'>,
 
   d3TimeFormat: {
     controlType: 'Select',
@@ -65,22 +66,23 @@ export const SHARED_COLUMN_CONFIG_PROPS: Record<SharedColumnConfigProp, ControlF
     options: D3_TIME_FORMAT_OPTIONS,
     defaultValue: D3_TIME_FORMAT_OPTIONS[0][0],
     creatable: true,
-  },
+    minWidth: '10em',
+  } as ControlFormItemSpec<'Select'>,
 
   decimal: {
     controlType: 'Slider',
     label: t('Decimals'),
     description: t('Number of decimals to round small numbers to'),
-  },
+  } as ControlFormItemSpec<'Slider'>,
 
   columnWidth: {
     controlType: 'Input',
     label: t('Column width'),
-    width: 130,
     description: t('Column width in pixels or percentages'),
+    width: 130,
     placeholder: 'auto',
     validators: [validateCssDimension],
-  },
+  } as ControlFormItemSpec<'Input'>,
 
   horizontalAlign: {
     controlType: 'RadioButtonControl',
@@ -88,17 +90,20 @@ export const SHARED_COLUMN_CONFIG_PROPS: Record<SharedColumnConfigProp, ControlF
     description: t('Horizontal alignment'),
     width: 130,
     defaultValue: 'left',
+    debounceDelay: 0,
     options: [
       ['left', t('Left')],
       ['right', t('Right')],
     ],
-  },
+  } as ControlFormItemSpec<'RadioButtonControl'>,
+
   showCellBars: {
     controlType: 'Checkbox',
     label: t('Show cell bars'),
     description: t('Whether to display a bar chart background in table columns'),
     defaultValue: true,
-  },
+    debounceDelay: 0,
+  } as ControlFormItemSpec<'Checkbox'>,
 
   alignPositiveNegative: {
     controlType: 'Checkbox',
@@ -107,14 +112,20 @@ export const SHARED_COLUMN_CONFIG_PROPS: Record<SharedColumnConfigProp, ControlF
       'Whether to align background charts with both positive and negative values at 0',
     ),
     defaultValue: false,
-  },
+    debounceDelay: 0,
+  } as ControlFormItemSpec<'Checkbox'>,
 
   colorPositiveNegative: {
     controlType: 'Checkbox',
     label: t('Color +/-'),
     description: t('Whether to colorize numeric values by if they are positive or negative'),
     defaultValue: false,
-  },
+    debounceDelay: 0,
+  } as ControlFormItemSpec<'Checkbox'>,
+};
+
+export type SharedColumnConfig = {
+  [key in SharedColumnConfigProp]?: typeof SHARED_COLUMN_CONFIG_PROPS[key]['value'];
 };
 
 export const DEFAULT_CONFIG_FORM_LAYOUT: ColumnConfigFormLayout = {

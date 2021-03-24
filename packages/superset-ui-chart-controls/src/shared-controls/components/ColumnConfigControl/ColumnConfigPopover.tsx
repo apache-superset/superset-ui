@@ -24,12 +24,12 @@ import ControlForm, {
   ControlFormItemSpec,
 } from '../../../components/ControlForm';
 import { SHARED_COLUMN_CONFIG_PROPS, SharedColumnConfigProp } from './constants';
-import { ColumnConfigFormLayout, ColumnConfigInfo } from './types';
+import { ColumnConfig, ColumnConfigFormLayout, ColumnConfigInfo } from './types';
 
 export type ColumnConfigPopoverProps = {
   column: ColumnConfigInfo;
   configFormLayout: ColumnConfigFormLayout;
-  onChange: (value: JsonObject) => void;
+  onChange: (value: ColumnConfig) => void;
 };
 
 export default function ColumnConfigPopover({

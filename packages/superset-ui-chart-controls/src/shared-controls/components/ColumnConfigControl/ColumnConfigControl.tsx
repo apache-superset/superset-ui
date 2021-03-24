@@ -17,8 +17,7 @@
  * under the License.
  */
 import React, { useMemo } from 'react';
-import { debounce } from 'lodash';
-import { ChartDataResponseResult, useTheme, t, FAST_DEBOUNCE } from '@superset-ui/core';
+import { ChartDataResponseResult, useTheme } from '@superset-ui/core';
 import ControlHeader from '../../../components/ControlHeader';
 import { ControlComponentProps } from '../types';
 
@@ -45,11 +44,6 @@ export default function ColumnConfigControl<T extends ColumnConfig>({
 }: ColumnConfigControlProps<T>) {
   const { colnames, coltypes } = queryResponse || {};
   const theme = useTheme();
-  const placeholder = (
-    <div css={{ padding: theme.gridUnit, textAlign: 'center', color: theme.colors.grayscale.base }}>
-      {t('No known columns yet')}
-    </div>
-  );
   const columnConfigs = useMemo(() => {
     const configs: Record<string, ColumnConfigInfo> = {};
     colnames?.forEach((col, idx) => {
@@ -77,7 +71,7 @@ export default function ColumnConfigControl<T extends ColumnConfig>({
     }
   };
 
-  console.log(value, colnames);
+  if (!colnames) return null;
 
   return (
     <>
@@ -88,16 +82,14 @@ export default function ColumnConfigControl<T extends ColumnConfig>({
           borderRadius: theme.gridUnit,
         }}
       >
-        {colnames
-          ? colnames.map(col => (
-              <ColumnConfigItem
-                key={col}
-                column={getColumnInfo(col)}
-                onChange={debounce(config => setColumnConfig(col, config), FAST_DEBOUNCE)}
-                configFormLayout={configFormLayout}
-              />
-            ))
-          : placeholder}
+        {colnames.map(col => (
+          <ColumnConfigItem
+            key={col}
+            column={getColumnInfo(col)}
+            onChange={config => setColumnConfig(col, config as T)}
+            configFormLayout={configFormLayout}
+          />
+        ))}
       </div>
     </>
   );

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState, FunctionComponentElement, SyntheticEvent } from 'react';
+import React, { useState, FunctionComponentElement, ChangeEvent } from 'react';
 import { JsonValue, useTheme } from '@superset-ui/core';
 import ControlHeader, { ControlHeaderProps } from '../ControlHeader';
 import InfoTooltipWithTrigger from '../InfoTooltipWithTrigger';
@@ -41,25 +41,27 @@ function isEmptyValue(value?: JsonValue) {
 export function ControlFormItem({
   name,
   label,
-  width,
   description,
+  width,
   validators,
   required,
   onChange,
   value: initialValue,
+  defaultValue,
+  controlType,
   ...props
 }: ControlFormItemProps) {
   const { gridUnit } = useTheme();
   const [hovered, setHovered] = useState(false);
-  const [value, setValue] = useState(initialValue);
+  const [value, setValue] = useState(initialValue === undefined ? defaultValue : initialValue);
   const [validationErrors, setValidationErrors] = useState<
     ControlHeaderProps['validationErrors']
   >();
 
-  const handleChange = (e: SyntheticEvent<HTMLInputElement> | JsonValue) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement> | JsonValue) => {
     const fieldValue =
       e && typeof e === 'object' && 'target' in e
-        ? 'checked' in e.target
+        ? e.target.type === 'checkbox' || e.target.type === 'radio'
           ? e.target.checked
           : e.target.value
         : e;
@@ -74,7 +76,7 @@ export function ControlFormItem({
     }
   };
 
-  const Control = ControlFormItemComponents[props.controlType];
+  const Control = ControlFormItemComponents[controlType];
 
   return (
     <div
@@ -85,7 +87,7 @@ export function ControlFormItem({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {props.controlType === 'Checkbox' ? (
+      {controlType === 'Checkbox' ? (
         <ControlFormItemComponents.Checkbox checked={value as boolean} onChange={handleChange}>
           {label} {hovered && description && <InfoTooltipWithTrigger tooltip={description} />}
         </ControlFormItemComponents.Checkbox>

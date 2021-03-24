@@ -41,35 +41,40 @@ export type ControlType = keyof typeof ControlFormItemComponents;
 
 export type ControlFormValueValidator<V> = (value: V) => string | false;
 
-export type ControlFormItemSpec = {
+export type ControlFormItemSpec<T extends ControlType = ControlType> = {
+  controlType: T;
   label: ReactNode;
   description: ReactNode;
   placeholder?: string;
   required?: boolean;
   validators?: ControlFormValueValidator<any>[];
   width?: number | string;
-} & (
-  | {
-      controlType: 'Select';
+  /**
+   * Time to delay change propagation.
+   */
+  debounceDelay?: number;
+} & (T extends 'Select'
+  ? {
       options: SelectOption<any>[];
       value?: string;
       defaultValue?: string;
       creatable?: boolean;
+      minWidth?: number | string;
       validators?: ControlFormValueValidator<string>[];
     }
-  | {
-      controlType: 'RadioButtonControl';
+  : T extends 'RadioButtonControl'
+  ? {
       options: RadioButtonOption[];
       value?: string;
       defaultValue?: string;
     }
-  | {
-      controlType: 'Checkbox';
+  : T extends 'Checkbox'
+  ? {
       value?: boolean;
       defaultValue?: boolean;
     }
-  | {
-      controlType: 'InputNumber' | 'Slider';
+  : T extends 'InputNumber' | 'Slider'
+  ? {
       min?: number;
       max?: number;
       step?: number;
@@ -77,10 +82,11 @@ export type ControlFormItemSpec = {
       defaultValue?: number;
       validators?: ControlFormValueValidator<number>[];
     }
-  | {
+  : T extends 'Input'
+  ? {
       controlType: 'Input';
       value?: string;
       defaultValue?: string;
       validators?: ControlFormValueValidator<string>[];
     }
-);
+  : {});

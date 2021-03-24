@@ -120,6 +120,22 @@ const config: ControlPanelConfig = {
       controlSetRows: [
         [
           {
+            name: 'column_config',
+            config: {
+              type: 'ColumnConfigControl',
+              label: t('Cuztomize columns'),
+              description: t('Further customize how to display each column'),
+              renderTrigger: true,
+              mapStateToProps(explore, control, chart) {
+                return {
+                  queryResponse: chart?.queriesResponse?.[0] as ChartDataResponseResult | undefined,
+                };
+              },
+            },
+          },
+        ],
+        [
+          {
             name: 'query_mode',
             config: queryMode,
           },
@@ -326,22 +342,6 @@ const config: ControlPanelConfig = {
               renderTrigger: true,
               default: false,
               description: t('Whether to apply filter to dashboards when table cells are clicked'),
-            },
-          },
-        ],
-        [
-          {
-            name: 'column_config',
-            config: {
-              type: 'ColumnConfigControl',
-              label: t('Cuztomize columns'),
-              description: t('Further customize how to display each column'),
-              renderTrigger: true,
-              mapStateToProps(explore, control, chart) {
-                return {
-                  queryResponse: chart?.queriesResponse?.[0] as ChartDataResponseResult | undefined,
-                };
-              },
             },
           },
         ],
