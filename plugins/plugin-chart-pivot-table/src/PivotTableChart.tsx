@@ -20,6 +20,8 @@ import React from 'react';
 import { styled, AdhocMetric } from '@superset-ui/core';
 // @ts-ignore
 import PivotTable from '@kgabryje/react-pivottable/PivotTable';
+// @ts-ignore
+import { sortAs } from '@kgabryje/react-pivottable/Utilities';
 import '@kgabryje/react-pivottable/pivottable.css';
 import { PivotTableProps, PivotTableStylesProps } from './types';
 
@@ -112,6 +114,9 @@ export default function PivotTableChart(props: PivotTableProps) {
         rendererName={tableRenderer}
         colOrder={colOrder}
         rowOrder={rowOrder}
+        sorters={{
+          metric: sortAs(metricNames),
+        }}
         tableOptions={{
           clickCallback: clickCellCallback,
           clickRowHeaderCallback,
