@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { GenericDataType, JsonObject, StrictJsonObject } from '@superset-ui/core';
+import { GenericDataType, JsonObject, StrictJsonValue } from '@superset-ui/core';
 import { ControlFormItemSpec } from '../../../components/ControlForm';
 import { SHARED_COLUMN_CONFIG_PROPS, SharedColumnConfigProp } from './constants';
 
@@ -26,7 +26,7 @@ import { SHARED_COLUMN_CONFIG_PROPS, SharedColumnConfigProp } from './constants'
 export type ColumnConfig = {
   [key in SharedColumnConfigProp]?: typeof SHARED_COLUMN_CONFIG_PROPS[key]['value'];
 } &
-  Record<string, StrictJsonObject>;
+  Record<string, StrictJsonValue>;
 
 /**
  * All required info about a column to render the

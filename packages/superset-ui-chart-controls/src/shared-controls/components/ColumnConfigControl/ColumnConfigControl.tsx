@@ -16,14 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useMemo } from 'react';
-import { ChartDataResponseResult, useTheme } from '@superset-ui/core';
+import React, { useMemo, useState } from 'react';
+import { ChartDataResponseResult, useTheme, t } from '@superset-ui/core';
 import ControlHeader from '../../../components/ControlHeader';
 import { ControlComponentProps } from '../types';
 
 import ColumnConfigItem from './ColumnConfigItem';
 import { ColumnConfigInfo, ColumnConfig, ColumnConfigFormLayout } from './types';
 import { DEFAULT_CONFIG_FORM_LAYOUT } from './constants';
+import { COLUMN_NAME_ALIASES } from '../../../constants';
 
 export type ColumnConfigControlProps<T extends ColumnConfig> = ControlComponentProps<
   Record<string, T>
@@ -31,6 +32,11 @@ export type ColumnConfigControlProps<T extends ColumnConfig> = ControlComponentP
   queryResponse?: ChartDataResponseResult;
   configFormLayout?: ColumnConfigFormLayout;
 };
+
+/**
+ * Max number of columns to show by default.
+ */
+const MAX_NUM_COLS = 10;
 
 /**
  * Add per-column config to queried results.
@@ -48,13 +54,14 @@ export default function ColumnConfigControl<T extends ColumnConfig>({
     const configs: Record<string, ColumnConfigInfo> = {};
     colnames?.forEach((col, idx) => {
       configs[col] = {
-        name: col,
+        name: COLUMN_NAME_ALIASES[col] || col,
         type: coltypes?.[idx],
         config: value?.[col] || {},
       };
     });
     return configs;
   }, [value, colnames, coltypes]);
+  const [showAllColumns, setShowAllColumns] = useState(false);
 
   const getColumnInfo = (col: string) => columnConfigs[col] || {};
   const setColumnConfig = (col: string, config: T) => {
@@ -73,6 +80,9 @@ export default function ColumnConfigControl<T extends ColumnConfig>({
 
   if (!colnames) return null;
 
+  const needShowMoreButton = colnames.length > MAX_NUM_COLS + 2;
+  const cols = needShowMoreButton && !showAllColumns ? colnames.slice(0, MAX_NUM_COLS) : colnames;
+
   return (
     <>
       <ControlHeader {...props} />
@@ -82,7 +92,7 @@ export default function ColumnConfigControl<T extends ColumnConfig>({
           borderRadius: theme.gridUnit,
         }}
       >
-        {colnames.map(col => (
+        {cols.map(col => (
           <ColumnConfigItem
             key={col}
             column={getColumnInfo(col)}
@@ -90,6 +100,35 @@ export default function ColumnConfigControl<T extends ColumnConfig>({
             configFormLayout={configFormLayout}
           />
         ))}
+        {needShowMoreButton && (
+          <div
+            role="button"
+            tabIndex={-1}
+            css={{
+              padding: theme.gridUnit * 2,
+              textAlign: 'center',
+              cursor: 'pointer',
+              textTransform: 'uppercase',
+              fontSize: theme.typography.sizes.xs,
+              color: theme.colors.text.label,
+              ':hover': {
+                backgroundColor: theme.colors.grayscale.light4,
+              },
+            }}
+            onClick={() => setShowAllColumns(!showAllColumns)}
+          >
+            {showAllColumns ? (
+              <>
+                <i className="fa fa-angle-up" /> &nbsp; {t('Show less columns')}
+              </>
+            ) : (
+              <>
+                <i className="fa fa-angle-down" /> &nbsp;
+                {t('Show all columns')}
+              </>
+            )}
+          </div>
+        )}
       </div>
     </>
   );

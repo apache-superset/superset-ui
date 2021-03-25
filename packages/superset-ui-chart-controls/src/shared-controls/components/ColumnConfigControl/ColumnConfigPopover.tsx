@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { GenericDataType, JsonObject } from '@superset-ui/core';
+import { GenericDataType } from '@superset-ui/core';
 import ControlForm, {
   ControlFormRow,
   ControlFormItem,

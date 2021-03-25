@@ -30,20 +30,11 @@ export type SharedColumnConfigProp =
   | 'alignPositiveNegative'
   | 'colorPositiveNegative'
   | 'columnWidth'
-  | 'decimal'
+  | 'fractionDigits'
   | 'd3NumberFormat'
   | 'd3TimeFormat'
   | 'horizontalAlign'
   | 'showCellBars';
-
-const REGEXP_CSS_DIMENSION = /^([0-9.]+(px|%)?|auto)$/i;
-
-const validateCssDimension = (value: string) => {
-  if (!REGEXP_CSS_DIMENSION.test(value)) {
-    return t('Must be a number or percentage');
-  }
-  return false;
-};
 
 /**
  * All configurable column formatting properties.
@@ -57,6 +48,7 @@ export const SHARED_COLUMN_CONFIG_PROPS = {
     defaultValue: D3_FORMAT_OPTIONS[0][0],
     creatable: true,
     minWidth: '10em',
+    debounceDelay: 400,
   } as ControlFormItemSpec<'Select'>,
 
   d3TimeFormat: {
@@ -67,52 +59,60 @@ export const SHARED_COLUMN_CONFIG_PROPS = {
     defaultValue: D3_TIME_FORMAT_OPTIONS[0][0],
     creatable: true,
     minWidth: '10em',
+    debounceDelay: 400,
   } as ControlFormItemSpec<'Select'>,
 
-  decimal: {
+  fractionDigits: {
     controlType: 'Slider',
-    label: t('Decimals'),
-    description: t('Number of decimals to round small numbers to'),
+    label: t('Fraction digits'),
+    description: t('Number of decimal digits to round numbers to'),
+    min: 0,
+    step: 1,
+    max: 100,
+    defaultValue: 100,
   } as ControlFormItemSpec<'Slider'>,
 
   columnWidth: {
-    controlType: 'Input',
-    label: t('Column width'),
-    description: t('Column width in pixels or percentages'),
-    width: 130,
+    controlType: 'InputNumber',
+    label: t('Max width'),
+    description: t(
+      'Max column width in pixels. Min width is restricted by the shortest word in the column.',
+    ),
+    width: 120,
     placeholder: 'auto',
-    validators: [validateCssDimension],
-  } as ControlFormItemSpec<'Input'>,
+    debounceDelay: 400,
+  } as ControlFormItemSpec<'InputNumber'>,
 
   horizontalAlign: {
     controlType: 'RadioButtonControl',
-    label: t('Alignment'),
+    label: t('Text align'),
     description: t('Horizontal alignment'),
     width: 130,
+    debounceDelay: 50,
     defaultValue: 'left',
-    debounceDelay: 0,
     options: [
       ['left', t('Left')],
       ['right', t('Right')],
     ],
-  } as ControlFormItemSpec<'RadioButtonControl'>,
+  } as ControlFormItemSpec<'RadioButtonControl'> & {
+    value: 'left' | 'right';
+    defaultValue: 'left' | 'right';
+  },
 
   showCellBars: {
     controlType: 'Checkbox',
     label: t('Show cell bars'),
     description: t('Whether to display a bar chart background in table columns'),
     defaultValue: true,
-    debounceDelay: 0,
+    debounceDelay: 200,
   } as ControlFormItemSpec<'Checkbox'>,
 
   alignPositiveNegative: {
     controlType: 'Checkbox',
     label: t('Align +/-'),
-    description: t(
-      'Whether to align background charts with both positive and negative values at 0',
-    ),
+    description: t('Whether to align positive and negative values in cell bar chart at 0'),
     defaultValue: false,
-    debounceDelay: 0,
+    debounceDelay: 200,
   } as ControlFormItemSpec<'Checkbox'>,
 
   colorPositiveNegative: {
@@ -120,7 +120,7 @@ export const SHARED_COLUMN_CONFIG_PROPS = {
     label: t('Color +/-'),
     description: t('Whether to colorize numeric values by if they are positive or negative'),
     defaultValue: false,
-    debounceDelay: 0,
+    debounceDelay: 200,
   } as ControlFormItemSpec<'Checkbox'>,
 };
 
@@ -135,9 +135,15 @@ export const DEFAULT_CONFIG_FORM_LAYOUT: ColumnConfigFormLayout = {
   [GenericDataType.NUMERIC]: [
     ['columnWidth', { name: 'horizontalAlign', override: { defaultValue: 'right' } }],
     ['d3NumberFormat'],
+    ['fractionDigits'],
     ['alignPositiveNegative', 'colorPositiveNegative'],
     ['showCellBars'],
   ],
-  [GenericDataType.TEMPORAL]: [],
-  [GenericDataType.BOOLEAN]: [],
+  [GenericDataType.TEMPORAL]: [
+    ['columnWidth', { name: 'horizontalAlign', override: { defaultValue: 'left' } }],
+    ['d3TimeFormat'],
+  ],
+  [GenericDataType.BOOLEAN]: [
+    ['columnWidth', { name: 'horizontalAlign', override: { defaultValue: 'left' } }],
+  ],
 };
