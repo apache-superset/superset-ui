@@ -88,7 +88,6 @@ const config: ControlPanelConfig = {
                 'Count Unique Values',
                 'List Unique Values',
                 'Sum',
-                'Integer Sum',
                 'Average',
                 'Median',
                 'Sample Variance',
@@ -130,6 +129,12 @@ const config: ControlPanelConfig = {
       label: t('Options'),
       expanded: true,
       controlSetRows: [
+        [
+          {
+            name: 'valueFormat',
+            config: { ...sharedControls.y_axis_format, label: t('Value format') },
+          },
+        ],
         [
           {
             name: 'tableRenderer',

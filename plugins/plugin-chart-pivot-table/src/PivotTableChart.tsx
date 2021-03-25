@@ -17,11 +17,11 @@
  * under the License.
  */
 import React from 'react';
-import { styled, AdhocMetric } from '@superset-ui/core';
+import { styled, AdhocMetric, getNumberFormatter } from '@superset-ui/core';
 // @ts-ignore
 import PivotTable from '@kgabryje/react-pivottable/PivotTable';
 // @ts-ignore
-import { sortAs } from '@kgabryje/react-pivottable/Utilities';
+import { sortAs, aggregatorTemplates } from '@kgabryje/react-pivottable/Utilities';
 import '@kgabryje/react-pivottable/pivottable.css';
 import { PivotTableProps, PivotTableStylesProps } from './types';
 
@@ -81,7 +81,31 @@ export default function PivotTableChart(props: PivotTableProps) {
     colSubtotalPosition,
     colTotals,
     rowTotals,
+    valueFormat,
   } = props;
+
+  const adaptiveFormatter = getNumberFormatter(valueFormat);
+
+  const aggregators = (tpl => ({
+    Count: tpl.count(adaptiveFormatter),
+    'Count Unique Values': tpl.countUnique(adaptiveFormatter),
+    'List Unique Values': tpl.listUnique(', '),
+    Sum: tpl.sum(adaptiveFormatter),
+    Average: tpl.average(adaptiveFormatter),
+    Median: tpl.median(adaptiveFormatter),
+    'Sample Variance': tpl.var(1, adaptiveFormatter),
+    'Sample Standard Deviation': tpl.stdev(1, adaptiveFormatter),
+    Minimum: tpl.min(adaptiveFormatter),
+    Maximum: tpl.max(adaptiveFormatter),
+    First: tpl.first(adaptiveFormatter),
+    Last: tpl.last(adaptiveFormatter),
+    'Sum as Fraction of Total': tpl.fractionOf(tpl.sum(), 'total', adaptiveFormatter),
+    'Sum as Fraction of Rows': tpl.fractionOf(tpl.sum(), 'row', adaptiveFormatter),
+    'Sum as Fraction of Columns': tpl.fractionOf(tpl.sum(), 'col', adaptiveFormatter),
+    'Count as Fraction of Total': tpl.fractionOf(tpl.count(), 'total', adaptiveFormatter),
+    'Count as Fraction of Rows': tpl.fractionOf(tpl.count(), 'row', adaptiveFormatter),
+    'Count as Fraction of Columns': tpl.fractionOf(tpl.count(), 'col', adaptiveFormatter),
+  }))(aggregatorTemplates);
 
   const metricNames = metrics.map((metric: string | AdhocMetric) =>
     typeof metric === 'string' ? metric : (metric.label as string),
@@ -109,6 +133,7 @@ export default function PivotTableChart(props: PivotTableProps) {
         data={unpivotedData}
         rows={rows}
         cols={cols}
+        aggregators={aggregators}
         aggregatorName={aggregateFunction}
         vals={['value']}
         rendererName={tableRenderer}

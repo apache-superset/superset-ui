@@ -63,6 +63,7 @@ export default function transformProps(chartProps: ChartProps) {
     colSubtotalPosition,
     colTotals,
     rowTotals,
+    valueFormat,
   } = formData;
 
   return {
@@ -81,5 +82,6 @@ export default function transformProps(chartProps: ChartProps) {
     colSubtotalPosition,
     colTotals,
     rowTotals,
+    valueFormat,
   };
 }

@@ -36,6 +36,7 @@ interface PivotTableCustomizeProps {
   colSubtotalPosition: boolean;
   colTotals: boolean;
   rowTotals: boolean;
+  valueFormat: string;
 }
 
 export type PivotTableQueryFormData = QueryFormData &
