@@ -2640,10 +2640,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@kgabryje/react-pivottable@^0.12.2":
-  version "0.12.2"
-  resolved "https://registry.yarnpkg.com/@kgabryje/react-pivottable/-/react-pivottable-0.12.2.tgz#b109e6de1cd5e7d9c61e1764923a5bc73373ab5e"
-  integrity sha512-jgSyOd65vA7Etqx+BV9bV8vG5BPy+xyGVlzbnwhFiBkrLCYG9MHXHICtpIua7nRC8kHDZuSkBoCqAc+kJOJmGA==
+"@kgabryje/react-pivottable@^0.12.3":
+  version "0.12.3"
+  resolved "https://registry.yarnpkg.com/@kgabryje/react-pivottable/-/react-pivottable-0.12.3.tgz#7c64408b7a4087510ea6ef3ca324dab0dd578f2e"
+  integrity sha512-PZzFbwLuQfL27kzAlBhS/IwCRwC2IgRaEjw46sZpmdtYytGCiM565a0j33YsZh8LDxtnZkchy3VrxwGgW+6vsQ==
   dependencies:
     immutability-helper "^3.1.1"
     prop-types "^15.7.2"
