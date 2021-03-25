@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { GenericDataType, t } from '@superset-ui/core';
+import { GenericDataType, t, validateNumber } from '@superset-ui/core';
 import {
   D3_FORMAT_DOCS,
   D3_FORMAT_OPTIONS,
@@ -74,13 +74,14 @@ export const SHARED_COLUMN_CONFIG_PROPS = {
 
   columnWidth: {
     controlType: 'InputNumber',
-    label: t('Max width'),
+    label: t('Width'),
     description: t(
-      'Max column width in pixels. Min width is restricted by the shortest word in the column.',
+      'Default column width in pixels, may still be restricted by the shortest/longest word in the column',
     ),
     width: 120,
     placeholder: 'auto',
     debounceDelay: 400,
+    validators: [validateNumber],
   } as ControlFormItemSpec<'InputNumber'>,
 
   horizontalAlign: {

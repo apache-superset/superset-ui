@@ -284,7 +284,6 @@ function useInstance<D extends object>(instance: TableInstance<D>) {
     data,
     page,
     rows,
-    columns,
     getTableSize = () => undefined,
   } = instance;
 
@@ -333,7 +332,7 @@ function useInstance<D extends object>(instance: TableInstance<D>) {
 
 export default function useSticky<D extends object>(hooks: Hooks<D>) {
   hooks.useInstance.push(useInstance);
-  hooks.stateReducers.push((newState, action_, prevState, instance) => {
+  hooks.stateReducers.push((newState, action_, prevState) => {
     const action = action_ as ReducerAction<ReducerActions, { size: StickyState }>;
     if (action.type === ReducerActions.init) {
       return {

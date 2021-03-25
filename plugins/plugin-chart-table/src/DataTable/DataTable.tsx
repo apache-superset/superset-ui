@@ -41,7 +41,6 @@ import SelectPageSize, { SelectPageSizeProps, SizeOption } from './components/Se
 import SimplePagination from './components/Pagination';
 import useSticky from './hooks/useSticky';
 import { PAGE_SIZE_OPTIONS } from '../consts';
-import { useMemo } from 'react';
 
 export interface DataTableProps<D extends object> extends TableOptions<D> {
   tableClassName?: string;
