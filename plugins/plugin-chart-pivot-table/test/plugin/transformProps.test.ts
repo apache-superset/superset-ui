@@ -3,14 +3,19 @@ import transformProps from '../../src/plugin/transformProps';
 
 describe('PivotTableChart tranformProps', () => {
   const formData = {
-    colorScheme: 'bnbColors',
-    datasource: '3__table',
-    granularity_sqla: 'ds',
-    metric: 'sum__num',
-    series: 'name',
-    boldText: true,
-    headerFontSize: 'xs',
-    headerText: 'my text',
+    groupbyRows: ['row1', 'row2'],
+    groupbyColumns: ['col1', 'col2'],
+    metrics: ['metric1', 'metric2'],
+    tableRenderer: 'Table With Subtotal',
+    colOrder: 'key_a_to_z',
+    rowOrder: 'key_a_to_z',
+    aggregateFunction: 'Sum',
+    transposePivot: true,
+    rowSubtotalPosition: true,
+    colSubtotalPosition: true,
+    colTotals: true,
+    rowTotals: true,
+    valueFormat: 'SMART_NUMBER',
   };
   const chartProps = new ChartProps({
     formData,
@@ -27,10 +32,20 @@ describe('PivotTableChart tranformProps', () => {
     expect(transformProps(chartProps)).toEqual({
       width: 800,
       height: 600,
-      boldText: true,
-      headerFontSize: 'xs',
-      headerText: 'my text',
-      data: [{ name: 'Hulk', sum__num: 1, __timestamp: new Date(599616000000) }],
+      groupbyRows: ['row1', 'row2'],
+      groupbyColumns: ['col1', 'col2'],
+      metrics: ['metric1', 'metric2'],
+      tableRenderer: 'Table With Subtotal',
+      colOrder: 'key_a_to_z',
+      rowOrder: 'key_a_to_z',
+      aggregateFunction: 'Sum',
+      transposePivot: true,
+      rowSubtotalPosition: true,
+      colSubtotalPosition: true,
+      colTotals: true,
+      rowTotals: true,
+      valueFormat: 'SMART_NUMBER',
+      data: [{ name: 'Hulk', sum__num: 1, __timestamp: 599616000000 }],
     });
   });
 });
