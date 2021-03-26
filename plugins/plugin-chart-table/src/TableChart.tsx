@@ -228,7 +228,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         config.alignPositiveNegative === undefined ? defaultAlignPN : config.alignPositiveNegative;
       const colorPositiveNegative =
         config.colorPositiveNegative === undefined ? defaultColorPN : config.colorPositiveNegative;
-      const { fractionDigits } = config;
+      const fractionDigits = isNumber ? config.fractionDigits : undefined;
 
       const valueRange =
         (config.showCellBars === undefined ? showCellBars : config.showCellBars) &&
@@ -248,7 +248,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         accessor: ((datum: D) => datum[key]) as never,
         Cell: ({ value }: { column: ColumnInstance<D>; value: DataRecordValue }) => {
           let rounded = value;
-          if (fractionDigits !== undefined && isNumber && typeof value === 'number') {
+          if (fractionDigits !== undefined && typeof value === 'number') {
             rounded = Number(value.toFixed(fractionDigits));
           }
           const [isHtml, text] = formatValue(column, rounded);
@@ -292,7 +292,8 @@ export default function TableChart<D extends DataRecord = DataRecord>(
             }}
             onClick={onClick}
           >
-            {config.columnWidth && (
+            {/* can't use `columnWidth &&` because it may also be zero */}
+            {config.columnWidth ? (
               // column width hint
               <div
                 style={{
@@ -300,7 +301,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
                   height: 0.01,
                 }}
               />
-            )}
+            ) : null}
             {label}
             <SortIcon column={col} />
           </th>

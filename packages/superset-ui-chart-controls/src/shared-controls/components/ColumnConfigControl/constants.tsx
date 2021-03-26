@@ -16,7 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import React from 'react';
 import { GenericDataType, t, validateNumber } from '@superset-ui/core';
+import { FaAlignLeft, FaAlignRight, FaAlignCenter } from 'react-icons/fa';
 import {
   D3_FORMAT_DOCS,
   D3_FORMAT_OPTIONS,
@@ -92,12 +94,13 @@ export const SHARED_COLUMN_CONFIG_PROPS = {
     debounceDelay: 50,
     defaultValue: 'left',
     options: [
-      ['left', t('Left')],
-      ['right', t('Right')],
+      ['left', <FaAlignLeft title={t('Left')} />],
+      ['center', <FaAlignCenter title={t('Center')} />],
+      ['right', <FaAlignRight title={t('Right')} />],
     ],
   } as ControlFormItemSpec<'RadioButtonControl'> & {
-    value: 'left' | 'right';
-    defaultValue: 'left' | 'right';
+    value: 'left' | 'right' | 'center';
+    defaultValue: 'left' | 'right' | 'center';
   },
 
   showCellBars: {

@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { ReactText, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { JsonValue, useTheme } from '@superset-ui/core';
 import ControlHeader from '../../components/ControlHeader';
 
 // [value, label]
-export type RadioButtonOption = [JsonValue, ReactText];
+export type RadioButtonOption = [JsonValue, Exclude<ReactNode, null | undefined | boolean>];
 
 export interface RadioButtonControlProps {
   label?: ReactNode;
@@ -43,6 +43,10 @@ export default function RadioButtonControl({
   return (
     <div
       css={{
+        '.btn svg': {
+          position: 'relative',
+          top: '0.2em',
+        },
         '.btn:focus': {
           outline: 'none',
         },
