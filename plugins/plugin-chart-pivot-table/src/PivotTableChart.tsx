@@ -19,10 +19,10 @@
 import React from 'react';
 import { styled, AdhocMetric, getNumberFormatter } from '@superset-ui/core';
 // @ts-ignore
-import PivotTable from '@kgabryje/react-pivottable/PivotTable';
+import PivotTable from '@superset-ui/react-pivottable/PivotTable';
 // @ts-ignore
-import { sortAs, aggregatorTemplates } from '@kgabryje/react-pivottable/Utilities';
-import '@kgabryje/react-pivottable/pivottable.css';
+import { sortAs, aggregatorTemplates } from '@superset-ui/react-pivottable/Utilities';
+import '@superset-ui/react-pivottable/pivottable.css';
 import { PivotTableProps, PivotTableStylesProps } from './types';
 
 const Styles = styled.div<PivotTableStylesProps>`
