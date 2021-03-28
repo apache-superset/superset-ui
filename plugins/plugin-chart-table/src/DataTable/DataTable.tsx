@@ -107,11 +107,11 @@ export default function DataTable<D extends object>({
     sortBy: sortByRef.current,
     pageSize: initialPageSize > 0 ? initialPageSize : resultsSize || 10,
   };
-
   const defaultWrapperRef = useRef<HTMLDivElement>(null);
   const globalControlRef = useRef<HTMLDivElement>(null);
   const paginationRef = useRef<HTMLDivElement>(null);
   const wrapperRef = userWrapperRef || defaultWrapperRef;
+  const paginationData = JSON.stringify(serverPaginationData);
 
   const defaultGetTableSize = useCallback(() => {
     if (wrapperRef.current) {
@@ -134,7 +134,7 @@ export default function DataTable<D extends object>({
     hasGlobalControl,
     paginationRef,
     resultsSize,
-    JSON.stringify(serverPaginationData),
+    paginationData,
   ]);
 
   const defaultGlobalFilter: FilterType<D> = useCallback(
@@ -187,8 +187,10 @@ export default function DataTable<D extends object>({
   const noResults =
     typeof noResultsText === 'function' ? noResultsText(filterValue as string) : noResultsText;
 
+  const getNoResults = () => <div className="dt-no-results">{noResults}</div>;
+
   if (!columns || columns.length === 0) {
-    return <div className="dt-no-results">{noResults}</div>;
+    return (wrapStickyTable ? wrapStickyTable(getNoResults) : getNoResults()) as JSX.Element;
   }
 
   const renderTable = () => (

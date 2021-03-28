@@ -18,7 +18,14 @@
  * under the License.
  */
 import React, { ReactNode, ReactText, ReactElement } from 'react';
-import { QueryFormData, DatasourceType, Metric } from '@superset-ui/core';
+import {
+  QueryFormData,
+  DatasourceType,
+  Metric,
+  JsonValue,
+  Column,
+  ColumnType,
+} from '@superset-ui/core';
 import sharedControls from './shared-controls';
 import sharedControlComponents from './shared-controls/components';
 
@@ -38,16 +45,10 @@ export type SharedControlComponents = typeof sharedControlComponents;
 /** ----------------------------------------------
  * Input data/props while rendering
  * ---------------------------------------------*/
-export interface ColumnMeta extends AnyDict {
-  column_name: string;
-  groupby?: string;
-  verbose_name?: string;
-  description?: string;
-  expression?: string;
-  is_dttm?: boolean;
-  type?: string;
-  filterable?: boolean;
-}
+export type ColumnMeta = Omit<Column, 'id' | 'type'> & {
+  id?: number;
+  type?: ColumnType;
+} & AnyDict;
 
 export interface DatasourceMeta {
   id: number;
@@ -89,7 +90,9 @@ export interface ControlPanelActionDispatchers {
 /**
  * Additional control props obtained from `mapStateToProps`.
  */
-export type ExtraControlProps = AnyDict;
+export type ExtraControlProps = {
+  value?: JsonValue;
+} & AnyDict;
 
 // Ref:superset-frontend/src/explore/store.js
 export type ControlState<T = ControlType, O extends SelectOption = SelectOption> = ControlConfig<
@@ -141,6 +144,7 @@ export type InternalControlType =
   | 'FilterBoxItemControl'
   | 'DndColumnSelect'
   | 'DndFilterSelect'
+  | 'DndMetricSelect'
   | keyof SharedControlComponents; // expanded in `expandControlConfig`
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -179,7 +183,7 @@ export type TabOverride = 'data' | 'customize' | boolean;
 export interface BaseControlConfig<
   T extends ControlType = ControlType,
   O extends SelectOption = SelectOption,
-  V = unknown
+  V = JsonValue
 > extends AnyDict {
   type: T;
   label?: ReactNode;
@@ -189,8 +193,15 @@ export interface BaseControlConfig<
   validators?: ControlValueValidator<T, O, V>[];
   warning?: ReactNode;
   error?: ReactNode;
-  // override control panel state props
-  mapStateToProps?: (state: ControlPanelState, control: this) => ExtraControlProps;
+  /**
+   * Add additional props to chart control.
+   */
+  mapStateToProps?: (
+    state: ControlPanelState,
+    controlState: this & ExtraControlProps,
+    // TODO: add strict `chartState` typing (see superset-frontend/src/explore/types)
+    chartState?: AnyDict,
+  ) => ExtraControlProps;
   visibility?: (props: ControlPanelsContainerProps) => boolean;
 }
 
@@ -199,14 +210,15 @@ export interface ControlValueValidator<
   O extends SelectOption = SelectOption,
   V = unknown
 > {
-  (value: V, state: ControlState<T, O>): boolean | string;
+  (value: V, state?: ControlState<T, O>): boolean | string;
 }
 
 /** --------------------------------------------
  * Additional Config for specific control Types
  * --------------------------------------------- */
-type SelectOption = AnyDict | string | [ReactText, ReactNode];
-type SelectControlType =
+export type SelectOption = AnyDict | string | [ReactText, ReactNode];
+
+export type SelectControlType =
   | 'SelectControl'
   | 'SelectAsyncControl'
   | 'MetricsControl'

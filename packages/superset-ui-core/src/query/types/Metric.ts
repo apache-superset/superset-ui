@@ -29,7 +29,10 @@ export interface AdhocMetricBase {
 
 export interface AdhocMetricSimple extends AdhocMetricBase {
   expressionType: 'SIMPLE';
-  column: Column;
+  column: Omit<Column, 'column_name'> & {
+    column_name?: string;
+    columnName?: string;
+  };
   aggregate: Aggregate;
 }
 
@@ -58,6 +61,7 @@ export interface Metric {
   description?: Maybe<string>;
   is_certified?: boolean;
   verbose_name?: string;
+  warning_markdown?: Maybe<string>;
   warning_text?: Maybe<string>;
 }
 

@@ -41,7 +41,15 @@ export enum ColumnType {
 export interface Column {
   id: number;
   type: ColumnType;
-  columnName: string;
+  column_name: string;
+  groupby?: boolean;
+  is_dttm?: boolean;
+  filterable?: boolean;
+  verbose_name?: string | null;
+  description?: string | null;
+  expression?: string | null;
+  database_expression?: string | null;
+  python_date_format?: string | null;
 }
 
 export default {};

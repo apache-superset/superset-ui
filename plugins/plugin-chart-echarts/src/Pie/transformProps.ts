@@ -18,10 +18,10 @@
  */
 import {
   CategoricalColorNamespace,
-  ChartProps,
-  DataRecord,
+  DataRecordValue,
   getMetricLabel,
   getNumberFormatter,
+  getTimeFormatter,
   NumberFormats,
   NumberFormatter,
 } from '@superset-ui/core';
@@ -29,11 +29,18 @@ import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { EChartsOption, PieSeriesOption } from 'echarts';
 import {
   DEFAULT_FORM_DATA as DEFAULT_PIE_FORM_DATA,
+  EchartsPieChartProps,
   EchartsPieFormData,
   EchartsPieLabelType,
+  PieChartTransformedProps,
 } from './types';
-import { DEFAULT_LEGEND_FORM_DATA, EchartsProps } from '../types';
-import { extractGroupbyLabel, getChartPadding, getLegendProps } from '../utils/series';
+import { DEFAULT_LEGEND_FORM_DATA } from '../types';
+import {
+  extractGroupbyLabel,
+  getChartPadding,
+  getColtypesMapping,
+  getLegendProps,
+} from '../utils/series';
 import { defaultGrid, defaultTooltip } from '../defaults';
 
 const percentFormatter = getNumberFormatter(NumberFormats.PERCENT_2_POINT);
@@ -50,6 +57,7 @@ export function formatPieLabel({
   const { name = '', value, percent } = params;
   const formattedValue = numberFormatter(value as number);
   const formattedPercent = percentFormatter((percent as number) / 100);
+
   switch (labelType) {
     case EchartsPieLabelType.Key:
       return name;
@@ -68,9 +76,10 @@ export function formatPieLabel({
   }
 }
 
-export default function transformProps(chartProps: ChartProps): EchartsProps {
-  const { width, height, formData, queriesData } = chartProps;
-  const data: DataRecord[] = queriesData[0].data || [];
+export default function transformProps(chartProps: EchartsPieChartProps): PieChartTransformedProps {
+  const { formData, height, hooks, ownCurrentState, queriesData, width } = chartProps;
+  const { data = [] } = queriesData[0];
+  const coltypeMapping = getColtypesMapping(queriesData[0]);
 
   const {
     colorScheme,
@@ -85,18 +94,49 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     legendType,
     metric = '',
     numberFormat,
+    dateFormat,
     outerRadius,
     showLabels,
     showLegend,
+    showLabelsThreshold,
+    emitFilter,
   }: EchartsPieFormData = { ...DEFAULT_LEGEND_FORM_DATA, ...DEFAULT_PIE_FORM_DATA, ...formData };
   const metricLabel = getMetricLabel(metric);
 
-  const keys = data.map(datum => extractGroupbyLabel({ datum, groupby }));
+  const keys = data.map(datum =>
+    extractGroupbyLabel({
+      datum,
+      groupby,
+      coltypeMapping,
+      timeFormatter: getTimeFormatter(dateFormat),
+    }),
+  );
+  const labelMap = data.reduce((acc: Record<string, DataRecordValue[]>, datum) => {
+    const label = extractGroupbyLabel({
+      datum,
+      groupby,
+      coltypeMapping,
+      timeFormatter: getTimeFormatter(dateFormat),
+    });
+    return {
+      ...acc,
+      [label]: groupby.map(col => datum[col]),
+    };
+  }, {});
+
+  const { setDataMask = () => {} } = hooks;
+
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const numberFormatter = getNumberFormatter(numberFormat);
 
   const transformedData: PieSeriesOption[] = data.map(datum => {
-    const name = extractGroupbyLabel({ datum, groupby });
+    const name = extractGroupbyLabel({
+      datum,
+      groupby,
+      coltypeMapping,
+      timeFormatter: getTimeFormatter(dateFormat),
+    });
+
     return {
       value: datum[metricLabel],
       name,
@@ -106,8 +146,26 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     };
   });
 
-  const formatter = (params: CallbackDataParams) =>
-    formatPieLabel({ params, numberFormatter, labelType });
+  const selectedValues = (ownCurrentState.selectedValues || []).reduce(
+    (acc: Record<string, number>, selectedValue: string) => {
+      const index = transformedData.findIndex(({ name }) => name === selectedValue);
+      return {
+        ...acc,
+        [index]: selectedValue,
+      };
+    },
+    {},
+  );
+
+  const formatter = (params: CallbackDataParams) => {
+    if (params.percent && params.percent < showLabelsThreshold) return '';
+
+    return formatPieLabel({
+      params,
+      numberFormatter,
+      labelType,
+    });
+  };
 
   const defaultLabel = {
     formatter,
@@ -168,8 +226,14 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   };
 
   return {
+    formData,
     width,
     height,
     echartOptions,
+    setDataMask,
+    emitFilter,
+    labelMap,
+    groupby,
+    selectedValues,
   };
 }

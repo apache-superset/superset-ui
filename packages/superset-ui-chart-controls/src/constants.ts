@@ -16,7 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { t } from '@superset-ui/core';
+import { t, QueryMode } from '@superset-ui/core';
+import { DTTM_ALIAS } from '@superset-ui/core/src/query/buildQueryObject';
+import { ColumnMeta } from './types';
 
 // eslint-disable-next-line import/prefer-default-export
 export const TIME_FILTER_LABELS = {
@@ -25,4 +27,19 @@ export const TIME_FILTER_LABELS = {
   time_grain_sqla: t('Time Grain'),
   druid_time_origin: t('Origin'),
   granularity: t('Time Granularity'),
+};
+
+export const COLUMN_NAME_ALIASES: Record<string, string> = {
+  [DTTM_ALIAS]: t('Time'),
+};
+
+export const TIME_COLUMN_OPTION: ColumnMeta = {
+  verbose_name: COLUMN_NAME_ALIASES[DTTM_ALIAS],
+  column_name: DTTM_ALIAS,
+  description: t('A reference to the [Time] configuration, taking granularity into account'),
+};
+
+export const QueryModeLabel = {
+  [QueryMode.aggregate]: t('Aggregate'),
+  [QueryMode.raw]: t('Raw records'),
 };
