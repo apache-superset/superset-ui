@@ -81,7 +81,7 @@ export interface RadarChartTransformedProps {
   width: number;
   echartOptions: EChartsOption;
   setDataMask: SetDataMaskHook;
-  labelMap: Record<string, DataRecordValue[]>;
+  labelMap: Map<string, DataRecordValue[]>;
   groupby: string[];
   selectedValues: Record<number, string>;
 }

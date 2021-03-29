@@ -25,9 +25,10 @@ import {
   NumberFormatter,
 } from '@superset-ui/core';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
-import { EChartsOption, RadarSeriesOption, RadarSeriesDataValue } from 'echarts';
+import { RadarSeriesDataItemOption } from 'echarts/types/src/chart/radar/RadarSeries';
+import { EChartsOption, RadarSeriesOption } from 'echarts';
 import {
-  DEFAULT_FORM_DATA as DEFAULT_PIE_FORM_DATA,
+  DEFAULT_FORM_DATA as DEFAULT_RADAR_FORM_DATA,
   EchartsRadarChartProps,
   EchartsRadarFormData,
   EchartsRadarLabelType,
@@ -63,7 +64,7 @@ export default function transformProps(
   chartProps: EchartsRadarChartProps,
 ): RadarChartTransformedProps {
   const { formData, height, hooks, ownCurrentState, queriesData, width } = chartProps;
-  const { data = [] } = queriesData.length > 0 ? queriesData[0] : {};
+  const { data = [] } = queriesData[0];
   const coltypeMapping = getColtypesMapping(queriesData[0]);
 
   const {
@@ -79,30 +80,7 @@ export default function transformProps(
     showLabels,
     showLegend,
     isCircle,
-  }: EchartsRadarFormData = { ...DEFAULT_LEGEND_FORM_DATA, ...DEFAULT_PIE_FORM_DATA, ...formData };
-  const metricsLabel = metrics.map(metric => getMetricLabel(metric));
-
-  const keys = data.map(datum =>
-    extractGroupbyLabel({
-      datum,
-      groupby,
-      coltypeMapping,
-      timeFormatter: getTimeFormatter(dateFormat),
-    }),
-  );
-  const labelMap = data.reduce((acc: Record<string, DataRecordValue[]>, datum) => {
-    const label = extractGroupbyLabel({
-      datum,
-      groupby,
-      coltypeMapping,
-      timeFormatter: getTimeFormatter(dateFormat),
-    });
-    return {
-      ...acc,
-      [label]: groupby.map(col => datum[col]),
-    };
-  }, {});
-
+  }: EchartsRadarFormData = { ...DEFAULT_LEGEND_FORM_DATA, ...DEFAULT_RADAR_FORM_DATA, ...formData };
   const { setDataMask = () => {} } = hooks;
 
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
@@ -114,27 +92,34 @@ export default function transformProps(
       labelType,
     });
 
-  const transformedData: RadarSeriesDataValue[] = data.map(datum => {
-    const name = extractGroupbyLabel({
+  const metricsLabel = metrics.map(metric => getMetricLabel(metric));
+
+  let columnsLabelMap = new Map<string, DataRecordValue[]>();
+  let transformedData: RadarSeriesDataItemOption[] = [];
+  data.forEach(datum => {
+    const joinedName = extractGroupbyLabel({
       datum,
       groupby,
       coltypeMapping,
       timeFormatter: getTimeFormatter(dateFormat),
     });
+    // map(joined_name: [columnLabel_1, columnLabel_2, ...])
+    columnsLabelMap.set(joinedName, groupby);
 
-    return {
+    // generate transformedData
+    transformedData.push({
       value: metricsLabel.map(metricLabel => datum[metricLabel]),
-      name,
+      name: joinedName,
       itemStyle: {
-        color: colorFn(name),
+        color: colorFn(joinedName),
       },
       label: {
         show: showLabels,
         position: labelPosition,
         formatter,
       },
-    };
-  });
+    } as RadarSeriesDataItemOption)
+  })
 
   const selectedValues = (ownCurrentState.selectedValues || []).reduce(
     (acc: Record<string, number>, selectedValue: string) => {
@@ -148,7 +133,7 @@ export default function transformProps(
   );
 
   const indicator = metricsLabel.map(metricLabel => ({
-    name: metricLabel,
+    text: metricLabel,
   }));
 
   const series: RadarSeriesOption[] = [
@@ -176,7 +161,7 @@ export default function transformProps(
     },
     legend: {
       ...getLegendProps(legendType, legendOrientation, showLegend),
-      data: keys,
+      data: Array.from(columnsLabelMap.keys()),
     },
     series,
     radar: {
@@ -191,7 +176,7 @@ export default function transformProps(
     height,
     echartOptions,
     setDataMask,
-    labelMap,
+    labelMap: columnsLabelMap,
     groupby,
     selectedValues,
   };
