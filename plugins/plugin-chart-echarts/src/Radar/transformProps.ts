@@ -80,7 +80,11 @@ export default function transformProps(
     showLabels,
     showLegend,
     isCircle,
-  }: EchartsRadarFormData = { ...DEFAULT_LEGEND_FORM_DATA, ...DEFAULT_RADAR_FORM_DATA, ...formData };
+  }: EchartsRadarFormData = {
+    ...DEFAULT_LEGEND_FORM_DATA,
+    ...DEFAULT_RADAR_FORM_DATA,
+    ...formData,
+  };
   const { setDataMask = () => {} } = hooks;
 
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
@@ -94,8 +98,8 @@ export default function transformProps(
 
   const metricsLabel = metrics.map(metric => getMetricLabel(metric));
 
-  let columnsLabelMap = new Map<string, DataRecordValue[]>();
-  let transformedData: RadarSeriesDataItemOption[] = [];
+  const columnsLabelMap = new Map<string, DataRecordValue[]>();
+  const transformedData: RadarSeriesDataItemOption[] = [];
   data.forEach(datum => {
     const joinedName = extractGroupbyLabel({
       datum,
@@ -118,8 +122,8 @@ export default function transformProps(
         position: labelPosition,
         formatter,
       },
-    } as RadarSeriesDataItemOption)
-  })
+    } as RadarSeriesDataItemOption);
+  });
 
   const selectedValues = (ownCurrentState.selectedValues || []).reduce(
     (acc: Record<string, number>, selectedValue: string) => {
