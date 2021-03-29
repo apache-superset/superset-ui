@@ -230,6 +230,18 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+        [
+          {
+            name: 'show_totals',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Show totals'),
+              default: true,
+              description: t('Show metrics totals'),
+              visibility: isAggMode,
+            },
+          },
+        ],
         ['adhoc_filters'],
       ],
     },

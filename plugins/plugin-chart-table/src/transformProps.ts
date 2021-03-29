@@ -200,17 +200,22 @@ const transformProps = (chartProps: TableChartProps): TableChartTransformedProps
     server_page_length: serverPageLength = 10,
     order_desc: sortDesc = false,
     query_mode: queryMode,
+    show_totals: showTotals,
   } = formData;
 
   const [metrics, percentMetrics, columns] = processColumns(chartProps);
   const data = processDataRecords(queriesData?.[0]?.data, columns);
-  const rowCount = queriesData?.[1]?.data?.[0]?.rowcount as number;
+  const rowCount = serverPagination
+    ? (queriesData?.[1]?.data?.[0]?.rowcount as number)
+    : queriesData?.[0]?.rowcount;
+  const totals = showTotals && queriesData?.[queriesData.length - 1]?.data[0];
 
   return {
     height,
     width,
     isRawRecords: queryMode === QueryMode.raw,
     data,
+    totals,
     columns,
     serverPagination,
     metrics,

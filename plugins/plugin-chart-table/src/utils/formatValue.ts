@@ -42,7 +42,7 @@ export default function formatValue(
   formatter: DataColumnMeta['formatter'],
   value: DataRecordValue,
 ): [boolean, string] {
-  if (value === null) {
+  if (value === null || typeof value === 'undefined') {
     return [false, 'N/A'];
   }
   if (formatter) {

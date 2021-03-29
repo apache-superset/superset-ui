@@ -154,6 +154,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     height,
     width,
     data,
+    totals,
     isRawRecords,
     rowCount = 0,
     columns: columnsMeta,
@@ -344,6 +345,8 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     <Styles>
       <DataTable<D>
         columns={columns}
+        columnsMeta={columnsMeta}
+        totals={totals}
         data={data}
         rowCount={rowCount}
         tableClassName="table table-striped table-condensed"
