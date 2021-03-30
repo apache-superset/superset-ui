@@ -61,7 +61,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
 
   if (rootNodeId) {
     data.forEach(node => {
-      if (node[relation] == rootNodeId) {
+      if (node[relation] === rootNodeId) {
         tree.children!.push(
           {
             name: node[name] as OptionName,
