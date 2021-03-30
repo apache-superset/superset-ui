@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartProps, getMetricLabel, DataRecord } from '@superset-ui/core';
+import { ChartProps, getMetricLabel } from '@superset-ui/core';
 import { EChartsOption, TreeSeriesOption } from 'echarts';
 import { TreeSeriesNodeItemOption } from 'echarts/types/src/chart/tree/TreeSeries';
 import {

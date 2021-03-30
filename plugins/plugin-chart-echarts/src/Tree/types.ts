@@ -17,8 +17,7 @@
  * under the License.
  */
 import { TreeSeriesNodeItemOption } from 'echarts/types/src/chart/tree/TreeSeries';
-import { DataRecord, DataRecordValue } from '@superset-ui/core';
-import { OptionDataValue, OptionName } from 'echarts/types/src/util/types';
+import { DataRecordValue } from '@superset-ui/core';
 
 export type EchartsTreeFormData = {
   id: string;
@@ -56,6 +55,5 @@ export type tooltipFormatParams = {
 export declare type TreeDataRecordValue = DataRecordValue | TreeSeriesNodeItemOption[];
 
 export type TreeDataRecord = {
-  //[key: string]: DataRecordValue | OptionName | TreeSeriesNodeItemOption[]| undefined;
   [key: string]: TreeDataRecordValue;
 };
