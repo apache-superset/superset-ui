@@ -21,7 +21,6 @@ import { TreeSeriesOption } from 'echarts';
 export const DEFAULT_TREE_SERIES_OPTION: TreeSeriesOption = {
   label: {
     position: 'left',
-
     fontSize: 15,
   },
   animation: true,

@@ -272,25 +272,21 @@ describe('EchartsTree tranformProps', () => {
           {
             id_column: '1',
             relation_column: null,
-
             count: 10,
           },
           {
             id_column: '2',
             relation_column: '1',
-
             count: 10,
           },
           {
             id_column: '3',
             relation_column: '2',
-
             count: 10,
           },
           {
             id_column: '4',
             relation_column: '3',
-
             count: 20,
           },
         ],

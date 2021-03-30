@@ -216,7 +216,7 @@ const controlPanel: ControlPanelConfig = {
               type: 'RadioButtonControl',
               renderTrigger: true,
               label: t('Symbol'),
-              default: DEFAULT_FORM_DATA.layout,
+              default: DEFAULT_FORM_DATA.symbol,
               options: [
                 {
                   label: 'empty circle',
