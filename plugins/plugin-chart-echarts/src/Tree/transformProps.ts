@@ -19,6 +19,7 @@
 import { ChartProps, getMetricLabel } from '@superset-ui/core';
 import { EChartsOption, TreeSeriesOption } from 'echarts';
 import { TreeSeriesNodeItemOption } from 'echarts/types/src/chart/tree/TreeSeries';
+import { OptionDataValue, OptionName } from 'echarts/types/src/util/types';
 import {
   EchartsTreeFormData,
   DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA,
@@ -26,7 +27,6 @@ import {
 } from './types';
 import { DEFAULT_TREE_SERIES_OPTION } from './constants';
 import { EchartsProps } from '../types';
-import { OptionDataValue, OptionName } from 'echarts/types/src/util/types';
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
@@ -57,11 +57,11 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   } else {
     nameColumn = id;
   }
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < data.length; i += 1) {
     const nodeId = data[i][id] as string;
     indexMap[nodeId] = i;
     data[i].children = [] as TreeSeriesNodeItemOption[];
-    if (data[i][nameColumn] == rootNode) {
+    if (data[i][nameColumn]?.toString() === rootNode) {
       rootNodeId = nodeId;
     }
   }
@@ -76,11 +76,11 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         });
       } else {
         const parentId = node[relation] as string;
-        //Check if parent exists,and child is not dangling due to row-limited data
+        // Check if parent exists,and child is not dangling due to row-limited data
         if (data[indexMap[parentId]]) {
           const parentIndex = indexMap[parentId];
 
-          //@ts-ignore: push exists on children list
+          // @ts-ignore: push exists on children list
           data[parentIndex].children!.push({
             name: node[nameColumn],
             children: node.children,
