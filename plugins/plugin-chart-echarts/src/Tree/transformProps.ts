@@ -19,14 +19,17 @@
 import { ChartProps, getMetricLabel, DataRecord } from '@superset-ui/core';
 import { EChartsOption, TreeSeriesOption } from 'echarts';
 import { TreeSeriesNodeItemOption } from 'echarts/types/src/chart/tree/TreeSeries';
-import { EchartsTreeFormData, DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA } from './types';
-import { DEFAULT_TREE_SERIES_OPTION, tooltip } from './constants';
+import {
+  EchartsTreeFormData, DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA,
+  TreeDataRecord
+} from './types';
+import { DEFAULT_TREE_SERIES_OPTION } from './constants';
 import { EchartsProps } from '../types';
 import { OptionDataValue, OptionName } from 'echarts/types/src/util/types';
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
-  const data: DataRecord[] = queriesData[0].data || [];
+  const data: TreeDataRecord[] = queriesData[0].data || [];
 
   const {
     id,
@@ -39,6 +42,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     symbol,
     symbolSize,
     roam,
+    position,
+    emphasis
   }: EchartsTreeFormData = { ...DEFAULT_GRAPH_FORM_DATA, ...formData };
 
   const metricLabel = getMetricLabel(metric);
@@ -48,41 +53,31 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   for (let i = 0; i < data.length; i++) {
     const nodeId = data[i][id] as string;
     indexMap[nodeId] = i;
-    data[i].children = [] as any;
+    data[i].children = [] as TreeSeriesNodeItemOption[];
     if (data[i][name] == rootNode) {
       rootNodeId = nodeId;
     }
   }
 
-  function getNode(
-    name: OptionName,
-    children: TreeSeriesNodeItemOption[],
-    value: OptionDataValue,
-  ): TreeSeriesNodeItemOption {
-    return { name, children, value };
-  }
   if (rootNodeId) {
     data.forEach(node => {
       if (node[relation] == rootNodeId) {
         tree.children!.push(
-          getNode(
-            node[name] as OptionName,
-            node.children as any,
-            node[metricLabel] as OptionDataValue,
-          ),
+          {
+            name: node[name] as OptionName,
+            children: node.children as TreeSeriesNodeItemOption[],
+            value: node[metricLabel] as OptionDataValue
+          }
         );
       } else {
         const parentId = node[relation] as string;
+        //Check if parent exists,and child is not dangling due to row-limited data
         if (data[indexMap[parentId]]) {
-          //Check if parent exists,and child is not dangling due to bad/row-limited data
-          const parentIndex: number = indexMap[parentId];
+          const parentIndex = indexMap[parentId];
 
+          //@ts-ignore: push exists on children list
           data[parentIndex].children!.push(
-            getNode(
-              node[name] as OptionName,
-              node.children as any,
-              node[metricLabel] as OptionDataValue,
-            ),
+            { name: node[name], children: node.children, value: node[metricLabel] }
           );
         }
       }
@@ -92,8 +87,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     {
       type: 'tree',
       data: [tree],
-      label: DEFAULT_TREE_SERIES_OPTION.label,
-      emphasis: DEFAULT_TREE_SERIES_OPTION.emphasis,
+      label: { ...DEFAULT_TREE_SERIES_OPTION.label, position },
+      emphasis: {focus:emphasis},
       animation: DEFAULT_TREE_SERIES_OPTION.animation,
       layout,
       orient,
@@ -102,14 +97,17 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       symbolSize,
       lineStyle: DEFAULT_TREE_SERIES_OPTION.lineStyle,
       select: DEFAULT_TREE_SERIES_OPTION.select,
-    },
-  ];
+      leaves: {...{label:{position}} },
+    }];
 
   const echartOptions: EChartsOption = {
     animationDuration: DEFAULT_TREE_SERIES_OPTION.animationDuration,
     animationEasing: DEFAULT_TREE_SERIES_OPTION.animationEasing,
     series,
-    tooltip,
+    tooltip: {
+      trigger: 'item',
+      triggerOn: 'mousemove',
+    },
   };
 
   return {

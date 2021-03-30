@@ -17,25 +17,15 @@
  * under the License.
  */
 import { TreeSeriesOption } from 'echarts';
-import { TooltipOption } from 'echarts/types/src/component/tooltip/TooltipModel';
 
 export const DEFAULT_TREE_SERIES_OPTION: TreeSeriesOption = {
   label: {
     position: 'left',
-    verticalAlign: 'middle',
-    align: 'right',
+
     fontSize: 15,
-  },
-  emphasis: {
-    focus: 'descendant',
   },
   animation: true,
   animationDuration: 500,
   animationEasing: 'cubicOut',
-  lineStyle: { color: 'source', curveness: 0.1, width: 1.5 }
-};
-
-export const tooltip: TooltipOption = {
-  trigger: 'item',
-  triggerOn: 'mousemove',
+  lineStyle: { color: 'source', width: 1.5 },
 };

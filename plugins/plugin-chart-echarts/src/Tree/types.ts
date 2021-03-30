@@ -16,10 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+ import { TreeSeriesNodeItemOption } from 'echarts/types/src/chart/tree/TreeSeries';
+ import { DataRecord, DataRecordValue } from '@superset-ui/core';
+ import { OptionDataValue, OptionName } from 'echarts/types/src/util/types';
+
 export type EchartsTreeFormData = {
-  id?: string | number;
-  relation?: string | number;
-  name?: string;
+  id: string;
+  relation: string;
+  name: string;
   rootNode?: string;
   orient: 'LR' | 'RL' | 'TB' | 'BT';
   symbol: string;
@@ -28,16 +32,32 @@ export type EchartsTreeFormData = {
   metric?: string;
   layout: 'orthogonal' | 'radial';
   roam: boolean | 'scale' | 'move';
+  position: 'top'|'bottom'|'left'|'right',
+  emphasis: 'none' | 'ancestor' | 'descendant'
 };
 
 export const DEFAULT_FORM_DATA: EchartsTreeFormData = {
+  id: '',
+  relation: '',
+  name: '',
   layout: 'orthogonal',
   orient: 'LR',
   symbol: 'emptyCircle',
   symbolSize: 7,
   roam: true,
+  position: 'left',
+  emphasis: 'descendant'
 };
 
 export type tooltipFormatParams = {
   data: { [name: string]: string };
 };
+
+export declare type TreeDataRecordValue =  DataRecordValue | TreeSeriesNodeItemOption[]
+
+
+export type TreeDataRecord = {
+  //[key: string]: DataRecordValue | OptionName | TreeSeriesNodeItemOption[]| undefined;
+  [key: string]:TreeDataRecordValue;
+  
+}

@@ -144,6 +144,68 @@ const controlPanel: ControlPanelConfig = {
         ],
         [
           {
+            name: 'position',
+            config: {
+              type: 'RadioButtonControl',
+              renderTrigger: true,
+              label: t('Label position'),
+              default: DEFAULT_FORM_DATA.position,
+              options: [
+                {
+                  label: 'left',
+                  value: 'left',
+                },
+                {
+                  label: 'top',
+                  value: 'top',
+                },
+                {
+                  label: 'right',
+                  value: 'right',
+                },
+                {
+                  label: 'bottom',
+                  value: 'bottom',
+                },
+              ],
+              description: t('Position of node label on tree'),
+              visibility({ form_data: { layout } }) {
+                return (
+                  layout === 'orthogonal' || (!layout && DEFAULT_FORM_DATA.layout === 'orthogonal')
+                );
+              },
+            },
+          },
+        ],
+        [
+          {
+            name: 'emphasis',
+            config: {
+              type: 'RadioButtonControl',
+              renderTrigger: true,
+              label: t('Emphasis'),
+              default: DEFAULT_FORM_DATA.emphasis,
+              options: [
+                {
+                  label: 'ancestor',
+                  value: 'ancestor',
+                },
+                {
+                  label: 'descendant',
+                  value: 'descendant',
+                },
+              ],
+              description: t('Which relatives to highlight on hover'),
+              visibility({ form_data: { layout } }) {
+                return (
+                  layout === 'orthogonal' || (!layout && DEFAULT_FORM_DATA.layout === 'orthogonal')
+                );
+              },
+            },
+          },
+        ],
+        [
+          {
             name: 'symbol',
             config: {
               type: 'RadioButtonControl',
