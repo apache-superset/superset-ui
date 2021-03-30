@@ -346,7 +346,7 @@ const config: ControlPanelConfig = {
             name: 'column_config',
             config: {
               type: 'ColumnConfigControl',
-              label: t('Cuztomize columns'),
+              label: t('Customize columns'),
               description: t('Further customize how to display each column'),
               renderTrigger: true,
               mapStateToProps(explore, control, chart) {
