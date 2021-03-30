@@ -54,7 +54,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     const nodeId = data[i][id] as string;
     indexMap[nodeId] = i;
     data[i].children = [] as TreeSeriesNodeItemOption[];
-    if (data[i][name] == rootNode) {
+    if (data[i][name] === rootNode) {
       rootNodeId = nodeId;
     }
   }
