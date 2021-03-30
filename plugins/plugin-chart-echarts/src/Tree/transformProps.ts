@@ -20,8 +20,9 @@ import { ChartProps, getMetricLabel, DataRecord } from '@superset-ui/core';
 import { EChartsOption, TreeSeriesOption } from 'echarts';
 import { TreeSeriesNodeItemOption } from 'echarts/types/src/chart/tree/TreeSeries';
 import {
-  EchartsTreeFormData, DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA,
-  TreeDataRecord
+  EchartsTreeFormData,
+  DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA,
+  TreeDataRecord,
 } from './types';
 import { DEFAULT_TREE_SERIES_OPTION } from './constants';
 import { EchartsProps } from '../types';
@@ -43,18 +44,24 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     symbolSize,
     roam,
     position,
-    emphasis
+    emphasis,
   }: EchartsTreeFormData = { ...DEFAULT_GRAPH_FORM_DATA, ...formData };
 
   const metricLabel = getMetricLabel(metric);
   const tree: TreeSeriesNodeItemOption = { name: rootNode, children: [] };
   const indexMap: { [name: string]: number } = {};
   let rootNodeId: null | string = null;
+  let nameColumn: string;
+  if (name) {
+    nameColumn = name;
+  } else {
+    nameColumn = id;
+  }
   for (let i = 0; i < data.length; i++) {
     const nodeId = data[i][id] as string;
     indexMap[nodeId] = i;
     data[i].children = [] as TreeSeriesNodeItemOption[];
-    if (data[i][name] === rootNode) {
+    if (data[i][nameColumn] == rootNode) {
       rootNodeId = nodeId;
     }
   }
@@ -62,13 +69,11 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   if (rootNodeId) {
     data.forEach(node => {
       if (node[relation] === rootNodeId) {
-        tree.children!.push(
-          {
-            name: node[name] as OptionName,
-            children: node.children as TreeSeriesNodeItemOption[],
-            value: node[metricLabel] as OptionDataValue
-          }
-        );
+        tree.children!.push({
+          name: node[nameColumn] as OptionName,
+          children: node.children as TreeSeriesNodeItemOption[],
+          value: node[metricLabel] as OptionDataValue,
+        });
       } else {
         const parentId = node[relation] as string;
         //Check if parent exists,and child is not dangling due to row-limited data
@@ -76,9 +81,11 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
           const parentIndex = indexMap[parentId];
 
           //@ts-ignore: push exists on children list
-          data[parentIndex].children!.push(
-            { name: node[name], children: node.children, value: node[metricLabel] }
-          );
+          data[parentIndex].children!.push({
+            name: node[nameColumn],
+            children: node.children,
+            value: node[metricLabel],
+          });
         }
       }
     });
@@ -88,7 +95,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       type: 'tree',
       data: [tree],
       label: { ...DEFAULT_TREE_SERIES_OPTION.label, position },
-      emphasis: {focus:emphasis},
+      emphasis: { focus: emphasis },
       animation: DEFAULT_TREE_SERIES_OPTION.animation,
       layout,
       orient,
@@ -97,8 +104,9 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       symbolSize,
       lineStyle: DEFAULT_TREE_SERIES_OPTION.lineStyle,
       select: DEFAULT_TREE_SERIES_OPTION.select,
-      leaves: {...{label:{position}} },
-    }];
+      leaves: { ...{ label: { position } } },
+    },
+  ];
 
   const echartOptions: EChartsOption = {
     animationDuration: DEFAULT_TREE_SERIES_OPTION.animationDuration,

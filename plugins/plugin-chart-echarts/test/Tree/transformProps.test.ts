@@ -250,4 +250,89 @@ describe('EchartsTree tranformProps', () => {
       }),
     );
   });
+  it('should transform props if name column is not specified', () => {
+    const formData = {
+      colorScheme: 'bnbColors',
+      datasource: '3__table',
+      granularity_sqla: 'ds',
+      metric: 'count',
+      id: 'id_column',
+      relation: 'relation_column',
+      rootNode: '1',
+    };
+    const chartPropsConfig = {
+      formData,
+      width: 800,
+      height: 600,
+    };
+    const queriesData = [
+      {
+        colnames: ['id_column', 'relation_column', 'count'],
+        data: [
+          {
+            id_column: '1',
+            relation_column: null,
+
+            count: 10,
+          },
+          {
+            id_column: '2',
+            relation_column: '1',
+
+            count: 10,
+          },
+          {
+            id_column: '3',
+            relation_column: '2',
+
+            count: 10,
+          },
+          {
+            id_column: '4',
+            relation_column: '3',
+
+            count: 20,
+          },
+        ],
+      },
+    ];
+
+    const chartProps = new ChartProps({ ...chartPropsConfig, queriesData });
+    expect(transformProps(chartProps)).toEqual(
+      expect.objectContaining({
+        width: 800,
+        height: 600,
+        echartOptions: expect.objectContaining({
+          series: expect.arrayContaining([
+            expect.objectContaining({
+              data: [
+                {
+                  name: '1',
+                  children: [
+                    {
+                      name: '2',
+                      value: 10,
+                      children: [
+                        {
+                          name: '3',
+                          value: 10,
+                          children: [
+                            {
+                              name: '4',
+                              value: 20,
+                              children: [],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            }),
+          ]),
+        }),
+      }),
+    );
+  });
 });

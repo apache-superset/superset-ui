@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- import { TreeSeriesNodeItemOption } from 'echarts/types/src/chart/tree/TreeSeries';
- import { DataRecord, DataRecordValue } from '@superset-ui/core';
- import { OptionDataValue, OptionName } from 'echarts/types/src/util/types';
+import { TreeSeriesNodeItemOption } from 'echarts/types/src/chart/tree/TreeSeries';
+import { DataRecord, DataRecordValue } from '@superset-ui/core';
+import { OptionDataValue, OptionName } from 'echarts/types/src/util/types';
 
 export type EchartsTreeFormData = {
   id: string;
@@ -32,8 +32,8 @@ export type EchartsTreeFormData = {
   metric?: string;
   layout: 'orthogonal' | 'radial';
   roam: boolean | 'scale' | 'move';
-  position: 'top'|'bottom'|'left'|'right',
-  emphasis: 'none' | 'ancestor' | 'descendant'
+  position: 'top' | 'bottom' | 'left' | 'right';
+  emphasis: 'none' | 'ancestor' | 'descendant';
 };
 
 export const DEFAULT_FORM_DATA: EchartsTreeFormData = {
@@ -46,18 +46,16 @@ export const DEFAULT_FORM_DATA: EchartsTreeFormData = {
   symbolSize: 7,
   roam: true,
   position: 'left',
-  emphasis: 'descendant'
+  emphasis: 'descendant',
 };
 
 export type tooltipFormatParams = {
   data: { [name: string]: string };
 };
 
-export declare type TreeDataRecordValue =  DataRecordValue | TreeSeriesNodeItemOption[]
-
+export declare type TreeDataRecordValue = DataRecordValue | TreeSeriesNodeItemOption[];
 
 export type TreeDataRecord = {
   //[key: string]: DataRecordValue | OptionName | TreeSeriesNodeItemOption[]| undefined;
-  [key: string]:TreeDataRecordValue;
-  
-}
+  [key: string]: TreeDataRecordValue;
+};

@@ -25,6 +25,11 @@ const requiredEntity = {
   ...sharedControls.entity,
   clearable: false,
 };
+const optionalEntity = {
+  ...sharedControls.entity,
+  clearable: true,
+  validators: [],
+};
 
 const controlPanel: ControlPanelConfig = {
   controlPanelSections: [
@@ -57,7 +62,7 @@ const controlPanel: ControlPanelConfig = {
           {
             name: 'name',
             config: {
-              ...requiredEntity,
+              ...optionalEntity,
               label: t('Name'),
               description: t('Name of the data column'),
             },
