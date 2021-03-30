@@ -64,5 +64,16 @@ export const INTERVAL_GAUGE_SERIES_OPTION: GaugeSeriesOption = {
   },
 };
 
-export const TICKS_DISTANCE_FROM_LINE = 10;
-export const TITLE_OFFSET_FROM_CENTER = 20;
+export const OFFSETS = {
+  ticksFromLine: 10,
+  titleFromCenter: 20,
+};
+
+export const FONT_SIZE_MULTIPLIERS = {
+  axisTickLength: 0.25,
+  splitLineLength: 1,
+  splitLineWidth: 0.25,
+  titleOffsetFromTitle: 2,
+  detailOffsetFromTitle: 0.9,
+  detailFontSize: 1.2,
+};

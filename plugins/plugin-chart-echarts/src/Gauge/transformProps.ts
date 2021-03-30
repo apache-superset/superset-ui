@@ -36,8 +36,8 @@ import {
 import {
   DEFAULT_GAUGE_SERIES_OPTION,
   INTERVAL_GAUGE_SERIES_OPTION,
-  TICKS_DISTANCE_FROM_LINE,
-  TITLE_OFFSET_FROM_CENTER,
+  OFFSETS,
+  FONT_SIZE_MULTIPLIERS,
 } from './constants';
 
 const setIntervalBoundsAndColors = (
@@ -97,11 +97,12 @@ export default function transformProps(chartProps: ChartProps) {
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const normalizer = maxVal;
   const axisLineWidth = calculateAxisLineWidth(data, fontSize, overlap);
-  const axisTickLength = fontSize / 4;
-  const splitLineLength = fontSize;
-  const titleOffsetFromTitle = 2 * fontSize;
-  const detailOffsetFromTitle = 0.9 * fontSize;
-  const detailFontSize = 1.2 * fontSize;
+  const axisTickLength = FONT_SIZE_MULTIPLIERS.axisTickLength * fontSize;
+  const splitLineLength = FONT_SIZE_MULTIPLIERS.splitLineLength * fontSize;
+  const splitLineWidth = FONT_SIZE_MULTIPLIERS.splitLineWidth * fontSize;
+  const titleOffsetFromTitle = FONT_SIZE_MULTIPLIERS.titleOffsetFromTitle * fontSize;
+  const detailOffsetFromTitle = FONT_SIZE_MULTIPLIERS.detailOffsetFromTitle * fontSize;
+  const detailFontSize = FONT_SIZE_MULTIPLIERS.detailFontSize * fontSize;
   const intervalBoundsAndColors = setIntervalBoundsAndColors(
     intervals,
     intervalColorIndices,
@@ -115,13 +116,13 @@ export default function transformProps(chartProps: ChartProps) {
       color: colorFn(index),
     },
     title: {
-      offsetCenter: ['0%', `${index * titleOffsetFromTitle + TITLE_OFFSET_FROM_CENTER}%`],
+      offsetCenter: ['0%', `${index * titleOffsetFromTitle + OFFSETS.titleFromCenter}%`],
       fontSize,
     },
     detail: {
       offsetCenter: [
         '0%',
-        `${index * titleOffsetFromTitle + TITLE_OFFSET_FROM_CENTER + detailOffsetFromTitle}%`,
+        `${index * titleOffsetFromTitle + OFFSETS.titleFromCenter + detailOffsetFromTitle}%`,
       ],
       fontSize: detailFontSize,
     },
@@ -137,10 +138,10 @@ export default function transformProps(chartProps: ChartProps) {
   };
   const splitLine = {
     show: showSplitLine,
-    distance: -axisLineWidth - splitLineLength - TICKS_DISTANCE_FROM_LINE,
+    distance: -axisLineWidth - splitLineLength - OFFSETS.ticksFromLine,
     length: splitLineLength,
     lineStyle: {
-      width: fontSize / 4,
+      width: splitLineWidth,
       color: DEFAULT_GAUGE_SERIES_OPTION.splitLine?.lineStyle?.color,
     },
   };
