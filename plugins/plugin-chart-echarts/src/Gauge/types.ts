@@ -16,19 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {
-  DEFAULT_LEGEND_FORM_DATA,
-  EchartsLegendFormData,
-  LegendOrientation,
-  LegendType,
-} from '../types';
+import { DEFAULT_LEGEND_FORM_DATA } from '../types';
 
 export type AxisTickLineStyle = {
   width: number;
   color: string;
 };
 
-export type EchartsGaugeFormData = EchartsLegendFormData & {
+export type EchartsGaugeFormData = {
   colorScheme?: string;
   groupby: string[];
   metric?: object;
@@ -54,8 +49,6 @@ export type EchartsGaugeFormData = EchartsLegendFormData & {
 
 export const DEFAULT_FORM_DATA: EchartsGaugeFormData = {
   ...DEFAULT_LEGEND_FORM_DATA,
-  legendOrientation: LegendOrientation.Top,
-  legendType: LegendType.Scroll,
   groupby: [],
   rowLimit: 10,
   minVal: 0,
