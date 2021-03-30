@@ -104,7 +104,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       symbolSize,
       lineStyle: DEFAULT_TREE_SERIES_OPTION.lineStyle,
       select: DEFAULT_TREE_SERIES_OPTION.select,
-      leaves: { ...{ label: { position } } },
+      leaves: { label: { position } },
     },
   ];
 
