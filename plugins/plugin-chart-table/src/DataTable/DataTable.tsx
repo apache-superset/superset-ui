@@ -35,7 +35,7 @@ import {
   IdType,
   Row,
 } from 'react-table';
-import { GenericDataType } from '@superset-ui/core';
+import { GenericDataType, t } from '@superset-ui/core';
 import { matchSorter, rankings } from 'match-sorter';
 import GlobalFilter, { GlobalFilterProps } from './components/GlobalFilter';
 import SelectPageSize, { SelectPageSizeProps, SizeOption } from './components/SelectPageSize';
@@ -199,7 +199,8 @@ export default function DataTable<D extends object>({
     return (wrapStickyTable ? wrapStickyTable(getNoResults) : getNoResults()) as JSX.Element;
   }
 
-  const totalsHeaderSpan = totals && columnsMeta.length - Object.keys(totals).length;
+  const totalsHeaderSpan =
+    totals && columnsMeta.filter(col => !col.isPercentMetric).length - Object.keys(totals).length;
 
   const renderTable = () => (
     <table {...getTableProps({ className: tableClassName })}>
@@ -240,7 +241,7 @@ export default function DataTable<D extends object>({
       {totals && (
         <tfoot>
           <tr key="totals" className="dt-totals">
-            <td colSpan={totalsHeaderSpan}>Totals</td>
+            <td colSpan={totalsHeaderSpan}>{t('Totals')}</td>
             {columnsMeta.slice(totalsHeaderSpan).map(column => (
               <td className={column.dataType === GenericDataType.NUMERIC ? 'dt-metric' : ''}>
                 {(totals as Record<string, any>)[column.key]}
