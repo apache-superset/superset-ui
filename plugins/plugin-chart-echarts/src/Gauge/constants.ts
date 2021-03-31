@@ -71,6 +71,7 @@ export const OFFSETS = {
 
 export const FONT_SIZE_MULTIPLIERS = {
   axisTickLength: 0.25,
+  axisLabelDistance: 1.2,
   splitLineLength: 1,
   splitLineWidth: 0.25,
   titleOffsetFromTitle: 2,

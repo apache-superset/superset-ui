@@ -99,10 +99,8 @@ export default function transformProps(chartProps: ChartProps) {
   const axisLineWidth = calculateAxisLineWidth(data, fontSize, overlap);
   const axisTickLength = FONT_SIZE_MULTIPLIERS.axisTickLength * fontSize;
   const splitLineLength = FONT_SIZE_MULTIPLIERS.splitLineLength * fontSize;
-  const splitLineWidth = FONT_SIZE_MULTIPLIERS.splitLineWidth * fontSize;
   const titleOffsetFromTitle = FONT_SIZE_MULTIPLIERS.titleOffsetFromTitle * fontSize;
   const detailOffsetFromTitle = FONT_SIZE_MULTIPLIERS.detailOffsetFromTitle * fontSize;
-  const detailFontSize = FONT_SIZE_MULTIPLIERS.detailFontSize * fontSize;
   const intervalBoundsAndColors = setIntervalBoundsAndColors(
     intervals,
     intervalColorIndices,
@@ -111,7 +109,7 @@ export default function transformProps(chartProps: ChartProps) {
   );
   const transformedData: GaugeDataItemOption[] = data.map((data_point, index) => ({
     value: data_point[getMetricLabel(metric as QueryFormMetric)] as number,
-    name: groupby.map(column => `${column}: ${data_point[column]}`).join(),
+    name: groupby.map(column => `${column}: ${data_point[column]}`).join(', '),
     itemStyle: {
       color: colorFn(index),
     },
@@ -124,7 +122,7 @@ export default function transformProps(chartProps: ChartProps) {
         '0%',
         `${index * titleOffsetFromTitle + OFFSETS.titleFromCenter + detailOffsetFromTitle}%`,
       ],
-      fontSize: detailFontSize,
+      fontSize: FONT_SIZE_MULTIPLIERS.detailFontSize * fontSize,
     },
   }));
 
@@ -141,7 +139,7 @@ export default function transformProps(chartProps: ChartProps) {
     distance: -axisLineWidth - splitLineLength - OFFSETS.ticksFromLine,
     length: splitLineLength,
     lineStyle: {
-      width: splitLineWidth,
+      width: FONT_SIZE_MULTIPLIERS.splitLineWidth * fontSize,
       color: DEFAULT_GAUGE_SERIES_OPTION.splitLine?.lineStyle?.color,
     },
   };
@@ -153,14 +151,18 @@ export default function transformProps(chartProps: ChartProps) {
     },
   };
   const axisLabel = {
-    distance: axisLineWidth - fontSize - 1.5 * splitLineLength - TICKS_DISTANCE_FROM_LINE,
+    distance:
+      axisLineWidth -
+      FONT_SIZE_MULTIPLIERS.axisLabelDistance * fontSize -
+      (showSplitLine ? splitLineLength : 0) -
+      OFFSETS.ticksFromLine,
     fontSize,
     formatter: numberFormatter,
     color: DEFAULT_GAUGE_SERIES_OPTION.axisLabel?.color,
   };
   const axisTick = {
     show: showAxisTick,
-    distance: -axisLineWidth - axisTickLength - TICKS_DISTANCE_FROM_LINE,
+    distance: -axisLineWidth - axisTickLength - OFFSETS.ticksFromLine,
     length: axisTickLength,
     lineStyle: DEFAULT_GAUGE_SERIES_OPTION.axisTick?.lineStyle as AxisTickLineStyle,
   };
