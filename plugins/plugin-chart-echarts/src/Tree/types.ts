@@ -52,7 +52,7 @@ export type tooltipFormatParams = {
   data: { [name: string]: string };
 };
 
-export declare type TreeDataRecordValue = DataRecordValue | TreeSeriesNodeItemOption[];
+export type TreeDataRecordValue = DataRecordValue | TreeSeriesNodeItemOption[];
 
 export type TreeDataRecord = {
   [key: string]: TreeDataRecordValue;

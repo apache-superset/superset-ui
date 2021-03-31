@@ -60,7 +60,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   for (let i = 0; i < data.length; i += 1) {
     const nodeId = data[i][id] as string;
     indexMap[nodeId] = i;
-    data[i].children = [] as TreeSeriesNodeItemOption[];
+    data[i].children = [];
     if (data[i][nameColumn]?.toString() === rootNode) {
       rootNodeId = nodeId;
     }
@@ -79,12 +79,11 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         // Check if parent exists,and child is not dangling due to row-limited data
         if (data[indexMap[parentId]]) {
           const parentIndex = indexMap[parentId];
-
-          // @ts-ignore: push exists on children list
-          data[parentIndex].children!.push({
-            name: node[nameColumn],
-            children: node.children,
-            value: node[metricLabel],
+          const parentChildrens = data[parentIndex].children as TreeSeriesNodeItemOption[];
+          parentChildrens.push({
+            name: node[nameColumn] as OptionName,
+            children: node.children as TreeSeriesNodeItemOption[],
+            value: node[metricLabel] as OptionDataValue,
           });
         }
       }
