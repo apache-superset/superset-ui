@@ -20,14 +20,7 @@ import React, { useState, useMemo, useCallback, CSSProperties } from 'react';
 import { ColumnInstance, DefaultSortTypes, ColumnWithLooseAccessor } from 'react-table';
 import { extent as d3Extent, max as d3Max } from 'd3-array';
 import { FaSort, FaSortUp as FaSortAsc, FaSortDown as FaSortDesc } from 'react-icons/fa';
-import {
-  t,
-  tn,
-  DataRecordValue,
-  DataRecord,
-  GenericDataType,
-  getNumberFormatter,
-} from '@superset-ui/core';
+import { t, tn, DataRecordValue, DataRecord, GenericDataType } from '@superset-ui/core';
 
 import { TableChartTransformedProps, DataColumnMeta } from './types';
 import DataTable, {
@@ -38,7 +31,7 @@ import DataTable, {
 } from './DataTable';
 
 import Styles from './Styles';
-import formatValue from './utils/formatValue';
+import { formatColumnValue } from './utils/formatValue';
 import { PAGE_SIZE_OPTIONS } from './consts';
 import { updateExternalFormData } from './DataTable/utils/externalAPIs';
 
@@ -221,7 +214,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
 
   const getColumnConfigs = useCallback(
     (column: DataColumnMeta, i: number): ColumnWithLooseAccessor<D> => {
-      const { key, label, dataType, isMetric, formatter, config = {} } = column;
+      const { key, label, dataType, isMetric, config = {} } = column;
       const isNumber = dataType === GenericDataType.NUMERIC;
       const isFilter = !isNumber && emitFilter;
       const textAlign = config.horizontalAlign
@@ -236,10 +229,6 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         config.alignPositiveNegative === undefined ? defaultAlignPN : config.alignPositiveNegative;
       const colorPositiveNegative =
         config.colorPositiveNegative === undefined ? defaultColorPN : config.colorPositiveNegative;
-      const smallNumberFormatter =
-        config.d3SmallNumberFormat === undefined
-          ? formatter
-          : getNumberFormatter(config.d3SmallNumberFormat);
 
       const valueRange =
         (config.showCellBars === undefined ? showCellBars : config.showCellBars) &&
@@ -258,12 +247,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         // so we ask TS not to check.
         accessor: ((datum: D) => datum[key]) as never,
         Cell: ({ value }: { column: ColumnInstance<D>; value: DataRecordValue }) => {
-          const [isHtml, text] = formatValue(
-            isNumber && typeof value === 'number' && Math.abs(value) < 1
-              ? smallNumberFormatter
-              : formatter,
-            value,
-          );
+          const [isHtml, text] = formatColumnValue(column, value);
           const html = isHtml ? { __html: text } : undefined;
           const style: CSSProperties = {
             background: valueRange
@@ -341,12 +325,29 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     updateExternalFormData(setDataMask, pageNumber, pageSize);
   };
 
+  const totalsFormatted =
+    totals &&
+    columnsMeta
+      .filter(column => Object.keys(totals).includes(column.key))
+      .reduce(
+        (acc: { value: string; dataType: GenericDataType }[], column) => [
+          ...acc,
+          { value: formatColumnValue(column, totals[column.key])[1], dataType: column.dataType },
+        ],
+        [],
+      );
+
+  const totalsHeaderSpan =
+    totalsFormatted &&
+    columnsMeta.filter(column => !column.isPercentMetric).length - totalsFormatted.length;
+
+  console.log({ columns, columnsMeta, totals, totalsFormatted, totalsHeaderSpan });
   return (
     <Styles>
       <DataTable<D>
         columns={columns}
-        columnsMeta={columnsMeta}
-        totals={totals}
+        totals={totalsFormatted}
+        totalsHeaderSpan={totalsHeaderSpan}
         data={data}
         rowCount={rowCount}
         tableClassName="table table-striped table-condensed"

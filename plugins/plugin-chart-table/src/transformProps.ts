@@ -208,7 +208,10 @@ const transformProps = (chartProps: TableChartProps): TableChartTransformedProps
   const rowCount = serverPagination
     ? (queriesData?.[1]?.data?.[0]?.rowcount as number)
     : queriesData?.[0]?.rowcount;
-  const totals = showTotals && queriesData?.[queriesData.length - 1]?.data[0];
+  const totals =
+    showTotals &&
+    queryMode === QueryMode.aggregate &&
+    queriesData?.[queriesData.length - 1]?.data[0];
 
   return {
     height,

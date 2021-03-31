@@ -142,7 +142,7 @@ function StickyWrap({
   }, [thead]);
 
   const theadRef = useRef<HTMLTableSectionElement>(null); // original thead for layout computation
-  const tfootRef = useRef<HTMLTableSectionElement>(null); // original thead for layout computation
+  const tfootRef = useRef<HTMLTableSectionElement>(null); // original tfoot for layout computation
   const scrollHeaderRef = useRef<HTMLDivElement>(null); // fixed header
   const scrollFooterRef = useRef<HTMLDivElement>(null); // fixed footer
   const scrollBodyRef = useRef<HTMLDivElement>(null); // main body
@@ -176,7 +176,7 @@ function StickyWrap({
       innerWidth: widths.reduce(sum),
       scrollBarSize,
     });
-    // real container height, include table header and space for
+    // real container height, include table header, footer and space for
     // horizontal scroll bar
     const realHeight = Math.min(
       maxHeight,
@@ -256,7 +256,7 @@ function StickyWrap({
       </div>
     );
 
-    footerTable = (
+    footerTable = tfoot && (
       <div
         key="footer"
         ref={scrollFooterRef}

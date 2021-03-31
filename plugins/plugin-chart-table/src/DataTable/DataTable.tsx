@@ -42,12 +42,11 @@ import SelectPageSize, { SelectPageSizeProps, SizeOption } from './components/Se
 import SimplePagination from './components/Pagination';
 import useSticky from './hooks/useSticky';
 import { PAGE_SIZE_OPTIONS } from '../consts';
-import { DataColumnMeta } from '../types';
 
 export interface DataTableProps<D extends object> extends TableOptions<D> {
   tableClassName?: string;
-  columnsMeta: DataColumnMeta[];
-  totals?: D;
+  totals?: { value: string; dataType: GenericDataType }[];
+  totalsHeaderSpan?: number;
   searchInput?: boolean | GlobalFilterProps<D>['searchInput'];
   selectPageSize?: boolean | SelectPageSizeProps['selectRenderer'];
   pageSizeOptions?: SizeOption[]; // available page size options
@@ -73,9 +72,9 @@ export interface RenderHTMLCellProps extends HTMLProps<HTMLTableCellElement> {
 export default function DataTable<D extends object>({
   tableClassName,
   columns,
-  columnsMeta,
   data,
   totals,
+  totalsHeaderSpan,
   serverPaginationData,
   width: initialWidth = '100%',
   height: initialHeight = 300,
@@ -199,9 +198,6 @@ export default function DataTable<D extends object>({
     return (wrapStickyTable ? wrapStickyTable(getNoResults) : getNoResults()) as JSX.Element;
   }
 
-  const totalsHeaderSpan =
-    totals && columnsMeta.filter(col => !col.isPercentMetric).length - Object.keys(totals).length;
-
   const renderTable = () => (
     <table {...getTableProps({ className: tableClassName })}>
       <thead>
@@ -242,9 +238,9 @@ export default function DataTable<D extends object>({
         <tfoot>
           <tr key="totals" className="dt-totals">
             <td colSpan={totalsHeaderSpan}>{t('Totals')}</td>
-            {columnsMeta.slice(totalsHeaderSpan).map(column => (
-              <td className={column.dataType === GenericDataType.NUMERIC ? 'dt-metric' : ''}>
-                {(totals as Record<string, any>)[column.key]}
+            {totals.map(item => (
+              <td className={item.dataType === GenericDataType.NUMERIC ? 'dt-metric' : ''}>
+                {item.value}
               </td>
             ))}
           </tr>

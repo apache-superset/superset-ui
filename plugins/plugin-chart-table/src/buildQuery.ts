@@ -18,11 +18,11 @@
  */
 import {
   buildQueryContext,
+  ensureIsArray,
   getMetricLabel,
   QueryMode,
-  removeDuplicates,
-  ensureIsArray,
   QueryObject,
+  removeDuplicates,
 } from '@superset-ui/core';
 import { PostProcessingRule } from '@superset-ui/core/src/query/types/PostProcessing';
 import { BuildQuery } from '@superset-ui/core/src/chart/registries/ChartBuildQueryRegistrySingleton';
@@ -116,7 +116,7 @@ const buildQuery: BuildQuery<TableChartFormData> = (formData: TableChartFormData
     options?.hooks?.setCachedChanges({ [formData.slice_id]: queryObject.filters });
 
     const extraQueries: QueryObject[] = [];
-    if (metrics && formData.show_totals) {
+    if (metrics && formData.show_totals && queryMode === QueryMode.aggregate) {
       extraQueries.push({
         ...queryObject,
         columns: [],
