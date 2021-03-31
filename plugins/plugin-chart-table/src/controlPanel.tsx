@@ -25,6 +25,8 @@ import {
   QueryMode,
   QueryFormColumn,
   ChartDataResponseResult,
+  isFeatureEnabled,
+  FeatureFlag,
 } from '@superset-ui/core';
 import {
   D3_TIME_FORMAT_OPTIONS,
@@ -111,6 +113,11 @@ const percent_metrics: typeof sharedControls.metrics = {
   validators: [],
 };
 
+const dnd_percent_metrics = {
+  ...percent_metrics,
+  type: 'DndMetricSelect',
+};
+
 const config: ControlPanelConfig = {
   controlPanelSections: [
     sections.legacyTimeseriesTime,
@@ -148,7 +155,9 @@ const config: ControlPanelConfig = {
         [
           {
             name: 'percent_metrics',
-            config: percent_metrics,
+            config: isFeatureEnabled(FeatureFlag.ENABLE_EXPLORE_DRAG_AND_DROP)
+              ? dnd_percent_metrics
+              : percent_metrics,
           },
         ],
         [
