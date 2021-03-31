@@ -237,13 +237,13 @@ const config: ControlPanelConfig = {
         ],
         [
           {
-            name: 'roundcap',
+            name: 'round_cap',
             config: {
               type: 'CheckboxControl',
-              label: t('Roundcap'),
-              description: t('Style the ends of the progress bar with a roundcap'),
+              label: t('Round cap'),
+              description: t('Style the ends of the progress bar with a round cap'),
               renderTrigger: true,
-              default: DEFAULT_FORM_DATA.roundcap,
+              default: DEFAULT_FORM_DATA.roundCap,
             },
           },
         ],

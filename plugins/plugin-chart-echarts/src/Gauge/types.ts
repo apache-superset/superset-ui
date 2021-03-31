@@ -35,7 +35,7 @@ export type EchartsGaugeFormData = {
   animation: boolean;
   showProgress: boolean;
   overlap: boolean;
-  roundcap: boolean;
+  roundCap: boolean;
   showAxisTick: boolean;
   showSplitLine: boolean;
   splitNumber: number;
@@ -58,7 +58,7 @@ export const DEFAULT_FORM_DATA: EchartsGaugeFormData = {
   animation: true,
   showProgress: true,
   overlap: true,
-  roundcap: false,
+  roundCap: false,
   showAxisTick: false,
   showSplitLine: false,
   splitNumber: 10,

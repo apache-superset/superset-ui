@@ -42,6 +42,7 @@ describe('Echarts Gauge transformProps', () => {
     splitNumber: 10,
     showProgress: true,
     overlap: true,
+    roundCap: false,
   };
 
   it('should transform chart props for no group by column', () => {

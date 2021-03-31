@@ -81,7 +81,7 @@ export default function transformProps(chartProps: ChartProps) {
     animation,
     showProgress,
     overlap,
-    roundcap,
+    roundCap,
     showAxisTick,
     showSplitLine,
     splitNumber,
@@ -131,7 +131,7 @@ export default function transformProps(chartProps: ChartProps) {
   const progress = {
     show: showProgress,
     overlap,
-    roundCap: roundcap,
+    roundCap,
     width: fontSize,
   };
   const splitLine = {
@@ -144,7 +144,7 @@ export default function transformProps(chartProps: ChartProps) {
     },
   };
   const axisLine = {
-    roundCap: roundcap,
+    roundCap,
     lineStyle: {
       width: axisLineWidth,
       color: DEFAULT_GAUGE_SERIES_OPTION.axisLine?.lineStyle?.color,
