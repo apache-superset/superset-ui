@@ -35,7 +35,7 @@ import {
   IdType,
   Row,
 } from 'react-table';
-import { GenericDataType, t } from '@superset-ui/core';
+import { t } from '@superset-ui/core';
 import { matchSorter, rankings } from 'match-sorter';
 import GlobalFilter, { GlobalFilterProps } from './components/GlobalFilter';
 import SelectPageSize, { SelectPageSizeProps, SizeOption } from './components/SelectPageSize';
@@ -45,7 +45,7 @@ import { PAGE_SIZE_OPTIONS } from '../consts';
 
 export interface DataTableProps<D extends object> extends TableOptions<D> {
   tableClassName?: string;
-  totals?: { value: string; dataType: GenericDataType }[];
+  totals?: { value: string; className?: string }[];
   totalsHeaderSpan?: number;
   searchInput?: boolean | GlobalFilterProps<D>['searchInput'];
   selectPageSize?: boolean | SelectPageSizeProps['selectRenderer'];
@@ -239,9 +239,7 @@ export default function DataTable<D extends object>({
           <tr key="totals" className="dt-totals">
             <td colSpan={totalsHeaderSpan}>{t('Totals')}</td>
             {totals.map(item => (
-              <td className={item.dataType === GenericDataType.NUMERIC ? 'dt-metric' : ''}>
-                {item.value}
-              </td>
+              <td className={item.className}>{item.value}</td>
             ))}
           </tr>
         </tfoot>

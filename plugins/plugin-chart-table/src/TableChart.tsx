@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState, useMemo, useCallback, CSSProperties } from 'react';
-import { ColumnInstance, DefaultSortTypes, ColumnWithLooseAccessor } from 'react-table';
+import React, { CSSProperties, useCallback, useMemo, useState } from 'react';
+import { ColumnInstance, ColumnWithLooseAccessor, DefaultSortTypes } from 'react-table';
 import { extent as d3Extent, max as d3Max } from 'd3-array';
-import { FaSort, FaSortUp as FaSortAsc, FaSortDown as FaSortDesc } from 'react-icons/fa';
-import { t, tn, DataRecordValue, DataRecord, GenericDataType } from '@superset-ui/core';
+import { FaSort, FaSortDown as FaSortDesc, FaSortUp as FaSortAsc } from 'react-icons/fa';
+import { DataRecord, DataRecordValue, GenericDataType, t, tn } from '@superset-ui/core';
 
-import { TableChartTransformedProps, DataColumnMeta } from './types';
+import { DataColumnMeta, TableChartTransformedProps } from './types';
 import DataTable, {
   DataTableProps,
   SearchInputProps,
@@ -330,9 +330,12 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     columnsMeta
       .filter(column => Object.keys(totals).includes(column.key))
       .reduce(
-        (acc: { value: string; dataType: GenericDataType }[], column) => [
+        (acc: { value: string; className: string }[], column) => [
           ...acc,
-          { value: formatColumnValue(column, totals[column.key])[1], dataType: column.dataType },
+          {
+            value: formatColumnValue(column, totals[column.key])[1],
+            className: column.dataType === GenericDataType.NUMERIC ? 'dt-metric' : '',
+          },
         ],
         [],
       );
@@ -341,7 +344,6 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     totalsFormatted &&
     columnsMeta.filter(column => !column.isPercentMetric).length - totalsFormatted.length;
 
-  console.log({ columns, columnsMeta, totals, totalsFormatted, totalsHeaderSpan });
   return (
     <Styles>
       <DataTable<D>
