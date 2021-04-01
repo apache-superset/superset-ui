@@ -246,7 +246,9 @@ const config: ControlPanelConfig = {
               type: 'CheckboxControl',
               label: t('Show totals'),
               default: true,
-              description: t('Show total aggregations of selected metrics'),
+              description: t(
+                'Show total aggregations of selected metrics. Note that row limit does not apply to the result.',
+              ),
               visibility: isAggMode,
             },
           },
