@@ -209,9 +209,9 @@ const transformProps = (chartProps: TableChartProps): TableChartTransformedProps
     ? (queriesData?.[1]?.data?.[0]?.rowcount as number)
     : queriesData?.[0]?.rowcount;
   const totals =
-    showTotals &&
-    queryMode === QueryMode.aggregate &&
-    queriesData?.[queriesData.length - 1]?.data[0];
+    showTotals && queryMode === QueryMode.aggregate
+      ? queriesData?.[queriesData.length - 1]?.data[0]
+      : undefined;
 
   return {
     height,
