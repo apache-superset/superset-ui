@@ -19,7 +19,6 @@
 import { ChartProps, getMetricLabel } from '@superset-ui/core';
 import { EChartsOption, TreeSeriesOption } from 'echarts';
 import { TreeSeriesNodeItemOption } from 'echarts/types/src/chart/tree/TreeSeries';
-import { OptionDataValue, OptionName } from 'echarts/types/src/util/types';
 import {
   EchartsTreeFormData,
   DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA,
@@ -58,11 +57,11 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     nameColumn = id;
   }
   for (let i = 0; i < data.length; i += 1) {
-    const nodeId = data[i][id] as string;
+    const nodeId = data[i][id];
     indexMap[nodeId] = i;
     data[i].children = [];
     if (data[i][nameColumn]?.toString() === rootNode) {
-      rootNodeId = nodeId;
+      rootNodeId = String(nodeId);
     }
   }
 
@@ -70,20 +69,20 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     data.forEach(node => {
       if (node[relation] === rootNodeId) {
         tree.children!.push({
-          name: node[nameColumn] as OptionName,
-          children: node.children as TreeSeriesNodeItemOption[],
-          value: node[metricLabel] as OptionDataValue,
+          name: node[nameColumn],
+          children: node.children,
+          value: node[metricLabel],
         });
       } else {
-        const parentId = node[relation] as string;
+        const parentId = node[relation];
         // Check if parent exists,and child is not dangling due to row-limited data
         if (data[indexMap[parentId]]) {
           const parentIndex = indexMap[parentId];
-          const parentChildrens = data[parentIndex].children as TreeSeriesNodeItemOption[];
+          const parentChildrens = data[parentIndex].children;
           parentChildrens.push({
-            name: node[nameColumn] as OptionName,
-            children: node.children as TreeSeriesNodeItemOption[],
-            value: node[metricLabel] as OptionDataValue,
+            name: node[nameColumn],
+            children: node.children,
+            value: node[metricLabel],
           });
         }
       }
