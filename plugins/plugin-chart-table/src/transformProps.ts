@@ -183,7 +183,7 @@ const transformProps = (chartProps: TableChartProps): TableChartTransformedProps
     height,
     width,
     rawFormData: formData,
-    queriesData,
+    queriesData = [],
     initialValues: filters = {},
     ownCurrentState: serverPaginationData = {},
     hooks: { onAddFilter: onChangeFilter, setDataMask = () => {} },
@@ -204,14 +204,20 @@ const transformProps = (chartProps: TableChartProps): TableChartTransformedProps
   } = formData;
 
   const [metrics, percentMetrics, columns] = processColumns(chartProps);
-  const data = processDataRecords(queriesData?.[0]?.data, columns);
-  const rowCount = serverPagination
-    ? (queriesData?.[1]?.data?.[0]?.rowcount as number)
-    : queriesData?.[0]?.rowcount;
-  const totals =
-    showTotals && queryMode === QueryMode.aggregate
-      ? queriesData?.[queriesData.length - 1]?.data[0]
-      : undefined;
+
+  let baseQuery;
+  let countQuery;
+  let totalQuery;
+  let rowCount;
+  if (serverPagination) {
+    [baseQuery, countQuery, totalQuery] = queriesData;
+    rowCount = (countQuery?.data?.[0]?.rowcount as number) ?? 0;
+  } else {
+    [baseQuery, totalQuery] = queriesData;
+    rowCount = baseQuery?.rowcount ?? 0;
+  }
+  const data = processDataRecords(baseQuery?.data, columns);
+  const totals = showTotals && queryMode === QueryMode.aggregate ? totalQuery?.data[0] : undefined;
 
   return {
     height,
