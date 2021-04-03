@@ -64,7 +64,9 @@ const controlPanel: ControlPanelConfig = {
             config: {
               ...optionalEntity,
               label: t('Name'),
-              description: t('Name of the data column'),
+              description: t(
+                'Optional name of the data column.If not specified id will be used to name the nodes',
+              ),
             },
           },
         ],
@@ -140,9 +142,7 @@ const controlPanel: ControlPanelConfig = {
               ],
               description: t('Orientation of tree'),
               visibility({ form_data: { layout } }) {
-                return (
-                  layout === 'orthogonal' || (!layout && DEFAULT_FORM_DATA.layout === 'orthogonal')
-                );
+                return (layout || DEFAULT_FORM_DATA.layout) === 'orthogonal';
               },
             },
           },
@@ -174,11 +174,6 @@ const controlPanel: ControlPanelConfig = {
                 },
               ],
               description: t('Position of node label on tree'),
-              visibility({ form_data: { layout } }) {
-                return (
-                  layout === 'orthogonal' || (!layout && DEFAULT_FORM_DATA.layout === 'orthogonal')
-                );
-              },
             },
           },
         ],
@@ -202,9 +197,7 @@ const controlPanel: ControlPanelConfig = {
               ],
               description: t('Which relatives to highlight on hover'),
               visibility({ form_data: { layout } }) {
-                return (
-                  layout === 'orthogonal' || (!layout && DEFAULT_FORM_DATA.layout === 'orthogonal')
-                );
+                return (layout || DEFAULT_FORM_DATA.layout) === 'orthogonal';
               },
             },
           },
