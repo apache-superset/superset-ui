@@ -81,7 +81,17 @@ const controlPanel: ControlPanelConfig = {
             },
           },
         ],
-        ['metric'],
+        [
+          {
+            name: 'metric',
+            config: {
+              ...optionalEntity,
+              type: 'MetricsControl',
+              label: t('Metric'),
+              description: t('Metric for node values'),
+            },
+          },
+        ],
         ['adhoc_filters'],
         ['row_limit'],
       ],
