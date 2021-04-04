@@ -7,6 +7,13 @@ export enum Behavior {
   NATIVE_FILTER = 'NATIVE_FILTER',
 }
 
+export enum Place {
+  EXPLORE = 'EXPLORE',
+  DASHBOARD = 'DASHBOARD',
+  FILTER_BAR = 'FILTER_BAR',
+  FILTER_CONFIG_MODAL = 'FILTER_CONFIG_MODAL',
+}
+
 export type DataMaskCurrentState = { value?: any; [key: string]: any };
 
 export type DataMask = {
