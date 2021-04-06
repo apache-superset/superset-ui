@@ -7,7 +7,7 @@ export enum Behavior {
   NATIVE_FILTER = 'NATIVE_FILTER',
 }
 
-export enum Place {
+export enum AppSection {
   EXPLORE = 'EXPLORE',
   DASHBOARD = 'DASHBOARD',
   FILTER_BAR = 'FILTER_BAR',

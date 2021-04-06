@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { Behavior, convertKeysToCamelCase, Datasource, JsonObject, Place } from '../..';
+import { Behavior, convertKeysToCamelCase, Datasource, JsonObject, AppSection } from '../..';
 import { HandlerFunction, PlainObject, SetDataMaskHook } from '../types/Base';
 import { QueryData, DataRecordFilters } from '..';
 
@@ -56,7 +56,7 @@ export interface ChartPropsConfig {
   /** Set of actual behaviors that this instance of chart should use */
   behaviors?: Behavior[];
   /** Place of the chart on the screen */
-  place?: Place;
+  appSection?: AppSection;
 }
 
 const DEFAULT_WIDTH = 800;
@@ -89,7 +89,7 @@ export default class ChartProps<FormData extends RawFormData = RawFormData> {
 
   behaviors: Behavior[];
 
-  place?: Place;
+  appSection?: AppSection;
 
   constructor(config: ChartPropsConfig & { formData?: FormData } = {}) {
     const {
@@ -103,7 +103,7 @@ export default class ChartProps<FormData extends RawFormData = RawFormData> {
       behaviors = [],
       width = DEFAULT_WIDTH,
       height = DEFAULT_HEIGHT,
-      place,
+      appSection,
     } = config;
     this.width = width;
     this.height = height;
@@ -117,7 +117,7 @@ export default class ChartProps<FormData extends RawFormData = RawFormData> {
     this.queriesData = queriesData;
     this.ownCurrentState = ownCurrentState;
     this.behaviors = behaviors;
-    this.place = place;
+    this.appSection = appSection;
   }
 }
 
@@ -134,7 +134,7 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
     input => input.width,
     input => input.ownCurrentState,
     input => input.behaviors,
-    input => input.place,
+    input => input.appSection,
     (
       annotationData,
       datasource,
@@ -146,7 +146,7 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
       width,
       ownCurrentState,
       behaviors,
-      place,
+      appSection,
     ) =>
       new ChartProps({
         annotationData,
@@ -159,7 +159,7 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
         ownCurrentState,
         width,
         behaviors,
-        place,
+        appSection,
       }),
   );
 };
