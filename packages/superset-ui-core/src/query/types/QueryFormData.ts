@@ -102,14 +102,15 @@ export type ExtraFormData = {
   /** params that will be passed to buildQuery and will be appended to request params */
   append_form_data?: {
     filters?: QueryObjectFilterClause[];
-    adhoc_filters: AdhocFilter[];
-    adhoc_groupby: QueryFormColumn[];
+    adhoc_filters?: AdhocFilter[];
+    adhoc_groupby?: QueryFormColumn[];
   };
   /** params that will be passed to buildQuery and will override request params with same name */
   override_form_data?: {
     filters?: QueryObjectFilterClause[];
-    time_column: string;
-    time_grain: string;
+    time_column?: string | null;
+    time_grain?: string | null;
+    granularity_sqla?: string | null;
   };
   /** custom params that will be passed to buildQuery and can be used for request customization */
   custom_form_data?: JsonObject;
