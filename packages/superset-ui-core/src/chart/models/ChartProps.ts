@@ -55,7 +55,7 @@ export interface ChartPropsConfig {
   ownCurrentState?: JsonObject;
   /** Set of actual behaviors that this instance of chart should use */
   behaviors?: Behavior[];
-  /** Place of the chart on the screen */
+  /** Application section of the chart on the screen (in what components/screen it placed) */
   appSection?: AppSection;
 }
 
