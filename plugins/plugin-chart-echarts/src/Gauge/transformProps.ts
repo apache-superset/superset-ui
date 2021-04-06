@@ -57,7 +57,9 @@ const setIntervalBoundsAndColors = (
   }
 
   const intervalBounds = intervalBoundsNonNormalized.map(bound => bound / normalizer);
-  const intervalColors = intervalColorIndicesArray.map(ind => colorFn.colors[ind - 1]);
+  const intervalColors = intervalColorIndicesArray.map(
+    ind => colorFn.colors[(ind - 1) % colorFn.colors.length],
+  );
 
   return intervalBounds.map((val, idx) => {
     const color = intervalColors[idx];
