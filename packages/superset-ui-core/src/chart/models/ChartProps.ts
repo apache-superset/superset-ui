@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { Behavior, convertKeysToCamelCase, Datasource, JsonObject, AppSection } from '../..';
+import { AppSection, Behavior, convertKeysToCamelCase, Datasource, JsonObject } from '../..';
 import { HandlerFunction, PlainObject, SetDataMaskHook } from '../types/Base';
 import { QueryData, DataRecordFilters } from '..';
 

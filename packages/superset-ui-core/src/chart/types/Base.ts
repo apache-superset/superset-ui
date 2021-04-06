@@ -12,6 +12,7 @@ export enum AppSection {
   DASHBOARD = 'DASHBOARD',
   FILTER_BAR = 'FILTER_BAR',
   FILTER_CONFIG_MODAL = 'FILTER_CONFIG_MODAL',
+  EMBEDDED = 'EMBEDDED',
 }
 
 export type DataMaskCurrentState = { value?: any; [key: string]: any };
