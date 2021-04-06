@@ -1,4 +1,5 @@
 import { ExtraFormData } from '../../query';
+import { JsonObject } from '../..';
 
 export type HandlerFunction = (...args: unknown[]) => void;
 
@@ -18,14 +19,11 @@ export type DataMask = {
     extraFormData?: ExtraFormData;
     currentState: DataMaskCurrentState;
   };
-  ownFilters?: {
-    extraFormData?: ExtraFormData;
-    currentState: { [key: string]: any };
-  };
+  ownState?: JsonObject;
 };
 
 export type SetDataMaskHook = {
-  ({ nativeFilters, crossFilters, ownFilters }: DataMask): void;
+  ({ nativeFilters, crossFilters, ownState }: DataMask): void;
 };
 
 export interface PlainObject {

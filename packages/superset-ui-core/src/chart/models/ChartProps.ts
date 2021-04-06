@@ -52,7 +52,7 @@ export interface ChartPropsConfig {
   /** Chart width */
   width?: number;
   /** Own chart state of object that saved in dashboard */
-  ownCurrentState?: JsonObject;
+  ownState?: JsonObject;
   /** Set of actual behaviors that this instance of chart should use */
   behaviors?: Behavior[];
 }
@@ -79,7 +79,7 @@ export default class ChartProps<FormData extends RawFormData = RawFormData> {
 
   hooks: Hooks;
 
-  ownCurrentState: JsonObject;
+  ownState: JsonObject;
 
   queriesData: QueryData[];
 
@@ -93,7 +93,7 @@ export default class ChartProps<FormData extends RawFormData = RawFormData> {
       datasource = {},
       formData = {} as FormData,
       hooks = {},
-      ownCurrentState = {},
+      ownState = {},
       initialValues = {},
       queriesData = [],
       behaviors = [],
@@ -110,7 +110,7 @@ export default class ChartProps<FormData extends RawFormData = RawFormData> {
     this.hooks = hooks;
     this.initialValues = initialValues;
     this.queriesData = queriesData;
-    this.ownCurrentState = ownCurrentState;
+    this.ownState = ownState;
     this.behaviors = behaviors;
   }
 }
@@ -126,7 +126,7 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
     input => input.initialValues,
     input => input.queriesData,
     input => input.width,
-    input => input.ownCurrentState,
+    input => input.ownState,
     input => input.behaviors,
     (
       annotationData,
@@ -137,7 +137,7 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
       initialValues,
       queriesData,
       width,
-      ownCurrentState,
+      ownState,
       behaviors,
     ) =>
       new ChartProps({
@@ -148,7 +148,7 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
         hooks,
         initialValues,
         queriesData,
-        ownCurrentState,
+        ownState,
         width,
         behaviors,
       }),
