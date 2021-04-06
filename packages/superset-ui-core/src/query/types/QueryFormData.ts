@@ -25,7 +25,7 @@ import { AdhocMetric, SavedMetric } from './Metric';
 import { AdhocFilter } from './Filter';
 import { BinaryOperator, SetOperator } from './Operator';
 import { AnnotationLayer } from './AnnotationLayer';
-import { QueryObject, QueryObjectFilterClause } from './Query';
+import { QueryObjectExtras, QueryObjectFilterClause } from './Query';
 import { TimeRange, TimeRangeEndpoints } from './Time';
 import { TimeGranularity } from '../../time-format';
 import { JsonObject } from '../../connection';
@@ -110,7 +110,9 @@ export type ExtraFormData = {
     filters?: QueryObjectFilterClause[];
     time_column?: string | null;
     time_grain?: string | null;
+    time_range?: string | null;
     granularity_sqla?: string | null;
+    extras?: QueryObjectExtras;
   };
   /** custom params that will be passed to buildQuery and can be used for request customization */
   custom_form_data?: JsonObject;
