@@ -26,21 +26,30 @@ const Styles = styled.div<EchartsStylesProps>`
   width: ${({ width }) => width};
 `;
 
+const usePrevious = <T extends unknown>(value: T): T | undefined => {
+  const ref = useRef<T>();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+};
+
 export default function Echart({
   width,
   height,
   echartOptions,
   eventHandlers,
-  selectedValues,
+  selectedValues = {},
 }: EchartsProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ECharts>();
+  const currentSelection = Object.keys(selectedValues) || [];
+  const previousSelection = usePrevious<string[]>(currentSelection) || [];
 
   useEffect(() => {
     if (!divRef.current) return;
     if (!chartRef.current) {
-      const chart = init(divRef.current);
-      chartRef.current = chart;
+      chartRef.current = init(divRef.current);
     }
 
     Object.entries(eventHandlers || {}).forEach(([name, handler]) => {
@@ -48,16 +57,23 @@ export default function Echart({
       chartRef.current?.on(name, handler);
     });
 
-    chartRef.current.clear();
     chartRef.current.setOption(echartOptions, true);
 
-    if (selectedValues) {
+    const highlights = currentSelection.filter(value => !previousSelection.includes(value));
+    if (highlights.length) {
       chartRef.current.dispatchAction({
         type: 'highlight',
-        dataIndex: Object.keys(selectedValues),
+        dataIndex: highlights,
       });
     }
-  }, [echartOptions, eventHandlers]);
+    const downplays = previousSelection.filter(value => !currentSelection.includes(value));
+    if (downplays.length) {
+      chartRef.current.dispatchAction({
+        type: 'downplay',
+        dataIndex: downplays,
+      });
+    }
+  }, [echartOptions, eventHandlers, selectedValues]);
 
   useEffect(() => {
     if (chartRef.current) {
