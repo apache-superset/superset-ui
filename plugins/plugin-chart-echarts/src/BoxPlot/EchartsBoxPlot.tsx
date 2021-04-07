@@ -65,10 +65,8 @@ export default function EchartsBoxPlot({
             value: groupbyValues.length ? groupbyValues : null,
           },
         },
-        ownFilters: {
-          currentState: {
-            selectedValues: values.length ? values : null,
-          },
+        ownState: {
+          selectedValues: values.length ? values : null,
         },
       });
     },
