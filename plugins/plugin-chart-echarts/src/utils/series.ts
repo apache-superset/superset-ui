@@ -184,3 +184,23 @@ export function getChartPadding(
     bottom: bottom + (orientation === LegendOrientation.Bottom ? legendMargin : 0),
   };
 }
+
+export function dedupSeries(series: SeriesOption[]): SeriesOption[] {
+  const counter: Record<string, number> = {};
+  return series.map(row => {
+    const { id } = row;
+    if (id === undefined) return row;
+    const count = counter[id as string];
+    if (count === undefined) {
+      counter[id] = 1;
+    } else {
+      counter[id] += 1;
+    }
+    const prefix = count ? ` (${count})` : '';
+
+    return {
+      ...row,
+      id: `${id}${prefix}`,
+    };
+  });
+}
