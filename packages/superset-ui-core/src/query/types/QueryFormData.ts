@@ -25,7 +25,7 @@ import { AdhocMetric, SavedMetric } from './Metric';
 import { AdhocFilter } from './Filter';
 import { BinaryOperator, SetOperator } from './Operator';
 import { AnnotationLayer } from './AnnotationLayer';
-import { QueryObjectExtras, QueryObjectFilterClause } from './Query';
+import { QueryObject } from './Query';
 import { TimeRange, TimeRangeEndpoints } from './Time';
 import { TimeGranularity } from '../../time-format';
 import { JsonObject } from '../../connection';
@@ -100,24 +100,11 @@ export type QueryFormExtraFilter = {
 
 export type ExtraFormData = {
   /** params that will be passed to buildQuery and will be appended to request params */
-  append_form_data?: {
-    filters?: QueryObjectFilterClause[];
-    adhoc_filters?: AdhocFilter[];
-    adhoc_groupby?: QueryFormColumn[];
-  };
+  append_form_data?: Partial<QueryObject>;
   /** params that will be passed to buildQuery and will override request params with same name */
-  override_form_data?: {
-    filters?: QueryObjectFilterClause[];
-    time_column?: string | null;
-    time_grain?: string | null;
-    time_range?: string | null;
-    granularity_sqla?: string | null;
-    extras?: QueryObjectExtras;
-  };
+  override_form_data?: Partial<QueryObject>;
   /** custom params that will be passed to buildQuery and can be used for request customization */
   custom_form_data?: JsonObject;
-  /** own state of chart taken from dataMask */
-  own_state?: JsonObject;
 };
 
 // Type signature for formData shared by all viz types

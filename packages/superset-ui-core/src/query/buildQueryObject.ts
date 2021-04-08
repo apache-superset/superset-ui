@@ -34,12 +34,7 @@ export default function buildQueryObject<T extends QueryFormData>(
     custom_params = {},
     ...residualFormData
   } = formData;
-  const {
-    append_form_data = {},
-    override_form_data = {},
-    custom_form_data = {},
-    own_state = {},
-  } = extra_form_data;
+  const { append_form_data = {}, override_form_data = {}, custom_form_data = {} } = extra_form_data;
 
   const numericRowLimit = Number(row_limit);
   const numericRowOffset = Number(row_offset);
@@ -86,5 +81,5 @@ export default function buildQueryObject<T extends QueryFormData>(
   // override extra form data used by native and cross filters
   queryObject = overrideExtraFormData(queryObject, override_form_data);
 
-  return { ...queryObject, custom_form_data, own_state };
+  return { ...queryObject, custom_form_data };
 }

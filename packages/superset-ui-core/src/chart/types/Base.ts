@@ -16,22 +16,16 @@ export enum AppSection {
   EMBEDDED = 'EMBEDDED',
 }
 
-export type DataMaskCurrentState = { value?: any; [key: string]: any };
+export type FilterState = { value?: any; [key: string]: any };
 
 export type DataMask = {
-  nativeFilters?: {
-    extraFormData?: ExtraFormData;
-    currentState: DataMaskCurrentState;
-  };
-  crossFilters?: {
-    extraFormData?: ExtraFormData;
-    currentState: DataMaskCurrentState;
-  };
+  extraFormData?: ExtraFormData;
+  filterState?: FilterState;
   ownState?: JsonObject;
 };
 
 export type SetDataMaskHook = {
-  ({ nativeFilters, crossFilters, ownState }: DataMask): void;
+  ({ filterState, extraFormData, ownState }: DataMask): void;
 };
 
 export interface PlainObject {

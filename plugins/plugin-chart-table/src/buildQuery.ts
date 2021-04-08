@@ -89,10 +89,9 @@ const buildQuery: BuildQuery<TableChartFormData> = (formData: TableChartFormData
     }
 
     const moreProps: Partial<QueryObject> = {};
-    const ownState = formDataCopy?.extra_form_data?.own_state ?? {};
+    const ownState = options?.ownState ?? {};
     if (formDataCopy.server_pagination) {
-      const rowLimit = formDataCopy.extra_form_data?.own_state?.pageSize;
-      moreProps.row_limit = rowLimit ?? formDataCopy.server_page_length;
+      moreProps.row_limit = ownState.pageSize ?? formDataCopy.server_page_length;
       moreProps.row_offset = (ownState.currentPage ?? 0) * (ownState.pageSize ?? 0);
     }
 
@@ -151,6 +150,7 @@ export const cachedBuildQuery = (): BuildQuery<TableChartFormData> => {
       { ...formData },
       {
         extras: { cachedChanges },
+        ownState: options?.ownState ?? {},
         hooks: {
           ...options?.hooks,
           setDataMask: () => {},

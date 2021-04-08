@@ -1,5 +1,12 @@
 import { createSelector } from 'reselect';
-import { AppSection, Behavior, convertKeysToCamelCase, Datasource, JsonObject } from '../..';
+import {
+  AppSection,
+  Behavior,
+  convertKeysToCamelCase,
+  Datasource,
+  FilterState,
+  JsonObject,
+} from '../..';
 import { HandlerFunction, PlainObject, SetDataMaskHook } from '../types/Base';
 import { QueryData, DataRecordFilters } from '..';
 
@@ -53,6 +60,8 @@ export interface ChartPropsConfig {
   width?: number;
   /** Own chart state of object that saved in dashboard */
   ownState?: JsonObject;
+  /** Own chart state of object that saved in dashboard */
+  filterState?: FilterState;
   /** Set of actual behaviors that this instance of chart should use */
   behaviors?: Behavior[];
   /** Application section of the chart on the screen (in what components/screen it placed) */
@@ -83,6 +92,8 @@ export default class ChartProps<FormData extends RawFormData = RawFormData> {
 
   ownState: JsonObject;
 
+  filterState: FilterState;
+
   queriesData: QueryData[];
 
   width: number;
@@ -98,6 +109,7 @@ export default class ChartProps<FormData extends RawFormData = RawFormData> {
       formData = {} as FormData,
       hooks = {},
       ownState = {},
+      filterState = {},
       initialValues = {},
       queriesData = [],
       behaviors = [],
@@ -116,6 +128,7 @@ export default class ChartProps<FormData extends RawFormData = RawFormData> {
     this.initialValues = initialValues;
     this.queriesData = queriesData;
     this.ownState = ownState;
+    this.filterState = filterState;
     this.behaviors = behaviors;
     this.appSection = appSection;
   }
@@ -133,6 +146,7 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
     input => input.queriesData,
     input => input.width,
     input => input.ownState,
+    input => input.filterState,
     input => input.behaviors,
     input => input.appSection,
     (
@@ -145,6 +159,7 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
       queriesData,
       width,
       ownState,
+      filterState,
       behaviors,
       appSection,
     ) =>
@@ -157,6 +172,7 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
         initialValues,
         queriesData,
         ownState,
+        filterState,
         width,
         behaviors,
         appSection,
