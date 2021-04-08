@@ -3,7 +3,7 @@ import DatasourceKey from './DatasourceKey';
 import { QueryFieldAliases, QueryFormData } from './types/QueryFormData';
 import { QueryContext, QueryObject } from './types/Query';
 import { SetDataMaskHook } from '../chart';
-import { JsonObject } from '../..';
+import { JsonObject } from '../connection';
 
 const WRAP_IN_ARRAY = (
   baseQueryObject: QueryObject,
