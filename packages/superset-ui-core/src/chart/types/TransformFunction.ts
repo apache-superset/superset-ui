@@ -16,7 +16,7 @@ export type BuildQueryFunction<T extends QueryFormData> = (
     extras?: {
       cachedChanges?: any;
     };
-    ownState: JsonObject;
+    ownState?: JsonObject;
     hooks?: {
       setDataMask: SetDataMaskHook;
       setCachedChanges: (newChanges: any) => void;

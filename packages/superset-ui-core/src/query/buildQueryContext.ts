@@ -27,7 +27,7 @@ export default function buildQueryContext(
     | {
         buildQuery?: BuildFinalQueryObjects;
         queryFields?: QueryFieldAliases;
-        ownState: JsonObject;
+        ownState?: JsonObject;
         hooks?: { setDataMask: SetDataMaskHook };
       }
     | BuildFinalQueryObjects,

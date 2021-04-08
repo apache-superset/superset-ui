@@ -14,7 +14,7 @@ export type BuildQuery<T = any> = (
     extras?: {
       cachedChanges?: any;
     };
-    ownState: JsonObject;
+    ownState?: JsonObject;
     hooks?: {
       setDataMask: SetDataMaskHook;
       setCachedChanges: (newChanges: any) => void;
