@@ -186,21 +186,17 @@ export function getChartPadding(
 }
 
 export function dedupSeries(series: SeriesOption[]): SeriesOption[] {
-  const counter: Record<string, number> = {};
+  const counter = new Map<string, number>();
   return series.map(row => {
-    const { id } = row;
+    let { id } = row;
     if (id === undefined) return row;
-    const count = counter[id as string];
-    if (count === undefined) {
-      counter[id] = 1;
-    } else {
-      counter[id] += 1;
-    }
-    const prefix = count ? ` (${count})` : '';
-
+    id = String(id);
+    const count = counter.get(id) || 0;
+    const suffix = count > 0 ? ` (${count})` : '';
+    counter.set(id, count + 1);
     return {
       ...row,
-      id: `${id}${prefix}`,
+      id: `${id}${suffix}`,
     };
   });
 }
