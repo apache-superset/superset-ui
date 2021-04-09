@@ -207,7 +207,9 @@ function CountryMap(element, props) {
     d3.json(url, (error, mapData) => {
       if (error) {
         const countryName = countryOptions.find(x => x[0] === country)?.[1] || country;
-        element.innerHTML = `<div class="alert alert-danger">Could not get map data for ${countryName}</div>`;
+        d3.select(element).html(
+          `<div class="alert alert-danger">Could not load map data for ${countryName}</div>`,
+        );
       } else {
         maps[country] = mapData;
         drawMap(mapData);
