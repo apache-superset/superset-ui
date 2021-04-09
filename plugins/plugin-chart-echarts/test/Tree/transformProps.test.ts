@@ -26,7 +26,7 @@ describe('EchartsTree tranformProps', () => {
     granularity_sqla: 'ds',
     metric: 'count',
     id: 'id_column',
-    relation: 'relation_column',
+    parent: 'relation_column',
     name: 'name_column',
     rootNode: 'root',
   };
@@ -177,7 +177,7 @@ describe('EchartsTree tranformProps', () => {
       granularity_sqla: 'ds',
       metric: 'count',
       id: 'id_column',
-      relation: 'relation_column',
+      parent: 'relation_column',
       name: 'name_column',
       rootNode: 'first_child',
     };
@@ -257,7 +257,7 @@ describe('EchartsTree tranformProps', () => {
       granularity_sqla: 'ds',
       metric: 'count',
       id: 'id_column',
-      relation: 'relation_column',
+      parent: 'relation_column',
       rootNode: '1',
     };
     const chartPropsConfig = {
@@ -319,6 +319,174 @@ describe('EchartsTree tranformProps', () => {
                               children: [],
                             },
                           ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            }),
+          ]),
+        }),
+      }),
+    );
+  });
+  it('should find root node with null parent when root node name is not provided', () => {
+    const formData = {
+      colorScheme: 'bnbColors',
+      datasource: '3__table',
+      granularity_sqla: 'ds',
+      metric: 'count',
+      id: 'id_column',
+      parent: 'relation_column',
+      name: 'name_column',
+    };
+    const chartPropsConfig = {
+      formData,
+      width: 800,
+      height: 600,
+    };
+    const queriesData = [
+      {
+        colnames: ['id_column', 'relation_column', 'name_column', 'count'],
+        data: [
+          {
+            id_column: '2',
+            relation_column: '4',
+            name_column: 'second_child',
+            count: 20,
+          },
+          {
+            id_column: '3',
+            relation_column: '4',
+            name_column: 'second_child',
+            count: 30,
+          },
+          {
+            id_column: '4',
+            relation_column: '1',
+            name_column: 'first_child',
+            count: 40,
+          },
+          {
+            id_column: '1',
+            relation_column: null,
+            name_column: 'root',
+            count: 10,
+          },
+        ],
+      },
+    ];
+
+    const chartProps = new ChartProps({ ...chartPropsConfig, queriesData });
+    expect(transformProps(chartProps)).toEqual(
+      expect.objectContaining({
+        width: 800,
+        height: 600,
+        echartOptions: expect.objectContaining({
+          series: expect.arrayContaining([
+            expect.objectContaining({
+              data: [
+                {
+                  name: 'root',
+                  children: [
+                    {
+                      name: 'first_child',
+                      value: 40,
+                      children: [
+                        {
+                          name: 'second_child',
+                          value: 20,
+                          children: [],
+                        },
+                        {
+                          name: 'second_child',
+                          value: 30,
+                          children: [],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            }),
+          ]),
+        }),
+      }),
+    );
+  });
+  it('should choose root node from first entry when root node name is not provided', () => {
+    const formData = {
+      colorScheme: 'bnbColors',
+      datasource: '3__table',
+      granularity_sqla: 'ds',
+      metric: 'count',
+      id: 'id_column',
+      parent: 'relation_column',
+      name: 'name_column',
+    };
+    const chartPropsConfig = {
+      formData,
+      width: 800,
+      height: 600,
+    };
+    const queriesData = [
+      {
+        colnames: ['id_column', 'relation_column', 'name_column', 'count'],
+        data: [
+          {
+            id_column: '1',
+            relation_column: 'does_not_exists',
+            name_column: 'root',
+            count: 10,
+          },
+          {
+            id_column: '2',
+            relation_column: '4',
+            name_column: 'second_child',
+            count: 20,
+          },
+          {
+            id_column: '3',
+            relation_column: '4',
+            name_column: 'second_child',
+            count: 30,
+          },
+          {
+            id_column: '4',
+            relation_column: '1',
+            name_column: 'first_child',
+            count: 40,
+          },
+        ],
+      },
+    ];
+
+    const chartProps = new ChartProps({ ...chartPropsConfig, queriesData });
+    expect(transformProps(chartProps)).toEqual(
+      expect.objectContaining({
+        width: 800,
+        height: 600,
+        echartOptions: expect.objectContaining({
+          series: expect.arrayContaining([
+            expect.objectContaining({
+              data: [
+                {
+                  name: 'root',
+                  children: [
+                    {
+                      name: 'first_child',
+                      value: 40,
+                      children: [
+                        {
+                          name: 'second_child',
+                          value: 20,
+                          children: [],
+                        },
+                        {
+                          name: 'second_child',
+                          value: 30,
+                          children: [],
                         },
                       ],
                     },

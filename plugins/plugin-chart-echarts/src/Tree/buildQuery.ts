@@ -22,7 +22,7 @@ export default function buildQuery(formData: QueryFormData) {
   return buildQueryContext(formData, {
     queryFields: {
       id: 'columns',
-      relation: 'columns',
+      parent: 'columns',
       name: 'columns',
     },
   });

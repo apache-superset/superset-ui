@@ -20,9 +20,9 @@ import { TreeSeriesNodeItemOption } from 'echarts/types/src/chart/tree/TreeSerie
 
 export type EchartsTreeFormData = {
   id: string;
-  relation: string;
+  parent: string;
   name: string;
-  rootNode?: string;
+  rootNode?: string | number;
   orient: 'LR' | 'RL' | 'TB' | 'BT';
   symbol: string;
   symbolSize: number;
@@ -36,8 +36,9 @@ export type EchartsTreeFormData = {
 
 export const DEFAULT_FORM_DATA: EchartsTreeFormData = {
   id: '',
-  relation: '',
+  parent: '',
   name: '',
+  rootNode: '',
   layout: 'orthogonal',
   orient: 'LR',
   symbol: 'emptyCircle',

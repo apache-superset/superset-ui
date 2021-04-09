@@ -50,11 +50,11 @@ const controlPanel: ControlPanelConfig = {
         ],
         [
           {
-            name: 'relation',
+            name: 'parent',
             config: {
               ...requiredEntity,
-              label: t('Relation'),
-              description: t('Name of the relation column'),
+              label: t('Parent'),
+              description: t('Name of the column containing the id of the parent node'),
             },
           },
         ],
@@ -64,9 +64,7 @@ const controlPanel: ControlPanelConfig = {
             config: {
               ...optionalEntity,
               label: t('Name'),
-              description: t(
-                'Optional name of the data column.If not specified id will be used to name the nodes',
-              ),
+              description: t('Optional name of the data column.'),
             },
           },
         ],
@@ -74,10 +72,13 @@ const controlPanel: ControlPanelConfig = {
           {
             name: 'root_node',
             config: {
-              ...requiredEntity,
+              ...optionalEntity,
               type: 'TextControl',
               label: t('Root node name'),
-              description: t('Name of root node of tree'),
+              description: t(
+                'Name of root node of the tree.If not specified id will be used to name the nodes.This should be the id of the node if name column is not selected,otherwise name should be entered',
+              ),
+              renderTrigger: true,
             },
           },
         ],

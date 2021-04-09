@@ -34,9 +34,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
 
   const {
     id,
-    relation,
+    parent,
     name,
-    rootNode,
     metric = '',
     layout,
     orient,
@@ -46,9 +45,9 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     position,
     emphasis,
   }: EchartsTreeFormData = { ...DEFAULT_GRAPH_FORM_DATA, ...formData };
-
+  let { rootNode } = { ...DEFAULT_GRAPH_FORM_DATA, ...formData };
   const metricLabel = getMetricLabel(metric);
-  const tree: TreeSeriesNodeItemOption = { name: rootNode, children: [] };
+
   const indexMap: { [name: string]: number } = {};
   let rootNodeId: null | string | number = null;
   let nameColumn: string;
@@ -57,25 +56,41 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   } else {
     nameColumn = id;
   }
+
+  if (!rootNode) {
+    data.some(node => {
+      if (!node[parent] || node[parent] === 'null') {
+        rootNode = node[nameColumn];
+        return true;
+      }
+      return false;
+    });
+  }
+  if (!rootNode) {
+    rootNode = data[0][nameColumn];
+  }
+  const tree: TreeSeriesNodeItemOption = { name: rootNode, children: [] };
+
   for (let i = 0; i < data.length; i += 1) {
     const nodeId = data[i][id];
     indexMap[nodeId] = i;
     data[i].children = [];
-    if (data[i][nameColumn]?.toString() === rootNode) {
+
+    if (!rootNodeId && data[i][nameColumn]?.toString() === rootNode) {
       rootNodeId = nodeId;
     }
   }
 
   if (rootNodeId) {
     data.forEach(node => {
-      if (node[relation] === rootNodeId) {
+      if (node[parent] === rootNodeId) {
         tree.children!.push({
           name: node[nameColumn],
           children: node.children,
           value: node[metricLabel],
         });
       } else {
-        const parentId = node[relation];
+        const parentId = node[parent];
         // Check if parent exists,and child is not dangling due to row-limited data
         if (data[indexMap[parentId]]) {
           const parentIndex = indexMap[parentId];
@@ -88,6 +103,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       }
     });
   }
+
   const series: TreeSeriesOption[] = [
     {
       type: 'tree',
