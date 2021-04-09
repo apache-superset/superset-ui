@@ -23,6 +23,7 @@ import {
   D3_FORMAT_DOCS,
   sections,
 } from '@superset-ui/chart-controls';
+import { countryOptions } from './countries';
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
@@ -30,12 +31,6 @@ const config: ControlPanelConfig = {
     {
       label: t('Query'),
       expanded: true,
-      controlSetRows: [['entity'], ['metric'], ['adhoc_filters']],
-    },
-    {
-      label: t('Chart Options'),
-      expanded: true,
-      tabOverride: 'customize',
       controlSetRows: [
         [
           {
@@ -44,40 +39,22 @@ const config: ControlPanelConfig = {
               type: 'SelectControl',
               label: t('Country Name'),
               default: 'France',
-              choices: [
-                'Belgium',
-                'Brazil',
-                'Bulgaria',
-                'China',
-                'Egypt',
-                'France',
-                'Germany',
-                'India',
-                'Iran',
-                'Italy',
-                'Japan',
-                'Korea',
-                'Liechtenstein',
-                'Morocco',
-                'Myanmar',
-                'Netherlands',
-                'Portugal',
-                'Russia',
-                'Singapore',
-                'Spain',
-                'Switzerland',
-                'Syria',
-                'Thailand',
-                'Timorleste',
-                'Uk',
-                'Ukraine',
-                'Uruguay',
-                'Usa',
-                'Zambia',
-              ].map(s => [s, s]),
-              description: t('The name of the country that Superset should display'),
+              choices: countryOptions,
+              description: t('Which country to plot the map for'),
             },
           },
+        ],
+        ['entity'],
+        ['metric'],
+        ['adhoc_filters'],
+      ],
+    },
+    {
+      label: t('Chart Options'),
+      expanded: true,
+      tabOverride: 'customize',
+      controlSetRows: [
+        [
           {
             name: 'number_format',
             config: {
