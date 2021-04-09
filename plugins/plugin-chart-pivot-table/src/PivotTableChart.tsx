@@ -33,13 +33,15 @@ const Styles = styled.div<PivotTableStylesProps>`
   }
 `;
 
+// TODO: remove eslint-disable when click callbacks are implemented
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const clickCellCallback = (
   e: MouseEvent,
   value: number,
   filters: Record<string, any>,
   pivotData: Record<string, any>,
 ) => {
-  console.log('CELL CLICKED', { e, value, filters, pivotData });
+  // TODO: Implement a callback
 };
 
 const clickColumnHeaderCallback = (
@@ -50,7 +52,7 @@ const clickColumnHeaderCallback = (
   isSubtotal: boolean,
   isGrandTotal: boolean,
 ) => {
-  console.log('COL CLICKED', { e, value, filters, pivotData, isSubtotal, isGrandTotal });
+  // TODO: Implement a callback
 };
 
 const clickRowHeaderCallback = (
@@ -61,7 +63,7 @@ const clickRowHeaderCallback = (
   isSubtotal: boolean,
   isGrandTotal: boolean,
 ) => {
-  console.log('ROW CLICKED', { e, value, filters, pivotData, isSubtotal, isGrandTotal });
+  // TODO: Implement a callback
 };
 
 export default function PivotTableChart(props: PivotTableProps) {
