@@ -1,7 +1,7 @@
 import { ChartProps } from '@superset-ui/core';
 import transformProps from '../../src/plugin/transformProps';
 
-describe('PivotTableChart tranformProps', () => {
+describe('PivotTableChart transformProps', () => {
   const formData = {
     groupbyRows: ['row1', 'row2'],
     groupbyColumns: ['col1', 'col2'],
@@ -28,7 +28,7 @@ describe('PivotTableChart tranformProps', () => {
     ],
   });
 
-  it('should tranform chart props for viz', () => {
+  it('should transform chart props for viz', () => {
     expect(transformProps(chartProps)).toEqual({
       width: 800,
       height: 600,

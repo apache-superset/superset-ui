@@ -163,7 +163,8 @@ const config: ControlPanelConfig = {
               default: 'key_a_to_z',
               choices: [
                 // [value, label]
-                ['key_a_to_z', t('key alphabetically')],
+                ['key_a_to_z', t('key a-z')],
+                ['key_z_to_a', t('key z-a')],
                 ['value_a_to_z', t('value ascending')],
                 ['value_z_to_a', t('value descending')],
               ],
@@ -179,7 +180,8 @@ const config: ControlPanelConfig = {
               default: 'key_a_to_z',
               choices: [
                 // [value, label]
-                ['key_a_to_z', t('key alphabetically')],
+                ['key_a_to_z', t('key a-z')],
+                ['key_z_to_a', t('key z-a')],
                 ['value_a_to_z', t('value ascending')],
                 ['value_z_to_a', t('value descending')],
               ],
