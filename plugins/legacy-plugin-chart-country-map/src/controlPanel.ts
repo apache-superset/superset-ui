@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { t } from '@superset-ui/core';
+import { t, validateNonEmpty } from '@superset-ui/core';
 import {
   ControlPanelConfig,
   D3_FORMAT_OPTIONS,
@@ -37,10 +37,16 @@ const config: ControlPanelConfig = {
             name: 'select_country',
             config: {
               type: 'SelectControl',
-              label: t('Country Name'),
-              default: 'France',
+              label: t('Country'),
+              default: null,
               choices: countryOptions,
-              description: t('Which country to plot the map for'),
+              description: t('Which country to plot the map for?'),
+              validators: [validateNonEmpty],
+              mapStateToProps(state, { value }) {
+                return {
+                  value: value ? String(value).toLowerCase() : null,
+                };
+              },
             },
           },
         ],
