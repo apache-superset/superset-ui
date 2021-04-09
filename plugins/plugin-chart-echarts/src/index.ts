@@ -20,6 +20,7 @@ export { default as EchartsBoxPlotChartPlugin } from './BoxPlot';
 export { default as EchartsTimeseriesChartPlugin } from './Timeseries';
 export { default as EchartsPieChartPlugin } from './Pie';
 export { default as EchartsGraphChartPlugin } from './Graph';
+export { default as EchartsGaugeChartPlugin } from './Gauge';
 export { default as EchartsTreeChartPlugin } from './Tree';
 
 /**

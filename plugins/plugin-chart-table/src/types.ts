@@ -31,6 +31,7 @@ import {
   QueryFormData,
   SetDataMaskHook,
 } from '@superset-ui/core';
+import { ColumnConfig } from '@superset-ui/chart-controls';
 
 export type CustomFormatter = (value: DataRecordValue) => string;
 
@@ -43,6 +44,7 @@ export interface DataColumnMeta {
   formatter?: TimeFormatter | NumberFormatter | CustomFormatter;
   isMetric?: boolean;
   isPercentMetric?: boolean;
+  config?: ColumnConfig;
 }
 
 export interface TableChartData {
@@ -67,6 +69,7 @@ export type TableChartFormData = QueryFormData & {
   table_timestamp_format?: string;
   table_filter?: boolean;
   time_grain_sqla?: TimeGranularity;
+  column_config?: Record<string, ColumnConfig>;
 };
 
 export interface TableChartProps extends ChartProps {
@@ -87,6 +90,7 @@ export interface TableChartTransformedProps<D extends DataRecord = DataRecord> {
   setDataMask: SetDataMaskHook;
   isRawRecords?: boolean;
   data: D[];
+  totals?: D;
   columns: DataColumnMeta[];
   metrics?: (keyof D)[];
   percentMetrics?: (keyof D)[];

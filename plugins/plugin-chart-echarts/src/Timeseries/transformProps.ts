@@ -27,8 +27,8 @@ import {
   isIntervalAnnotationLayer,
   isTimeseriesAnnotationLayer,
   getTimeFormatter,
-  getTimeFormatterForGranularity,
   smartDateFormatter,
+  smartDateDetailedFormatter,
   TimeseriesChartDataResponseResult,
   TimeFormatter,
 } from '@superset-ui/core';
@@ -36,7 +36,12 @@ import { EChartsOption, SeriesOption } from 'echarts';
 import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
 import { EchartsProps, ForecastSeriesEnum, ProphetValue, LegendOrientation } from '../types';
 import { parseYAxisBound } from '../utils/controls';
-import { extractTimeseriesSeries, getChartPadding, getLegendProps } from '../utils/series';
+import {
+  dedupSeries,
+  extractTimeseriesSeries,
+  getChartPadding,
+  getLegendProps,
+} from '../utils/series';
 import { extractAnnotationLabels } from '../utils/annotation';
 import {
   extractForecastSeriesContext,
@@ -66,6 +71,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     annotationLayers,
     colorScheme,
     contributionMode,
+    forecastEnabled,
     legendMargin,
     legendOrientation,
     legendType,
@@ -79,7 +85,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     xAxisShowMaxLabel,
     xAxisTimeFormat,
     yAxisBounds,
-    timeGrainSqla,
+    tooltipTimeFormat,
     zoomable,
     richTooltip,
     xAxisLabelRotation,
@@ -87,7 +93,9 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
 
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
   const rebasedData = rebaseTimeseriesDatum(data);
-  const rawSeries = extractTimeseriesSeries(rebasedData);
+  const rawSeries = extractTimeseriesSeries(rebasedData, {
+    fillNeighborValue: stack && !forecastEnabled ? 0 : undefined,
+  });
   const series: SeriesOption[] = [];
   const formatter = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormat);
 
@@ -130,9 +138,18 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     if (max === undefined) max = 1;
   }
 
-  let xAxisFormatter: TimeFormatter | StringConstructor;
-  if (xAxisTimeFormat === smartDateFormatter.id) {
-    xAxisFormatter = getTimeFormatterForGranularity(timeGrainSqla);
+  let tooltipFormatter: TimeFormatter | StringConstructor;
+  if (tooltipTimeFormat === smartDateFormatter.id) {
+    tooltipFormatter = smartDateDetailedFormatter;
+  } else if (tooltipTimeFormat) {
+    tooltipFormatter = getTimeFormatter(xAxisTimeFormat);
+  } else {
+    tooltipFormatter = String;
+  }
+
+  let xAxisFormatter: TimeFormatter | StringConstructor | undefined;
+  if (xAxisTimeFormat === smartDateFormatter.id || !xAxisTimeFormat) {
+    xAxisFormatter = undefined;
   } else if (xAxisTimeFormat) {
     xAxisFormatter = getTimeFormatter(xAxisTimeFormat);
   } else {
@@ -181,7 +198,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         const value: number = !richTooltip ? params.value : params[0].value[0];
         const prophetValue = !richTooltip ? [params] : params;
 
-        const rows: Array<string> = [`${xAxisFormatter(value)}`];
+        const rows: Array<string> = [`${tooltipFormatter(value)}`];
         const prophetValues: Record<string, ProphetValue> = extractProphetValuesFromTooltipParams(
           prophetValue,
         );
@@ -211,7 +228,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         .map(entry => entry.name || '')
         .concat(extractAnnotationLabels(annotationLayers, annotationData)),
     },
-    series,
+    series: dedupSeries(series),
     toolbox: {
       show: zoomable,
       top: TIMESERIES_CONSTANTS.toolboxTop,

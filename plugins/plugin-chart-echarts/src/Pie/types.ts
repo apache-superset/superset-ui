@@ -16,6 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { EChartsOption } from 'echarts';
+import {
+  ChartDataResponseResult,
+  ChartProps,
+  DataRecordValue,
+  QueryFormData,
+  SetDataMaskHook,
+} from '@superset-ui/core';
 import {
   DEFAULT_LEGEND_FORM_DATA,
   EchartsLegendFormData,
@@ -23,19 +31,26 @@ import {
   LegendType,
 } from '../types';
 
-export type EchartsPieFormData = EchartsLegendFormData & {
-  colorScheme?: string;
-  donut: boolean;
-  groupby: string[];
-  innerRadius: number;
-  labelLine: boolean;
-  labelType: EchartsPieLabelType;
-  labelsOutside: boolean;
-  metric?: string;
-  outerRadius: number;
-  showLabels: boolean;
-  numberFormat: string;
-};
+export type EchartsPieFormData = QueryFormData &
+  EchartsLegendFormData & {
+    colorScheme?: string;
+    currentOwnValue?: string[] | null;
+    currentValue?: string[] | null;
+    donut: boolean;
+    defaultValue?: string[] | null;
+    groupby: string[];
+    innerRadius: number;
+    labelLine: boolean;
+    labelType: EchartsPieLabelType;
+    labelsOutside: boolean;
+    metric?: string;
+    outerRadius: number;
+    showLabels: boolean;
+    numberFormat: string;
+    dateFormat: string;
+    showLabelsThreshold: number;
+    emitFilter: boolean;
+  };
 
 export enum EchartsPieLabelType {
   Key = 'key',
@@ -46,6 +61,12 @@ export enum EchartsPieLabelType {
   KeyValuePercent = 'key_value_percent',
 }
 
+export interface EchartsPieChartProps extends ChartProps {
+  formData: EchartsPieFormData;
+  queriesData: ChartDataResponseResult[];
+}
+
+// @ts-ignore
 export const DEFAULT_FORM_DATA: EchartsPieFormData = {
   ...DEFAULT_LEGEND_FORM_DATA,
   donut: false,
@@ -59,4 +80,19 @@ export const DEFAULT_FORM_DATA: EchartsPieFormData = {
   outerRadius: 70,
   showLabels: true,
   labelsOutside: true,
+  showLabelsThreshold: 5,
+  emitFilter: false,
+  dateFormat: 'smart_date',
 };
+
+export interface PieChartTransformedProps {
+  formData: EchartsPieFormData;
+  height: number;
+  width: number;
+  echartOptions: EChartsOption;
+  emitFilter: boolean;
+  setDataMask: SetDataMaskHook;
+  labelMap: Record<string, DataRecordValue[]>;
+  groupby: string[];
+  selectedValues: Record<number, string>;
+}

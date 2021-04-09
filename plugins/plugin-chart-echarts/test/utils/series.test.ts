@@ -18,6 +18,7 @@
  */
 import { getNumberFormatter, getTimeFormatter } from '@superset-ui/core';
 import {
+  dedupSeries,
   extractGroupbyLabel,
   extractTimeseriesSeries,
   formatSeriesName,
@@ -63,6 +64,69 @@ describe('extractTimeseriesSeries', () => {
           [new Date('2000-01-01'), 2],
           [new Date('2000-02-01'), 10],
           [new Date('2000-03-01'), 5],
+        ],
+      },
+    ]);
+  });
+
+  it('should do missing value imputation', () => {
+    const data = [
+      {
+        __timestamp: '2000-01-01',
+        abc: null,
+      },
+      {
+        __timestamp: '2000-02-01',
+        abc: null,
+      },
+      {
+        __timestamp: '2000-03-01',
+        abc: 1,
+      },
+      {
+        __timestamp: '2000-04-01',
+        abc: null,
+      },
+      {
+        __timestamp: '2000-05-01',
+        abc: null,
+      },
+      {
+        __timestamp: '2000-06-01',
+        abc: null,
+      },
+      {
+        __timestamp: '2000-07-01',
+        abc: 2,
+      },
+      {
+        __timestamp: '2000-08-01',
+        abc: 3,
+      },
+      {
+        __timestamp: '2000-09-01',
+        abc: null,
+      },
+      {
+        __timestamp: '2000-10-01',
+        abc: null,
+      },
+    ];
+    expect(extractTimeseriesSeries(data, { fillNeighborValue: 0 })).toEqual([
+      {
+        id: 'abc',
+        name: 'abc',
+        data: [
+          [new Date('2000-01-01'), null],
+          [new Date('2000-02-01'), 0],
+          [new Date('2000-03-01'), 1],
+          [new Date('2000-04-01'), 0],
+          [new Date('2000-05-01'), null],
+          [new Date('2000-06-01'), 0],
+          [new Date('2000-07-01'), 2],
+          [new Date('2000-08-01'), 3],
+          [new Date('2000-09-01'), 0],
+          [new Date('2000-10-01'), null],
         ],
       },
     ]);
@@ -263,6 +327,27 @@ describe('formatSeriesName', () => {
         right: 0,
         top: 0,
       });
+    });
+  });
+
+  describe('dedupSeries', () => {
+    it('should deduplicate ids in series', () => {
+      expect(
+        dedupSeries([
+          {
+            id: 'foo',
+          },
+          {
+            id: 'bar',
+          },
+          {
+            id: 'foo',
+          },
+          {
+            id: 'foo',
+          },
+        ]),
+      ).toEqual([{ id: 'foo' }, { id: 'bar' }, { id: 'foo (1)' }, { id: 'foo (2)' }]);
     });
   });
 });

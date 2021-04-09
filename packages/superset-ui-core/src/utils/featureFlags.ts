@@ -41,10 +41,24 @@ export enum FeatureFlag {
   GLOBAL_ASYNC_QUERIES = 'GLOBAL_ASYNC_QUERIES',
   ENABLE_TEMPLATE_PROCESSING = 'ENABLE_TEMPLATE_PROCESSING',
   ENABLE_EXPLORE_DRAG_AND_DROP = 'ENABLE_EXPLORE_DRAG_AND_DROP',
+  DASHBOARD_RBAC = 'DASHBOARD_RBAC',
+  ALERTS_ATTACH_REPORTS = 'ALERTS_ATTACH_REPORTS',
 }
-
+export type ScheduleQueriesProps = {
+  JSONSCHEMA: {
+    [key: string]: string;
+  };
+  UISCHEMA: {
+    [key: string]: string;
+  };
+  VALIDATION: {
+    [key: string]: string;
+  };
+};
 export type FeatureFlagMap = {
-  [key in FeatureFlag]?: boolean;
+  [key in Exclude<FeatureFlag, FeatureFlag.SCHEDULED_QUERIES>]?: boolean;
+} & {
+  SCHEDULED_QUERIES?: ScheduleQueriesProps;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
