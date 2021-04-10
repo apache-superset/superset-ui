@@ -27,9 +27,9 @@ export const Tree = ({ width, height }) => {
         datasource: '3__table',
         granularity_sqla: 'ds',
         metric: 'count',
-        id: select('Id Column', ['id_column', 'name_column', 'relation_column'], 'id_column'),
+        id: select('Id Column', ['id_column', 'name_column', 'parent_column'], 'id_column'),
         rootNode: text('Root Node', 'root'),
-        relation: select('Relation Column', ['relation_column', 'id_column'], 'relation_column'),
+        parent: select('Parent Column', ['parent_column', 'id_column'], 'parent_column'),
         name: select('Name Column', [null, 'name_column'], 'name_column'),
 
         position: select('Label Position', ['top', 'right', 'left', 'bottom'], 'top'),
