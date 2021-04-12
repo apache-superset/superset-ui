@@ -63,6 +63,7 @@ export type TableChartFormData = QueryFormData & {
   groupby?: QueryFormMetric[] | null;
   all_columns?: QueryFormMetric[] | null;
   order_desc?: boolean;
+  detoken_select?: boolean;
   show_cell_bars?: boolean;
   table_timestamp_format?: string;
   table_filter?: boolean;
@@ -93,6 +94,7 @@ export interface TableChartTransformedProps<D extends DataRecord = DataRecord> {
   pageSize?: number;
   showCellBars?: boolean;
   sortDesc?: boolean;
+  detokenSelect?: boolean;
   includeSearch?: boolean;
   alignPositiveNegative?: boolean;
   colorPositiveNegative?: boolean;
