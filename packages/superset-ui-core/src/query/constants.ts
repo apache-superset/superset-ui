@@ -1,3 +1,11 @@
+import {
+  ExtraFormDataAppend,
+  ExtraFormDataOverrideExtras,
+  ExtraFormDataOverrideRegular,
+  ExtraFormDataOverride,
+  QueryObject,
+} from './types';
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,3 +25,44 @@
  * under the License.
  */
 export const DTTM_ALIAS = '__timestamp';
+
+export const EXTRA_FORM_DATA_OVERRIDE_REGULAR_KEYS: (keyof ExtraFormDataOverrideRegular)[] = [
+  'granularity',
+  'granularity_sqla',
+  'time_column',
+  'time_grain',
+  'time_range',
+];
+
+export const EXTRA_FORM_DATA_OVERRIDE_EXTRA_KEYS: (keyof ExtraFormDataOverrideExtras)[] = [
+  'druid_time_origin',
+  'relative_start',
+  'relative_end',
+  'time_grain_sqla',
+  'time_range_endpoints',
+];
+
+export const EXTRA_FORM_DATA_OVERRIDE_KEYS: (keyof ExtraFormDataOverride)[] = [
+  ...EXTRA_FORM_DATA_OVERRIDE_REGULAR_KEYS,
+  ...EXTRA_FORM_DATA_OVERRIDE_EXTRA_KEYS,
+];
+
+export const EXTRA_FORM_DATA_APPEND_KEYS: (keyof ExtraFormDataAppend)[] = [
+  'adhoc_filters',
+  'filters',
+  'cross_groupby',
+  'cross_highlight',
+  'cross_drilldown',
+  'custom_form_data',
+];
+
+export const EXTRA_FORM_DATA_OVERRIDE_REGULAR_MAPPINGS: Record<
+  keyof ExtraFormDataOverrideRegular,
+  keyof QueryObject
+> = {
+  granularity: 'granularity',
+  granularity_sqla: 'granularity',
+  time_column: 'time_column',
+  time_grain: 'time_grain',
+  time_range: 'time_range',
+};
