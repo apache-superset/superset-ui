@@ -55,10 +55,12 @@ export default function Echart({
       type: 'downplay',
       dataIndex: previousSelection.current.filter(value => !currentSelection.includes(value)),
     });
-    chartRef.current.dispatchAction({
-      type: 'highlight',
-      dataIndex: currentSelection,
-    });
+    if (currentSelection.length > 0) {
+      chartRef.current.dispatchAction({
+        type: 'highlight',
+        dataIndex: currentSelection,
+      });
+    }
     previousSelection.current = currentSelection;
   }, [echartOptions, eventHandlers, selectedValues]);
 
