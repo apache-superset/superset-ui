@@ -58,9 +58,9 @@ export interface ChartPropsConfig {
   queriesData?: QueryData[];
   /** Chart width */
   width?: number;
-  /** Own chart state of object that saved in dashboard */
+  /** Own chart state that saved in dashboard */
   ownState?: JsonObject;
-  /** Own chart state of object that saved in dashboard */
+  /** Filter state that saved in dashboard */
   filterState?: FilterState;
   /** Set of actual behaviors that this instance of chart should use */
   behaviors?: Behavior[];
