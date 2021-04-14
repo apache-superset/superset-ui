@@ -17,7 +17,15 @@
  * under the License.
  */
 import React from 'react';
-import { t, validateNonEmpty } from '@superset-ui/core';
+import {
+  ChartDataResponseResult,
+  FeatureFlag,
+  GenericDataType,
+  isFeatureEnabled,
+  QueryFormMetric,
+  t,
+  validateNonEmpty, validateNumber
+} from '@superset-ui/core';
 import {
   ControlPanelConfig,
   D3_FORMAT_DOCS,
@@ -28,8 +36,24 @@ import {
 import { DEFAULT_FORM_DATA } from './types';
 import { legendOrientationControl, legendTypeControl, showLegendControl } from '../controls';
 import { LABEL_POSITION } from '../constants';
+import {ControlFormItemSpec} from "@superset-ui/chart-controls/lib/components/ControlForm";
 
-const { labelType, labelPosition, numberFormat, showLabels, isCircle } = DEFAULT_FORM_DATA;
+const { labelType, labelPosition, numberFormat, showLabels, isCircle, emitFilter } = DEFAULT_FORM_DATA;
+
+const radarMetricMaxValue: { name: string; config: ControlFormItemSpec } = {
+  name: 'radarMetricMaxValue',
+  config: {
+    controlType: 'InputNumber',
+    label: t('Max'),
+    description: t(
+      'Default column width in pixels, may still be restricted by the shortest/longest word in the column',
+    ),
+    width: 120,
+    placeholder: 'auto',
+    debounceDelay: 400,
+    validators: [validateNumber],
+  }
+};
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
@@ -44,12 +68,24 @@ const config: ControlPanelConfig = {
       expanded: true,
       controlSetRows: [
         ['color_scheme'],
-        // eslint-disable-next-line react/jsx-key
         [<h1 className="section-header">{t('Legend')}</h1>],
+        isFeatureEnabled(FeatureFlag.DASHBOARD_CROSS_FILTERS)
+          ? [
+            {
+              name: 'emit_filter',
+              config: {
+                type: 'CheckboxControl',
+                label: t('Enable emitting filters'),
+                default: emitFilter,
+                renderTrigger: true,
+                description: t('Enable emmiting filters.'),
+              },
+            },
+          ]
+          : [],
         [showLegendControl],
         [legendTypeControl],
         [legendOrientationControl],
-        // eslint-disable-next-line react/jsx-key
         [<h1 className="section-header">{t('Labels')}</h1>],
         [
           {
@@ -123,8 +159,36 @@ const config: ControlPanelConfig = {
             },
           },
         ],
-        // eslint-disable-next-line react/jsx-key
         [<h1 className="section-header">{t('Radar')}</h1>],
+        [
+          {
+            name: 'column_config',
+            config: {
+              type: 'ColumnConfigControl',
+              label: t('Customize Metrics'),
+              description: t('Further customize how to display each metric'),
+              renderTrigger: true,
+              configFormLayout: {
+                [GenericDataType.NUMERIC]: [
+                  [radarMetricMaxValue]
+                ],
+              },
+              mapStateToProps(explore, control, chart) {
+                const values = explore?.controls?.metrics?.value as QueryFormMetric[];
+                const metricColumn = values.map((value) => {
+                  if (typeof value === "string") {
+                    return value;
+                  }
+                  return value.label;
+                });
+                return {
+                  queryResponse: chart?.queriesResponse?.[0] as ChartDataResponseResult | undefined,
+                  appliedColumnNames: metricColumn,
+                };
+              },
+            },
+          },
+        ],
         [
           {
             name: 'is_circle',
@@ -133,7 +197,7 @@ const config: ControlPanelConfig = {
               label: t('Circle radar shape'),
               renderTrigger: true,
               default: isCircle,
-              description: t('Whether to display the labels.'),
+              description: t("Radar render type, whether to display 'circle' shape."),
             },
           },
         ],

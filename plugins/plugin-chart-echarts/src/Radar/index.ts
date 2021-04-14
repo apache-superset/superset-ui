@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartMetadata, ChartPlugin, t } from '@superset-ui/core';
+import { Behavior, ChartMetadata, ChartPlugin, t } from '@superset-ui/core';
 import buildQuery from './buildQuery';
 import controlPanel from './controlPanel';
 import transformProps from './transformProps';
@@ -44,7 +44,7 @@ export default class EchartsRadarChartPlugin extends ChartPlugin<
       controlPanel,
       loadChart: () => import('./EchartsRadar'),
       metadata: new ChartMetadata({
-        // behaviors: [Behavior.CROSS_FILTER],
+        behaviors: [Behavior.CROSS_FILTER],
         credits: ['https://echarts.apache.org'],
         description: 'Radar Chart (Apache ECharts)',
         name: t('Radar Chart'),
