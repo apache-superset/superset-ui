@@ -29,8 +29,7 @@ export function overrideExtraFormData(
   const overriddenFormData: QueryObject = { ...queryObject };
   const { extras: overriddenExtras = {} } = overriddenFormData;
   Object.entries(EXTRA_FORM_DATA_OVERRIDE_REGULAR_MAPPINGS).forEach(([key, target]) => {
-    // @ts-ignore
-    const value = overrideFormData[key];
+    const value = overrideFormData[key as keyof ExtraFormDataOverride];
     if (value !== undefined) {
       overriddenFormData[target] = value;
     }
