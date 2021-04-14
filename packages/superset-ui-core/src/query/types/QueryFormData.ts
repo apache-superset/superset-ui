@@ -102,9 +102,10 @@ export type QueryFormExtraFilter = {
 export type ExtraFormDataAppend = {
   adhoc_filters?: AdhocFilter[];
   filters?: QueryObjectFilterClause[];
-  cross_drilldown?: string[];
-  cross_groupby?: string[];
-  cross_highlight?: string[];
+  /** These properties are for dynamic cross chart interaction */
+  interactive_drilldown?: string[];
+  interactive_groupby?: string[];
+  interactive_highlight?: string[];
   /** This property can be used to pass non-standard form data between viz components */
   custom_form_data?: JsonObject;
 };

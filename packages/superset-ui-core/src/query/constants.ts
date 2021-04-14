@@ -37,9 +37,9 @@ export const EXTRA_FORM_DATA_OVERRIDE_EXTRA_KEYS: (keyof ExtraFormDataOverrideEx
 export const EXTRA_FORM_DATA_APPEND_KEYS: (keyof ExtraFormDataAppend)[] = [
   'adhoc_filters',
   'filters',
-  'cross_groupby',
-  'cross_highlight',
-  'cross_drilldown',
+  'interactive_groupby',
+  'interactive_highlight',
+  'interactive_drilldown',
   'custom_form_data',
 ];
 
