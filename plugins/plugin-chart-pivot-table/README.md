@@ -12,7 +12,7 @@ lookup this chart throughout the app.
 ```js
 import PivotTableChartPlugin from '@superset-ui/plugin-chart-pivot-table';
 
-new PivotTableChartPlugin().configure({ key: 'pivot-table' }).register();
+new PivotTableChartPlugin().configure({ key: 'pivot-table-v2' }).register();
 ```
 
 Then use it via `SuperChart`. See
@@ -21,7 +21,7 @@ for more details.
 
 ```js
 <SuperChart
-  chartType="pivot-table"
+  chartType="pivot-table-v2"
   width={600}
   height={600}
   formData={...}
