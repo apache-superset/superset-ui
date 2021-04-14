@@ -27,7 +27,6 @@ import {
 } from './types';
 import { DEFAULT_TREE_SERIES_OPTION } from './constants';
 import { EchartsProps } from '../types';
-import Tree from 'echarts/types/src/data/Tree';
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
@@ -50,15 +49,13 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const metricLabel = getMetricLabel(metric);
 
   const indexMap: { [name: string]: number } = {};
-  let rootNodeId: null | string | number = null;
+  //let rootNodeId: null | string | number = null;
   let nameColumn: string;
   if (name) {
     nameColumn = name;
   } else {
     nameColumn = id;
   }
-
-  console.log('data ', data, parent);
 
   function getTree(rootNode, rootNodeId) {
     const tree: TreeSeriesNodeItemOption = { name: rootNode, children: [] };
@@ -159,9 +156,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   } else {
     // ui gave root node id/ name
     const id = getNodeId(rootNode);
-
     const { tree } = getTree(rootNode, id);
-
     finalTree = tree;
   }
 
