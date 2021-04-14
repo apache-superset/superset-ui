@@ -27,6 +27,7 @@ import {
 } from './types';
 import { DEFAULT_TREE_SERIES_OPTION } from './constants';
 import { EchartsProps } from '../types';
+import Tree from 'echarts/types/src/data/Tree';
 
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
@@ -57,57 +58,117 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     nameColumn = id;
   }
 
-  if (!rootNode) {
+  console.log('data ', data, parent);
+
+  function getTree(rootNode, rootNodeId) {
+    const tree: TreeSeriesNodeItemOption = { name: rootNode, children: [] };
+    const children = [] as TreeSeriesNodeItemOption[];
+    //this will just store number of immiediete childrens
+    let totalChildren = 0;
+    if (!rootNodeId) {
+      return { tree, totalChildren };
+    }
+
+    // fill indexMap with node ids and find root node id if already not found
+    for (let i = 0; i < data.length; i += 1) {
+      const nodeId = data[i][id];
+      indexMap[nodeId] = i;
+      children[i] = [];
+
+      if (!rootNodeId && data[i][nameColumn]?.toString() === rootNode) {
+        rootNodeId = nodeId;
+      }
+    }
+
+    // find children of tree
+    if (rootNodeId) {
+      for (let i = 0; i < data.length; i++) {
+        const node = data[i];
+        if (node[parent] === rootNodeId) {
+          tree.children?.push({
+            name: node[nameColumn],
+            children: children[i],
+            value: node[metricLabel],
+          });
+          //FIXME: not getting correct child length
+
+          totalChildren = totalChildren + children[i].length;
+        } else {
+          const parentId = node[parent];
+          if (data[indexMap[parentId]]) {
+            const parentIndex = indexMap[parentId];
+            children[parentIndex].push({
+              name: node[nameColumn],
+              children: children[i],
+              value: node[metricLabel],
+            });
+          }
+        }
+      }
+    }
+
+    return { tree, totalChildren };
+  }
+
+  function getNodeId(name) {
+    let nodeId = null;
     data.some(node => {
-      if (!node[parent] || node[parent] === 'null') {
-        rootNode = node[nameColumn];
+      if (node[nameColumn].toString() === name) {
+        nodeId = node[id];
+
         return true;
       }
       return false;
     });
+
+    return nodeId;
   }
+
+  let finalTree = null;
+
   if (!rootNode) {
-    rootNode = data[0][nameColumn];
-  }
-  const tree: TreeSeriesNodeItemOption = { name: rootNode, children: [] };
-
-  for (let i = 0; i < data.length; i += 1) {
-    const nodeId = data[i][id];
-    indexMap[nodeId] = i;
-    data[i].children = [];
-
-    if (!rootNodeId && data[i][nameColumn]?.toString() === rootNode) {
-      rootNodeId = nodeId;
-    }
-  }
-
-  if (rootNodeId) {
+    // find node whose parent has only 1 child
+    const parentChildMap = {};
     data.forEach(node => {
-      if (node[parent] === rootNodeId) {
-        tree.children!.push({
-          name: node[nameColumn],
-          children: node.children,
-          value: node[metricLabel],
-        });
+      if (node[parent] in parentChildMap) {
+        parentChildMap[node[parent]].count += 1;
+        parentChildMap[node[parent]].children.push({ name: node[nameColumn], id: node[id] });
       } else {
-        const parentId = node[parent];
-        // Check if parent exists,and child is not dangling due to row-limited data
-        if (data[indexMap[parentId]]) {
-          const parentIndex = indexMap[parentId];
-          data[parentIndex].children.push({
-            name: node[nameColumn],
-            children: node.children,
-            value: node[metricLabel],
-          });
-        }
+        parentChildMap[node[parent]] = {
+          count: 1,
+          children: [{ name: node[nameColumn], id: node[id] }],
+        };
       }
     });
+
+    let maxChildren = 0;
+    // for each parent node who has 1 count from childMap,find tree and total children for them
+
+    for (const key in parentChildMap) {
+      if (parentChildMap[key].count == 1) {
+        //find tree for only first node of root parent
+        const { tree, totalChildren } = getTree(
+          parentChildMap[key].children[0].name,
+          parentChildMap[key].children[0].id,
+        );
+        if (totalChildren >= maxChildren) {
+          finalTree = tree;
+        }
+      }
+    }
+  } else {
+    // ui gave root node id/ name
+    const id = getNodeId(rootNode);
+
+    const { tree } = getTree(rootNode, id);
+
+    finalTree = tree;
   }
 
   const series: TreeSeriesOption[] = [
     {
       type: 'tree',
-      data: [tree],
+      data: [finalTree],
       label: { ...DEFAULT_TREE_SERIES_OPTION.label, position },
       emphasis: { focus: emphasis },
       animation: DEFAULT_TREE_SERIES_OPTION.animation,
