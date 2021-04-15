@@ -28,7 +28,7 @@ export const Tree = ({ width, height }) => {
         granularity_sqla: 'ds',
         metric: 'count',
         id: select('Id Column', ['id_column', 'name_column', 'parent_column'], 'id_column'),
-        rootNode: text('Root Node', 'root'),
+        rootNodeId: text('Root Node', '1'),
         parent: select('Parent Column', ['parent_column', 'id_column'], 'parent_column'),
         name: select('Name Column', [null, 'name_column'], 'name_column'),
 

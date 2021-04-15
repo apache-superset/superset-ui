@@ -79,7 +79,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   function createTree(rootNodeId: DataRecordValue): TreeSeriesNodeItemOption {
     const rootNodeName = findNodeName(rootNodeId);
     const tree: TreeSeriesNodeItemOption = { name: rootNodeName, children: [] };
-    const children = [];
+    const children: TreeSeriesNodeItemOption[][] = [];
     const indexMap: { [name: string]: number } = {};
 
     if (!rootNodeName) {
@@ -90,7 +90,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     for (let i = 0; i < data.length; i += 1) {
       const nodeId = data[i][id] as number;
       indexMap[nodeId] = i;
-      children[i] = [] as TreeSeriesNodeItemOption[];
+      children[i] = [];
     }
 
     // generate tree
@@ -140,7 +140,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       }
     });
 
-    // for each parent node who has only 1 child,find tree and select node with max number of children.
+    // for each parent node which has only 1 child,find tree and select node with max number of children.
     let maxChildren = 0;
     Object.keys(parentChildMap).forEach(key => {
       if (parentChildMap[key].length === 1) {
