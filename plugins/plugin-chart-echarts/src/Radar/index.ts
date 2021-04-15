@@ -44,7 +44,7 @@ export default class EchartsRadarChartPlugin extends ChartPlugin<
       controlPanel,
       loadChart: () => import('./EchartsRadar'),
       metadata: new ChartMetadata({
-        behaviors: [Behavior.CROSS_FILTER],
+        behaviors: [Behavior.INTERACTIVE_CHART],
         credits: ['https://echarts.apache.org'],
         description: 'Radar Chart (Apache ECharts)',
         name: t('Radar Chart'),
