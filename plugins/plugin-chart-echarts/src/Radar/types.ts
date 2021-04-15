@@ -33,9 +33,12 @@ import {
   LegendType,
 } from '../types';
 
+type RadarColumnConfig = Record<string, { radarMetricMaxValue?: number }>;
+
 export type EchartsRadarFormData = QueryFormData &
   EchartsLegendFormData & {
     colorScheme?: string;
+    columnConfig?: RadarColumnConfig;
     currentOwnValue?: string[] | null;
     currentValue?: string[] | null;
     defaultValue?: string[] | null;
@@ -81,7 +84,7 @@ export interface RadarChartTransformedProps {
   width: number;
   echartOptions: EChartsOption;
   setDataMask: SetDataMaskHook;
-  labelMap: Map<string, DataRecordValue[]>;
+  labelMap: Record<string, DataRecordValue[]>;
   groupby: string[];
   selectedValues: Record<number, string>;
 }

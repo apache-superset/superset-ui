@@ -17,7 +17,6 @@
  * under the License.
  */
 import React, { useCallback } from 'react';
-import { DataRecordValue } from '@superset-ui/core';
 import { RadarChartTransformedProps } from './types';
 import Echart from '../components/Echart';
 import { EventHandlers } from '../types';
@@ -38,7 +37,7 @@ export default function EchartsRadar({
         return;
       }
 
-      const groupbyValues = values.map(value => labelMap.get(value));
+      const groupbyValues = values.map(value => labelMap[value]);
 
       setDataMask({
         crossFilters: {
@@ -48,8 +47,7 @@ export default function EchartsRadar({
                 values.length === 0
                   ? []
                   : groupby.map((col, idx) => {
-                      // const val = groupbyValues.map((v: DataRecordValue) => v[idx]);
-                      const val = values[0];
+                      const val = groupbyValues.map(v => v[idx]);
                       if (val === null || val === undefined)
                         return {
                           col,

@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useMemo, useState } from 'react';
-import {ChartDataResponseResult, useTheme, t, GenericDataType} from '@superset-ui/core';
+import { ChartDataResponseResult, useTheme, t, GenericDataType } from '@superset-ui/core';
 import ControlHeader from '../../../components/ControlHeader';
 import { ControlComponentProps } from '../types';
 
@@ -63,7 +63,7 @@ export default function ColumnConfigControl<T extends ColumnConfig>({
         colnames.push(col);
         coltypes.push(_coltypes?.[idx] as GenericDataType);
       }
-    })
+    });
   }
   const theme = useTheme();
   const columnConfigs = useMemo(() => {

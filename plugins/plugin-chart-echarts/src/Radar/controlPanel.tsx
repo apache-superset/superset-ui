@@ -24,7 +24,8 @@ import {
   isFeatureEnabled,
   QueryFormMetric,
   t,
-  validateNonEmpty, validateNumber
+  validateNonEmpty,
+  validateNumber,
 } from '@superset-ui/core';
 import {
   ControlPanelConfig,
@@ -33,26 +34,31 @@ import {
   D3_TIME_FORMAT_OPTIONS,
   sections,
 } from '@superset-ui/chart-controls';
+import { ControlFormItemSpec } from '@superset-ui/chart-controls/lib/components/ControlForm';
 import { DEFAULT_FORM_DATA } from './types';
 import { legendOrientationControl, legendTypeControl, showLegendControl } from '../controls';
 import { LABEL_POSITION } from '../constants';
-import {ControlFormItemSpec} from "@superset-ui/chart-controls/lib/components/ControlForm";
 
-const { labelType, labelPosition, numberFormat, showLabels, isCircle, emitFilter } = DEFAULT_FORM_DATA;
+const {
+  labelType,
+  labelPosition,
+  numberFormat,
+  showLabels,
+  isCircle,
+  emitFilter,
+} = DEFAULT_FORM_DATA;
 
 const radarMetricMaxValue: { name: string; config: ControlFormItemSpec } = {
   name: 'radarMetricMaxValue',
   config: {
     controlType: 'InputNumber',
     label: t('Max'),
-    description: t(
-      'Default column width in pixels, may still be restricted by the shortest/longest word in the column',
-    ),
+    description: t('The maximum value of metrics. It is an optional configuration'),
     width: 120,
     placeholder: 'auto',
     debounceDelay: 400,
     validators: [validateNumber],
-  }
+  },
 };
 
 const config: ControlPanelConfig = {
@@ -71,17 +77,17 @@ const config: ControlPanelConfig = {
         [<h1 className="section-header">{t('Legend')}</h1>],
         isFeatureEnabled(FeatureFlag.DASHBOARD_CROSS_FILTERS)
           ? [
-            {
-              name: 'emit_filter',
-              config: {
-                type: 'CheckboxControl',
-                label: t('Enable emitting filters'),
-                default: emitFilter,
-                renderTrigger: true,
-                description: t('Enable emmiting filters.'),
+              {
+                name: 'emit_filter',
+                config: {
+                  type: 'CheckboxControl',
+                  label: t('Enable emitting filters'),
+                  default: emitFilter,
+                  renderTrigger: true,
+                  description: t('Enable emmiting filters.'),
+                },
               },
-            },
-          ]
+            ]
           : [],
         [showLegendControl],
         [legendTypeControl],
@@ -169,14 +175,12 @@ const config: ControlPanelConfig = {
               description: t('Further customize how to display each metric'),
               renderTrigger: true,
               configFormLayout: {
-                [GenericDataType.NUMERIC]: [
-                  [radarMetricMaxValue]
-                ],
+                [GenericDataType.NUMERIC]: [[radarMetricMaxValue]],
               },
               mapStateToProps(explore, control, chart) {
                 const values = explore?.controls?.metrics?.value as QueryFormMetric[];
-                const metricColumn = values.map((value) => {
-                  if (typeof value === "string") {
+                const metricColumn = values.map(value => {
+                  if (typeof value === 'string') {
                     return value;
                   }
                   return value.label;

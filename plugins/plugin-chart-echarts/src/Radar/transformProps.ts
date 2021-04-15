@@ -80,6 +80,7 @@ export default function transformProps(
     showLabels,
     showLegend,
     isCircle,
+    columnConfig,
   }: EchartsRadarFormData = {
     ...DEFAULT_LEGEND_FORM_DATA,
     ...DEFAULT_RADAR_FORM_DATA,
@@ -108,7 +109,10 @@ export default function transformProps(
       timeFormatter: getTimeFormatter(dateFormat),
     });
     // map(joined_name: [columnLabel_1, columnLabel_2, ...])
-    columnsLabelMap.set(joinedName, groupby);
+    columnsLabelMap.set(
+      joinedName,
+      groupby.map(col => datum[col]),
+    );
 
     // generate transformedData
     transformedData.push({
@@ -137,7 +141,8 @@ export default function transformProps(
   );
 
   const indicator = metricsLabel.map(metricLabel => ({
-    text: metricLabel,
+    name: metricLabel,
+    max: columnConfig?.[metricLabel]?.radarMetricMaxValue,
   }));
 
   const series: RadarSeriesOption[] = [
@@ -180,7 +185,7 @@ export default function transformProps(
     height,
     echartOptions,
     setDataMask,
-    labelMap: columnsLabelMap,
+    labelMap: Object.fromEntries(columnsLabelMap),
     groupby,
     selectedValues,
   };
