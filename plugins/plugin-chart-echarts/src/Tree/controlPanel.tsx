@@ -70,15 +70,12 @@ const controlPanel: ControlPanelConfig = {
         ],
         [
           {
-            name: 'root_node',
+            name: 'root_node_id',
             config: {
               ...optionalEntity,
               type: 'TextControl',
-              label: t('Root node name'),
-              description: t(
-                'Name of root node of the tree.If not specified id will be used to name the nodes.This should be the id of the node if name column is not selected,otherwise name should be entered',
-              ),
-              renderTrigger: true,
+              label: t('Root node id'),
+              description: t('Id of root node of the tree.'),
             },
           },
         ],
@@ -160,12 +157,12 @@ const controlPanel: ControlPanelConfig = {
         ],
         [
           {
-            name: 'position',
+            name: 'node_label_position',
             config: {
               type: 'RadioButtonControl',
               renderTrigger: true,
-              label: t('Label position'),
-              default: DEFAULT_FORM_DATA.position,
+              label: t('Node label position'),
+              default: DEFAULT_FORM_DATA.nodeLabelPosition,
               options: [
                 {
                   label: 'left',
@@ -184,7 +181,37 @@ const controlPanel: ControlPanelConfig = {
                   value: 'bottom',
                 },
               ],
-              description: t('Position of node label on tree'),
+              description: t('Position of intermidiate node label on tree'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'child_label_position',
+            config: {
+              type: 'RadioButtonControl',
+              renderTrigger: true,
+              label: t('Child label position'),
+              default: DEFAULT_FORM_DATA.childLabelPosition,
+              options: [
+                {
+                  label: 'left',
+                  value: 'left',
+                },
+                {
+                  label: 'top',
+                  value: 'top',
+                },
+                {
+                  label: 'right',
+                  value: 'right',
+                },
+                {
+                  label: 'bottom',
+                  value: 'bottom',
+                },
+              ],
+              description: t('Position of child node label on tree'),
             },
           },
         ],
@@ -217,7 +244,7 @@ const controlPanel: ControlPanelConfig = {
           {
             name: 'symbol',
             config: {
-              type: 'RadioButtonControl',
+              type: 'SelectControl',
               renderTrigger: true,
               label: t('Symbol'),
               default: DEFAULT_FORM_DATA.symbol,

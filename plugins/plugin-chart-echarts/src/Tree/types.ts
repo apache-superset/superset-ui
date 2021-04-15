@@ -16,13 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { DataRecord, DataRecordValue } from '@superset-ui/core';
 import { TreeSeriesNodeItemOption } from 'echarts/types/src/chart/tree/TreeSeries';
 
 export type EchartsTreeFormData = {
   id: string;
   parent: string;
   name: string;
-  rootNode?: string | number;
+  rootNodeId?: string | number;
   orient: 'LR' | 'RL' | 'TB' | 'BT';
   symbol: string;
   symbolSize: number;
@@ -30,7 +31,8 @@ export type EchartsTreeFormData = {
   metric?: string;
   layout: 'orthogonal' | 'radial';
   roam: boolean | 'scale' | 'move';
-  position: 'top' | 'bottom' | 'left' | 'right';
+  nodeLabelPosition: 'top' | 'bottom' | 'left' | 'right';
+  childLabelPosition: 'top' | 'bottom' | 'left' | 'right';
   emphasis: 'none' | 'ancestor' | 'descendant';
 };
 
@@ -38,13 +40,14 @@ export const DEFAULT_FORM_DATA: EchartsTreeFormData = {
   id: '',
   parent: '',
   name: '',
-  rootNode: '',
+  rootNodeId: '',
   layout: 'orthogonal',
   orient: 'LR',
   symbol: 'emptyCircle',
   symbolSize: 7,
   roam: true,
-  position: 'left',
+  nodeLabelPosition: 'left',
+  childLabelPosition: 'bottom',
   emphasis: 'descendant',
 };
 
