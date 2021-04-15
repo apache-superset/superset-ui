@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { DataRecord, DataRecordValue } from '@superset-ui/core';
 import { TreeSeriesNodeItemOption } from 'echarts/types/src/chart/tree/TreeSeries';
 
 export type EchartsTreeFormData = {
