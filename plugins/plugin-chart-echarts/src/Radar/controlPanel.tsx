@@ -24,7 +24,6 @@ import {
   isFeatureEnabled,
   QueryFormMetric,
   t,
-  validateNonEmpty,
   validateNumber,
 } from '@superset-ui/core';
 import {
@@ -33,6 +32,7 @@ import {
   D3_FORMAT_OPTIONS,
   D3_TIME_FORMAT_OPTIONS,
   sections,
+  sharedControls,
 } from '@superset-ui/chart-controls';
 import { ControlFormItemSpec } from '@superset-ui/chart-controls/lib/components/ControlForm';
 import { DEFAULT_FORM_DATA } from './types';
@@ -67,7 +67,20 @@ const config: ControlPanelConfig = {
     {
       label: t('Query'),
       expanded: true,
-      controlSetRows: [['groupby'], ['metrics'], ['adhoc_filters'], ['row_limit']],
+      controlSetRows: [
+        ['groupby'],
+        ['metrics'],
+        ['adhoc_filters'],
+        [
+          {
+            name: 'row_limit',
+            config: {
+              ...sharedControls.row_limit,
+              default: 10,
+            },
+          },
+        ],
+      ],
     },
     {
       label: t('Chart Options'),
@@ -208,15 +221,6 @@ const config: ControlPanelConfig = {
       ],
     },
   ],
-  controlOverrides: {
-    series: {
-      validators: [validateNonEmpty],
-      clearable: false,
-    },
-    row_limit: {
-      default: 100,
-    },
-  },
 };
 
 export default config;
