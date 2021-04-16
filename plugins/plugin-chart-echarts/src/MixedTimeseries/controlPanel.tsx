@@ -26,7 +26,8 @@ import {
   sharedControls,
 } from '@superset-ui/chart-controls';
 
-import { DEFAULT_FORM_DATA, EchartsTimeseriesSeriesType } from './types';
+import { DEFAULT_FORM_DATA } from './types';
+import { EchartsTimeseriesSeriesType } from '../Timeseries/types';
 import {
   legendMarginControl,
   legendOrientationControl,
@@ -386,7 +387,7 @@ const config: ControlPanelConfig = {
               label: t('Primary y-axis title'),
               renderTrigger: true,
               default: '',
-              description: t('Logarithmic y-axis'),
+              description: t('Title for y-axis'),
             },
           },
         ],

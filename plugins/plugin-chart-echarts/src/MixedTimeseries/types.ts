@@ -16,84 +16,93 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { AnnotationLayer, QueryFormData, TimeGranularity } from '@superset-ui/core';
+import { AnnotationLayer, TimeGranularity } from '@superset-ui/core';
 import { DEFAULT_LEGEND_FORM_DATA, EchartsLegendFormData } from '../types';
-import { EchartsTimeseriesContributionType } from '../Timeseries/types';
-
-export enum EchartsTimeseriesSeriesType {
-  Line = 'line',
-  Scatter = 'scatter',
-  Smooth = 'smooth',
-  Bar = 'bar',
-  Start = 'start',
-  Middle = 'middle',
-  End = 'end',
-}
+import {
+  DEFAULT_FORM_DATA as TIMESERIES_DEFAULTS,
+  EchartsTimeseriesContributionType,
+  EchartsTimeseriesSeriesType,
+} from '../Timeseries/types';
 
 export type EchartsMixedTimeseriesFormData = {
   annotationLayers: AnnotationLayer[];
-  area: boolean;
-  areaB: boolean;
-  colorScheme?: string;
-  contributionMode?: EchartsTimeseriesContributionType;
-  contributionModeB?: EchartsTimeseriesContributionType;
+  // shared properties
+  minorSplitLine: boolean;
   logAxis: boolean;
   logAxisSecondary: boolean;
+  yAxisFormat?: string;
+  yAxisFormatSecondary?: string;
+  yAxisTitle: string;
+  yAxisTitleSecondary: string;
+  xAxisTimeFormat?: string;
+  truncateYAxis: boolean;
+  truncateYAxisSecondary: boolean;
+  timeGrainSqla?: TimeGranularity;
+  yAxisBounds: [number | undefined | null, number | undefined | null];
+  zoomable: boolean;
+  richTooltip: boolean;
+  xAxisLabelRotation: number;
+  xAxisShowMinLabel?: boolean;
+  xAxisShowMaxLabel?: boolean;
+  colorScheme?: string;
+  // types specific to Query A and Query B
+  area: boolean;
+  areaB: boolean;
+  contributionMode?: EchartsTimeseriesContributionType;
+  contributionModeB?: EchartsTimeseriesContributionType;
   markerEnabled: boolean;
   markerEnabledB: boolean;
   markerSize: number;
   markerSizeB: number;
-  minorSplitLine: boolean;
   opacity: number;
   opacityB: number;
   orderDesc: boolean;
+  orderDescB: boolean;
   rowLimit: number;
   rowLimitB: number;
   seriesType: EchartsTimeseriesSeriesType;
   seriesTypeB: EchartsTimeseriesSeriesType;
   stack: boolean;
   stackB: boolean;
-  truncateYAxis: boolean;
-  truncateYAxisB: boolean;
-  yAxisFormat?: string;
-  yAxisFormatSecondary?: string;
   yAxisIndex?: number;
   yAxisIndexB?: number;
-  yAxisTitle?: string;
-  yAxisTitleSecondary?: string;
-  xAxisShowMinLabel?: boolean;
-  xAxisShowMaxLabel?: boolean;
-  xAxisTimeFormat?: string;
-  timeGrainSqla?: TimeGranularity;
-  yAxisBounds: [number | undefined | null, number | undefined | null];
-  zoomable: boolean;
-  richTooltip: boolean;
-  xAxisLabelRotation: number;
 } & EchartsLegendFormData;
 
 export const DEFAULT_FORM_DATA: EchartsMixedTimeseriesFormData = {
   ...DEFAULT_LEGEND_FORM_DATA,
   annotationLayers: [],
-  area: false,
-  areaB: false,
-  logAxis: false,
-  logAxisSecondary: false,
-  markerEnabled: false,
-  markerEnabledB: false,
-  markerSize: 6,
-  markerSizeB: 6,
-  minorSplitLine: false,
-  opacity: 0.2,
-  orderDesc: true,
-  rowLimit: 10000,
-  seriesType: EchartsTimeseriesSeriesType.Line,
-  stack: false,
-  truncateYAxis: true,
-  yAxisBounds: [null, null],
+  minorSplitLine: TIMESERIES_DEFAULTS.minorSplitLine,
+  truncateYAxis: TIMESERIES_DEFAULTS.truncateYAxis,
+  truncateYAxisSecondary: TIMESERIES_DEFAULTS.truncateYAxis,
+  logAxis: TIMESERIES_DEFAULTS.logAxis,
+  logAxisSecondary: TIMESERIES_DEFAULTS.logAxis,
+  yAxisFormat: TIMESERIES_DEFAULTS.yAxisFormat,
+  yAxisFormatSecondary: TIMESERIES_DEFAULTS.yAxisFormat,
+  yAxisTitle: TIMESERIES_DEFAULTS.yAxisTitle,
+  yAxisTitleSecondary: TIMESERIES_DEFAULTS.yAxisTitle,
+  xAxisTimeFormat: TIMESERIES_DEFAULTS.xAxisTimeFormat,
+  area: TIMESERIES_DEFAULTS.area,
+  areaB: TIMESERIES_DEFAULTS.area,
+  markerEnabled: TIMESERIES_DEFAULTS.markerEnabled,
+  markerEnabledB: TIMESERIES_DEFAULTS.markerEnabled,
+  markerSize: TIMESERIES_DEFAULTS.markerSize,
+  markerSizeB: TIMESERIES_DEFAULTS.markerSize,
+  opacity: TIMESERIES_DEFAULTS.opacity,
+  opacityB: TIMESERIES_DEFAULTS.opacity,
+  orderDesc: TIMESERIES_DEFAULTS.orderDesc,
+  orderDescB: TIMESERIES_DEFAULTS.orderDesc,
+  rowLimit: TIMESERIES_DEFAULTS.rowLimit,
+  rowLimitB: TIMESERIES_DEFAULTS.rowLimit,
+  seriesType: TIMESERIES_DEFAULTS.seriesType,
+  seriesTypeB: TIMESERIES_DEFAULTS.seriesType,
+  stack: TIMESERIES_DEFAULTS.stack,
+  stackB: TIMESERIES_DEFAULTS.stack,
+  yAxisBounds: TIMESERIES_DEFAULTS.yAxisBounds,
   yAxisIndex: 0,
-  xAxisShowMinLabel: true,
-  xAxisShowMaxLabel: true,
-  zoomable: false,
-  richTooltip: true,
-  xAxisLabelRotation: 45,
+  yAxisIndexB: 0,
+  xAxisShowMinLabel: TIMESERIES_DEFAULTS.xAxisShowMinLabel,
+  xAxisShowMaxLabel: TIMESERIES_DEFAULTS.xAxisShowMaxLabel,
+  zoomable: TIMESERIES_DEFAULTS.zoomable,
+  richTooltip: TIMESERIES_DEFAULTS.richTooltip,
+  xAxisLabelRotation: TIMESERIES_DEFAULTS.xAxisLabelRotation,
 };

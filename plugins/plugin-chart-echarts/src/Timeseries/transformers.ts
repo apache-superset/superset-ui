@@ -41,7 +41,7 @@ import {
   MarkArea2DDataItemOption,
 } from 'echarts/types/src/component/marker/MarkAreaModel';
 import { extractForecastSeriesContext } from '../utils/prophet';
-import { ForecastSeriesEnum } from '../types';
+import { ForecastSeriesEnum, LegendOrientation } from '../types';
 import { EchartsTimeseriesSeriesType } from './types';
 
 import {
@@ -50,6 +50,8 @@ import {
   formatAnnotationLabel,
   parseAnnotationOpacity,
 } from '../utils/annotation';
+import { getChartPadding } from '../utils/series';
+import { TIMESERIES_CONSTANTS } from '../constants';
 
 export function transformSeries(
   series: SeriesOption,
@@ -300,4 +302,30 @@ export function transformTimeseriesAnnotation(
     });
   }
   return series;
+}
+
+export function getPadding(
+  showLegend: boolean,
+  legendOrientation: LegendOrientation,
+  addYAxisLabelOffset: boolean,
+  zoomable: boolean,
+  margin?: string | number | null,
+): {
+  bottom: number;
+  left: number;
+  right: number;
+  top: number;
+} {
+  const yAxisOffset = addYAxisLabelOffset ? TIMESERIES_CONSTANTS.yAxisLabelTopOffset : 0;
+  return getChartPadding(showLegend, legendOrientation, margin, {
+    top: TIMESERIES_CONSTANTS.gridOffsetTop + yAxisOffset,
+    bottom: zoomable
+      ? TIMESERIES_CONSTANTS.gridOffsetBottomZoomable
+      : TIMESERIES_CONSTANTS.gridOffsetBottom,
+    left: TIMESERIES_CONSTANTS.gridOffsetLeft,
+    right:
+      showLegend && legendOrientation === LegendOrientation.Right
+        ? 0
+        : TIMESERIES_CONSTANTS.gridOffsetRight,
+  });
 }

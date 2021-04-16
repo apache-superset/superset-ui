@@ -16,8 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { buildQueryContext, QueryFormData } from '@superset-ui/core';
-import { getMetricLabel } from '@superset-ui/core';
+import { buildQueryContext, getMetricLabel, QueryFormData } from '@superset-ui/core';
 
 export default function buildQuery(formData: QueryFormData) {
   const {
@@ -100,10 +99,8 @@ export default function buildQuery(formData: QueryFormData) {
     ];
   });
 
-  const val = {
+  return {
     ...queryContextA,
     queries: [...queryContextA.queries, ...queryContextB.queries],
   };
-  console.log(val);
-  return val;
 }

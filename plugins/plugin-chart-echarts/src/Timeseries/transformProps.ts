@@ -34,14 +34,9 @@ import {
 } from '@superset-ui/core';
 import { EChartsOption, SeriesOption } from 'echarts';
 import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
-import { EchartsProps, ForecastSeriesEnum, ProphetValue, LegendOrientation } from '../types';
+import { EchartsProps, ForecastSeriesEnum, ProphetValue } from '../types';
 import { parseYAxisBound } from '../utils/controls';
-import {
-  dedupSeries,
-  extractTimeseriesSeries,
-  getChartPadding,
-  getLegendProps,
-} from '../utils/series';
+import { dedupSeries, extractTimeseriesSeries, getLegendProps } from '../utils/series';
 import { extractAnnotationLabels } from '../utils/annotation';
 import {
   extractForecastSeriesContext,
@@ -51,6 +46,7 @@ import {
 } from '../utils/prophet';
 import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
 import {
+  getPadding,
   transformEventAnnotation,
   transformFormulaAnnotation,
   transformIntervalAnnotation,
@@ -73,7 +69,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     colorScheme,
     contributionMode,
     forecastEnabled,
-    legendMargin,
     legendOrientation,
     legendType,
     logAxis,
@@ -90,6 +85,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     xAxisShowMaxLabel,
     xAxisTimeFormat,
     yAxisBounds,
+    yAxisTitle,
     tooltipTimeFormat,
     zoomable,
     richTooltip,
@@ -159,21 +155,13 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     xAxisFormatter = String;
   }
 
+  const addYAxisLabelOffset = !!yAxisTitle;
+  const padding = getPadding(showLegend, legendOrientation, addYAxisLabelOffset, zoomable);
   const echartOptions: EChartsOption = {
     useUTC: true,
     grid: {
       ...defaultGrid,
-      ...getChartPadding(showLegend, legendOrientation, legendMargin, {
-        top: TIMESERIES_CONSTANTS.gridOffsetTop,
-        bottom: zoomable
-          ? TIMESERIES_CONSTANTS.gridOffsetBottomZoomable
-          : TIMESERIES_CONSTANTS.gridOffsetBottom,
-        left: TIMESERIES_CONSTANTS.gridOffsetLeft,
-        right:
-          showLegend && legendOrientation === LegendOrientation.Right
-            ? 0
-            : TIMESERIES_CONSTANTS.gridOffsetRight,
-      }),
+      ...padding,
     },
     xAxis: {
       type: 'time',
@@ -193,6 +181,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       minorSplitLine: { show: minorSplitLine },
       axisLabel: { formatter },
       scale: truncateYAxis,
+      name: yAxisTitle,
     },
     tooltip: {
       ...defaultTooltip,
