@@ -16,6 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import { LabelPositionEnum } from './types';
+
 // eslint-disable-next-line import/prefer-default-export
 export const NULL_STRING = '<NULL>';
 
@@ -32,4 +35,21 @@ export const TIMESERIES_CONSTANTS = {
   toolboxRight: 5,
   dataZoomStart: 0,
   dataZoomEnd: 100,
+  yAxisLabelTopOffset: 20,
 };
+
+export const LABEL_POSITION: [LabelPositionEnum, string][] = [
+  [LabelPositionEnum.Top, 'Top'],
+  [LabelPositionEnum.Left, 'Left'],
+  [LabelPositionEnum.Right, 'Right'],
+  [LabelPositionEnum.Bottom, 'Bottom'],
+  [LabelPositionEnum.Inside, 'Inside'],
+  [LabelPositionEnum.InsideBottomLeft, 'Inside left'],
+  [LabelPositionEnum.InsideBottomRight, 'Inside right'],
+  [LabelPositionEnum.InsideTop, 'Inside top'],
+  [LabelPositionEnum.InsideBottom, 'Inside bottom'],
+  [LabelPositionEnum.InsideTopLeft, 'Inside top left'],
+  [LabelPositionEnum.InsideBottomLeft, 'Inside bottom left'],
+  [LabelPositionEnum.InsideTopRight, 'Inside top right'],
+  [LabelPositionEnum.InsideBottomRight, 'Inside bottom right'],
+];
