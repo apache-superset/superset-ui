@@ -69,6 +69,7 @@ import {
   dnd_adhoc_filters,
   dnd_adhoc_metric,
   dnd_adhoc_metrics,
+  dnd_timeseries_limit_metric,
   dndColumnsControl,
   dndEntity,
   dndGroupByControl,
@@ -328,6 +329,7 @@ const limit: SharedControlConfig<'SelectControl'> = {
   freeForm: true,
   label: t('Series limit'),
   validators: [legacyValidateInteger],
+  default: 100,
   choices: formatSelectOptions(SERIES_LIMITS),
   description: t(
     'Limits the number of time series that get displayed. A sub query ' +
@@ -479,7 +481,7 @@ const sharedControls = {
   time_range,
   row_limit,
   limit,
-  timeseries_limit_metric,
+  timeseries_limit_metric: enableExploreDnd ? dnd_timeseries_limit_metric : timeseries_limit_metric,
   series: enableExploreDnd ? dndSeries : series,
   entity: enableExploreDnd ? dndEntity : entity,
   x,

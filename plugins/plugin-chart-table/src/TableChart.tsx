@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState, useMemo, useCallback, CSSProperties } from 'react';
-import { ColumnInstance, DefaultSortTypes, ColumnWithLooseAccessor } from 'react-table';
+import React, { CSSProperties, useCallback, useMemo, useState } from 'react';
+import { ColumnInstance, ColumnWithLooseAccessor, DefaultSortTypes } from 'react-table';
 import { extent as d3Extent, max as d3Max } from 'd3-array';
-import { FaSort, FaSortUp as FaSortAsc, FaSortDown as FaSortDesc } from 'react-icons/fa';
-import { t, tn, DataRecordValue, DataRecord, GenericDataType } from '@superset-ui/core';
+import { FaSort, FaSortDown as FaSortDesc, FaSortUp as FaSortAsc } from 'react-icons/fa';
+import { DataRecord, DataRecordValue, GenericDataType, t, tn } from '@superset-ui/core';
 
-import { TableChartTransformedProps, DataColumnMeta } from './types';
+import { DataColumnMeta, TableChartTransformedProps } from './types';
 import DataTable, {
   DataTableProps,
   SearchInputProps,
@@ -31,7 +31,7 @@ import DataTable, {
 } from './DataTable';
 
 import Styles from './Styles';
-import formatValue from './utils/formatValue';
+import { formatColumnValue } from './utils/formatValue';
 import { PAGE_SIZE_OPTIONS } from './consts';
 import { updateExternalFormData } from './DataTable/utils/externalAPIs';
 
@@ -147,6 +147,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     height,
     width,
     data,
+    totals,
     isRawRecords,
     rowCount = 0,
     columns: columnsMeta,
@@ -160,12 +161,46 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     showCellBars = true,
     emitFilter = false,
     sortDesc = false,
-    onChangeFilter,
-    filters: initialFilters,
+    filters: initialFilters = {},
     sticky = true, // whether to use sticky header
   } = props;
 
   const [filters, setFilters] = useState(initialFilters);
+
+  const handleChange = useCallback(
+    (filters: { [x: string]: DataRecordValue[] }) => {
+      if (!emitFilter) {
+        return;
+      }
+
+      const groupBy = Object.keys(filters);
+      const groupByValues = Object.values(filters);
+      setDataMask({
+        extraFormData: {
+          filters:
+            groupBy.length === 0
+              ? []
+              : groupBy.map(col => {
+                  const val = filters?.[col];
+                  if (val === null || val === undefined)
+                    return {
+                      col,
+                      op: 'IS NULL',
+                    };
+                  return {
+                    col,
+                    op: 'IN',
+                    val: val as (string | number | boolean)[],
+                  };
+                }),
+        },
+        filterState: {
+          value: groupByValues.length ? groupByValues : null,
+        },
+      });
+    },
+    [emitFilter, setDataMask],
+  );
 
   // only take relevant page size options
   const pageSizeOptions = useMemo(() => {
@@ -203,12 +238,13 @@ export default function TableChart<D extends DataRecord = DataRecord>(
       } else {
         updatedFilters[key] = [...(filters?.[key] || []), val];
       }
-      setFilters(updatedFilters);
-      if (onChangeFilter) {
-        onChangeFilter(updatedFilters);
+      if (Array.isArray(updatedFilters[key]) && updatedFilters[key].length === 0) {
+        delete updatedFilters[key];
       }
+      setFilters(updatedFilters);
+      handleChange(updatedFilters);
     },
-    [filters, isActiveFilterValue, onChangeFilter],
+    [filters, handleChange, isActiveFilterValue],
   );
 
   const getColumnConfigs = useCallback(
@@ -224,11 +260,16 @@ export default function TableChart<D extends DataRecord = DataRecord>(
       const columnWidth = Number.isNaN(Number(config.columnWidth))
         ? config.columnWidth
         : Number(config.columnWidth);
+
+      // inline style for both th and td cell
+      const sharedStyle: CSSProperties = {
+        textAlign,
+      };
+
       const alignPositiveNegative =
         config.alignPositiveNegative === undefined ? defaultAlignPN : config.alignPositiveNegative;
       const colorPositiveNegative =
         config.colorPositiveNegative === undefined ? defaultColorPN : config.colorPositiveNegative;
-      const fractionDigits = isNumber ? config.fractionDigits : undefined;
 
       const valueRange =
         (config.showCellBars === undefined ? showCellBars : config.showCellBars) &&
@@ -247,23 +288,8 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         // so we ask TS not to check.
         accessor: ((datum: D) => datum[key]) as never,
         Cell: ({ value }: { column: ColumnInstance<D>; value: DataRecordValue }) => {
-          let rounded = value;
-          if (fractionDigits !== undefined && typeof value === 'number') {
-            rounded = Number(value.toFixed(fractionDigits));
-          }
-          const [isHtml, text] = formatValue(column, rounded);
+          const [isHtml, text] = formatColumnValue(column, value);
           const html = isHtml ? { __html: text } : undefined;
-          const style: CSSProperties = {
-            background: valueRange
-              ? cellBar({
-                  value: value as number,
-                  valueRange,
-                  alignPositiveNegative,
-                  colorPositiveNegative,
-                })
-              : undefined,
-            textAlign,
-          };
           const cellProps = {
             // show raw number in title in case of numeric values
             title: typeof value === 'number' ? String(value) : undefined,
@@ -273,7 +299,17 @@ export default function TableChart<D extends DataRecord = DataRecord>(
               value == null ? 'dt-is-null' : '',
               isActiveFilterValue(key, value) ? ' dt-is-active-filter' : '',
             ].join(' '),
-            style,
+            style: {
+              ...sharedStyle,
+              background: valueRange
+                ? cellBar({
+                    value: value as number,
+                    valueRange,
+                    alignPositiveNegative,
+                    colorPositiveNegative,
+                  })
+                : undefined,
+            },
           };
           if (html) {
             // eslint-disable-next-line react/no-danger
@@ -288,6 +324,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
             title="Shift + Click to sort by multiple columns"
             className={[className, col.isSorted ? 'is-sorted' : ''].join(' ')}
             style={{
+              ...sharedStyle,
               ...style,
             }}
             onClick={onClick}
@@ -329,10 +366,31 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     updateExternalFormData(setDataMask, pageNumber, pageSize);
   };
 
+  const totalsFormatted =
+    totals &&
+    columnsMeta
+      .filter(column => Object.keys(totals).includes(column.key))
+      .reduce(
+        (acc: { value: string; className: string }[], column) => [
+          ...acc,
+          {
+            value: formatColumnValue(column, totals[column.key])[1],
+            className: column.dataType === GenericDataType.NUMERIC ? 'dt-metric' : '',
+          },
+        ],
+        [],
+      );
+
+  const totalsHeaderSpan =
+    totalsFormatted &&
+    columnsMeta.filter(column => !column.isPercentMetric).length - totalsFormatted.length;
+
   return (
     <Styles>
       <DataTable<D>
         columns={columns}
+        totals={totalsFormatted}
+        totalsHeaderSpan={totalsHeaderSpan}
         data={data}
         rowCount={rowCount}
         tableClassName="table table-striped table-condensed"

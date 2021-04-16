@@ -31,16 +31,17 @@ export default function Echart({
   height,
   echartOptions,
   eventHandlers,
-  selectedValues,
+  selectedValues = {},
 }: EchartsProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ECharts>();
+  const currentSelection = Object.keys(selectedValues) || [];
+  const previousSelection = useRef<string[]>([]);
 
   useEffect(() => {
     if (!divRef.current) return;
     if (!chartRef.current) {
-      const chart = init(divRef.current);
-      chartRef.current = chart;
+      chartRef.current = init(divRef.current);
     }
 
     Object.entries(eventHandlers || {}).forEach(([name, handler]) => {
@@ -48,16 +49,20 @@ export default function Echart({
       chartRef.current?.on(name, handler);
     });
 
-    chartRef.current.clear();
     chartRef.current.setOption(echartOptions, true);
 
-    if (selectedValues) {
+    chartRef.current.dispatchAction({
+      type: 'downplay',
+      dataIndex: previousSelection.current.filter(value => !currentSelection.includes(value)),
+    });
+    if (currentSelection.length) {
       chartRef.current.dispatchAction({
         type: 'highlight',
-        dataIndex: Object.keys(selectedValues),
+        dataIndex: currentSelection,
       });
     }
-  }, [echartOptions, eventHandlers]);
+    previousSelection.current = currentSelection;
+  }, [echartOptions, eventHandlers, selectedValues]);
 
   useEffect(() => {
     if (chartRef.current) {

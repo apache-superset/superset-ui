@@ -7,8 +7,6 @@ import extractQueryFields from './extractQueryFields';
 import { overrideExtraFormData } from './processExtraFormData';
 import { AdhocFilter } from './types';
 
-export const DTTM_ALIAS = '__timestamp';
-
 /**
  * Build the common segments of all query objects (e.g. the granularity field derived from
  * either sql alchemy or druid). The segments specific to each viz type is constructed in the
@@ -22,7 +20,7 @@ export default function buildQueryObject<T extends QueryFormData>(
 ): QueryObject {
   const {
     annotation_layers = [],
-    extra_form_data = {},
+    extra_form_data,
     time_range,
     since,
     until,
@@ -36,7 +34,12 @@ export default function buildQueryObject<T extends QueryFormData>(
     custom_params = {},
     ...residualFormData
   } = formData;
-  const { append_form_data = {}, override_form_data = {}, custom_form_data = {} } = extra_form_data;
+  const {
+    adhoc_filters: appendAdhocFilters = [],
+    filters: appendFilters = [],
+    custom_form_data = {},
+    ...overrides
+  } = extra_form_data || {};
 
   const numericRowLimit = Number(row_limit);
   const numericRowOffset = Number(row_offset);
@@ -45,7 +48,6 @@ export default function buildQueryObject<T extends QueryFormData>(
   // collect all filters for conversion to simple filters/freeform clauses
   const extras = extractExtras(formData);
   const { filters: extraFilters } = extras;
-  const { adhoc_filters: appendAdhocFilters = [], filters: appendFilters = [] } = append_form_data;
   const filterFormData: {
     filters: QueryObjectFilterClause[];
     adhoc_filters: AdhocFilter[];
@@ -81,7 +83,7 @@ export default function buildQueryObject<T extends QueryFormData>(
     custom_params,
   };
   // override extra form data used by native and cross filters
-  queryObject = overrideExtraFormData(queryObject, override_form_data);
+  queryObject = overrideExtraFormData(queryObject, overrides);
 
   return { ...queryObject, custom_form_data };
 }

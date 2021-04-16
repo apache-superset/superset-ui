@@ -183,9 +183,9 @@ const transformProps = (chartProps: TableChartProps): TableChartTransformedProps
     height,
     width,
     rawFormData: formData,
-    queriesData,
+    queriesData = [],
     initialValues: filters = {},
-    ownCurrentState: serverPaginationData = {},
+    ownState: serverPaginationData = {},
     hooks: { onAddFilter: onChangeFilter, setDataMask = () => {} },
   } = chartProps;
 
@@ -200,17 +200,31 @@ const transformProps = (chartProps: TableChartProps): TableChartTransformedProps
     server_page_length: serverPageLength = 10,
     order_desc: sortDesc = false,
     query_mode: queryMode,
+    show_totals: showTotals,
   } = formData;
 
   const [metrics, percentMetrics, columns] = processColumns(chartProps);
-  const data = processDataRecords(queriesData?.[0]?.data, columns);
-  const rowCount = queriesData?.[1]?.data?.[0]?.rowcount as number;
+
+  let baseQuery;
+  let countQuery;
+  let totalQuery;
+  let rowCount;
+  if (serverPagination) {
+    [baseQuery, countQuery, totalQuery] = queriesData;
+    rowCount = (countQuery?.data?.[0]?.rowcount as number) ?? 0;
+  } else {
+    [baseQuery, totalQuery] = queriesData;
+    rowCount = baseQuery?.rowcount ?? 0;
+  }
+  const data = processDataRecords(baseQuery?.data, columns);
+  const totals = showTotals && queryMode === QueryMode.aggregate ? totalQuery?.data[0] : undefined;
 
   return {
     height,
     width,
     isRawRecords: queryMode === QueryMode.raw,
     data,
+    totals,
     columns,
     serverPagination,
     metrics,
@@ -227,7 +241,7 @@ const transformProps = (chartProps: TableChartProps): TableChartTransformedProps
       ? serverPageLength
       : getPageSize(pageLength, data.length, columns.length),
     filters,
-    emitFilter: tableFilter === true,
+    emitFilter: tableFilter,
     onChangeFilter,
   };
 };
