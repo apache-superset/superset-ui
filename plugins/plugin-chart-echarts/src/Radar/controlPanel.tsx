@@ -191,7 +191,7 @@ const config: ControlPanelConfig = {
                 [GenericDataType.NUMERIC]: [[radarMetricMaxValue]],
               },
               mapStateToProps(explore, control, chart) {
-                const values = explore?.controls?.metrics?.value as QueryFormMetric[];
+                const values = (explore?.controls?.metrics?.value as QueryFormMetric[]) ?? [];
                 const metricColumn = values.map(value => {
                   if (typeof value === 'string') {
                     return value;
