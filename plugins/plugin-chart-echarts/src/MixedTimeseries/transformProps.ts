@@ -26,10 +26,6 @@ import {
   isFormulaAnnotationLayer,
   isIntervalAnnotationLayer,
   isTimeseriesAnnotationLayer,
-  getTimeFormatter,
-  getTimeFormatterForGranularity,
-  smartDateFormatter,
-  TimeFormatter,
 } from '@superset-ui/core';
 import { EChartsOption, SeriesOption } from 'echarts';
 import { DEFAULT_FORM_DATA, EchartsMixedTimeseriesFormData } from './types';
@@ -46,6 +42,8 @@ import {
 import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
 import {
   getPadding,
+  getTooltipFormatter,
+  getXAxisFormatter,
   transformEventAnnotation,
   transformFormulaAnnotation,
   transformIntervalAnnotation,
@@ -83,6 +81,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     stack,
     stackB,
     truncateYAxis,
+    tooltipTimeFormat,
     yAxisFormat,
     yAxisFormatSecondary,
     xAxisShowMinLabel,
@@ -93,7 +92,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     yAxisIndexB,
     yAxisTitle,
     yAxisTitleSecondary,
-    timeGrainSqla,
     zoomable,
     richTooltip,
     xAxisLabelRotation,
@@ -161,14 +159,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     if (max === undefined) max = 1;
   }
 
-  let xAxisFormatter: TimeFormatter | StringConstructor;
-  if (xAxisTimeFormat === smartDateFormatter.id) {
-    xAxisFormatter = getTimeFormatterForGranularity(timeGrainSqla);
-  } else if (xAxisTimeFormat) {
-    xAxisFormatter = getTimeFormatter(xAxisTimeFormat);
-  } else {
-    xAxisFormatter = String;
-  }
+  const tooltipFormatter = getTooltipFormatter(tooltipTimeFormat);
+  const xAxisFormatter = getXAxisFormatter(xAxisTimeFormat);
 
   const addYAxisLabelOffset = !!(yAxisTitle || yAxisTitleSecondary);
   const chartPadding = getPadding(showLegend, legendOrientation, addYAxisLabelOffset, zoomable);
@@ -219,7 +211,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         const value: number = !richTooltip ? params.value : params[0].value[0];
         const prophetValue = !richTooltip ? [params] : params;
 
-        const rows: Array<string> = [`${xAxisFormatter(value)}`];
+        const rows: Array<string> = [`${tooltipFormatter(value)}`];
         const prophetValues: Record<string, ProphetValue> = extractProphetValuesFromTooltipParams(
           prophetValue,
         );

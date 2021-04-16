@@ -22,8 +22,12 @@ import {
   AnnotationOpacity,
   CategoricalColorScale,
   EventAnnotationLayer,
+  getTimeFormatter,
   IntervalAnnotationLayer,
   isTimeseriesAnnotationResult,
+  smartDateDetailedFormatter,
+  smartDateFormatter,
+  TimeFormatter,
   TimeseriesAnnotationLayer,
   TimeseriesDataRecord,
 } from '@superset-ui/core';
@@ -328,4 +332,24 @@ export function getPadding(
         ? 0
         : TIMESERIES_CONSTANTS.gridOffsetRight,
   });
+}
+
+export function getTooltipFormatter(format?: string): TimeFormatter | StringConstructor {
+  if (format === smartDateFormatter.id) {
+    return smartDateDetailedFormatter;
+  }
+  if (format) {
+    return getTimeFormatter(format);
+  }
+  return String;
+}
+
+export function getXAxisFormatter(format?: string): TimeFormatter | StringConstructor | undefined {
+  if (format === smartDateFormatter.id || !format) {
+    return undefined;
+  }
+  if (format) {
+    return getTimeFormatter(format);
+  }
+  return String;
 }

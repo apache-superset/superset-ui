@@ -34,11 +34,13 @@ export type EchartsMixedTimeseriesFormData = {
   yAxisFormatSecondary?: string;
   yAxisTitle: string;
   yAxisTitleSecondary: string;
+  yAxisBounds: [number | undefined | null, number | undefined | null];
+  yAxisBoundsSecondary: [number | undefined | null, number | undefined | null];
   xAxisTimeFormat?: string;
   truncateYAxis: boolean;
   truncateYAxisSecondary: boolean;
   timeGrainSqla?: TimeGranularity;
-  yAxisBounds: [number | undefined | null, number | undefined | null];
+  tooltipTimeFormat?: string;
   zoomable: boolean;
   richTooltip: boolean;
   xAxisLabelRotation: number;
@@ -76,10 +78,13 @@ export const DEFAULT_FORM_DATA: EchartsMixedTimeseriesFormData = {
   truncateYAxisSecondary: TIMESERIES_DEFAULTS.truncateYAxis,
   logAxis: TIMESERIES_DEFAULTS.logAxis,
   logAxisSecondary: TIMESERIES_DEFAULTS.logAxis,
+  yAxisBounds: TIMESERIES_DEFAULTS.yAxisBounds,
+  yAxisBoundsSecondary: TIMESERIES_DEFAULTS.yAxisBounds,
   yAxisFormat: TIMESERIES_DEFAULTS.yAxisFormat,
   yAxisFormatSecondary: TIMESERIES_DEFAULTS.yAxisFormat,
   yAxisTitle: TIMESERIES_DEFAULTS.yAxisTitle,
   yAxisTitleSecondary: TIMESERIES_DEFAULTS.yAxisTitle,
+  tooltipTimeFormat: TIMESERIES_DEFAULTS.tooltipTimeFormat,
   xAxisTimeFormat: TIMESERIES_DEFAULTS.xAxisTimeFormat,
   area: TIMESERIES_DEFAULTS.area,
   areaB: TIMESERIES_DEFAULTS.area,
@@ -97,7 +102,6 @@ export const DEFAULT_FORM_DATA: EchartsMixedTimeseriesFormData = {
   seriesTypeB: TIMESERIES_DEFAULTS.seriesType,
   stack: TIMESERIES_DEFAULTS.stack,
   stackB: TIMESERIES_DEFAULTS.stack,
-  yAxisBounds: TIMESERIES_DEFAULTS.yAxisBounds,
   yAxisIndex: 0,
   yAxisIndexB: 0,
   xAxisShowMinLabel: TIMESERIES_DEFAULTS.xAxisShowMinLabel,

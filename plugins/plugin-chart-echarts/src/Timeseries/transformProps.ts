@@ -26,11 +26,7 @@ import {
   isFormulaAnnotationLayer,
   isIntervalAnnotationLayer,
   isTimeseriesAnnotationLayer,
-  getTimeFormatter,
-  smartDateFormatter,
-  smartDateDetailedFormatter,
   TimeseriesChartDataResponseResult,
-  TimeFormatter,
 } from '@superset-ui/core';
 import { EChartsOption, SeriesOption } from 'echarts';
 import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
@@ -47,6 +43,8 @@ import {
 import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
 import {
   getPadding,
+  getTooltipFormatter,
+  getXAxisFormatter,
   transformEventAnnotation,
   transformFormulaAnnotation,
   transformIntervalAnnotation,
@@ -137,23 +135,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     if (max === undefined) max = 1;
   }
 
-  let tooltipFormatter: TimeFormatter | StringConstructor;
-  if (tooltipTimeFormat === smartDateFormatter.id) {
-    tooltipFormatter = smartDateDetailedFormatter;
-  } else if (tooltipTimeFormat) {
-    tooltipFormatter = getTimeFormatter(xAxisTimeFormat);
-  } else {
-    tooltipFormatter = String;
-  }
-
-  let xAxisFormatter: TimeFormatter | StringConstructor | undefined;
-  if (xAxisTimeFormat === smartDateFormatter.id || !xAxisTimeFormat) {
-    xAxisFormatter = undefined;
-  } else if (xAxisTimeFormat) {
-    xAxisFormatter = getTimeFormatter(xAxisTimeFormat);
-  } else {
-    xAxisFormatter = String;
-  }
+  const tooltipFormatter = getTooltipFormatter(tooltipTimeFormat);
+  const xAxisFormatter = getXAxisFormatter(xAxisTimeFormat);
 
   const addYAxisLabelOffset = !!yAxisTitle;
   const padding = getPadding(showLegend, legendOrientation, addYAxisLabelOffset, zoomable);
