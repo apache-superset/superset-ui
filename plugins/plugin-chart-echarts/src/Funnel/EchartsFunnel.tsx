@@ -16,20 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {
-  EchartsBoxPlotChartPlugin,
-  EchartsPieChartPlugin,
-  EchartsTimeseriesChartPlugin,
-  EchartsGraphChartPlugin,
-  EchartsFunnelChartPlugin,
-} from '../src';
+import React from 'react';
+import { EchartsProps } from '../types';
+import Echart from '../components/Echart';
 
-describe('@superset-ui/plugin-chart-echarts', () => {
-  it('exists', () => {
-    expect(EchartsBoxPlotChartPlugin).toBeDefined();
-    expect(EchartsPieChartPlugin).toBeDefined();
-    expect(EchartsTimeseriesChartPlugin).toBeDefined();
-    expect(EchartsGraphChartPlugin).toBeDefined();
-    expect(EchartsFunnelChartPlugin).toBeDefined();
-  });
-});
+export default function EchartsFunnel({ height, width, echartOptions }: EchartsProps) {
+  return <Echart height={height} width={width} echartOptions={echartOptions} />;
+}
