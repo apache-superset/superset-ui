@@ -1,6 +1,6 @@
 {
   "name": "@superset-ui/plugin-chart-echarts",
-  "version": "0.17.35",
+  "version": "0.17.36",
   "description": "Superset Chart - Echarts",
   "sideEffects": false,
   "main": "lib/index.js",
@@ -26,11 +26,11 @@
     "access": "public"
   },
   "dependencies": {
-    "@superset-ui/chart-controls": "0.17.34",
+    "@superset-ui/chart-controls": "0.17.36",
     "@superset-ui/core": "0.17.32",
     "@types/mathjs": "^6.0.7",
     "d3-array": "^1.2.0",
-    "echarts": "^5.0.2",
+    "echarts": "^5.1.0",
     "mathjs": "^8.0.1"
   },
   "peerDependencies": {
