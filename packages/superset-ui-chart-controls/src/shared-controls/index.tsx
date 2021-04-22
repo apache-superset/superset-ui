@@ -444,6 +444,19 @@ const adhoc_filters: SharedControlConfig<'AdhocFilterControl'> = {
   provideFormDataToProps: true,
 };
 
+const custom_filters: SharedControlConfig<'CustomFilterControl'> = {
+  type: 'CustomFilterControl',
+  label: t('Custom Filters'),
+  default: null,
+  description: '',
+  mapStateToProps: ({
+    datasource
+  }) => ({
+    datasource,
+  }),
+  provideFormDataToProps: true
+};
+
 const color_scheme: SharedControlConfig<'ColorSchemeControl'> = {
   type: 'ColorSchemeControl',
   label: t('Color Scheme'),
@@ -493,6 +506,7 @@ const sharedControls = {
   size,
   y_axis_format,
   adhoc_filters,
+  custom_filters,
   color_scheme,
   label_colors,
 };
