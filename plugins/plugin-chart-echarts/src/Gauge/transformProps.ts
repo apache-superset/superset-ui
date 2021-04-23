@@ -117,7 +117,7 @@ export default function transformProps(chartProps: ChartProps) {
   );
   const transformedData: GaugeDataItemOption[] = data.map((data_point, index) => ({
     value: data_point[getMetricLabel(metric as QueryFormMetric)] as number,
-    name: groupby.map(column => `${column}: ${data_point[column]}`).join(', '),
+    name: groupby.map(column => `${column} = ${data_point[column]}`).join(', '),
     itemStyle: {
       color: colorFn(index),
     },
@@ -181,6 +181,12 @@ export default function transformProps(chartProps: ChartProps) {
     formatter: (value: number) => formatValue(value),
     color: DEFAULT_GAUGE_SERIES_OPTION.detail?.color,
   };
+  const tooltip = {
+    formatter: params => {
+      const { name, value } = params;
+      return `${name} : ${formatValue(value)}`;
+    },
+  };
   let pointer;
 
   if (intervalBoundsAndColors.length) {
@@ -214,11 +220,13 @@ export default function transformProps(chartProps: ChartProps) {
       axisTick,
       pointer,
       detail,
+      tooltip,
       data: transformedData,
     },
   ];
 
   const echartOptions: EChartsOption = {
+    tooltip: { trigger: 'item' },
     series,
   };
 
