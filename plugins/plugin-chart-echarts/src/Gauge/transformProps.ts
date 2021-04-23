@@ -71,6 +71,14 @@ const setIntervalBoundsAndColors = (
 const calculateAxisLineWidth = (data: DataRecord[], fontSize: number, overlap: boolean): number =>
   overlap ? fontSize : data.length * fontSize;
 
+const calculateMin = (data: GaugeDataItemOption[]) => {
+  return 2 * Math.min(...data.map(d => d.value).concat([0]));
+};
+
+const calculateMax = (data: GaugeDataItemOption[]) => {
+  return 2 * Math.max(...data.map(d => d.value).concat([0]));
+};
+
 export default function transformProps(chartProps: ChartProps) {
   const { width, height, formData, queriesData } = chartProps;
   const {
@@ -203,14 +211,16 @@ export default function transformProps(chartProps: ChartProps) {
       show: showPointer,
     };
   }
+  const min = minVal ? minVal : calculateMin(transformedData);
+  const max = maxVal ? maxVal : calculateMax(transformedData);
 
   const series: GaugeSeriesOption[] = [
     {
       type: 'gauge',
       startAngle,
       endAngle,
-      min: minVal,
-      max: maxVal,
+      min,
+      max,
       progress,
       animation,
       axisLine: axisLine as GaugeSeriesOption['axisLine'],

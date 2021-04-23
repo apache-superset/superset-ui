@@ -68,8 +68,7 @@ const config: ControlPanelConfig = {
             config: {
               type: 'TextControl',
               isInt: true,
-              default: String(DEFAULT_FORM_DATA.minVal),
-              validators: [validateNonEmpty, validateInteger],
+              default: DEFAULT_FORM_DATA.minVal,
               renderTrigger: true,
               label: t('Min'),
               description: t('Minimum value on the gauge axis'),
@@ -81,7 +80,6 @@ const config: ControlPanelConfig = {
               type: 'TextControl',
               isInt: true,
               default: DEFAULT_FORM_DATA.maxVal,
-              validators: [validateNonEmpty, validateInteger],
               renderTrigger: true,
               label: t('Max'),
               description: t('Maximum value on the gauge axis'),
