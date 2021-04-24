@@ -155,8 +155,6 @@ const config: ControlPanelConfig = {
             },
           },
         ],
-        // eslint-disable-next-line react/jsx-key
-        [<h1 className="section-header">{t('Funnel shape')}</h1>],
       ],
     },
   ],
