@@ -109,6 +109,10 @@ const config: ControlPanelConfig = {
               description: t('Draw line from Funnel to label when labels outside?'),
             },
           },
+        ],
+        // eslint-disable-next-line react/jsx-key
+        [<h1 className="section-header">{t('Funnel shape')}</h1>],
+        [
           {
             name: 'sort',
             config: {
