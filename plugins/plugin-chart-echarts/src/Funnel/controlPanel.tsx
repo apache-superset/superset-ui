@@ -17,8 +17,13 @@
  * under the License.
  */
 import React from 'react';
-import { t, validateNonEmpty } from '@superset-ui/core';
-import { ControlPanelConfig, D3_FORMAT_OPTIONS, sections } from '@superset-ui/chart-controls';
+import { t } from '@superset-ui/core';
+import {
+  ControlPanelConfig,
+  D3_FORMAT_OPTIONS,
+  sections,
+  sharedControls,
+} from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA, EchartsFunnelLabelTypeType } from './types';
 import {
   legendMarginControl,
@@ -35,7 +40,20 @@ const config: ControlPanelConfig = {
     {
       label: t('Query'),
       expanded: true,
-      controlSetRows: [['groupby'], ['metric'], ['adhoc_filters'], ['row_limit']],
+      controlSetRows: [
+        ['groupby'],
+        ['metric'],
+        ['adhoc_filters'],
+        [
+          {
+            name: 'row_limit',
+            config: {
+              ...sharedControls.row_limit,
+              default: 10,
+            },
+          },
+        ],
+      ],
     },
     {
       label: t('Chart Options'),
@@ -147,15 +165,6 @@ const config: ControlPanelConfig = {
       ],
     },
   ],
-  controlOverrides: {
-    series: {
-      validators: [validateNonEmpty],
-      clearable: false,
-    },
-    row_limit: {
-      default: 100,
-    },
-  },
 };
 
 export default config;

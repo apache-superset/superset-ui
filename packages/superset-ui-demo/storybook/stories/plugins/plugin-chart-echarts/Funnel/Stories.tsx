@@ -3,7 +3,7 @@ import { SuperChart, getChartTransformPropsRegistry } from '@superset-ui/core';
 import { boolean, number, select, withKnobs } from '@storybook/addon-knobs';
 import { EchartsFunnelChartPlugin } from '@superset-ui/plugin-chart-echarts';
 import transformProps from '@superset-ui/plugin-chart-echarts/lib/Funnel/transformProps';
-import { dataSource } from './data';
+import { dataSource } from './constants';
 import { withResizableChartDemo } from '../../../../shared/components/ResizableChartDemo';
 
 new EchartsFunnelChartPlugin().configure({ key: 'echarts-funnel' }).register();
