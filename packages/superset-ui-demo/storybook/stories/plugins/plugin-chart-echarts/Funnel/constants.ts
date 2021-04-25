@@ -1,7 +1,6 @@
 export const dataSource = [
-  { value: 100, name: 'show' },
-  { value: 80, name: 'click' },
-  { value: 60, name: 'visit' },
-  { value: 40, name: 'consult' },
-  { value: 20, name: 'order' },
+  { value: 89439, name: 'pv' },
+  { value: 5526, name: 'cart' },
+  { value: 2824, name: 'fav' },
+  { value: 2211, name: 'buy' },
 ];

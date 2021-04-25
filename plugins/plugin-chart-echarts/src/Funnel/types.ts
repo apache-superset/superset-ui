@@ -31,8 +31,6 @@ export type EchartsFunnelFormData = EchartsLegendFormData & {
   metric?: string;
   showLabels: boolean;
   numberFormat: string;
-  min: number;
-  max: number;
   gap: number;
   sort: 'descending' | 'ascending' | 'none' | undefined;
   orient: 'vertical' | 'horizontal' | undefined;
@@ -56,8 +54,8 @@ export const DEFAULT_FORM_DATA: EchartsFunnelFormData = {
   legendType: LegendType.Scroll,
   numberFormat: 'SMART_NUMBER',
   showLabels: true,
-  min: 0,
-  max: 100,
+  // min: 0,
+  // max: 100,
   sort: 'descending',
   orient: 'vertical',
   gap: 0,

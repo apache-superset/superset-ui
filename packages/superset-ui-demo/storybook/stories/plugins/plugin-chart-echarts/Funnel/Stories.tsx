@@ -27,8 +27,6 @@ export const Funnel = ({ width, height }) => {
         groupby: ['name'],
         metric: 'value',
         numberFormat: 'SMART_NUMBER',
-        min: number('min', 0),
-        max: number('max', 100),
         orient: select('orient', ['horizontal', 'vertical'], 'vertical'),
         sort: select('sort', ['descending', 'ascending', 'none'], 'descending'),
         gap: number('gap', 0),
