@@ -75,8 +75,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const {
     colorScheme,
     groupby,
-    // min,
-    // max,
     orient,
     sort,
     gap,

@@ -54,8 +54,6 @@ export const DEFAULT_FORM_DATA: EchartsFunnelFormData = {
   legendType: LegendType.Scroll,
   numberFormat: 'SMART_NUMBER',
   showLabels: true,
-  // min: 0,
-  // max: 100,
   sort: 'descending',
   orient: 'vertical',
   gap: 0,
