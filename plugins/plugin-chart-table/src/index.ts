@@ -28,7 +28,7 @@ export { default as __hack__ } from './types';
 export * from './types';
 
 const metadata = new ChartMetadata({
-  behaviors: [Behavior.INTERACTIVE_CHART],
+  behaviors: [Behavior.CROSS_CHART],
   canBeAnnotationTypes: ['EVENT', 'INTERVAL'],
   description: '',
   name: t('Table'),

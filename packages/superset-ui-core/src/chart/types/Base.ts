@@ -4,7 +4,7 @@ import { JsonObject } from '../..';
 export type HandlerFunction = (...args: unknown[]) => void;
 
 export enum Behavior {
-  INTERACTIVE_CHART = 'INTERACTIVE_CHART',
+  CROSS_CHART = 'CROSS_CHART',
   NATIVE_FILTER = 'NATIVE_FILTER',
 }
 
