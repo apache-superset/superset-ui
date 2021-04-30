@@ -16,6 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { EChartsOption } from 'echarts';
+import {
+  ChartDataResponseResult,
+  ChartProps,
+  DataRecordValue,
+  QueryFormData,
+  SetDataMaskHook,
+} from '@superset-ui/core';
 import {
   DEFAULT_LEGEND_FORM_DATA,
   EchartsLegendFormData,
@@ -23,18 +31,20 @@ import {
   LegendType,
 } from '../types';
 
-export type EchartsFunnelFormData = EchartsLegendFormData & {
-  colorScheme?: string;
-  groupby: string[];
-  labelLine: boolean;
-  labelType: EchartsFunnelLabelTypeType;
-  metric?: string;
-  showLabels: boolean;
-  numberFormat: string;
-  gap: number;
-  sort: 'descending' | 'ascending' | 'none' | undefined;
-  orient: 'vertical' | 'horizontal' | undefined;
-};
+export type EchartsFunnelFormData = QueryFormData &
+  EchartsLegendFormData & {
+    colorScheme?: string;
+    groupby: string[];
+    labelLine: boolean;
+    labelType: EchartsFunnelLabelTypeType;
+    metric?: string;
+    showLabels: boolean;
+    numberFormat: string;
+    gap: number;
+    sort: 'descending' | 'ascending' | 'none' | undefined;
+    orient: 'vertical' | 'horizontal' | undefined;
+    emitFilter: boolean;
+  };
 
 export enum EchartsFunnelLabelTypeType {
   Key,
@@ -45,6 +55,12 @@ export enum EchartsFunnelLabelTypeType {
   KeyValuePercent,
 }
 
+export interface EchartsFunnelChartProps extends ChartProps {
+  formData: EchartsFunnelFormData;
+  queriesData: ChartDataResponseResult[];
+}
+
+// @ts-ignore
 export const DEFAULT_FORM_DATA: EchartsFunnelFormData = {
   ...DEFAULT_LEGEND_FORM_DATA,
   groupby: [],
@@ -57,4 +73,17 @@ export const DEFAULT_FORM_DATA: EchartsFunnelFormData = {
   sort: 'descending',
   orient: 'vertical',
   gap: 0,
+  emitFilter: false,
 };
+
+export interface FunnelChartTransformedProps {
+  formData: EchartsFunnelFormData;
+  height: number;
+  width: number;
+  echartOptions: EChartsOption;
+  emitFilter: boolean;
+  setDataMask: SetDataMaskHook;
+  labelMap: Record<string, DataRecordValue[]>;
+  groupby: string[];
+  selectedValues: Record<number, string>;
+}

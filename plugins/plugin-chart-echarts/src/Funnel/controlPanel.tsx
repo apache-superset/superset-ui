@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { t } from '@superset-ui/core';
+import { FeatureFlag, isFeatureEnabled, t } from '@superset-ui/core';
 import {
   ControlPanelConfig,
   D3_FORMAT_OPTIONS,
@@ -32,7 +32,15 @@ import {
   showLegendControl,
 } from '../controls';
 
-const { sort, orient, labelLine, labelType, numberFormat, showLabels } = DEFAULT_FORM_DATA;
+const {
+  sort,
+  orient,
+  labelLine,
+  labelType,
+  numberFormat,
+  showLabels,
+  emitFilter,
+} = DEFAULT_FORM_DATA;
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
@@ -60,6 +68,20 @@ const config: ControlPanelConfig = {
       expanded: true,
       controlSetRows: [
         ['color_scheme'],
+        isFeatureEnabled(FeatureFlag.DASHBOARD_CROSS_FILTERS)
+          ? [
+              {
+                name: 'emit_filter',
+                config: {
+                  type: 'CheckboxControl',
+                  label: t('Enable emitting filters'),
+                  default: emitFilter,
+                  renderTrigger: true,
+                  description: t('Enable emmiting filters.'),
+                },
+              },
+            ]
+          : [],
         // eslint-disable-next-line react/jsx-key
         [<h1 className="section-header">{t('Legend')}</h1>],
         [showLegendControl],

@@ -16,13 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { t, ChartMetadata, ChartPlugin } from '@superset-ui/core';
+import { Behavior, ChartMetadata, ChartPlugin, t } from '@superset-ui/core';
 import buildQuery from './buildQuery';
 import controlPanel from './controlPanel';
 import transformProps from './transformProps';
 import thumbnail from './images/thumbnail.png';
+import { EchartsFunnelChartProps, EchartsFunnelFormData } from './types';
 
-export default class EchartsFunnelChartPlugin extends ChartPlugin {
+export default class EchartsFunnelChartPlugin extends ChartPlugin<
+  EchartsFunnelFormData,
+  EchartsFunnelChartProps
+> {
   /**
    * The constructor is used to pass relevant metadata and callbacks that get
    * registered in respective registries that are used throughout the library
@@ -39,6 +43,7 @@ export default class EchartsFunnelChartPlugin extends ChartPlugin {
       controlPanel,
       loadChart: () => import('./EchartsFunnel'),
       metadata: new ChartMetadata({
+        behaviors: [Behavior.INTERACTIVE_CHART],
         credits: ['https://echarts.apache.org'],
         description: 'Funnel Chart (Apache ECharts)',
         name: t('Funnel Chart'),
