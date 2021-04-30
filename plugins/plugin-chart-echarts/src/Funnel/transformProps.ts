@@ -18,7 +18,7 @@
  */
 import {
   CategoricalColorNamespace,
-  ChartProps,
+  DataRecordValue,
   DataRecord,
   getMetricLabel,
   getNumberFormatter,
@@ -29,10 +29,12 @@ import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { EChartsOption, FunnelSeriesOption } from 'echarts';
 import {
   DEFAULT_FORM_DATA as DEFAULT_FUNNEL_FORM_DATA,
+  EchartsFunnelChartProps,
   EchartsFunnelFormData,
   EchartsFunnelLabelTypeType,
+  FunnelChartTransformedProps,
 } from './types';
-import { DEFAULT_LEGEND_FORM_DATA, EchartsProps } from '../types';
+import { DEFAULT_LEGEND_FORM_DATA } from '../types';
 import { extractGroupbyLabel, getChartPadding, getLegendProps } from '../utils/series';
 import { defaultGrid, defaultTooltip } from '../defaults';
 
@@ -68,8 +70,10 @@ export function formatFunnelLabel({
   }
 }
 
-export default function transformProps(chartProps: ChartProps): EchartsProps {
-  const { width, height, formData, queriesData } = chartProps;
+export default function transformProps(
+  chartProps: EchartsFunnelChartProps,
+): FunnelChartTransformedProps {
+  const { formData, height, hooks, ownState, queriesData, width } = chartProps;
   const data: DataRecord[] = queriesData[0].data || [];
 
   const {
@@ -87,6 +91,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     numberFormat,
     showLabels,
     showLegend,
+    emitFilter,
   }: EchartsFunnelFormData = {
     ...DEFAULT_LEGEND_FORM_DATA,
     ...DEFAULT_FUNNEL_FORM_DATA,
@@ -94,6 +99,20 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   };
   const metricLabel = getMetricLabel(metric);
   const keys = data.map(datum => extractGroupbyLabel({ datum, groupby, coltypeMapping: {} }));
+  const labelMap = data.reduce((acc: Record<string, DataRecordValue[]>, datum) => {
+    const label = extractGroupbyLabel({
+      datum,
+      groupby,
+      coltypeMapping: {},
+    });
+    return {
+      ...acc,
+      [label]: groupby.map(col => datum[col]),
+    };
+  }, {});
+
+  const { setDataMask = () => {} } = hooks;
+
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const numberFormatter = getNumberFormatter(numberFormat);
 
@@ -107,6 +126,17 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       },
     };
   });
+
+  const selectedValues = (ownState.selectedValues || []).reduce(
+    (acc: Record<string, number>, selectedValue: string) => {
+      const index = transformedData.findIndex(({ name }) => name === selectedValue);
+      return {
+        ...acc,
+        [index]: selectedValue,
+      };
+    },
+    {},
+  );
 
   const formatter = (params: CallbackDataParams) =>
     formatFunnelLabel({ params, numberFormatter, labelType });
@@ -165,8 +195,14 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   };
 
   return {
+    formData,
     width,
     height,
     echartOptions,
+    setDataMask,
+    emitFilter,
+    labelMap,
+    groupby,
+    selectedValues,
   };
 }
