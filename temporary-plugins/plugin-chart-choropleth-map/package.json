@@ -29,7 +29,6 @@
   "dependencies": {
     "@superset-ui/chart-controls": "0.17.41",
     "@superset-ui/core": "0.17.40",
-    "@emotion/styled": "^11.3.0",
     "@types/d3-geo": "^1.11.1",
     "@types/geojson": "^7946.0.3",
     "@types/topojson-client": "^3.0.0",
