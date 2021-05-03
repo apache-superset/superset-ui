@@ -140,7 +140,7 @@
     "@types/react-bootstrap/@types/react": "^16.14.2"
   },
   "engines": {
-    "node": "^14.15.0",
+    "node": "14.x",
     "npm": "^7.5.4",
     "yarn": ">=1.13.0"
   },
