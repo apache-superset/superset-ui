@@ -70,6 +70,7 @@
     "@babel/register": "^7.8.6",
     "@emotion/babel-preset-css-prop": "^11.2.0",
     "@emotion/jest": "^11.3.0",
+    "@storybook/preset-typescript": "^3.0.0",
     "@superset-ui/commit-config": "^0.0.9",
     "@types/enzyme": "^3.10.3",
     "@types/jest": "^26.0.4",
