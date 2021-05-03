@@ -16,14 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import emotionStyled, { CreateStyled } from '@emotion/styled';
+import '@emotion/react';
+import emotionStyled from '@emotion/styled';
 import { useTheme as useThemeBasic } from 'emotion-theming';
-import createCache from '@emotion/cache';
 
 export { ThemeProvider, withTheme } from 'emotion-theming';
-export { ClassNames, Global, InterpolationWithTheme, SerializedStyles } from '@emotion/core';
-export { CacheProvider, jsx, css } from '@emotion/react';
-export { createCache };
+
+export const styled = emotionStyled;
 
 export function useTheme() {
   const theme = useThemeBasic<SupersetTheme>();
@@ -148,11 +147,13 @@ const defaultTheme = {
 
 export type SupersetTheme = typeof defaultTheme;
 
+declare module '@emotion/react' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface Theme extends SupersetTheme {}
+}
+
 export interface SupersetThemeProps {
   theme: SupersetTheme;
 }
 
-export const styled: CreateStyled<SupersetTheme> = emotionStyled;
 export const supersetTheme = defaultTheme;
-
-export default styled;
