@@ -18,6 +18,7 @@
  */
 import emotionStyled from '@emotion/styled';
 import { useTheme as useThemeBasic } from '@emotion/react';
+import createCache from '@emotion/cache';
 
 export { ThemeProvider, CacheProvider as EmotionCacheProvider, withTheme } from '@emotion/react';
 export { default as createEmotionCache } from '@emotion/cache';
@@ -37,6 +38,10 @@ export function useTheme() {
   }
   return theme;
 }
+
+export const emotionCache = createCache({
+  key: 'superset',
+});
 
 export const styled = emotionStyled;
 
