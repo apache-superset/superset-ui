@@ -71,6 +71,7 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
     groupby = [],
     metric = '',
     labelType,
+    labelPosition,
     numberFormat,
     dateFormat,
     showLabels,
@@ -93,15 +94,20 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
       labelType,
     });
 
-  const formatItemStyle = (name: string) => ({
-    borderColor: colorFn(name),
-    color: colorFn(name),
-    borderWidth: 2,
-    gapWidth: 2,
-    borderColorSaturation: 0.6,
-  });
+  const formatItemStyle = (depth: number, isDeepest?: boolean) =>
+    isDeepest
+      ? {
+          color: colorFn(depth - 1),
+          gapWidth: 2,
+        }
+      : {
+          borderColor: colorFn(depth - 1),
+          color: colorFn(depth),
+          borderWidth: 2,
+          gapWidth: 2,
+        };
 
-  const transformer = (data: DataRecord[], _groupby: string[], metric: string) => {
+  const transformer = (data: DataRecord[], _groupby: string[], metric: string, depth: number) => {
     const [currGroupby, ...restGroupby] = _groupby;
     const currGrouping = groupBy(data, currGroupby);
     if (!restGroupby.length) {
@@ -118,8 +124,8 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
             }
             result.push({
               name,
+              itemStyle: formatItemStyle(depth, true),
               value: (datum[metric] as number) ?? 0,
-              itemStyle: formatItemStyle(name),
             });
           });
         },
@@ -135,8 +141,8 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
         });
         result.push({
           name,
-          children: transformer(value, restGroupby, metric),
-          itemStyle: formatItemStyle(name),
+          itemStyle: formatItemStyle(depth),
+          children: transformer(value, restGroupby, metric, depth + 1),
         });
       },
       [] as TreemapSeriesNodeItemOption[],
@@ -145,7 +151,13 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
 
   const metricsLabel = getMetricLabel(metric);
 
-  const transformedData: TreemapSeriesNodeItemOption[] = transformer(data, groupby, metricsLabel);
+  const transformedData: TreemapSeriesNodeItemOption[] = [
+    {
+      name: metricsLabel,
+      itemStyle: formatItemStyle(0),
+      children: transformer(data, groupby, metricsLabel, 1),
+    },
+  ];
 
   const series: TreemapSeriesOption[] = [
     {
@@ -172,6 +184,7 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
       ],
       label: {
         show: showLabels,
+        position: labelPosition,
         formatter,
       },
       upperLabel: {

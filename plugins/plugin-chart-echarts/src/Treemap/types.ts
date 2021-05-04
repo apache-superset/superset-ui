@@ -17,12 +17,14 @@
  * under the License.
  */
 import { ChartDataResponseResult, ChartProps, QueryFormData } from '@superset-ui/core';
+import { LabelPositionEnum } from '../types';
 
 export type EchartsTreemapFormData = QueryFormData & {
   colorScheme?: string;
   groupby: string[];
   metric?: string;
   labelType: EchartsTreemapLabelType;
+  labelPosition: LabelPositionEnum;
   showLabels: boolean;
   showUpperLabels: boolean;
   numberFormat: string;
@@ -48,6 +50,7 @@ export interface EchartsTreemapChartProps extends ChartProps {
 export const DEFAULT_FORM_DATA: EchartsTreemapFormData = {
   groupby: [],
   labelType: EchartsTreemapLabelType.KeyValue,
+  labelPosition: LabelPositionEnum.InsideTopLeft,
   numberFormat: 'SMART_NUMBER',
   showLabels: true,
   showUpperLabels: true,

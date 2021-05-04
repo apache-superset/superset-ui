@@ -49,6 +49,8 @@ export default function Echart({
       chartRef.current?.on(name, handler);
     });
 
+    chartRef.current.clear();
+
     chartRef.current.setOption(echartOptions, true);
 
     chartRef.current.dispatchAction({

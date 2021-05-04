@@ -26,9 +26,11 @@ import {
   sections,
 } from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from './types';
+import { LABEL_POSITION } from '../constants';
 
 const {
   labelType,
+  labelPosition,
   numberFormat,
   showLabels,
   showUpperLabels,
@@ -108,6 +110,20 @@ const config: ControlPanelConfig = {
                 ['key_value', 'Category and Value'],
               ],
               description: t('What should be shown on the label?'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'label_position',
+            config: {
+              type: 'SelectControl',
+              freeForm: false,
+              label: t('Label position'),
+              renderTrigger: true,
+              choices: LABEL_POSITION,
+              default: labelPosition,
+              description: D3_FORMAT_DOCS,
             },
           },
         ],
@@ -194,7 +210,7 @@ const config: ControlPanelConfig = {
               renderTrigger: true,
               default: nodeClick,
               choices: [
-                [false, t('Do nothing after clicked')],
+                [false, t('Do nothing')],
                 ['zoomToNode', t('Zoom to clicked node')],
               ],
               description: t('The behaviour when clicking a node'),
