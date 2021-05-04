@@ -69,7 +69,7 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
   const {
     colorScheme,
     groupby = [],
-    metric = '',
+    metrics = [],
     labelType,
     labelPosition,
     numberFormat,
@@ -94,15 +94,15 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
       labelType,
     });
 
-  const formatItemStyle = (depth: number, isDeepest?: boolean) =>
+  const formatItemStyle = (metricLabel: string, depth: number, isDeepest?: boolean) =>
     isDeepest
       ? {
-          color: colorFn(depth - 1),
+          color: colorFn(`${metricLabel}_${depth - 1}`),
           gapWidth: 2,
         }
       : {
-          borderColor: colorFn(depth - 1),
-          color: colorFn(depth),
+          borderColor: colorFn(`${metricLabel}_${depth - 1}`),
+          color: colorFn(`${metricLabel}_${depth}`),
           borderWidth: 2,
           gapWidth: 2,
         };
@@ -124,7 +124,7 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
             }
             result.push({
               name,
-              itemStyle: formatItemStyle(depth, true),
+              itemStyle: formatItemStyle(metric, depth, true),
               value: (datum[metric] as number) ?? 0,
             });
           });
@@ -141,7 +141,7 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
         });
         result.push({
           name,
-          itemStyle: formatItemStyle(depth),
+          itemStyle: formatItemStyle(metric, depth),
           children: transformer(value, restGroupby, metric, depth + 1),
         });
       },
@@ -149,15 +149,13 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
     );
   };
 
-  const metricsLabel = getMetricLabel(metric);
+  const metricsLabel = metrics.map(metric => getMetricLabel(metric));
 
-  const transformedData: TreemapSeriesNodeItemOption[] = [
-    {
-      name: metricsLabel,
-      itemStyle: formatItemStyle(0),
-      children: transformer(data, groupby, metricsLabel, 1),
-    },
-  ];
+  const transformedData: TreemapSeriesNodeItemOption[] = metricsLabel.map(metricLabel => ({
+    name: metricLabel,
+    itemStyle: formatItemStyle(metricLabel, 0),
+    children: transformer(data, groupby, metricLabel, 1),
+  }));
 
   const series: TreemapSeriesOption[] = [
     {

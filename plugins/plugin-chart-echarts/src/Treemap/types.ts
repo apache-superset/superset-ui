@@ -16,13 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartDataResponseResult, ChartProps, QueryFormData } from '@superset-ui/core';
+import {
+  ChartDataResponseResult,
+  ChartProps,
+  QueryFormData,
+  QueryFormMetric,
+} from '@superset-ui/core';
 import { LabelPositionEnum } from '../types';
 
 export type EchartsTreemapFormData = QueryFormData & {
   colorScheme?: string;
   groupby: string[];
-  metric?: string;
+  metric?: QueryFormMetric[];
   labelType: EchartsTreemapLabelType;
   labelPosition: LabelPositionEnum;
   showLabels: boolean;

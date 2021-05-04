@@ -49,7 +49,7 @@ const config: ControlPanelConfig = {
       expanded: true,
       controlSetRows: [
         ['groupby'],
-        ['metric'],
+        ['metrics'],
         ['adhoc_filters'],
         ['row_limit'],
         ['timeseries_limit_metric'],
