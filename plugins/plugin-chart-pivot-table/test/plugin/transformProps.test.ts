@@ -2,6 +2,7 @@ import { ChartProps } from '@superset-ui/core';
 import transformProps from '../../src/plugin/transformProps';
 
 describe('PivotTableChart transformProps', () => {
+  const setDataMask = jest.fn();
   const formData = {
     groupbyRows: ['row1', 'row2'],
     groupbyColumns: ['col1', 'col2'],
@@ -27,12 +28,12 @@ describe('PivotTableChart transformProps', () => {
         data: [{ name: 'Hulk', sum__num: 1, __timestamp: 599616000000 }],
       },
     ],
-    hooks: { setDataMask: () => {} },
+    hooks: { setDataMask },
     ownState: { selectedFilters: {} },
   });
 
   it('should transform chart props for viz', () => {
-    expect(transformProps(chartProps)).toMatchObject({
+    expect(transformProps(chartProps)).toEqual({
       width: 800,
       height: 600,
       groupbyRows: ['row1', 'row2'],
@@ -50,7 +51,7 @@ describe('PivotTableChart transformProps', () => {
       valueFormat: 'SMART_NUMBER',
       data: [{ name: 'Hulk', sum__num: 1, __timestamp: 599616000000 }],
       emitFilter: false,
-      setDataMask: () => {},
+      setDataMask,
       selectedFilters: {},
     });
   });
