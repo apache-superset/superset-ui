@@ -32,7 +32,7 @@ describe('PivotTableChart transformProps', () => {
   });
 
   it('should transform chart props for viz', () => {
-    expect(transformProps(chartProps)).toEqual({
+    expect(transformProps(chartProps)).toMatchObject({
       width: 800,
       height: 600,
       groupbyRows: ['row1', 'row2'],
