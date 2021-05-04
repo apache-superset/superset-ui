@@ -126,6 +126,9 @@ export default function PivotTableChart(props: PivotTableProps) {
         filterState: {
           selectedFilters: filters && Object.keys(filters).length ? filters : null,
         },
+        ownState: {
+          selectedFilters: filters && Object.keys(filters).length ? filters : null,
+        },
       });
     },
     [setDataMask],
