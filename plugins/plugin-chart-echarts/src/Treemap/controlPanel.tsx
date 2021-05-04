@@ -24,7 +24,6 @@ import {
   D3_FORMAT_OPTIONS,
   D3_TIME_FORMAT_OPTIONS,
   sections,
-  sharedControls,
 } from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from './types';
 
@@ -50,12 +49,16 @@ const config: ControlPanelConfig = {
         ['groupby'],
         ['metric'],
         ['adhoc_filters'],
+        ['row_limit'],
+        ['timeseries_limit_metric'],
         [
           {
-            name: 'row_limit',
+            name: 'order_desc',
             config: {
-              ...sharedControls.row_limit,
-              default: 10,
+              type: 'CheckboxControl',
+              label: t('Sort Descending'),
+              default: true,
+              description: t('Whether to sort descending or ascending'),
             },
           },
         ],
