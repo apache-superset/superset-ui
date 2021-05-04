@@ -104,12 +104,11 @@ export default function PivotTableChart(props: PivotTableProps) {
   const handleChange = useCallback(
     (filters: SelectedFiltersType) => {
       const groupBy = Object.keys(filters);
-      const groupByValues = Object.values(filters);
       setDataMask({
         extraFormData: {
           filters:
             groupBy.length === 0
-              ? []
+              ? undefined
               : groupBy.map(col => {
                   const val = filters?.[col];
                   if (val === null || val === undefined)
@@ -125,9 +124,6 @@ export default function PivotTableChart(props: PivotTableProps) {
                 }),
         },
         filterState: {
-          value: groupByValues.length ? groupByValues : null,
-        },
-        ownState: {
           selectedFilters: filters && Object.keys(filters).length ? filters : null,
         },
       });

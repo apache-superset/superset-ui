@@ -54,7 +54,7 @@ export default function transformProps(chartProps: ChartProps) {
     queriesData,
     formData,
     hooks: { setDataMask = () => {} },
-    ownState,
+    filterState,
   } = chartProps;
   const data = queriesData[0].data as DataRecord[];
   const {
@@ -73,7 +73,7 @@ export default function transformProps(chartProps: ChartProps) {
     valueFormat,
     emitFilter,
   } = formData;
-  const { selectedFilters } = ownState;
+  const { selectedFilters } = filterState;
 
   return {
     width,

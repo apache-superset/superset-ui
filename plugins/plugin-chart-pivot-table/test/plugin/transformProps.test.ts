@@ -29,7 +29,7 @@ describe('PivotTableChart transformProps', () => {
       },
     ],
     hooks: { setDataMask },
-    ownState: { selectedFilters: {} },
+    filterState: { selectedFilters: {} },
   });
 
   it('should transform chart props for viz', () => {
