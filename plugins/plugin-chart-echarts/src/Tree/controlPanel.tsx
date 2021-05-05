@@ -70,8 +70,7 @@ const controlPanel: ControlPanelConfig = {
         ],
         [
           {
-            // Didn't set renderTrigger true because echart gives intermittent error like
-            // "node is not defined" or bugs out with weird connections
+            // TODO: Set renderTrigger to true without getting intermittent errors in echart
             name: 'root_node_id',
             config: {
               ...optionalEntity,
