@@ -27,6 +27,7 @@ const xss = new FilterXSS({
     div: ['style', 'class'],
     a: ['style', 'class', 'href', 'title', 'target'],
     img: ['style', 'class', 'src', 'alt', 'title', 'width', 'height'],
+    video: ['autoplay', 'controls', 'loop', 'preload', 'src', 'height', 'width', 'muted'],
   },
   stripIgnoreTag: true,
   css: false,
@@ -43,7 +44,12 @@ function formatValue(
   formatter: DataColumnMeta['formatter'],
   value: DataRecordValue,
 ): [boolean, string] {
-  if (value === null || typeof value === 'undefined') {
+  // render undefined as empty string
+  if (value === undefined) {
+    return [false, ''];
+  }
+  // render null as `N/A`
+  if (value === null) {
     return [false, 'N/A'];
   }
   if (formatter) {

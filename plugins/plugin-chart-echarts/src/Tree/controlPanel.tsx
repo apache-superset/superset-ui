@@ -70,6 +70,8 @@ const controlPanel: ControlPanelConfig = {
         ],
         [
           {
+            // Didn't set renderTrigger true because echart gives intermittent error like
+            // "node is not defined" or bugs out with weird connections
             name: 'root_node_id',
             config: {
               ...optionalEntity,
@@ -132,19 +134,19 @@ const controlPanel: ControlPanelConfig = {
               default: DEFAULT_FORM_DATA.orient,
               options: [
                 {
-                  label: 'LR',
+                  label: 'Left to Right',
                   value: 'LR',
                 },
                 {
-                  label: 'RL',
+                  label: 'Right to Left',
                   value: 'RL',
                 },
                 {
-                  label: 'TB',
+                  label: 'Top to Bottom',
                   value: 'TB',
                 },
                 {
-                  label: 'BT',
+                  label: 'Bottom to Top',
                   value: 'BT',
                 },
               ],

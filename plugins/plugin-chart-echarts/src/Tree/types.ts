@@ -50,10 +50,6 @@ export const DEFAULT_FORM_DATA: EchartsTreeFormData = {
   emphasis: 'descendant',
 };
 
-export type tooltipFormatParams = {
-  data: { [name: string]: string };
-};
-
 export type TreeDataRecord = Record<string, string | number> & {
   children: TreeSeriesNodeItemOption[];
 };

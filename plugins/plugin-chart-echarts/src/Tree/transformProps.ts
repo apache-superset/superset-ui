@@ -145,9 +145,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     Object.keys(parentChildMap).forEach(key => {
       if (parentChildMap[key].length === 1) {
         const tree = createTree(parentChildMap[key][0].id);
-
         const totalChildren = getTotalChildren(tree);
-
         if (totalChildren > maxChildren) {
           maxChildren = totalChildren;
           finalTree = tree;

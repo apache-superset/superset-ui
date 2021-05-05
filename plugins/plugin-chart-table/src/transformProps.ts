@@ -146,6 +146,7 @@ const processColumns = memoizeOne(function processColumns(props: TableChartProps
         key,
         label,
         dataType,
+        isNumeric: dataType === GenericDataType.NUMERIC,
         isMetric,
         isPercentMetric,
         formatter,
@@ -185,7 +186,7 @@ const transformProps = (chartProps: TableChartProps): TableChartTransformedProps
     rawFormData: formData,
     queriesData = [],
     initialValues: filters = {},
-    ownCurrentState: serverPaginationData = {},
+    ownState: serverPaginationData = {},
     hooks: { onAddFilter: onChangeFilter, setDataMask = () => {} },
   } = chartProps;
 
