@@ -24,7 +24,7 @@ describe('Treemap tranformProps', () => {
     colorScheme: 'bnbColors',
     datasource: '3__table',
     granularity_sqla: 'ds',
-    metric: 'sum__num',
+    metrics: ['sum__num'],
     groupby: ['foo', 'bar'],
   };
   const chartProps = new ChartProps({
@@ -34,8 +34,8 @@ describe('Treemap tranformProps', () => {
     queriesData: [
       {
         data: [
-          { foo: 'Sylvester', bar: 1, sum__num: 10 },
-          { foo: 'Arnold', bar: 2, sum__num: 2.5 },
+          { foo: 'Sylvester', bar: 'bar1', sum__num: 10 },
+          { foo: 'Arnold', bar: 'bar2', sum__num: 2.5 },
         ],
       },
     ],
@@ -49,15 +49,20 @@ describe('Treemap tranformProps', () => {
         echartOptions: expect.objectContaining({
           series: [
             expect.objectContaining({
-              avoidLabelOverlap: true,
               data: expect.arrayContaining([
                 expect.objectContaining({
-                  name: 'Arnold, 2',
-                  value: 2.5,
-                }),
-                expect.objectContaining({
-                  name: 'Sylvester, 1',
-                  value: 10,
+                  name: 'sum__num',
+                  children: expect.arrayContaining([
+                    expect.objectContaining({
+                      name: 'Sylvester',
+                      children: expect.arrayContaining([
+                        expect.objectContaining({
+                          name: 'bar1',
+                          value: 10,
+                        }),
+                      ]),
+                    }),
+                  ]),
                 }),
               ]),
             }),
