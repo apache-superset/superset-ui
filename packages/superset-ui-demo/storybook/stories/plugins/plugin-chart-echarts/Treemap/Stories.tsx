@@ -24,6 +24,8 @@ export const Treemap = ({ width, height }) => {
       queriesData={[{ data }]}
       formData={{
         colorScheme: 'supersetColors',
+        groupby: ['gender', 'name'],
+        metrics: ['count', 'MIN(num_boys)'],
         showLabels: boolean('Show labels', true),
         showUpperLabels: boolean('Show upperLabels', true),
         showBreadcrumb: boolean('Show Breadcrumb', true),
