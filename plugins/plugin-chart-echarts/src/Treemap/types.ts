@@ -65,10 +65,3 @@ export const DEFAULT_FORM_DATA: EchartsTreemapFormData = {
   roam: true,
   nodeClick: 'zoomToNode',
 };
-
-export type TreemapNode = {
-  name?: string;
-  value?: number;
-  children?: TreemapNode[];
-  depth?: number;
-};
