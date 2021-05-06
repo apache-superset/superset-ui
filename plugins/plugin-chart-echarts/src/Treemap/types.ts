@@ -34,10 +34,6 @@ export type EchartsTreemapFormData = QueryFormData & {
   showUpperLabels: boolean;
   numberFormat: string;
   dateFormat: string;
-  treemapRatio: number;
-  showBreadcrumb: boolean;
-  roam: boolean | 'scale' | 'move';
-  nodeClick?: 'zoomToNode' | 'link';
 };
 
 export enum EchartsTreemapLabelType {
@@ -60,8 +56,4 @@ export const DEFAULT_FORM_DATA: EchartsTreemapFormData = {
   showLabels: true,
   showUpperLabels: true,
   dateFormat: 'smart_date',
-  treemapRatio: 0.5 * (1 + Math.sqrt(5)), // golden ratio
-  showBreadcrumb: true,
-  roam: true,
-  nodeClick: 'zoomToNode',
 };

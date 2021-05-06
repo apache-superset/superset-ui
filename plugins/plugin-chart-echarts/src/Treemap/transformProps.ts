@@ -76,10 +76,6 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
     dateFormat,
     showLabels,
     showUpperLabels,
-    treemapRatio,
-    showBreadcrumb,
-    roam,
-    nodeClick,
   }: EchartsTreemapFormData = {
     ...DEFAULT_TREEMAP_FORM_DATA,
     ...formData,
@@ -161,13 +157,13 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
     {
       type: 'treemap',
       animation: false,
-      nodeClick,
-      roam,
+      width: '100%',
+      height: '100%',
       breadcrumb: {
-        show: showBreadcrumb,
+        show: false,
         emptyItemWidth: 25,
       },
-      squareRatio: treemapRatio,
+      squareRatio: 0.5 * (1 + Math.sqrt(5)), // golden ratio
       emphasis: {
         label: {
           show: true,
@@ -184,10 +180,14 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
         show: showLabels,
         position: labelPosition,
         formatter,
+        color: '#000',
+        fontSize: 11,
       },
       upperLabel: {
         show: showUpperLabels,
         formatter,
+        textBorderColor: 'transparent',
+        fontSize: 11,
       },
       data: transformedData,
     },

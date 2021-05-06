@@ -28,11 +28,7 @@ export const Treemap = ({ width, height }) => {
         metrics: ['count', 'MIN(num_boys)'],
         showLabels: boolean('Show labels', true),
         showUpperLabels: boolean('Show upperLabels', true),
-        showBreadcrumb: boolean('Show Breadcrumb', true),
         labelType: select('Treemap label type', ['key', 'value', 'key_value'], 'key_value'),
-        treemapRatio: number('Ratio', 0.5 * (1 + Math.sqrt(5))),
-        roam: select('Roam', [false, 'scale', 'move', true], true),
-        nodeClick: select('Node Click', [false, 'zoomToNode'], 'zoomToNode'),
       }}
     />
   );

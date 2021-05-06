@@ -92,7 +92,7 @@ const config: ControlPanelConfig = {
               label: t('Show Upper Labels'),
               renderTrigger: true,
               default: showUpperLabels,
-              description: t('Whether to display the upperLabels.'),
+              description: t('Show labels when the node has children.'),
             },
           },
         ],
@@ -154,66 +154,6 @@ const config: ControlPanelConfig = {
               choices: D3_TIME_FORMAT_OPTIONS,
               default: dateFormat,
               description: D3_FORMAT_DOCS,
-            },
-          },
-        ],
-        [<h1 className="section-header">{t('Treemap')}</h1>],
-        [
-          {
-            name: 'show_breadcrumb',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Show Breadcrumb'),
-              renderTrigger: true,
-              default: showBreadcrumb,
-              description: t('Whether to display the breadcrumb.'),
-            },
-          },
-        ],
-        [
-          {
-            name: 'treemap_ratio',
-            config: {
-              type: 'TextControl',
-              label: t('Ratio'),
-              renderTrigger: true,
-              isFloat: true,
-              default: treemapRatio,
-              description: t('Target aspect ratio for treemap tiles.'),
-            },
-          },
-        ],
-        [
-          {
-            name: 'roam',
-            config: {
-              type: 'SelectControl',
-              label: t('Enable treemap roaming'),
-              renderTrigger: true,
-              default: roam,
-              choices: [
-                [false, t('Disabled')],
-                ['scale', t('Scale only')],
-                ['move', t('Move only')],
-                [true, t('Scale and Move')],
-              ],
-              description: t('Whether to enable changing treemap position and scaling.'),
-            },
-          },
-        ],
-        [
-          {
-            name: 'node_click',
-            config: {
-              type: 'SelectControl',
-              label: t('Node Click'),
-              renderTrigger: true,
-              default: nodeClick,
-              choices: [
-                [false, t('Do nothing')],
-                ['zoomToNode', t('Zoom to clicked node')],
-              ],
-              description: t('The behaviour when clicking a node'),
             },
           },
         ],
