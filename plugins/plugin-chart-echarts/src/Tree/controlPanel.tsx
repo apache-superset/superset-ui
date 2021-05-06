@@ -109,14 +109,8 @@ const controlPanel: ControlPanelConfig = {
               label: t('Tree layout'),
               default: DEFAULT_FORM_DATA.layout,
               options: [
-                {
-                  label: 'orthogonal',
-                  value: 'orthogonal',
-                },
-                {
-                  label: 'radial',
-                  value: 'radial',
-                },
+                ['orthogonal', t('Orthogonal')],
+                ['radial', t('Radial')],
               ],
               description: t('Layout type of tree'),
             },
@@ -132,22 +126,10 @@ const controlPanel: ControlPanelConfig = {
               label: t('Tree orientation'),
               default: DEFAULT_FORM_DATA.orient,
               options: [
-                {
-                  label: 'Left to Right',
-                  value: 'LR',
-                },
-                {
-                  label: 'Right to Left',
-                  value: 'RL',
-                },
-                {
-                  label: 'Top to Bottom',
-                  value: 'TB',
-                },
-                {
-                  label: 'Bottom to Top',
-                  value: 'BT',
-                },
+                ['LR', t('Left to Right')],
+                ['RL', t('Right to Left')],
+                ['TB', t('Top to Bottom')],
+                ['BT', t('Bottom to Top')],
               ],
               description: t('Orientation of tree'),
               visibility({ form_data: { layout } }) {
@@ -165,22 +147,10 @@ const controlPanel: ControlPanelConfig = {
               label: t('Node label position'),
               default: DEFAULT_FORM_DATA.nodeLabelPosition,
               options: [
-                {
-                  label: 'left',
-                  value: 'left',
-                },
-                {
-                  label: 'top',
-                  value: 'top',
-                },
-                {
-                  label: 'right',
-                  value: 'right',
-                },
-                {
-                  label: 'bottom',
-                  value: 'bottom',
-                },
+                ['left', t('left')],
+                ['top', t('top')],
+                ['right', t('right')],
+                ['bottom', t('bottom')],
               ],
               description: t('Position of intermidiate node label on tree'),
             },
@@ -195,22 +165,10 @@ const controlPanel: ControlPanelConfig = {
               label: t('Child label position'),
               default: DEFAULT_FORM_DATA.childLabelPosition,
               options: [
-                {
-                  label: 'left',
-                  value: 'left',
-                },
-                {
-                  label: 'top',
-                  value: 'top',
-                },
-                {
-                  label: 'right',
-                  value: 'right',
-                },
-                {
-                  label: 'bottom',
-                  value: 'bottom',
-                },
+                ['left', t('left')],
+                ['top', t('top')],
+                ['right', t('right')],
+                ['bottom', t('bottom')],
               ],
               description: t('Position of child node label on tree'),
             },
@@ -225,14 +183,8 @@ const controlPanel: ControlPanelConfig = {
               label: t('Emphasis'),
               default: DEFAULT_FORM_DATA.emphasis,
               options: [
-                {
-                  label: 'ancestor',
-                  value: 'ancestor',
-                },
-                {
-                  label: 'descendant',
-                  value: 'descendant',
-                },
+                ['ancestor', t('ancestor')],
+                ['descendant', t('descendant')],
               ],
               description: t('Which relatives to highlight on hover'),
               visibility({ form_data: { layout } }) {
@@ -251,35 +203,35 @@ const controlPanel: ControlPanelConfig = {
               default: DEFAULT_FORM_DATA.symbol,
               options: [
                 {
-                  label: 'empty circle',
+                  label: t('Empty circle'),
                   value: 'emptyCircle',
                 },
                 {
-                  label: 'circle',
+                  label: t('Circle'),
                   value: 'circle',
                 },
                 {
-                  label: 'rect',
+                  label: t('Rectangle'),
                   value: 'rect',
                 },
                 {
-                  label: 'triangle',
+                  label: t('Triangle'),
                   value: 'triangle',
                 },
                 {
-                  label: 'diamond',
+                  label: t('Diamond'),
                   value: 'diamond',
                 },
                 {
-                  label: 'pin',
+                  label: t('Pin'),
                   value: 'pin',
                 },
                 {
-                  label: 'arrow',
+                  label: t('Arrow'),
                   value: 'arrow',
                 },
                 {
-                  label: 'none',
+                  label: t('None'),
                   value: 'none',
                 },
               ],
