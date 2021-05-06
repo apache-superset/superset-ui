@@ -24,6 +24,7 @@ export { default as EchartsGraphChartPlugin } from './Graph';
 export { default as EchartsGaugeChartPlugin } from './Gauge';
 export { default as EchartsRadarChartPlugin } from './Radar';
 export { default as EchartsFunnelChartPlugin } from './Funnel';
+export { default as EchartsTreeChartPlugin } from './Tree';
 export { default as EchartsTreemapChartPlugin } from './Treemap';
 
 /**
