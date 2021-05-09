@@ -35,10 +35,6 @@ const {
   showLabels,
   showUpperLabels,
   dateFormat,
-  treemapRatio,
-  showBreadcrumb,
-  roam,
-  nodeClick,
 } = DEFAULT_FORM_DATA;
 
 const config: ControlPanelConfig = {
@@ -50,7 +46,6 @@ const config: ControlPanelConfig = {
       controlSetRows: [
         ['groupby'],
         ['metrics'],
-        ['adhoc_filters'],
         ['row_limit'],
         ['timeseries_limit_metric'],
         [
@@ -64,6 +59,7 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+        ['adhoc_filters'],
       ],
     },
     {

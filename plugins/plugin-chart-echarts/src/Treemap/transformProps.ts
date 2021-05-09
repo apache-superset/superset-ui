@@ -24,7 +24,7 @@ import {
   getTimeFormatter,
   NumberFormatter,
 } from '@superset-ui/core';
-import { groupBy, transform } from 'lodash';
+import { groupBy, isNumber, transform } from 'lodash';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { TreemapSeriesNodeItemOption } from 'echarts/types/src/chart/treemap/TreemapSeries';
 import { EChartsOption, TreemapSeriesOption } from 'echarts';
@@ -76,6 +76,8 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
     dateFormat,
     showLabels,
     showUpperLabels,
+    nodeClick,
+    roam,
   }: EchartsTreemapFormData = {
     ...DEFAULT_TREEMAP_FORM_DATA,
     ...formData,
@@ -90,21 +92,13 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
       labelType,
     });
 
-  const formatItemStyle = (metricLabel: string, depth: number, isDeepest?: boolean) =>
-    isDeepest
-      ? {
-          color: colorFn(`${metricLabel}_${depth - 1}`),
-          gapWidth: 2,
-        }
-      : {
-          borderColor: colorFn(`${metricLabel}_${depth - 1}`),
-          color: colorFn(`${metricLabel}_${depth}`),
-          borderWidth: 2,
-          gapWidth: 2,
-        };
-
-  const transformer = (data: DataRecord[], _groupby: string[], metric: string, depth: number) => {
-    const [currGroupby, ...restGroupby] = _groupby;
+  const transformer = (
+    data: DataRecord[],
+    groupbyData: string[],
+    metric: string,
+    depth: number,
+  ): TreemapSeriesNodeItemOption[] => {
+    const [currGroupby, ...restGroupby] = groupbyData;
     const currGrouping = groupBy(data, currGroupby);
     if (!restGroupby.length) {
       return transform(
@@ -115,43 +109,73 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
               numberFormatter,
               timeFormatter: getTimeFormatter(dateFormat),
             });
-            if (typeof datum[metric] !== 'number') {
-              throw new Error(`${metric} is not number type`);
-            }
             result.push({
               name,
-              itemStyle: formatItemStyle(metric, depth, true),
-              value: (datum[metric] as number) ?? 0,
+              value: isNumber(datum[metric]) ? (datum[metric] as number) : 0,
             });
           });
         },
         [] as TreemapSeriesNodeItemOption[],
       );
     }
-    return transform(
+    const sortedData = transform(
       currGrouping,
       (result, value, key) => {
         const name = formatSeriesName(key, {
           numberFormatter,
           timeFormatter: getTimeFormatter(dateFormat),
         });
+        const children = transformer(value, restGroupby, metric, depth + 1);
         result.push({
           name,
-          itemStyle: formatItemStyle(metric, depth),
-          children: transformer(value, restGroupby, metric, depth + 1),
+          children,
+          value: children.reduce((prev, cur) => prev + (cur.value as number), 0),
         });
+        result.sort((a, b) => (b.value as number) - (a.value as number));
       },
       [] as TreemapSeriesNodeItemOption[],
     );
+    // sort according to the area and then take the color value in order
+    return sortedData.map(child => ({
+      ...child,
+      colorSaturation: [0.3, 0.5],
+      itemStyle: {
+        borderColor: colorFn(`${child.name}_${depth - 1}`),
+        color: colorFn(`${child.name}_${depth}`),
+        borderWidth: 2,
+        gapWidth: 2,
+      },
+    }));
   };
 
   const metricsLabel = metrics.map(metric => getMetricLabel(metric));
 
+  const initialDepth = 1;
   const transformedData: TreemapSeriesNodeItemOption[] = metricsLabel.map(metricLabel => ({
     name: metricLabel,
-    itemStyle: formatItemStyle(metricLabel, 0),
-    children: transformer(data, groupby, metricLabel, 1),
+    colorSaturation: [0.3, 0.5],
+    itemStyle: {
+      borderColor: colorFn(`${metricLabel}_${initialDepth}`),
+      borderWidth: 2,
+      gapWidth: 2,
+    },
+    children: transformer(data, groupby, metricLabel, initialDepth),
   }));
+
+  // set a default color when metric values are 0 over all.
+  const levels = [
+    {
+      upperLabel: {
+        show: false,
+      },
+      label: {
+        show: false,
+      },
+      itemStyle: {
+        color: CategoricalColorNamespace.getColor(),
+      },
+    },
+  ];
 
   const series: TreemapSeriesOption[] = [
     {
@@ -159,6 +183,8 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
       animation: false,
       width: '100%',
       height: '100%',
+      nodeClick,
+      roam,
       breadcrumb: {
         show: false,
         emptyItemWidth: 25,
@@ -169,13 +195,7 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
           show: true,
         },
       },
-      levels: [
-        {
-          upperLabel: {
-            show: false,
-          },
-        },
-      ],
+      levels,
       label: {
         show: showLabels,
         position: labelPosition,

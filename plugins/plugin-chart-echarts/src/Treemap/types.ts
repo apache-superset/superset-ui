@@ -34,6 +34,8 @@ export type EchartsTreemapFormData = QueryFormData & {
   showUpperLabels: boolean;
   numberFormat: string;
   dateFormat: string;
+  nodeClick: undefined | 'zoomToNode' | 'link';
+  roam: boolean | 'scale' | 'move';
 };
 
 export enum EchartsTreemapLabelType {
@@ -47,8 +49,7 @@ export interface EchartsTreemapChartProps extends ChartProps {
   queriesData: ChartDataResponseResult[];
 }
 
-// @ts-ignore
-export const DEFAULT_FORM_DATA: EchartsTreemapFormData = {
+export const DEFAULT_FORM_DATA: Partial<EchartsTreemapFormData> = {
   groupby: [],
   labelType: EchartsTreemapLabelType.KeyValue,
   labelPosition: LabelPositionEnum.InsideTopLeft,
@@ -56,4 +57,6 @@ export const DEFAULT_FORM_DATA: EchartsTreemapFormData = {
   showLabels: true,
   showUpperLabels: true,
   dateFormat: 'smart_date',
+  nodeClick: 'zoomToNode',
+  roam: true,
 };
