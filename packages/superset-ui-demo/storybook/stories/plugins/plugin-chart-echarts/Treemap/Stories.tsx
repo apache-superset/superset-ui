@@ -1,6 +1,6 @@
 import React from 'react';
 import { SuperChart, getChartTransformPropsRegistry } from '@superset-ui/core';
-import { number, boolean, withKnobs, select } from '@storybook/addon-knobs';
+import { boolean, withKnobs, select } from '@storybook/addon-knobs';
 import { EchartsTreemapChartPlugin } from '@superset-ui/plugin-chart-echarts';
 import transformProps from '@superset-ui/plugin-chart-echarts/lib/Treemap/transformProps';
 import data from './data';

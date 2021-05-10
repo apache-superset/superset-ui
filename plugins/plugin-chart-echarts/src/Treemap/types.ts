@@ -55,7 +55,7 @@ export const DEFAULT_FORM_DATA: Partial<EchartsTreemapFormData> = {
   labelPosition: LabelPositionEnum.InsideTopLeft,
   numberFormat: 'SMART_NUMBER',
   showLabels: true,
-  showUpperLabels: true,
+  showUpperLabels: false,
   dateFormat: 'smart_date',
   nodeClick: 'zoomToNode',
   roam: true,

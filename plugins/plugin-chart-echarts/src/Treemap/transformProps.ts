@@ -138,10 +138,10 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
     // sort according to the area and then take the color value in order
     return sortedData.map(child => ({
       ...child,
-      colorSaturation: [0.3, 0.5],
+      colorSaturation: [0.4, 0.7],
       itemStyle: {
-        borderColor: colorFn(`${child.name}_${depth - 1}`),
-        color: colorFn(`${child.name}_${depth}`),
+        borderColor: showUpperLabels ? colorFn(`${child.name}_${depth - 1}`) : '#fff',
+        color: colorFn(`${child.name}_${depth}_${showUpperLabels}`),
         borderWidth: 2,
         gapWidth: 2,
       },
@@ -153,9 +153,9 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
   const initialDepth = 1;
   const transformedData: TreemapSeriesNodeItemOption[] = metricsLabel.map(metricLabel => ({
     name: metricLabel,
-    colorSaturation: [0.3, 0.5],
+    colorSaturation: [0.4, 0.7],
     itemStyle: {
-      borderColor: colorFn(`${metricLabel}_${initialDepth}`),
+      borderColor: showUpperLabels ? colorFn(`${metricLabel}_${initialDepth}`) : '#fff',
       borderWidth: 2,
       gapWidth: 2,
     },
