@@ -28,8 +28,8 @@ export type EchartsGaugeFormData = {
   groupby: string[];
   metric?: object;
   rowLimit: number;
-  minVal: number;
-  maxVal: number;
+  minVal: number | null;
+  maxVal: number | null;
   fontSize: number;
   numberFormat: string;
   animation: boolean;

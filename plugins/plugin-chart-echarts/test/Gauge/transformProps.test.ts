@@ -133,7 +133,7 @@ describe('Echarts Gauge transformProps', () => {
               data: [
                 {
                   value: 15,
-                  name: 'year: 1988',
+                  name: 'year = 1988',
                   itemStyle: {
                     color: '#1f77b4',
                   },
@@ -148,7 +148,7 @@ describe('Echarts Gauge transformProps', () => {
                 },
                 {
                   value: 219,
-                  name: 'year: 1995',
+                  name: 'year = 1995',
                   itemStyle: {
                     color: '#ff7f0e',
                   },
@@ -207,7 +207,7 @@ describe('Echarts Gauge transformProps', () => {
               data: [
                 {
                   value: 140,
-                  name: 'year: 2011, platform: PC',
+                  name: 'year = 2011, platform = PC',
                   itemStyle: {
                     color: '#1f77b4',
                   },
@@ -222,7 +222,7 @@ describe('Echarts Gauge transformProps', () => {
                 },
                 {
                   value: 76,
-                  name: 'year: 2008, platform: PC',
+                  name: 'year = 2008, platform = PC',
                   itemStyle: {
                     color: '#ff7f0e',
                   },
@@ -296,7 +296,7 @@ describe('Echarts Gauge transformProps', () => {
               data: [
                 {
                   value: 140,
-                  name: 'year: 2011, platform: PC',
+                  name: 'year = 2011, platform = PC',
                   itemStyle: {
                     color: '#1f77b4',
                   },
@@ -311,7 +311,7 @@ describe('Echarts Gauge transformProps', () => {
                 },
                 {
                   value: 76,
-                  name: 'year: 2008, platform: PC',
+                  name: 'year = 2008, platform = PC',
                   itemStyle: {
                     color: '#ff7f0e',
                   },
