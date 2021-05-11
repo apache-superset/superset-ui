@@ -25,7 +25,6 @@ import {
   NumberFormatter,
 } from '@superset-ui/core';
 import { groupBy, isNumber, transform } from 'lodash';
-import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { TreemapSeriesNodeItemOption } from 'echarts/types/src/chart/treemap/TreemapSeries';
 import { EChartsOption, TreemapSeriesOption } from 'echarts';
 import {
@@ -33,6 +32,7 @@ import {
   EchartsTreemapChartProps,
   EchartsTreemapFormData,
   EchartsTreemapLabelType,
+  TreemapSeriesCallbackDataParams,
 } from './types';
 import { EchartsProps } from '../types';
 import { formatSeriesName } from '../utils/series';
@@ -43,7 +43,7 @@ export function formatLabel({
   labelType,
   numberFormatter,
 }: {
-  params: CallbackDataParams;
+  params: TreemapSeriesCallbackDataParams;
   labelType: EchartsTreemapLabelType;
   numberFormatter: NumberFormatter;
 }): string {
@@ -60,6 +60,25 @@ export function formatLabel({
     default:
       return name;
   }
+}
+
+export function formatTooltip({
+  params,
+  numberFormatter,
+}: {
+  params: TreemapSeriesCallbackDataParams;
+  numberFormatter: NumberFormatter;
+}): string {
+  const { value, treePathInfo } = params;
+  const formattedValue = numberFormatter(value as number);
+
+  const treePath = (treePathInfo ?? []).map(pathInfo => pathInfo?.name || '').filter(Boolean);
+  // the 1st tree path is metric label
+  const metricLabel = treePath.shift() || '';
+
+  // groupby1/groupby2/...
+  // metric: value
+  return [`<div>${treePath.join('/')}</div>`, `${metricLabel}: ${formattedValue}`].join('');
 }
 
 export default function transformProps(chartProps: EchartsTreemapChartProps): EchartsProps {
@@ -85,7 +104,7 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
 
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const numberFormatter = getNumberFormatter(numberFormat);
-  const formatter = (params: CallbackDataParams) =>
+  const formatter = (params: TreemapSeriesCallbackDataParams) =>
     formatLabel({
       params,
       numberFormatter,
@@ -218,10 +237,9 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
       ...defaultTooltip,
       trigger: 'item',
       formatter: (params: any) =>
-        formatLabel({
+        formatTooltip({
           params,
           numberFormatter,
-          labelType: EchartsTreemapLabelType.KeyValue,
         }),
     },
     series,
