@@ -72,13 +72,15 @@ export function formatTooltip({
   const { value, treePathInfo } = params;
   const formattedValue = numberFormatter(value as number);
 
-  const treePath = (treePathInfo ?? []).map(pathInfo => pathInfo?.name || '').filter(Boolean);
+  const treePath = (treePathInfo ?? [])
+    .map(pathInfo => pathInfo?.name || '')
+    .filter(path => path !== '');
   // the 1st tree path is metric label
   const metricLabel = treePath.shift() || '';
 
   // groupby1/groupby2/...
   // metric: value
-  return [`<div>${treePath.join('/')}</div>`, `${metricLabel}: ${formattedValue}`].join('');
+  return [`<div>${treePath.join(' ▸ ')}</div>`, `${metricLabel}: ${formattedValue}`].join('');
 }
 
 export default function transformProps(chartProps: EchartsTreemapChartProps): EchartsProps {
