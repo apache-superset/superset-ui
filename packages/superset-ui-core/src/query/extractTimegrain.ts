@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,25 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+/* eslint-disable no-underscore-dangle */
 
-import { GenericDataType } from './QueryResponse';
+import { QueryFormData } from './types';
+import { TimeGranularity } from '../time-format';
 
-/**
- * Column information defined in datasource.
- */
-export interface Column {
-  id: number;
-  type?: string;
-  type_generic?: GenericDataType;
-  column_name: string;
-  groupby?: boolean;
-  is_dttm?: boolean;
-  filterable?: boolean;
-  verbose_name?: string | null;
-  description?: string | null;
-  expression?: string | null;
-  database_expression?: string | null;
-  python_date_format?: string | null;
+export default function extractTimegrain(formData: QueryFormData): TimeGranularity | undefined {
+  const { time_grain_sqla, extra_filters, extra_form_data } = formData;
+  if (extra_form_data?.time_grain_sqla) {
+    return extra_form_data.time_grain_sqla;
+  }
+  const extra_grain = (extra_filters || []).filter(filter => filter.col === '__time_grain');
+  if (extra_grain.length) {
+    return extra_grain[0].val as TimeGranularity;
+  }
+  return time_grain_sqla;
 }
-
-export default {};
