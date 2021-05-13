@@ -1,3 +1,4 @@
+/** @jsx jsx */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,8 +17,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { ReactNode } from 'react';
-import { t } from '@superset-ui/core';
+import { ReactNode } from 'react';
+import { t, css, jsx, SupersetTheme } from '@superset-ui/core';
 import { InfoTooltipWithTrigger } from './InfoTooltipWithTrigger';
 import { Tooltip } from './Tooltip';
 
@@ -57,7 +58,16 @@ export default function ControlHeader({
   const renderOptionalIcons = () => {
     if (hovered) {
       return (
-        <span>
+        <span
+          css={(theme: any) => css`
+            position: absolute;
+            top: 50%;
+            right: 0;
+            padding-left: ${theme.gridUnit}px;
+            transform: translate(100%, -50%);
+            white-space: nowrap;
+          `}
+        >
           {description && (
             <span>
               <InfoTooltipWithTrigger
@@ -91,7 +101,15 @@ export default function ControlHeader({
   return (
     <div className="ControlHeader" data-test={`${name}-header`}>
       <div className="pull-left">
-        <label className="control-label" htmlFor={name}>
+        <label
+          className="control-label"
+          htmlFor={name}
+          css={{
+            marginBottom: 0,
+            position: 'relative',
+            whiteSpace: 'nowrap',
+          }}
+        >
           {leftNode && <span>{leftNode}</span>}
           <span
             role="button"
