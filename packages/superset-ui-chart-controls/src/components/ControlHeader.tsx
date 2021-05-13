@@ -18,7 +18,7 @@
  * under the License.
  */
 import { ReactNode } from 'react';
-import { t, css, jsx, SupersetTheme } from '@superset-ui/core';
+import { t, css, jsx } from '@superset-ui/core';
 import { InfoTooltipWithTrigger } from './InfoTooltipWithTrigger';
 import { Tooltip } from './Tooltip';
 
