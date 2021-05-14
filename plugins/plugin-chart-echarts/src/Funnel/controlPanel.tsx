@@ -138,7 +138,7 @@ const config: ControlPanelConfig = {
       ],
     },
   ],
-  onInit: function (state: ControlStateMapping) {
+  onInit(state: ControlStateMapping) {
     return {
       ...state,
       row_limit: {
