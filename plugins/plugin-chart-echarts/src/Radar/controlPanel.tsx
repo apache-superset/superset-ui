@@ -70,6 +70,7 @@ const config: ControlPanelConfig = {
       controlSetRows: [
         ['groupby'],
         ['metrics'],
+        ['timeseries_limit_metric'],
         ['adhoc_filters'],
         [
           {
@@ -77,17 +78,6 @@ const config: ControlPanelConfig = {
             config: {
               ...sharedControls.row_limit,
               default: 10,
-            },
-          },
-        ],
-        [
-          {
-            name: 'sort_by_metric',
-            config: {
-              default: true,
-              type: 'CheckboxControl',
-              label: t('Sort by metric'),
-              description: t('Whether to sort results by the selected metric in descending order.'),
             },
           },
         ],
