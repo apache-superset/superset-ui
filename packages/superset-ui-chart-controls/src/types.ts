@@ -18,7 +18,7 @@
  * under the License.
  */
 import React, { ReactNode, ReactText, ReactElement } from 'react';
-import { QueryFormData, DatasourceType, Metric, JsonValue, Column } from '@superset-ui/core';
+import {QueryFormData, DatasourceType, Metric, JsonValue, Column, JsonObject} from '@superset-ui/core';
 import sharedControls from './shared-controls';
 import sharedControlComponents from './shared-controls/components';
 
@@ -62,6 +62,7 @@ export interface ControlPanelState {
   form_data: QueryFormData;
   datasource: DatasourceMeta | null;
   controls: ControlStateMapping;
+  dataMask: JsonObject;
 }
 
 /**
