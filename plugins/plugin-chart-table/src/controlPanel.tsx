@@ -128,12 +128,19 @@ const percent_metrics: typeof sharedControls.metrics = {
   ),
   multi: true,
   visibility: isAggMode,
-  mapStateToProps: ({ datasource, controls }) => ({
+  mapStateToProps: ({ datasource, controls }, controlState) => ({
     columns: datasource?.columns || [],
     savedMetrics: datasource?.metrics || [],
     datasourceType: datasource?.type,
     queryMode: getQueryMode(controls),
+    externalValidationErrors:
+      ensureIsArray(controls.groupby?.value).length === 0 &&
+      ensureIsArray(controls.metrics?.value).length === 0 &&
+      ensureIsArray(controlState.value).length === 0
+        ? ['Group By, Metrics or Percentage Metrics must have a value']
+        : [],
   }),
+  rerender: ['groupby', 'metrics'],
   default: [],
   validators: [],
 };
@@ -169,10 +176,11 @@ const config: ControlPanelConfig = {
                   ensureIsArray(state.controls.metrics?.value).length === 0 &&
                   ensureIsArray(state.controls.percent_metrics?.value).length === 0 &&
                   ensureIsArray(controlState.value).length === 0
-                    ? ['Group by, metrics or percentage metrics must have a value']
+                    ? ['Group By, Metrics or Percentage Metrics must have a value']
                     : [];
                 return newState;
               },
+              rerender: ['metrics', 'percent_metrics'],
             },
           },
         ],
@@ -182,7 +190,23 @@ const config: ControlPanelConfig = {
             override: {
               validators: [],
               visibility: isAggMode,
-              rerender: ['groupby'],
+              mapStateToProps: (
+                { controls, datasource, form_data }: ControlPanelState,
+                controlState: ExtraControlProps,
+              ) => ({
+                columns: datasource?.columns.filter(c => c.filterable) || [],
+                savedMetrics: datasource?.metrics || [],
+                // current active adhoc metrics
+                selectedMetrics: form_data.metrics || (form_data.metric ? [form_data.metric] : []),
+                datasource,
+                externalValidationErrors:
+                  ensureIsArray(controls.groupby?.value).length === 0 &&
+                  ensureIsArray(controls.percent_metrics?.value).length === 0 &&
+                  ensureIsArray(controlState.value).length === 0
+                    ? ['Group By, Metrics or Percentage Metrics must have a value']
+                    : [],
+              }),
+              rerender: ['groupby', 'percent_metrics'],
             },
           },
           {
@@ -199,7 +223,6 @@ const config: ControlPanelConfig = {
               ...(isFeatureEnabled(FeatureFlag.ENABLE_EXPLORE_DRAG_AND_DROP)
                 ? dnd_percent_metrics
                 : percent_metrics),
-              rerender: ['groupby'],
             },
           },
         ],
