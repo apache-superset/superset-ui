@@ -36,10 +36,11 @@ import {
   ControlPanelsContainerProps,
   ControlStateMapping,
   D3_TIME_FORMAT_OPTIONS,
-  ExtraControlProps,
   QueryModeLabel,
   sections,
   sharedControls,
+  ControlPanelState,
+  ExtraControlProps,
 } from '@superset-ui/chart-controls';
 
 import i18n from './i18n';
@@ -160,6 +161,18 @@ const config: ControlPanelConfig = {
             name: 'groupby',
             override: {
               visibility: isAggMode,
+              mapStateToProps: (state: ControlPanelState, controlState: ExtraControlProps) => {
+                const originalMapStateToProps = sharedControls?.groupby?.mapStateToProps;
+                // @ts-ignore
+                const newState = originalMapStateToProps?.(state, controlState) ?? {};
+                newState.externalValidationErrors =
+                  ensureIsArray(state.controls.metrics?.value).length === 0 &&
+                  ensureIsArray(state.controls.percent_metrics?.value).length === 0 &&
+                  ensureIsArray(controlState.value).length === 0
+                    ? ['Group by, metrics or percentage metrics must have a value']
+                    : [];
+                return newState;
+              },
             },
           },
         ],
@@ -169,6 +182,7 @@ const config: ControlPanelConfig = {
             override: {
               validators: [],
               visibility: isAggMode,
+              rerender: ['groupby'],
             },
           },
           {
@@ -181,9 +195,12 @@ const config: ControlPanelConfig = {
         [
           {
             name: 'percent_metrics',
-            config: isFeatureEnabled(FeatureFlag.ENABLE_EXPLORE_DRAG_AND_DROP)
-              ? dnd_percent_metrics
-              : percent_metrics,
+            config: {
+              ...(isFeatureEnabled(FeatureFlag.ENABLE_EXPLORE_DRAG_AND_DROP)
+                ? dnd_percent_metrics
+                : percent_metrics),
+              rerender: ['groupby'],
+            },
           },
         ],
         [
