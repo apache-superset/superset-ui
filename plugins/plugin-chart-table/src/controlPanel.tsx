@@ -41,6 +41,7 @@ import {
   sharedControls,
   ControlPanelState,
   ExtraControlProps,
+  ControlState,
 } from '@superset-ui/chart-controls';
 
 import i18n from './i18n';
@@ -69,6 +70,13 @@ function isQueryMode(mode: QueryMode) {
 const isAggMode = isQueryMode(QueryMode.aggregate);
 const isRawMode = isQueryMode(QueryMode.raw);
 
+const validateAggControlValues = (controls: ControlStateMapping, values: any[]) => {
+  const areControlsEmpty = values.every(val => ensureIsArray(val).length === 0);
+  return areControlsEmpty && isAggMode({ controls })
+    ? [t('Group By, Metrics or Percentage Metrics must have a value')]
+    : [];
+};
+
 const queryMode: ControlConfig<'RadioButtonControl'> = {
   type: 'RadioButtonControl',
   label: t('Query mode'),
@@ -93,7 +101,7 @@ const all_columns: typeof sharedControls.groupby = {
   optionRenderer: c => <ColumnOption showType column={c} />,
   valueRenderer: c => <ColumnOption column={c} />,
   valueKey: 'column_name',
-  mapStateToProps: ({ datasource, controls }, controlState: ExtraControlProps) => ({
+  mapStateToProps: ({ datasource, controls }, controlState) => ({
     options: datasource?.columns || [],
     queryMode: getQueryMode(controls),
     externalValidationErrors:
@@ -138,13 +146,11 @@ const percent_metrics: typeof sharedControls.metrics = {
     savedMetrics: datasource?.metrics || [],
     datasourceType: datasource?.type,
     queryMode: getQueryMode(controls),
-    externalValidationErrors:
-      isAggMode({ controls }) &&
-      ensureIsArray(controls.groupby?.value).length === 0 &&
-      ensureIsArray(controls.metrics?.value).length === 0 &&
-      ensureIsArray(controlState.value).length === 0
-        ? [t('Group By, Metrics or Percentage Metrics must have a value')]
-        : [],
+    externalValidationErrors: validateAggControlValues(controls, [
+      controls.groupby?.value,
+      controls.metrics?.value,
+      controlState.value,
+    ]),
   }),
   rerender: ['groupby', 'metrics'],
   default: [],
@@ -174,18 +180,17 @@ const config: ControlPanelConfig = {
             name: 'groupby',
             override: {
               visibility: isAggMode,
-              mapStateToProps: (state: ControlPanelState, controlState: ExtraControlProps) => {
+              mapStateToProps: (state: ControlPanelState, controlState: ControlState) => {
                 const { controls } = state;
                 const originalMapStateToProps = sharedControls?.groupby?.mapStateToProps;
                 // @ts-ignore
                 const newState = originalMapStateToProps?.(state, controlState) ?? {};
-                newState.externalValidationErrors =
-                  isAggMode({ controls }) &&
-                  ensureIsArray(controls.metrics?.value).length === 0 &&
-                  ensureIsArray(controls.percent_metrics?.value).length === 0 &&
-                  ensureIsArray(controlState.value).length === 0
-                    ? [t('Group By, Metrics or Percentage Metrics must have a value')]
-                    : [];
+                newState.externalValidationErrors = validateAggControlValues(controls, [
+                  controls.metrics?.value,
+                  controls.percent_metrics?.value,
+                  controlState.value,
+                ]);
+
                 return newState;
               },
               rerender: ['metrics', 'percent_metrics'],
@@ -200,20 +205,18 @@ const config: ControlPanelConfig = {
               visibility: isAggMode,
               mapStateToProps: (
                 { controls, datasource, form_data }: ControlPanelState,
-                controlState: ExtraControlProps,
+                controlState: ControlState,
               ) => ({
                 columns: datasource?.columns.filter(c => c.filterable) || [],
                 savedMetrics: datasource?.metrics || [],
                 // current active adhoc metrics
                 selectedMetrics: form_data.metrics || (form_data.metric ? [form_data.metric] : []),
                 datasource,
-                externalValidationErrors:
-                  isAggMode({ controls }) &&
-                  ensureIsArray(controls.groupby?.value).length === 0 &&
-                  ensureIsArray(controls.percent_metrics?.value).length === 0 &&
-                  ensureIsArray(controlState.value).length === 0
-                    ? [t('Group By, Metrics or Percentage Metrics must have a value')]
-                    : [],
+                externalValidationErrors: validateAggControlValues(controls, [
+                  controls.groupby?.value,
+                  controls.percent_metrics?.value,
+                  controlState.value,
+                ]),
               }),
               rerender: ['groupby', 'percent_metrics'],
             },
