@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { t } from '@superset-ui/core';
+import { ChartDataResponseResult, t } from '@superset-ui/core';
 import {
   ControlPanelConfig,
   D3_FORMAT_DOCS,
@@ -26,16 +26,9 @@ import {
   sections,
 } from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from './types';
-import { LABEL_POSITION } from '../constants';
+import { getColtypesMapping } from '../utils/series';
 
-const {
-  labelType,
-  labelPosition,
-  numberFormat,
-  showLabels,
-  showUpperLabels,
-  dateFormat,
-} = DEFAULT_FORM_DATA;
+const { labelType, numberFormat, showLabels, showUpperLabels, dateFormat } = DEFAULT_FORM_DATA;
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
@@ -111,20 +104,6 @@ const config: ControlPanelConfig = {
         ],
         [
           {
-            name: 'label_position',
-            config: {
-              type: 'SelectControl',
-              freeForm: false,
-              label: t('Label position'),
-              renderTrigger: true,
-              choices: LABEL_POSITION,
-              default: labelPosition,
-              description: D3_FORMAT_DOCS,
-            },
-          },
-        ],
-        [
-          {
             name: 'number_format',
             config: {
               type: 'SelectControl',
@@ -150,6 +129,15 @@ const config: ControlPanelConfig = {
               choices: D3_TIME_FORMAT_OPTIONS,
               default: dateFormat,
               description: D3_FORMAT_DOCS,
+              visibility: ({ chart }) => {
+                // if no time column, hide date format
+                const queryResponse: ChartDataResponseResult | undefined =
+                  chart?.queriesResponse?.[0];
+                if (queryResponse) {
+                  const coltypeMapping = getColtypesMapping(queryResponse);
+                }
+                return true;
+              },
             },
           },
         ],

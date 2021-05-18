@@ -35,7 +35,7 @@ import {
   TreemapSeriesCallbackDataParams,
 } from './types';
 import { EchartsProps } from '../types';
-import { formatSeriesName } from '../utils/series';
+import { formatSeriesName, getColtypesMapping } from '../utils/series';
 import { defaultTooltip } from '../defaults';
 
 export function formatLabel({
@@ -86,6 +86,7 @@ export function formatTooltip({
 export default function transformProps(chartProps: EchartsTreemapChartProps): EchartsProps {
   const { formData, height, queriesData, width } = chartProps;
   const { data = [] } = queriesData[0];
+  const coltypeMapping = getColtypesMapping(queriesData[0]);
 
   const {
     colorScheme,
@@ -128,6 +129,7 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
             const name = formatSeriesName(key, {
               numberFormatter,
               timeFormatter: getTimeFormatter(dateFormat),
+              ...(coltypeMapping[currGroupby] && { coltype: coltypeMapping[currGroupby] }),
             });
             result.push({
               name,
@@ -160,8 +162,8 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
       ...child,
       colorSaturation: [0.4, 0.7],
       itemStyle: {
-        borderColor: showUpperLabels ? colorFn(`${child.name}_${depth - 1}`) : '#fff',
-        color: colorFn(`${child.name}_${depth}_${showUpperLabels}`),
+        borderColor: '#fff',
+        color: colorFn(`${child.name}_${depth}`),
         borderWidth: 2,
         gapWidth: 2,
       },
@@ -175,9 +177,12 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
     name: metricLabel,
     colorSaturation: [0.4, 0.7],
     itemStyle: {
-      borderColor: showUpperLabels ? colorFn(`${metricLabel}_${initialDepth}`) : '#fff',
+      borderColor: '#fff',
       borderWidth: 2,
       gapWidth: 2,
+    },
+    upperLabel: {
+      show: false,
     },
     children: transformer(data, groupby, metricLabel, initialDepth),
   }));
