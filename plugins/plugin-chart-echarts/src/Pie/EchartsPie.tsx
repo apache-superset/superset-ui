@@ -73,12 +73,17 @@ PieChartTransformedProps) {
 
       if (formData.drillDown) {
         const drilldown = DrillDown.drillDown(ownState?.drilldown, values[0])
-        dataMask['extraFormData'] = {
-          filters: drilldown.filters,
+        dataMask = {
+          extraFormData: {
+            filters: drilldown.filters,
+          },
+          filterState: {
+            value: groupbyValues.length && drilldown.filters.length > 0 ? groupbyValues : null,
+          },
+          ownState: {
+            drilldown: drilldown,
+          }
         }
-        dataMask['ownState'] = {
-          drilldown: drilldown,
-        };
       }
 
       setDataMask(dataMask);

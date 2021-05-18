@@ -26,7 +26,7 @@ export default function buildQuery(formData: QueryFormData, { ownState }) {
       ...(sort_by_metric && { orderby: [[metric, false]] }),
       ...(drillDown && {
         groupby: [DrillDown.getColumn(ownState.drilldown, groupby)],
-        filters: DrillDown.getFilters(ownState.drilldown, groupby),
+        filters: [...baseQueryObject.filters || [], ...DrillDown.getFilters(ownState.drilldown, groupby)],
       }),
     },
   ]);
