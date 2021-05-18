@@ -93,7 +93,6 @@ export interface PieChartTransformedProps {
   width: number;
   echartOptions: EChartsOption;
   emitFilter: boolean;
-  drillDown: boolean;
   setDataMask: SetDataMaskHook;
   labelMap: Record<string, DataRecordValue[]>;
   groupby: string[];

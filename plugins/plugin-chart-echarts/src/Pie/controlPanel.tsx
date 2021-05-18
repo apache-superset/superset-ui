@@ -58,7 +58,7 @@ const config: ControlPanelConfig = {
             default: drillDown,
             description: t('Columns as hierarchy.'),
             mapStateToProps: ({ form_data}) => ({
-              sliceId: form_data?.slice_id || 0,
+              chartId: form_data?.slice_id || 0,
               columns: form_data.groupby,
             }),
           }

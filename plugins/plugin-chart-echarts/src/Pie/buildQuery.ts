@@ -18,14 +18,16 @@
  */
 import { buildQueryContext, QueryFormData, DrillDown } from '@superset-ui/core';
 
-// @ts-ignore
-export default function buildQuery(formData: QueryFormData, foo) {
-  const { metric, sort_by_metric, drillDown } = formData;
+export default function buildQuery(formData: QueryFormData, { ownState }) {
+  const { metric, sort_by_metric, drillDown, groupby } = formData;
   return buildQueryContext(formData, baseQueryObject => [
     {
       ...baseQueryObject,
       ...(sort_by_metric && { orderby: [[metric, false]] }),
-      ...(drillDown && { groupby: [DrillDown.getColumn(foo.ownState.drilldown)] }),
+      ...(drillDown && {
+        groupby: [DrillDown.getColumn(ownState.drilldown, groupby)],
+        filters: DrillDown.getFilters(ownState.drilldown, groupby),
+      }),
     },
   ]);
 }

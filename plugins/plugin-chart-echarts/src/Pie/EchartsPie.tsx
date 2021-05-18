@@ -31,7 +31,6 @@ export default function EchartsPie({
   groupby,
   selectedValues,
   formData,
-  drillDown,
   ownState,
 }:
 
@@ -73,8 +72,12 @@ PieChartTransformedProps) {
       }
 
       if (formData.drillDown) {
+        const drilldown = DrillDown.drillDown(ownState?.drilldown, values[0])
+        dataMask['extraFormData'] = {
+          filters: drilldown.filters,
+        }
         dataMask['ownState'] = {
-          drilldown: DrillDown.drillDown(ownState?.drilldown, values[0])
+          drilldown: drilldown,
         };
       }
 

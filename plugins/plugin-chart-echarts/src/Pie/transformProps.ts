@@ -234,7 +234,6 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
     echartOptions,
     setDataMask,
     emitFilter,
-    drillDown,
     ownState,
     labelMap,
     groupby,
