@@ -1,3 +1,6 @@
+/** Type checking is disabled for this file due to reselect only supporting
+ * TS declarations for selectors with up to 12 arguments. */
+// @ts-nocheck
 import { createSelector } from 'reselect';
 import {
   AppSection,
@@ -142,10 +145,6 @@ export default class ChartProps<FormData extends RawFormData = RawFormData> {
 
 // eslint-disable-next-line func-name-matching
 ChartProps.createSelector = function create(): ChartPropsSelector {
-  /** createSelector supports max 12 selectors - as a workaround
-   *  behaviors and appSection have been grouped together, as they remain
-   *  static throughout the licecycle of the chart.
-   */
   return createSelector(
     (input: ChartPropsConfig) => input.annotationData,
     input => input.datasource,
@@ -157,7 +156,8 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
     input => input.width,
     input => input.ownState,
     input => input.filterState,
-    input => [input.behaviors, input.appSection],
+    input => input.behaviors,
+    input => input.appSection,
     input => input.isRefreshing,
     (
       annotationData,
@@ -170,14 +170,11 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
       width,
       ownState,
       filterState,
-      behaviorsAndAppSection,
+      behaviors,
+      appSection,
       isRefreshing,
-    ) => {
-      const [behaviors, appSection] = behaviorsAndAppSection as [
-        Behavior[] | undefined,
-        AppSection | undefined,
-      ];
-      return new ChartProps({
+    ) =>
+      new ChartProps({
         annotationData,
         datasource,
         formData,
@@ -191,7 +188,6 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
         behaviors,
         appSection,
         isRefreshing,
-      });
-    },
+      }),
   );
 };
