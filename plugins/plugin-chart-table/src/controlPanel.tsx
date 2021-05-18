@@ -78,6 +78,7 @@ const queryMode: ControlConfig<'RadioButtonControl'> = {
     [QueryMode.raw, QueryModeLabel[QueryMode.raw]],
   ],
   mapStateToProps: ({ controls }) => ({ value: getQueryMode(controls) }),
+  rerender: ['all_columns', 'groupby', 'metrics', 'percent_metrics'],
 };
 
 const all_columns: typeof sharedControls.groupby = {
@@ -92,9 +93,13 @@ const all_columns: typeof sharedControls.groupby = {
   optionRenderer: c => <ColumnOption showType column={c} />,
   valueRenderer: c => <ColumnOption column={c} />,
   valueKey: 'column_name',
-  mapStateToProps: ({ datasource, controls }) => ({
+  mapStateToProps: ({ datasource, controls }, controlState: ExtraControlProps) => ({
     options: datasource?.columns || [],
     queryMode: getQueryMode(controls),
+    externalValidationErrors:
+      isRawMode({ controls }) && ensureIsArray(controlState.value).length === 0
+        ? [t('must have a value')]
+        : [],
   }),
   visibility: isRawMode,
 };
@@ -134,10 +139,11 @@ const percent_metrics: typeof sharedControls.metrics = {
     datasourceType: datasource?.type,
     queryMode: getQueryMode(controls),
     externalValidationErrors:
+      isAggMode({ controls }) &&
       ensureIsArray(controls.groupby?.value).length === 0 &&
       ensureIsArray(controls.metrics?.value).length === 0 &&
       ensureIsArray(controlState.value).length === 0
-        ? ['Group By, Metrics or Percentage Metrics must have a value']
+        ? [t('Group By, Metrics or Percentage Metrics must have a value')]
         : [],
   }),
   rerender: ['groupby', 'metrics'],
@@ -169,14 +175,16 @@ const config: ControlPanelConfig = {
             override: {
               visibility: isAggMode,
               mapStateToProps: (state: ControlPanelState, controlState: ExtraControlProps) => {
+                const { controls } = state;
                 const originalMapStateToProps = sharedControls?.groupby?.mapStateToProps;
                 // @ts-ignore
                 const newState = originalMapStateToProps?.(state, controlState) ?? {};
                 newState.externalValidationErrors =
-                  ensureIsArray(state.controls.metrics?.value).length === 0 &&
-                  ensureIsArray(state.controls.percent_metrics?.value).length === 0 &&
+                  isAggMode({ controls }) &&
+                  ensureIsArray(controls.metrics?.value).length === 0 &&
+                  ensureIsArray(controls.percent_metrics?.value).length === 0 &&
                   ensureIsArray(controlState.value).length === 0
-                    ? ['Group By, Metrics or Percentage Metrics must have a value']
+                    ? [t('Group By, Metrics or Percentage Metrics must have a value')]
                     : [];
                 return newState;
               },
@@ -200,10 +208,11 @@ const config: ControlPanelConfig = {
                 selectedMetrics: form_data.metrics || (form_data.metric ? [form_data.metric] : []),
                 datasource,
                 externalValidationErrors:
+                  isAggMode({ controls }) &&
                   ensureIsArray(controls.groupby?.value).length === 0 &&
                   ensureIsArray(controls.percent_metrics?.value).length === 0 &&
                   ensureIsArray(controlState.value).length === 0
-                    ? ['Group By, Metrics or Percentage Metrics must have a value']
+                    ? [t('Group By, Metrics or Percentage Metrics must have a value')]
                     : [],
               }),
               rerender: ['groupby', 'percent_metrics'],
