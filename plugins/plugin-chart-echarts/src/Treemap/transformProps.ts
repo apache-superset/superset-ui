@@ -22,6 +22,7 @@ import {
   getMetricLabel,
   getNumberFormatter,
   getTimeFormatter,
+  NumberFormats,
   NumberFormatter,
 } from '@superset-ui/core';
 import { groupBy, isNumber, transform } from 'lodash';
@@ -69,8 +70,20 @@ export function formatTooltip({
   params: TreemapSeriesCallbackDataParams;
   numberFormatter: NumberFormatter;
 }): string {
-  const { value, treePathInfo } = params;
+  const { value, treePathInfo = [] } = params;
   const formattedValue = numberFormatter(value as number);
+  const percentFormatter = getNumberFormatter(NumberFormats.PERCENT_2_POINT);
+
+  let formattedPercent = '';
+  // the last item is current node, here we should find the parent node
+  const currentNode = treePathInfo[treePathInfo.length - 1];
+  const parentNode = treePathInfo[treePathInfo.length - 2];
+  if (parentNode) {
+    const percent: number = parentNode.value
+      ? (currentNode.value as number) / (parentNode.value as number)
+      : 0;
+    formattedPercent = percentFormatter(percent);
+  }
 
   const treePath = (treePathInfo ?? [])
     .map(pathInfo => pathInfo?.name || '')
@@ -79,8 +92,12 @@ export function formatTooltip({
   const metricLabel = treePath.shift() || '';
 
   // groupby1/groupby2/...
-  // metric: value
-  return [`<div>${treePath.join(' ▸ ')}</div>`, `${metricLabel}: ${formattedValue}`].join('');
+  // metric: value (percent of parent)
+  return [
+    `<div>${treePath.join(' ▸ ')}</div>`,
+    `${metricLabel}: ${formattedValue}`,
+    formattedPercent ? ` (${formattedPercent})` : '',
+  ].join('');
 }
 
 export default function transformProps(chartProps: EchartsTreemapChartProps): EchartsProps {
@@ -146,6 +163,7 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
         const name = formatSeriesName(key, {
           numberFormatter,
           timeFormatter: getTimeFormatter(dateFormat),
+          ...(coltypeMapping[currGroupby] && { coltype: coltypeMapping[currGroupby] }),
         });
         const children = transformer(value, restGroupby, metric, depth + 1);
         result.push({
