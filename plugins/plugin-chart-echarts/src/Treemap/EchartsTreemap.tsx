@@ -81,7 +81,7 @@ export default function EchartsTreemap({
       if (values.includes(name)) {
         handleChange(values.filter(v => v !== name));
       } else {
-        handleChange([...values, name]);
+        handleChange([name]);
       }
     },
   };
