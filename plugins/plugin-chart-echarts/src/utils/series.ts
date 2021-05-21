@@ -200,3 +200,7 @@ export function dedupSeries(series: SeriesOption[]): SeriesOption[] {
     };
   });
 }
+
+export function sanitizeHtml(text: string): string {
+  return text.replace('<', '&lt;').replace('>', '&gt;');
+}
