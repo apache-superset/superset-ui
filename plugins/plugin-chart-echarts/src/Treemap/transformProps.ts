@@ -108,7 +108,7 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
   const {
     colorScheme,
     groupby = [],
-    metrics = [],
+    metric = '',
     labelType,
     labelPosition,
     numberFormat,
@@ -188,22 +188,23 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
     }));
   };
 
-  const metricsLabel = metrics.map(metric => getMetricLabel(metric));
-
+  const metricLabel = getMetricLabel(metric);
   const initialDepth = 1;
-  const transformedData: TreemapSeriesNodeItemOption[] = metricsLabel.map(metricLabel => ({
-    name: metricLabel,
-    colorSaturation: [0.4, 0.7],
-    itemStyle: {
-      borderColor: '#fff',
-      borderWidth: 2,
-      gapWidth: 2,
+  const transformedData: TreemapSeriesNodeItemOption[] = [
+    {
+      name: metricLabel,
+      colorSaturation: [0.4, 0.7],
+      itemStyle: {
+        borderColor: '#fff',
+        borderWidth: 2,
+        gapWidth: 2,
+      },
+      upperLabel: {
+        show: false,
+      },
+      children: transformer(data, groupby, metricLabel, initialDepth),
     },
-    upperLabel: {
-      show: false,
-    },
-    children: transformer(data, groupby, metricLabel, initialDepth),
-  }));
+  ];
 
   // set a default color when metric values are 0 over all.
   const levels = [

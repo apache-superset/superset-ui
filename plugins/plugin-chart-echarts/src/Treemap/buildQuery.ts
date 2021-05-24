@@ -16,29 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { buildQueryContext, ensureIsArray, QueryFormData } from '@superset-ui/core';
+import { buildQueryContext, QueryFormData } from '@superset-ui/core';
 
 export default function buildQuery(formData: QueryFormData) {
-  const {
-    timeseries_limit_metric: timeseriesLimitMetric,
-    order_desc: orderDesc = false,
-  } = formData;
-  const sortByMetric = ensureIsArray(timeseriesLimitMetric)[0];
+  const { metric, sort_by_metric } = formData;
 
-  return buildQueryContext(formData, baseQueryObject => {
-    let { metrics, orderby = [] } = baseQueryObject;
-    metrics = metrics || [];
-    if (sortByMetric) {
-      orderby = [[sortByMetric, !orderDesc]];
-    } else if (metrics?.length > 0) {
-      orderby = [[metrics[0], false]];
-    }
-
-    return [
-      {
-        ...baseQueryObject,
-        orderby,
-      },
-    ];
-  });
+  return buildQueryContext(formData, baseQueryObject => [
+    {
+      ...baseQueryObject,
+      ...(sort_by_metric && { orderby: [[metric, false]] }),
+    },
+  ]);
 }

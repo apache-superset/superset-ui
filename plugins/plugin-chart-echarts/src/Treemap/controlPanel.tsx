@@ -37,17 +37,15 @@ const config: ControlPanelConfig = {
       expanded: true,
       controlSetRows: [
         ['groupby'],
-        ['metrics'],
+        ['metric'],
         ['row_limit'],
-        ['timeseries_limit_metric'],
         [
           {
-            name: 'order_desc',
+            name: 'sort_by_metric',
             config: {
               type: 'CheckboxControl',
-              label: t('Sort Descending'),
-              default: true,
-              description: t('Whether to sort descending or ascending'),
+              label: t('Sort by metric'),
+              description: t('Whether to sort results by the selected metric in descending order.'),
             },
           },
         ],
