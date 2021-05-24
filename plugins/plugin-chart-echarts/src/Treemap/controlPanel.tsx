@@ -26,11 +26,9 @@ import {
   sections,
 } from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from './types';
-import { LABEL_POSITION } from '../constants';
 
 const {
   labelType,
-  labelPosition,
   numberFormat,
   showLabels,
   showUpperLabels,
@@ -46,17 +44,15 @@ const config: ControlPanelConfig = {
       expanded: true,
       controlSetRows: [
         ['groupby'],
-        ['metrics'],
+        ['metric'],
         ['row_limit'],
-        ['timeseries_limit_metric'],
         [
           {
-            name: 'order_desc',
+            name: 'sort_by_metric',
             config: {
               type: 'CheckboxControl',
-              label: t('Sort Descending'),
-              default: true,
-              description: t('Whether to sort descending or ascending'),
+              label: t('Sort by metric'),
+              description: t('Whether to sort results by the selected metric in descending order.'),
             },
           },
         ],
@@ -121,20 +117,6 @@ const config: ControlPanelConfig = {
                 ['key_value', 'Category and Value'],
               ],
               description: t('What should be shown on the label?'),
-            },
-          },
-        ],
-        [
-          {
-            name: 'label_position',
-            config: {
-              type: 'SelectControl',
-              freeForm: false,
-              label: t('Label position'),
-              renderTrigger: true,
-              choices: LABEL_POSITION,
-              default: labelPosition,
-              description: D3_FORMAT_DOCS,
             },
           },
         ],

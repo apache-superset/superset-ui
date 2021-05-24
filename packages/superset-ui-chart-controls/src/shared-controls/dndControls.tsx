@@ -40,6 +40,7 @@ export const dndGroupByControl: SharedControlConfig<'DndColumnSelect'> = {
         options.unshift(TIME_COLUMN_OPTION);
       }
       newState.options = Object.fromEntries(options.map(option => [option.column_name, option]));
+      newState.savedMetrics = state.datasource.metrics || [];
     }
     return newState;
   },
@@ -112,7 +113,7 @@ export const dnd_adhoc_metric: SharedControlConfig<'DndMetricSelect'> = {
   default: (c: Control) => mainMetric(c.savedMetrics),
 };
 
-export const dnd_timeseries_limit_metric: SharedControlConfig<'DndMetricSelect'> = {
+export const dnd_sort_by: SharedControlConfig<'DndMetricSelect'> = {
   type: 'DndMetricSelect',
   label: t('Sort by'),
   default: null,
@@ -122,4 +123,29 @@ export const dnd_timeseries_limit_metric: SharedControlConfig<'DndMetricSelect'>
     savedMetrics: datasource?.metrics || [],
     datasourceType: datasource?.type,
   }),
+};
+
+export const dnd_size: SharedControlConfig<'DndMetricSelect'> = {
+  ...dnd_adhoc_metric,
+  label: t('Bubble Size'),
+  description: t('Metric used to calculate bubble size'),
+};
+
+export const dnd_x: SharedControlConfig<'DndMetricSelect'> = {
+  ...dnd_adhoc_metric,
+  label: t('X Axis'),
+  description: t('Metric assigned to the [X] axis'),
+};
+
+export const dnd_y: SharedControlConfig<'DndMetricSelect'> = {
+  ...dnd_adhoc_metric,
+  label: t('Y Axis'),
+  description: t('Metric assigned to the [Y] axis'),
+};
+
+export const dnd_secondary_metric: SharedControlConfig<'DndMetricSelect'> = {
+  ...dnd_adhoc_metric,
+  label: t('Color Metric'),
+  validators: [],
+  description: t('A metric to use for color'),
 };
