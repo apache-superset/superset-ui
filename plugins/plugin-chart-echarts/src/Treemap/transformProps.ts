@@ -46,6 +46,7 @@ import {
   GAP_WIDTH,
   LABEL_FONTSIZE,
   extractTreePathInfo,
+  BORDER_COLOR,
 } from './constants';
 
 export function formatLabel({
@@ -203,7 +204,7 @@ export default function transformProps(
       ...child,
       colorSaturation: COLOR_SATURATION,
       itemStyle: {
-        borderColor: '#fff',
+        borderColor: BORDER_COLOR,
         color: colorFn(`${child.name}_${depth}`),
         borderWidth: BORDER_WIDTH,
         gapWidth: GAP_WIDTH,
@@ -218,7 +219,7 @@ export default function transformProps(
       name: metricLabel,
       colorSaturation: COLOR_SATURATION,
       itemStyle: {
-        borderColor: '#fff',
+        borderColor: BORDER_COLOR,
         borderWidth: BORDER_WIDTH,
         gapWidth: GAP_WIDTH,
       },

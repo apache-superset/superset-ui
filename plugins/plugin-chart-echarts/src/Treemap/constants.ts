@@ -24,6 +24,7 @@ export const LABEL_FONTSIZE = 11;
 export const BORDER_WIDTH = 2;
 export const GAP_WIDTH = 2;
 export const COLOR_ALPHA = 0.3;
+export const BORDER_COLOR = '#fff';
 
 export const extractTreePathInfo = (treePathInfo: TreePathInfo[] | undefined) => {
   const treePath = (treePathInfo ?? [])
