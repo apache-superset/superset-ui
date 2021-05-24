@@ -31,7 +31,7 @@ import { LabelPositionEnum } from '../types';
 export type EchartsTreemapFormData = QueryFormData & {
   colorScheme?: string;
   groupby: string[];
-  metrics?: QueryFormMetric[];
+  metric?: QueryFormMetric;
   labelType: EchartsTreemapLabelType;
   labelPosition: LabelPositionEnum;
   showLabels: boolean;
