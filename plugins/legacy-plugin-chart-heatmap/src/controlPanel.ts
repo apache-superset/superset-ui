@@ -68,6 +68,8 @@ const config: ControlPanelConfig = {
               label: 'X Axis',
             },
           },
+        ],
+        [
           {
             name: 'all_columns_y',
             config: {

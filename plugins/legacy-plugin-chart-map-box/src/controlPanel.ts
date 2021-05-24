@@ -54,6 +54,8 @@ const config: ControlPanelConfig = {
               description: t('Column containing longitude data'),
             },
           },
+        ],
+        [
           {
             name: 'all_columns_y',
             config: {

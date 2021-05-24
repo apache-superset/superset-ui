@@ -34,15 +34,12 @@ import {
   ControlConfig,
   ControlPanelConfig,
   ControlPanelsContainerProps,
-  ControlPanelState,
-  ControlState,
   ControlStateMapping,
   D3_TIME_FORMAT_OPTIONS,
   ExtraControlProps,
   QueryModeLabel,
   sections,
   sharedControls,
-  TIME_COLUMN_OPTION,
 } from '@superset-ui/chart-controls';
 
 import i18n from './i18n';
@@ -64,7 +61,8 @@ function getQueryMode(controls: ControlStateMapping): QueryMode {
  * Visibility check
  */
 function isQueryMode(mode: QueryMode) {
-  return ({ controls }: ControlPanelsContainerProps) => getQueryMode(controls) === mode;
+  return ({ controls }: Pick<ControlPanelsContainerProps, 'controls'>) =>
+    getQueryMode(controls) === mode;
 }
 
 const isAggMode = isQueryMode(QueryMode.aggregate);
