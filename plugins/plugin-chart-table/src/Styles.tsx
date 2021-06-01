@@ -16,16 +16,17 @@ export default styled.div`
   thead > tr > th {
     padding-right: 1.4em;
     position: relative;
-    background: #fff;
+    background: ${({ theme: { colors } }) => colors.grayscale.light5};
+    text-align: left;
   }
   th svg {
-    color: #ccc;
-    position: absolute;
-    bottom: 0.6em;
-    right: 0.2em;
+    color: ${({ theme: { colors } }) => colors.grayscale.light2};
+    position: relative;
+    vertical-align: middle;
+    margin: 0 ${({ theme: { gridUnit } }) => gridUnit}px;
   }
   th.is-sorted svg {
-    color: #a8a8a8;
+    color: ${({ theme: { colors } }) => colors.grayscale.base};
   }
   .table > tbody > tr:first-of-type > td,
   .table > tbody > tr:first-of-type > th {
@@ -38,6 +39,9 @@ export default styled.div`
   .dt-metric {
     text-align: right;
   }
+  .dt-totals {
+    font-weight: bold;
+  }
   .dt-is-null {
     color: ${({ theme: { colors } }) => colors.grayscale.light1};
   }
@@ -45,11 +49,11 @@ export default styled.div`
     cursor: pointer;
   }
   td.dt-is-filter:hover {
-    background-color: linen;
+    background-color: ${({ theme: { colors } }) => colors.secondary.light4};
   }
   td.dt-is-active-filter,
   td.dt-is-active-filter:hover {
-    background-color: lightcyan;
+    background-color: ${({ theme: { colors } }) => colors.secondary.light3};
   }
 
   .dt-global-filter {
@@ -67,7 +71,7 @@ export default styled.div`
 
   .pagination > li > span.dt-pagination-ellipsis:focus,
   .pagination > li > span.dt-pagination-ellipsis:hover {
-    background: #fff;
+    background: ${({ theme: { colors } }) => colors.grayscale.light5};
   }
 
   .dt-no-results {

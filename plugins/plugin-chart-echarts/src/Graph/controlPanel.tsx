@@ -20,14 +20,7 @@ import React from 'react';
 import { t } from '@superset-ui/core';
 import { ControlPanelConfig, sections, sharedControls } from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from './types';
-import {
-  legendMarginControl,
-  legendOrientationControl,
-  legendTypeControl,
-  showLegendControl,
-} from '../controls';
-
-const noopControl = { name: 'noop', config: { type: '', renderTrigger: true } };
+import { legendSection } from '../controls';
 
 const requiredEntity = {
   ...sharedControls.entity,
@@ -100,10 +93,7 @@ const controlPanel: ControlPanelConfig = {
       expanded: true,
       controlSetRows: [
         ['color_scheme'],
-        [<h1 className="section-header">{t('Legend')}</h1>],
-        [showLegendControl],
-        [legendTypeControl, legendOrientationControl],
-        [legendMarginControl, noopControl],
+        ...legendSection,
         [<h1 className="section-header">{t('Layout')}</h1>],
         [
           {
@@ -114,16 +104,28 @@ const controlPanel: ControlPanelConfig = {
               label: t('Graph layout'),
               default: DEFAULT_FORM_DATA.layout,
               options: [
-                {
-                  label: 'force',
-                  value: 'force',
-                },
-                {
-                  label: 'circular',
-                  value: 'circular',
-                },
+                ['force', t('Force')],
+                ['circular', t('Circular')],
               ],
               description: t('Layout type of graph'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'edgeSymbol',
+            config: {
+              type: 'SelectControl',
+              renderTrigger: true,
+              label: t('Edge symbols'),
+              description: t('Symbol of two ends of edge line'),
+              default: DEFAULT_FORM_DATA.edgeSymbol,
+              choices: [
+                ['none,none', t('None -> None')],
+                ['none,arrow', t('None -> Arrow')],
+                ['circle,arrow', t('Circle -> Arrow')],
+                ['circle,circle', t('Circle -> Circle')],
+              ],
             },
           },
         ],
@@ -187,6 +189,34 @@ const controlPanel: ControlPanelConfig = {
               isInt: true,
               default: DEFAULT_FORM_DATA.showSymbolThreshold,
               description: t('Minimum value for label to be displayed on graph.'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'baseNodeSize',
+            config: {
+              type: 'TextControl',
+              label: t('Node size'),
+              renderTrigger: true,
+              isFloat: true,
+              default: DEFAULT_FORM_DATA.baseNodeSize,
+              description: t(
+                'Median node size, the largest node will be 4 times larger than the smallest',
+              ),
+            },
+          },
+          {
+            name: 'baseEdgeWidth',
+            config: {
+              type: 'TextControl',
+              label: t('Edge width'),
+              renderTrigger: true,
+              isFloat: true,
+              default: DEFAULT_FORM_DATA.baseEdgeWidth,
+              description: t(
+                'Median edge width, the thickest edge will be 4 times thicker than the thinnest.',
+              ),
             },
           },
         ],

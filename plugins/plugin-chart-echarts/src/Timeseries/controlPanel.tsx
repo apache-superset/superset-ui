@@ -18,20 +18,20 @@
  */
 import React from 'react';
 import { legacyValidateInteger, legacyValidateNumber, t } from '@superset-ui/core';
-import { ControlPanelConfig, sections } from '@superset-ui/chart-controls';
+import {
+  ControlPanelConfig,
+  ControlPanelsContainerProps,
+  D3_TIME_FORMAT_DOCS,
+  sections,
+  sharedControls,
+} from '@superset-ui/chart-controls';
 
 import {
   DEFAULT_FORM_DATA,
   EchartsTimeseriesContributionType,
   EchartsTimeseriesSeriesType,
 } from './types';
-import {
-  legendMarginControl,
-  legendOrientationControl,
-  legendTypeControl,
-  noopControl,
-  showLegendControl,
-} from '../controls';
+import { legendSection } from '../controls';
 
 const {
   area,
@@ -51,12 +51,14 @@ const {
   rowLimit,
   seriesType,
   stack,
+  tooltipTimeFormat,
   truncateYAxis,
   yAxisBounds,
   zoomable,
   xAxisLabelRotation,
+  xAxisShowMinLabel,
+  xAxisShowMaxLabel,
 } = DEFAULT_FORM_DATA;
-
 const config: ControlPanelConfig = {
   controlPanelSections: [
     sections.legacyTimeseriesTime,
@@ -83,7 +85,8 @@ const config: ControlPanelConfig = {
           },
         ],
         ['adhoc_filters'],
-        ['limit', 'timeseries_limit_metric'],
+        ['limit'],
+        ['timeseries_limit_metric'],
         [
           {
             name: 'order_desc',
@@ -95,7 +98,7 @@ const config: ControlPanelConfig = {
             },
           },
         ],
-        ['row_limit', null],
+        ['row_limit'],
       ],
     },
     {
@@ -241,7 +244,7 @@ const config: ControlPanelConfig = {
             name: 'stack',
             config: {
               type: 'CheckboxControl',
-              label: t('Stack Lines'),
+              label: t('Stack series'),
               renderTrigger: true,
               default: stack,
               description: t('Stack series on top of each other'),
@@ -259,17 +262,21 @@ const config: ControlPanelConfig = {
               description: t('Draw area under curves. Only applicable for line types.'),
             },
           },
+        ],
+        [
           {
             name: 'opacity',
             config: {
               type: 'SliderControl',
-              label: t('Opacity'),
+              label: t('Area chart opacity'),
               renderTrigger: true,
               min: 0,
               max: 1,
               step: 0.1,
               default: opacity,
               description: t('Opacity of Area Chart. Also applies to confidence band.'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.area?.value),
             },
           },
         ],
@@ -284,6 +291,8 @@ const config: ControlPanelConfig = {
               description: t('Draw a marker on data points. Only applicable for line types.'),
             },
           },
+        ],
+        [
           {
             name: 'markerSize',
             config: {
@@ -294,6 +303,8 @@ const config: ControlPanelConfig = {
               max: 100,
               default: markerSize,
               description: t('Size of marker. Also applies to forecast observations.'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.markerEnabled?.value),
             },
           },
         ],
@@ -309,19 +320,27 @@ const config: ControlPanelConfig = {
             },
           },
         ],
-        [<h1 className="section-header">{t('Legend')}</h1>],
-        [showLegendControl],
-        [legendTypeControl, legendOrientationControl],
-        [legendMarginControl, noopControl],
+        ...legendSection,
         [<h1 className="section-header">{t('X Axis')}</h1>],
-        ['x_axis_time_format'],
+        [
+          {
+            name: 'x_axis_time_format',
+            config: {
+              ...sharedControls.x_axis_time_format,
+              default: 'smart_date',
+              description: `${D3_TIME_FORMAT_DOCS}. ${t(
+                'When using other than adaptive formatting, labels may overlap.',
+              )}`,
+            },
+          },
+        ],
         [
           {
             name: 'xAxisShowMinLabel',
             config: {
               type: 'CheckboxControl',
               label: t('Show Min Label'),
-              default: true,
+              default: xAxisShowMinLabel,
               renderTrigger: true,
               description: t('Show Min Label'),
             },
@@ -333,7 +352,7 @@ const config: ControlPanelConfig = {
             config: {
               type: 'CheckboxControl',
               label: t('Show Max Label'),
-              default: true,
+              default: xAxisShowMaxLabel,
               renderTrigger: true,
               description: t('Show Max Label'),
             },
@@ -371,6 +390,17 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+        [
+          {
+            name: 'tooltipTimeFormat',
+            config: {
+              ...sharedControls.x_axis_time_format,
+              label: t('Tooltip time format'),
+              default: tooltipTimeFormat,
+              clearable: false,
+            },
+          },
+        ],
         // eslint-disable-next-line react/jsx-key
         [<h1 className="section-header">{t('Y Axis')}</h1>],
         ['y_axis_format'],
@@ -385,6 +415,8 @@ const config: ControlPanelConfig = {
               description: t('Logarithmic y-axis'),
             },
           },
+        ],
+        [
           {
             name: 'minorSplitLine',
             config: {
@@ -393,6 +425,18 @@ const config: ControlPanelConfig = {
               renderTrigger: true,
               default: minorSplitLine,
               description: t('Draw split lines for minor y-axis ticks'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'yAxisTitle',
+            config: {
+              type: 'TextControl',
+              label: t('Primary y-axis title'),
+              renderTrigger: true,
+              default: '',
+              description: t('Title for y-axis'),
             },
           },
         ],
@@ -424,6 +468,8 @@ const config: ControlPanelConfig = {
                   "this feature will only expand the axis range. It won't " +
                   "narrow the data's extent.",
               ),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.truncateYAxis?.value),
             },
           },
         ],

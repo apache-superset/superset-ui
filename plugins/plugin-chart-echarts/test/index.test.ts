@@ -21,6 +21,8 @@ import {
   EchartsPieChartPlugin,
   EchartsTimeseriesChartPlugin,
   EchartsGraphChartPlugin,
+  EchartsFunnelChartPlugin,
+  EchartsTreemapChartPlugin,
 } from '../src';
 
 describe('@superset-ui/plugin-chart-echarts', () => {
@@ -29,5 +31,7 @@ describe('@superset-ui/plugin-chart-echarts', () => {
     expect(EchartsPieChartPlugin).toBeDefined();
     expect(EchartsTimeseriesChartPlugin).toBeDefined();
     expect(EchartsGraphChartPlugin).toBeDefined();
+    expect(EchartsFunnelChartPlugin).toBeDefined();
+    expect(EchartsTreemapChartPlugin).toBeDefined();
   });
 });

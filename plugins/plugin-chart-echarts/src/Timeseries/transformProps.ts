@@ -26,17 +26,13 @@ import {
   isFormulaAnnotationLayer,
   isIntervalAnnotationLayer,
   isTimeseriesAnnotationLayer,
-  getTimeFormatter,
-  getTimeFormatterForGranularity,
-  smartDateFormatter,
   TimeseriesChartDataResponseResult,
-  TimeFormatter,
 } from '@superset-ui/core';
 import { EChartsOption, SeriesOption } from 'echarts';
 import { DEFAULT_FORM_DATA, EchartsTimeseriesFormData } from './types';
-import { EchartsProps, ForecastSeriesEnum, ProphetValue, LegendOrientation } from '../types';
+import { EchartsProps, ForecastSeriesEnum, ProphetValue } from '../types';
 import { parseYAxisBound } from '../utils/controls';
-import { extractTimeseriesSeries, getChartPadding, getLegendProps } from '../utils/series';
+import { dedupSeries, extractTimeseriesSeries, getLegendProps } from '../utils/series';
 import { extractAnnotationLabels } from '../utils/annotation';
 import {
   extractForecastSeriesContext,
@@ -46,6 +42,9 @@ import {
 } from '../utils/prophet';
 import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
 import {
+  getPadding,
+  getTooltipFormatter,
+  getXAxisFormatter,
   transformEventAnnotation,
   transformFormulaAnnotation,
   transformIntervalAnnotation,
@@ -63,15 +62,19 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const annotationData = annotationData_ || {};
 
   const {
+    area,
     annotationLayers,
     colorScheme,
     contributionMode,
     forecastEnabled,
-    legendMargin,
     legendOrientation,
     legendType,
     logAxis,
+    markerEnabled,
+    markerSize,
+    opacity,
     minorSplitLine,
+    seriesType,
     showLegend,
     stack,
     truncateYAxis,
@@ -80,7 +83,8 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     xAxisShowMaxLabel,
     xAxisTimeFormat,
     yAxisBounds,
-    timeGrainSqla,
+    yAxisTitle,
+    tooltipTimeFormat,
     zoomable,
     richTooltip,
     xAxisLabelRotation,
@@ -95,11 +99,16 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const formatter = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormat);
 
   rawSeries.forEach(entry => {
-    const transformedSeries = transformSeries(
-      entry,
-      formData as EchartsTimeseriesFormData,
-      colorScale,
-    );
+    const transformedSeries = transformSeries(entry, colorScale, {
+      area,
+      forecastEnabled,
+      markerEnabled,
+      markerSize,
+      opacity,
+      seriesType,
+      stack,
+      richTooltip,
+    });
     if (transformedSeries) series.push(transformedSeries);
   });
 
@@ -113,14 +122,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       } else if (isEventAnnotationLayer(layer)) {
         series.push(...transformEventAnnotation(layer, data, annotationData, colorScale));
       } else if (isTimeseriesAnnotationLayer(layer)) {
-        series.push(
-          ...transformTimeseriesAnnotation(
-            layer,
-            formData as EchartsTimeseriesFormData,
-            data,
-            annotationData,
-          ),
-        );
+        series.push(...transformTimeseriesAnnotation(layer, markerSize, data, annotationData));
       }
     });
 
@@ -133,30 +135,16 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     if (max === undefined) max = 1;
   }
 
-  let xAxisFormatter: TimeFormatter | StringConstructor;
-  if (xAxisTimeFormat === smartDateFormatter.id) {
-    xAxisFormatter = getTimeFormatterForGranularity(timeGrainSqla);
-  } else if (xAxisTimeFormat) {
-    xAxisFormatter = getTimeFormatter(xAxisTimeFormat);
-  } else {
-    xAxisFormatter = String;
-  }
+  const tooltipFormatter = getTooltipFormatter(tooltipTimeFormat);
+  const xAxisFormatter = getXAxisFormatter(xAxisTimeFormat);
 
+  const addYAxisLabelOffset = !!yAxisTitle;
+  const padding = getPadding(showLegend, legendOrientation, addYAxisLabelOffset, zoomable);
   const echartOptions: EChartsOption = {
     useUTC: true,
     grid: {
       ...defaultGrid,
-      ...getChartPadding(showLegend, legendOrientation, legendMargin, {
-        top: TIMESERIES_CONSTANTS.gridOffsetTop,
-        bottom: zoomable
-          ? TIMESERIES_CONSTANTS.gridOffsetBottomZoomable
-          : TIMESERIES_CONSTANTS.gridOffsetBottom,
-        left: TIMESERIES_CONSTANTS.gridOffsetLeft,
-        right:
-          showLegend && legendOrientation === LegendOrientation.Right
-            ? 0
-            : TIMESERIES_CONSTANTS.gridOffsetRight,
-      }),
+      ...padding,
     },
     xAxis: {
       type: 'time',
@@ -176,6 +164,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       minorSplitLine: { show: minorSplitLine },
       axisLabel: { formatter },
       scale: truncateYAxis,
+      name: yAxisTitle,
     },
     tooltip: {
       ...defaultTooltip,
@@ -184,7 +173,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         const value: number = !richTooltip ? params.value : params[0].value[0];
         const prophetValue = !richTooltip ? [params] : params;
 
-        const rows: Array<string> = [`${xAxisFormatter(value)}`];
+        const rows: Array<string> = [`${tooltipFormatter(value)}`];
         const prophetValues: Record<string, ProphetValue> = extractProphetValuesFromTooltipParams(
           prophetValue,
         );
@@ -214,7 +203,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         .map(entry => entry.name || '')
         .concat(extractAnnotationLabels(annotationLayers, annotationData)),
     },
-    series,
+    series: dedupSeries(series),
     toolbox: {
       show: zoomable,
       top: TIMESERIES_CONSTANTS.toolboxTop,
