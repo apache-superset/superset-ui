@@ -173,9 +173,9 @@
     "@babel/highlight" "^7.12.13"
 
 "@babel/compat-data@^7.13.0", "@babel/compat-data@^7.13.12", "@babel/compat-data@^7.13.8", "@babel/compat-data@^7.9.6":
-  version "7.13.12"
-  resolved "https://registry.yarnpkg.com/@babel/compat-data/-/compat-data-7.13.12.tgz#a8a5ccac19c200f9dd49624cac6e19d7be1236a1"
-  integrity sha512-3eJJ841uKxeV8dcN/2yGEUy+RfgQspPEgQat85umsE1rotuquQ2AbIub4S6j7c50a2d+4myc+zSlnXeIHrOnhQ==
+  version "7.14.4"
+  resolved "https://registry.yarnpkg.com/@babel/compat-data/-/compat-data-7.14.4.tgz#45720fe0cecf3fd42019e1d12cc3d27fadc98d58"
+  integrity sha512-i2wXrWQNkH6JplJQGn3Rd2I4Pij8GdHkXwHMxm+zV5YG/Jci+bCNrWZEWC4o+umiDkRrRs4dVzH3X4GP7vyjQQ==
 
 "@babel/core@^7.1.0", "@babel/core@^7.12.16", "@babel/core@^7.12.3", "@babel/core@^7.4.5", "@babel/core@^7.7.5", "@babel/core@^7.8.7", "@babel/core@^7.9.0":
   version "7.13.10"
@@ -4391,10 +4391,10 @@
     d3-cloud "^1.2.1"
     prop-types "^15.6.2"
 
-"@superset-ui/react-pivottable@^0.12.6":
-  version "0.12.6"
-  resolved "https://registry.yarnpkg.com/@superset-ui/react-pivottable/-/react-pivottable-0.12.6.tgz#c1d62a71e5f729381f8be0b1653b9a9e353d3dc3"
-  integrity sha512-2+81WL4ocv4VFzgkj3wOBcEgejnJfsJ2D08kMvFfeBt6fhqC35nkendeZMAjl4bFBmzSJIFS6H+agjoeOUyq5A==
+"@superset-ui/react-pivottable@^0.12.8":
+  version "0.12.8"
+  resolved "https://registry.yarnpkg.com/@superset-ui/react-pivottable/-/react-pivottable-0.12.8.tgz#3b7d6cd32719d6510b88b2334afacbb1735afee5"
+  integrity sha512-7DRxX/w1uSQE1pibSe64t1o+fmiP7ZWT2FJkjK510bSJm8NUIPCXtmpK+NKtNZuCteE9sqE7bQxd54SSq2xWKw==
   dependencies:
     immutability-helper "^3.1.1"
     prop-types "^15.7.2"
