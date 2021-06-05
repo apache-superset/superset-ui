@@ -36,12 +36,10 @@ export type EchartsWaterfallFormData = QueryFormData &
     xAxisLabel: string;
     yAxisFormat: string;
     xTicksLayout?: WaterfallFormXTicksLayout;
-    emitFilter: boolean;
   };
 
 export const DEFAULT_FORM_DATA: Partial<EchartsWaterfallFormData> = {
   showLegend: true,
-  emitFilter: false,
 };
 
 export interface EchartsWaterfallChartProps extends ChartProps {

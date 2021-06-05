@@ -19,7 +19,6 @@
 import {
   CategoricalColorNamespace,
   DataRecord,
-  DataRecordValue,
   getMetricLabel,
   getNumberFormatter,
   NumberFormatter,
@@ -27,13 +26,9 @@ import {
 } from '@superset-ui/core';
 import { EChartsOption, BarSeriesOption } from 'echarts';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
-import {
-  WaterfallChartTransformedProps,
-  EchartsWaterfallFormData,
-  EchartsWaterfallChartProps,
-} from './types';
-import { extractGroupbyLabel, getColtypesMapping } from '../utils/series';
+import { EchartsWaterfallFormData, EchartsWaterfallChartProps } from './types';
 import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
+import { EchartsProps } from '../types';
 
 const TOTAL_MARK = '__TOTAL__';
 const STACK_MARK = 'stack';
@@ -121,16 +116,11 @@ function transformer(data: DataRecord[], breakdown: string, category: string, me
   return transformedData;
 }
 
-export default function transformProps(
-  chartProps: EchartsWaterfallChartProps,
-): WaterfallChartTransformedProps {
-  const { width, height, formData, hooks, filterState, queriesData } = chartProps;
+export default function transformProps(chartProps: EchartsWaterfallChartProps): EchartsProps {
+  const { width, height, formData, queriesData } = chartProps;
   const { data = [] } = queriesData[0];
-  const { setDataMask = () => {} } = hooks;
-  const coltypeMapping = getColtypesMapping(queriesData[0]);
   const {
     colorScheme,
-    groupby = [],
     metric = '',
     breakdown,
     category,
@@ -139,7 +129,6 @@ export default function transformProps(
     yAxisLabel,
     xAxisLabel,
     yAxisFormat,
-    emitFilter,
   } = formData as EchartsWaterfallFormData;
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const numberFormatter = getNumberFormatter(yAxisFormat);
@@ -189,29 +178,6 @@ export default function transformProps(
       totalData.push('-');
     }
   });
-
-  const labelMap = transformedData.reduce((acc: Record<string, DataRecordValue[]>, datum) => {
-    const label = extractGroupbyLabel({
-      datum,
-      groupby,
-      coltypeMapping,
-    });
-    return {
-      ...acc,
-      [label]: groupby.map(col => datum[col]),
-    };
-  }, {});
-
-  const selectedValues = (filterState.selectedValues || []).reduce(
-    (acc: Record<string, number>, selectedValue: string) => {
-      const index = transformedData.findIndex(({ name }) => name === selectedValue);
-      return {
-        ...acc,
-        [index]: selectedValue,
-      };
-    },
-    {},
-  );
 
   let axisLabel;
   if (xTicksLayout === '45°') axisLabel = { rotate: -45 };
@@ -330,14 +296,8 @@ export default function transformProps(
   };
 
   return {
-    formData,
     width,
     height,
     echartOptions,
-    setDataMask,
-    emitFilter,
-    labelMap,
-    groupby,
-    selectedValues,
   };
 }
