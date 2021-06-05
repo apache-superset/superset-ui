@@ -81,22 +81,16 @@ function formatTooltip({
   return '';
 }
 
-function transformer(
-  data: DataRecord[],
-  periodColumn: string,
-  xAxisColumn: string,
-  valueColumn: string,
-) {
+function transformer(data: DataRecord[], breakdown: string, category: string, metric: string) {
   // Sort by period (ascending)
   const sortedData = data.sort(
     (a, b) =>
-      Number.parseInt(a[periodColumn] as string, 10) -
-      Number.parseInt(b[periodColumn] as string, 10),
+      Number.parseInt(a[breakdown] as string, 10) - Number.parseInt(b[breakdown] as string, 10),
   );
 
   // Group by period (temporary map)
   const groupedData = sortedData.reduce((acc, cur) => {
-    const period = cur[periodColumn] as string;
+    const period = cur[breakdown] as string;
     const periodData = acc.get(period) || [];
     periodData.push(cur);
     acc.set(period, periodData);
@@ -108,12 +102,12 @@ function transformer(
   groupedData.forEach((value, key) => {
     let tempValue = value;
     // Calc total per period
-    const sum = tempValue.reduce((acc, cur) => acc + (cur[valueColumn] as number), 0);
+    const sum = tempValue.reduce((acc, cur) => acc + (cur[metric] as number), 0);
     // Push total per period to the end of period values array
     tempValue.push({
-      [xAxisColumn]: key,
-      [periodColumn]: TOTAL_MARK,
-      [valueColumn]: sum,
+      [category]: key,
+      [breakdown]: TOTAL_MARK,
+      [metric]: sum,
     });
     // Remove first period and leave only last one
     if (isFirstPeriod) {
@@ -138,8 +132,8 @@ export default function transformProps(
     colorScheme,
     groupby = [],
     metric = '',
-    periodColumn,
-    xAxisColumn,
+    breakdown,
+    category,
     xTicksLayout,
     showLegend,
     yAxisLabel,
@@ -160,7 +154,7 @@ export default function transformProps(
 
   const metricLabel = getMetricLabel(metric);
 
-  const transformedData = transformer(data, periodColumn, xAxisColumn, metricLabel);
+  const transformedData = transformer(data, breakdown, category, metricLabel);
 
   const assistData: (number | string)[] = [];
   const increaseData: (number | string)[] = [];
@@ -170,7 +164,7 @@ export default function transformProps(
   transformedData.forEach((data, index, self) => {
     const totalSumUpToCur = self.slice(0, index + 1).reduce((prev, cur, i) => {
       // Ignore calculation on period column except first period
-      if (cur[periodColumn] !== TOTAL_MARK || i === 0) {
+      if (cur[breakdown] !== TOTAL_MARK || i === 0) {
         return prev + (cur[metricLabel] as number);
       }
       return prev;
@@ -178,7 +172,7 @@ export default function transformProps(
 
     const value = data[metricLabel] as number;
     const isNegative = value < 0;
-    if (data[periodColumn] === TOTAL_MARK) {
+    if (data[breakdown] === TOTAL_MARK) {
       increaseData.push('-');
       decreaseData.push('-');
       assistData.push('-');
@@ -301,7 +295,7 @@ export default function transformProps(
     },
     xAxis: {
       type: 'category',
-      data: transformedData.map(row => row[xAxisColumn] as string),
+      data: transformedData.map(row => row[category] as string),
       name: xAxisLabel,
       nameTextStyle: {
         padding: [15, 0, 0, 0],
