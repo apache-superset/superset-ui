@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { FeatureFlag, isFeatureEnabled, t, validateNonEmpty } from '@superset-ui/core';
+import { t, validateNonEmpty } from '@superset-ui/core';
 import {
   ColumnOption,
   formatSelectOptions,
@@ -26,7 +26,7 @@ import {
 } from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from '../Pie/types';
 
-const { emitFilter, showLegend } = DEFAULT_FORM_DATA;
+const { showLegend } = DEFAULT_FORM_DATA;
 
 const Category: typeof sharedControls.groupby = {
   type: 'SelectControl',
@@ -85,20 +85,6 @@ export default {
       expanded: true,
       controlSetRows: [
         ['color_scheme'],
-        isFeatureEnabled(FeatureFlag.DASHBOARD_CROSS_FILTERS)
-          ? [
-              {
-                name: 'emit_filter',
-                config: {
-                  type: 'CheckboxControl',
-                  label: t('Enable emitting filters'),
-                  default: emitFilter,
-                  renderTrigger: true,
-                  description: t('Enable emmiting filters.'),
-                },
-              },
-            ]
-          : [],
         [
           {
             name: 'show_legend',
