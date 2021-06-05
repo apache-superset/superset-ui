@@ -28,9 +28,9 @@ import { DEFAULT_FORM_DATA } from '../Pie/types';
 
 const { emitFilter, showLegend } = DEFAULT_FORM_DATA;
 
-const xAxisColumn: typeof sharedControls.groupby = {
+const Category: typeof sharedControls.groupby = {
   type: 'SelectControl',
-  label: t('XAxis column'),
+  label: t('Category'),
   description: t('Choose table column that will be displayed on XAxis in chart'),
   multi: false,
   optionRenderer: c => <ColumnOption showType column={c} />,
@@ -42,9 +42,9 @@ const xAxisColumn: typeof sharedControls.groupby = {
   validators: [validateNonEmpty],
 };
 
-const periodColumn: typeof sharedControls.groupby = {
+const Breakdown: typeof sharedControls.groupby = {
   type: 'SelectControl',
-  label: t('Period column'),
+  label: t('Breakdown'),
   description: t('Choose table column that will split data to periods'),
   multi: false,
   optionRenderer: c => <ColumnOption showType column={c} />,
@@ -67,14 +67,14 @@ export default {
         ['adhoc_filters'],
         [
           {
-            name: 'x_axis_column',
-            config: xAxisColumn,
+            name: 'category',
+            config: Category,
           },
         ],
         [
           {
-            name: 'period_column',
-            config: periodColumn,
+            name: 'breakdown',
+            config: Breakdown,
           },
         ],
         ['row_limit'],

@@ -23,7 +23,7 @@ export default function buildQuery(formData: EchartsWaterfallFormData) {
   return buildQueryContext(formData, baseQueryObject => [
     {
       ...baseQueryObject,
-      groupby: [formData.x_axis_column, formData.period_column],
+      groupby: [formData.category, formData.breakdown],
     },
   ]);
 }
