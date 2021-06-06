@@ -25,12 +25,13 @@ import {
   t,
 } from '@superset-ui/core';
 import { EChartsOption, BarSeriesOption } from 'echarts';
-import { CallbackDataParams } from 'echarts/types/src/util/types';
+import { CallbackDataParams, OptionDataValue } from 'echarts/types/src/util/types';
+import { BarDataItemOption } from 'echarts/types/src/chart/bar/BarSeries';
 import { EchartsWaterfallFormData, EchartsWaterfallChartProps } from './types';
 import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
 import { EchartsProps } from '../types';
 
-const TOTAL_MARK = '__TOTAL__';
+const TOTAL_MARK = t('Total');
 const STACK_MARK = 'stack';
 
 const LEGEND = {
@@ -76,42 +77,63 @@ function formatTooltip({
   return '';
 }
 
-function transformer(data: DataRecord[], breakdown: string, category: string, metric: string) {
-  // Sort by period (ascending)
-  const sortedData = data.sort(
-    (a, b) =>
-      Number.parseInt(a[breakdown] as string, 10) - Number.parseInt(b[breakdown] as string, 10),
-  );
-
-  // Group by period (temporary map)
-  const groupedData = sortedData.reduce((acc, cur) => {
-    const period = cur[breakdown] as string;
-    const periodData = acc.get(period) || [];
-    periodData.push(cur);
-    acc.set(period, periodData);
+function transformer({
+  data,
+  breakdown,
+  category,
+  metric,
+}: {
+  data: DataRecord[];
+  breakdown: string;
+  category: string;
+  metric: string;
+}) {
+  // Group by category (temporary map)
+  const groupedData = data.reduce((acc, cur) => {
+    const categoryLabel = cur[category] as string;
+    const categoryData = acc.get(categoryLabel) || [];
+    categoryData.push(cur);
+    acc.set(categoryLabel, categoryData);
     return acc;
   }, new Map<string, DataRecord[]>());
 
-  let transformedData: DataRecord[] = [];
-  let isFirstPeriod = true;
-  groupedData.forEach((value, key) => {
-    let tempValue = value;
-    // Calc total per period
-    const sum = tempValue.reduce((acc, cur) => acc + (cur[metric] as number), 0);
-    // Push total per period to the end of period values array
-    tempValue.push({
-      [category]: key,
-      [breakdown]: TOTAL_MARK,
-      [metric]: sum,
+  const transformedData: DataRecord[] = [];
+
+  if (breakdown) {
+    let isFirst = true;
+    groupedData.forEach((value, key) => {
+      let tempValue = value;
+      // Calc total per period
+      const sum = tempValue.reduce((acc, cur) => acc + (cur[metric] as number), 0);
+      // Push total per period to the end of period values array
+      tempValue.push({
+        [category]: key,
+        [breakdown]: TOTAL_MARK,
+        [metric]: sum,
+      });
+      // Remove first period and leave only last one
+      if (isFirst) {
+        const lastItem = tempValue[tempValue.length - 1];
+        tempValue = [lastItem];
+        isFirst = false;
+      }
+      transformedData.push(...tempValue);
     });
-    // Remove first period and leave only last one
-    if (isFirstPeriod) {
-      const lastItem = tempValue[tempValue.length - 1];
-      tempValue = [lastItem];
-      isFirstPeriod = false;
-    }
-    transformedData = transformedData.concat(tempValue);
-  });
+  } else {
+    let total = 0;
+    groupedData.forEach((value, key) => {
+      const sum = value.reduce((acc, cur) => acc + (cur[metric] as number), 0);
+      transformedData.push({
+        [category]: key,
+        [metric]: sum,
+      });
+      total += sum;
+    });
+    transformedData.push({
+      [category]: TOTAL_MARK,
+      [metric]: total,
+    });
+  }
 
   return transformedData;
 }
@@ -122,7 +144,7 @@ export default function transformProps(chartProps: EchartsWaterfallChartProps): 
   const {
     colorScheme,
     metric = '',
-    breakdown,
+    breakdown = '',
     category,
     xTicksLayout,
     showLegend,
@@ -143,17 +165,25 @@ export default function transformProps(chartProps: EchartsWaterfallChartProps): 
 
   const metricLabel = getMetricLabel(metric);
 
-  const transformedData = transformer(data, breakdown, category, metricLabel);
+  const transformedData = transformer({
+    data,
+    breakdown,
+    category,
+    metric: metricLabel,
+  });
 
-  const assistData: (number | string)[] = [];
-  const increaseData: (number | string)[] = [];
-  const decreaseData: (number | string)[] = [];
-  const totalData: (number | string)[] = [];
+  const assistData: (BarDataItemOption | OptionDataValue | OptionDataValue[])[] = [];
+  const increaseData: (BarDataItemOption | OptionDataValue | OptionDataValue[])[] = [];
+  const decreaseData: (BarDataItemOption | OptionDataValue | OptionDataValue[])[] = [];
+  const totalData: (BarDataItemOption | OptionDataValue | OptionDataValue[])[] = [];
 
   transformedData.forEach((data, index, self) => {
-    const totalSumUpToCur = self.slice(0, index + 1).reduce((prev, cur, i) => {
-      // Ignore calculation on period column except first period
-      if (cur[breakdown] !== TOTAL_MARK || i === 0) {
+    const totalSum = self.slice(0, index + 1).reduce((prev, cur, i) => {
+      if (breakdown) {
+        if (cur[breakdown] !== TOTAL_MARK || i === 0) {
+          return prev + (cur[metricLabel] as number);
+        }
+      } else if (cur[category] !== TOTAL_MARK) {
         return prev + (cur[metricLabel] as number);
       }
       return prev;
@@ -161,20 +191,20 @@ export default function transformProps(chartProps: EchartsWaterfallChartProps): 
 
     const value = data[metricLabel] as number;
     const isNegative = value < 0;
-    if (data[breakdown] === TOTAL_MARK) {
+    if (data[breakdown] === TOTAL_MARK || data[category] === TOTAL_MARK) {
       increaseData.push('-');
       decreaseData.push('-');
       assistData.push('-');
-      totalData.push(totalSumUpToCur);
+      totalData.push(totalSum);
     } else if (isNegative) {
       increaseData.push('-');
       decreaseData.push(Math.abs(value));
-      assistData.push(totalSumUpToCur);
+      assistData.push(totalSum);
       totalData.push('-');
     } else {
       increaseData.push(value);
       decreaseData.push('-');
-      assistData.push(totalSumUpToCur - value);
+      assistData.push(totalSum - value);
       totalData.push('-');
     }
   });
@@ -185,6 +215,18 @@ export default function transformProps(chartProps: EchartsWaterfallChartProps): 
   else if (xTicksLayout === 'flat') axisLabel = { rotate: 0 };
   else if (xTicksLayout === 'staggered') axisLabel = { rotate: -45 };
   else axisLabel = { show: true };
+
+  let xAxisData = [];
+  if (breakdown) {
+    xAxisData = transformedData.map(row => {
+      if (row[breakdown] === TOTAL_MARK) {
+        return row[category] as string;
+      }
+      return row[breakdown] as string;
+    });
+  } else {
+    xAxisData = transformedData.map(row => row[category] as string);
+  }
 
   const series: BarSeriesOption[] = [
     {
@@ -261,7 +303,7 @@ export default function transformProps(chartProps: EchartsWaterfallChartProps): 
     },
     xAxis: {
       type: 'category',
-      data: transformedData.map(row => row[category] as string),
+      data: xAxisData,
       name: xAxisLabel,
       nameTextStyle: {
         padding: [15, 0, 0, 0],

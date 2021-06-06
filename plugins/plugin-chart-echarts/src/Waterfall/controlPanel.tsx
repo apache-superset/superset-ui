@@ -45,7 +45,7 @@ const Category: typeof sharedControls.groupby = {
 const Breakdown: typeof sharedControls.groupby = {
   type: 'SelectControl',
   label: t('Breakdown'),
-  description: t('Choose table column that will split data to periods'),
+  description: t('Add additional data for each category'),
   multi: false,
   optionRenderer: c => <ColumnOption showType column={c} />,
   valueRenderer: c => <ColumnOption column={c} />,
@@ -53,7 +53,6 @@ const Breakdown: typeof sharedControls.groupby = {
   mapStateToProps: ({ datasource }) => ({
     options: datasource?.columns || [],
   }),
-  validators: [validateNonEmpty],
 };
 
 export default {
