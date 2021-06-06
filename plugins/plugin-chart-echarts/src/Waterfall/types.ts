@@ -36,6 +36,8 @@ export type EchartsWaterfallFormData = QueryFormData &
     xAxisLabel: string;
     yAxisFormat: string;
     xTicksLayout?: WaterfallFormXTicksLayout;
+    category: string;
+    breakdown?: string;
   };
 
 export const DEFAULT_FORM_DATA: Partial<EchartsWaterfallFormData> = {
