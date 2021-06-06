@@ -1,6 +1,6 @@
 import React from 'react';
 import { SuperChart, getChartTransformPropsRegistry } from '@superset-ui/core';
-import { boolean, withKnobs, select } from '@storybook/addon-knobs';
+import { withKnobs } from '@storybook/addon-knobs';
 import { EchartsWaterfallChartPlugin } from '@superset-ui/plugin-chart-echarts';
 import transformProps from '@superset-ui/plugin-chart-echarts/src/Waterfall/transformProps';
 import data from './data';
@@ -24,8 +24,8 @@ export const Waterfall = ({ width, height }) => {
       queriesData={[{ data }]}
       formData={{
         metric: `SUM(decomp_volume)`,
-        category: 'due_to_group',
-        breakdown: 'period',
+        breakdown: 'due_to_group',
+        category: 'period',
         x_ticks_layout: '45°',
         adhocFilters: [
           {
