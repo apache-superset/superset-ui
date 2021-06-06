@@ -216,7 +216,7 @@ export default function transformProps(chartProps: EchartsWaterfallChartProps): 
   else if (xTicksLayout === 'staggered') axisLabel = { rotate: -45 };
   else axisLabel = { show: true };
 
-  let xAxisData = [];
+  let xAxisData: string[] = [];
   if (breakdown) {
     xAxisData = transformedData.map(row => {
       if (row[breakdown] === TOTAL_MARK) {
