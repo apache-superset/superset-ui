@@ -16,24 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {
-  EchartsBoxPlotChartPlugin,
-  EchartsPieChartPlugin,
-  EchartsTimeseriesChartPlugin,
-  EchartsGraphChartPlugin,
-  EchartsFunnelChartPlugin,
-  EchartsTreemapChartPlugin,
-  EchartsBarChartPlugin,
-} from '../src';
+import { t, ChartMetadata, ChartPlugin } from '@superset-ui/core';
+import controlPanel from './controlPanel';
+import transformProps from './transformProps';
+import thumbnail from './images/thumbnail.png';
+import buildQuery from './buildQuery';
+import { EchartsBarChartProps, EchartsBarFormData } from './types';
 
-describe('@superset-ui/plugin-chart-echarts', () => {
-  it('exists', () => {
-    expect(EchartsBoxPlotChartPlugin).toBeDefined();
-    expect(EchartsPieChartPlugin).toBeDefined();
-    expect(EchartsTimeseriesChartPlugin).toBeDefined();
-    expect(EchartsGraphChartPlugin).toBeDefined();
-    expect(EchartsFunnelChartPlugin).toBeDefined();
-    expect(EchartsTreemapChartPlugin).toBeDefined();
-    expect(EchartsBarChartPlugin).toBeDefined();
-  });
-});
+export default class EchartsBarChartPlugin extends ChartPlugin<
+  EchartsBarFormData,
+  EchartsBarChartProps
+> {
+  constructor() {
+    super({
+      buildQuery,
+      controlPanel,
+      loadChart: () => import('./EchartsBar'),
+      metadata: new ChartMetadata({
+        credits: ['https://echarts.apache.org'],
+        name: t('Bar Chart V2'),
+        thumbnail,
+      }),
+      transformProps,
+    });
+  }
+}
