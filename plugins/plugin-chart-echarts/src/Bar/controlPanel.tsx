@@ -58,7 +58,7 @@ const config: ControlPanelConfig = {
      */
     // legacyTimeseriesTime for Timeseries Bar Chart，
     // legacyRegularTime is a subset of legacyTimeseriesTime. legacyTimeseriesTime for None-Timeseries Bar Chart temporarily,
-    sections.legacyRegularTime,
+    sections.legacyTimeseriesTime,
     {
       label: t('Query'),
       expanded: true,
