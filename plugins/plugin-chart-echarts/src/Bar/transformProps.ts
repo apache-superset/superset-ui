@@ -110,15 +110,6 @@ export const extractProphetValuesFromTooltipParams = (
   return values;
 };
 
-export default function transformProps(chartProps: EchartsBarChartProps): BarChartTransformedProps {
-  const { formData } = chartProps;
-  const { timeseries } = formData;
-  if (timeseries) {
-    return transformTimeseriesBarProps(chartProps);
-  }
-  return transformBarProps(chartProps);
-}
-
 export function transformTimeseriesBarProps(
   chartProps: EchartsBarChartProps,
 ): BarChartTransformedProps {
@@ -153,16 +144,14 @@ export function transformTimeseriesBarProps(
   const series: BarSeriesOption[] = rawSeries.map((raw, rawIndex) => {
     const { name, data } = raw;
     return {
-      name: name,
+      name,
       type: 'bar',
-      data: (data as BarDataItemOption[]).map(value => {
-        return {
-          value,
-          itemStyle: {
-            color: colorFn(rawIndex),
-          },
-        };
-      }),
+      data: (data as BarDataItemOption[]).map(value => ({
+        value,
+        itemStyle: {
+          color: colorFn(rawIndex),
+        },
+      })),
     };
   });
 
@@ -251,21 +240,17 @@ export function transformBarProps(chartProps: EchartsBarChartProps): BarChartTra
   const formatter = getNumberFormatter(yAxisFormat);
 
   // @ts-ignore
-  const series: BarSeriesOption[] = metricLabels.map((metricLabel, metricLabelIndex) => {
-    return {
-      name: metricLabel,
-      type: 'bar',
-      data: data.map((datum: DataRecord, datumIndex) => {
-        return {
-          name: `${metricLabel} ${datumIndex}`,
-          value: datum[metricLabel],
-          itemStyle: {
-            color: colorFn(metricLabelIndex),
-          },
-        };
-      }),
-    };
-  });
+  const series: BarSeriesOption[] = metricLabels.map((metricLabel, metricLabelIndex) => ({
+    name: metricLabel,
+    type: 'bar',
+    data: data.map((datum: DataRecord, datumIndex) => ({
+      name: `${metricLabel} ${datumIndex}`,
+      value: datum[metricLabel],
+      itemStyle: {
+        color: colorFn(metricLabelIndex),
+      },
+    })),
+  }));
 
   const echartOptions: EChartsOption = {
     grid: {
@@ -276,7 +261,7 @@ export function transformBarProps(chartProps: EchartsBarChartProps): BarChartTra
       ...defaultTooltip,
       trigger: 'axis',
       formatter: (params: any) => {
-        const axisValueLabel: string = params[0].axisValueLabel;
+        const { axisValueLabel } = params[0];
         const prophetValue = params;
         const rows: Array<string> = [axisValueLabel];
         const prophetValues: Record<string, ProphetValue> = extractProphetValuesFromTooltipParams(
@@ -327,4 +312,13 @@ export function transformBarProps(chartProps: EchartsBarChartProps): BarChartTra
     height,
     echartOptions,
   };
+}
+
+export default function transformProps(chartProps: EchartsBarChartProps): BarChartTransformedProps {
+  const { formData } = chartProps;
+  const { timeseries } = formData;
+  if (timeseries) {
+    return transformTimeseriesBarProps(chartProps);
+  }
+  return transformBarProps(chartProps);
 }
