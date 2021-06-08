@@ -1,6 +1,7 @@
 import React from 'react';
 import { SuperChart, seedRandom } from '@superset-ui/core';
 import dummyDatasource from '../../../../../shared/dummyDatasource';
+import ResizableChartDemo from '../../../../../shared/components/ResizableChartDemo';
 
 const data: {
   key: string;
@@ -20,18 +21,22 @@ for (let i = 0; i < 50; i += 1) {
 }
 
 export const manyBars = () => (
-  <SuperChart
-    chartType="dist-bar"
-    width={400}
-    height={400}
-    datasource={dummyDatasource}
-    queriesData={[{ data }]}
-    formData={{
-      colorScheme: 'd3Category10',
-      showBarValue: false,
-      showLegend: true,
-      vizType: 'dist_bar',
-      xTicksLayout: 'auto',
-    }}
-  />
+  <ResizableChartDemo>
+    {({ width, height }) => (
+      <SuperChart
+        chartType="dist-bar"
+        width={width}
+        height={height}
+        datasource={dummyDatasource}
+        queriesData={[{ data }]}
+        formData={{
+          colorScheme: 'd3Category10',
+          showBarValue: false,
+          showLegend: true,
+          vizType: 'dist_bar',
+          xTicksLayout: 'auto',
+        }}
+      />
+    )}
+  </ResizableChartDemo>
 );
