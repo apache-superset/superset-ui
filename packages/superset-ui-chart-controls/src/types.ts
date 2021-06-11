@@ -22,8 +22,6 @@ import { QueryFormData, DatasourceType, Metric, JsonValue, Column } from '@super
 import sharedControls from './shared-controls';
 import sharedControlComponents from './shared-controls/components';
 
-export { Metric } from '@superset-ui/core';
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyDict = Record<string, any>;
 interface Action {
