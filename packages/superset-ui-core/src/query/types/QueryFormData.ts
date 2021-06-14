@@ -27,6 +27,7 @@ import { BinaryOperator, SetOperator } from './Operator';
 import { AnnotationLayer } from './AnnotationLayer';
 import { QueryObject, QueryObjectExtras, QueryObjectFilterClause } from './Query';
 import { TimeRange, TimeRangeEndpoints } from './Time';
+import { RollingWindow, TimeCompare, Resample } from './AdvancedAnalytics';
 import { TimeGranularity } from '../../time-format';
 import { JsonObject } from '../../connection';
 
@@ -136,7 +137,12 @@ export type ExtraFormData = ExtraFormDataAppend & ExtraFormDataOverride;
 // Type signature for formData shared by all viz types
 // It will be gradually filled out as we build out the query object
 
-export interface BaseFormData extends TimeRange, FormDataResidual {
+export interface BaseFormData
+  extends TimeRange,
+    RollingWindow,
+    TimeCompare,
+    Resample,
+    FormDataResidual {
   /** datasource identifier ${id}_${type} */
   datasource: string;
   /**

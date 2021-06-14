@@ -25,6 +25,7 @@ export * from './Query';
 export * from './QueryFormData';
 export * from './QueryResponse';
 export * from './Time';
+export * from './AdvancedAnalytics';
 
 export { default as __hack_reexport_Datasource } from './Datasource';
 export { default as __hack_reexport_Column } from './Column';
@@ -33,5 +34,6 @@ export { default as __hack_reexport_Query } from './Query';
 export { default as __hack_reexport_QueryResponse } from './QueryResponse';
 export { default as __hack_reexport_QueryFormData } from './QueryFormData';
 export { default as __hack_reexport_Time } from './Time';
+export { default as __hack_reexport_AdvancedAnalytics } from './AdvancedAnalytics';
 
 export default {};
