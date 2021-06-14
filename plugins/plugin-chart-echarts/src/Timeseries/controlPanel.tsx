@@ -106,6 +106,7 @@ const config: ControlPanelConfig = {
         ['row_limit'],
       ],
     },
+    sections.advancedAnalytics,
     {
       label: t('Annotations and Layers'),
       expanded: false,
@@ -218,7 +219,6 @@ const config: ControlPanelConfig = {
         ],
       ],
     },
-    sections.advancedAnalytics,
     {
       label: t('Chart Options'),
       expanded: true,

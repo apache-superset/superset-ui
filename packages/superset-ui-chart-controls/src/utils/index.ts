@@ -20,5 +20,6 @@ export * from './selectOptions';
 export * from './D3Formatting';
 export * from './expandControlConfig';
 export * from './getColorFormatters';
+export * from './AdvancedAnalyticsTransform';
 export { default as mainMetric } from './mainMetric';
 export { default as columnChoices } from './columnChoices';
