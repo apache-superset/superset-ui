@@ -218,6 +218,7 @@ const config: ControlPanelConfig = {
         ],
       ],
     },
+    sections.advancedAnalytics,
     {
       label: t('Chart Options'),
       expanded: true,
