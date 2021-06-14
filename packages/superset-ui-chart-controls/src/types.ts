@@ -32,6 +32,7 @@ interface AnyAction extends Action, AnyDict {}
 export type SharedControls = typeof sharedControls;
 export type SharedControlAlias = keyof typeof sharedControls;
 export type SharedControlComponents = typeof sharedControlComponents;
+export type { Metric };
 
 /** ----------------------------------------------
  * Input data/props while rendering
