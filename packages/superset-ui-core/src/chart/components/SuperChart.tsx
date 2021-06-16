@@ -55,7 +55,7 @@ export type Props = Omit<SuperChartCoreProps, 'chartProps'> &
 
 type PropsWithDefault = Props & Readonly<typeof defaultProps>;
 
-export default class SuperChart extends React.PureComponent<Props, {}> {
+export default class SuperChart extends React.PureComponent<Props, { hasBeenRendered: boolean }> {
   /**
    * SuperChart's core
    */
@@ -96,11 +96,19 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
 
   static defaultProps = defaultProps;
 
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      hasBeenRendered: false,
+    };
+  }
+
   private setRef = (core: SuperChartCore | null) => {
     this.core = core;
   };
 
   renderChart(width: number, height: number) {
+    this.setState({ hasBeenRendered: true });
     const {
       id,
       className,
@@ -185,8 +193,7 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
         <BoundingBox>
           <ParentSize debounceTime={debounceTime}>
             {({ width, height }) =>
-              width > 0 &&
-              height > 0 &&
+              (this.state.hasBeenRendered || (width > 0 && width > 0)) &&
               this.renderChart(
                 widthInfo.isDynamic ? Math.floor(width) : widthInfo.value,
                 heightInfo.isDynamic ? Math.floor(height) : heightInfo.value,
