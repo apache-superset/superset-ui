@@ -26,7 +26,7 @@ import {
   TimeFormatter,
   TimeseriesDataRecord,
 } from '@superset-ui/core';
-import { LegendComponentOption, SeriesOption } from 'echarts';
+import { format, LegendComponentOption, SeriesOption } from 'echarts';
 import { NULL_STRING, TIMESERIES_CONSTANTS } from '../constants';
 import { LegendOrientation, LegendType } from '../types';
 import { defaultLegendPadding } from '../defaults';
@@ -202,5 +202,5 @@ export function dedupSeries(series: SeriesOption[]): SeriesOption[] {
 }
 
 export function sanitizeHtml(text: string): string {
-  return text.replace('<', '&lt;').replace('>', '&gt;');
+  return format.encodeHTML(text);
 }
