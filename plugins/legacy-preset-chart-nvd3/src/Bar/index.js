@@ -32,7 +32,7 @@ const metadata = new ChartMetadata({
   exampleGallery: [
     { url: grouped, caption: t('Grouped style') },
     { url: stacked, caption: t('Stacked style') },
-    { url: percentage, caption: t('Percentage style') },
+    { url: percentage, caption: t('Contribution mode) },
   ],
   name: t('Time-series Bar Chart'),
   supportedAnnotationTypes: [ANNOTATION_TYPES.INTERVAL, ANNOTATION_TYPES.EVENT],
