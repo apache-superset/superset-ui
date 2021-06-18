@@ -28,7 +28,7 @@ const metadata = new ChartMetadata({
     'Visualize three dimensions of data in a single chart (x-axis, y-axis, and bubble size).',
   ),
   name: t('Bullet Chart'),
-  tags: ['business'],
+  tags: ['Business'],
   thumbnail,
   useLegacyApi: true,
 });
