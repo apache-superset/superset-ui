@@ -22,7 +22,10 @@ import transformProps, { BigNumberChartProps, BigNumberFormData } from './transf
 import thumbnail from './images/thumbnail.png';
 
 const metadata = new ChartMetadata({
-  description: '',
+  category: t('Time Series'),
+  description: t(
+    'A single number accompanied by a simple line chart, to call attention to an important metric along with its change over time or other dimension. If you find yourself using a lot of big numbers on a dashboard, a more visual chart may help you make your dashboard more informative.',
+  ),
   name: t('Big Number with Trendline'),
   thumbnail,
   useLegacyApi: true,

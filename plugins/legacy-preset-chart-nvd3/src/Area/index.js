@@ -23,10 +23,14 @@ import { ANNOTATION_TYPES } from '../vendor/superset/AnnotationTypes';
 import controlPanel from './controlPanel';
 
 const metadata = new ChartMetadata({
+  category: t('Distribution'),
   credits: ['http://nvd3.org'],
-  description: '',
+  description: t(
+    'A time series chart that visualizes how the proportions of related metrics vary over time.',
+  ),
   name: t('Area Chart'),
   supportedAnnotationTypes: [ANNOTATION_TYPES.INTERVAL, ANNOTATION_TYPES.EVENT],
+  tags: ['Time Series', 'Proportions'],
   thumbnail,
   useLegacyApi: true,
 });

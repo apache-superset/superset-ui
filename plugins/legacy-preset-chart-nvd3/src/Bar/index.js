@@ -23,6 +23,7 @@ import { ANNOTATION_TYPES } from '../vendor/superset/AnnotationTypes';
 import controlPanel from './controlPanel';
 
 const metadata = new ChartMetadata({
+  category: t('Composition'),
   credits: ['http://nvd3.org'],
   description: 'A bar chart where the x axis is time',
   name: t('Time-series Bar Chart'),

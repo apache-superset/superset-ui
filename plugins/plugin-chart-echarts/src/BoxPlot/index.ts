@@ -44,6 +44,7 @@ export default class EchartsBoxPlotChartPlugin extends ChartPlugin<
       loadChart: () => import('./EchartsBoxPlot'),
       metadata: new ChartMetadata({
         behaviors: [Behavior.INTERACTIVE_CHART],
+        category: t('Distribution'),
         credits: ['https://echarts.apache.org'],
         description: 'Box Plot (Apache ECharts)',
         name: t('Box Plot'),

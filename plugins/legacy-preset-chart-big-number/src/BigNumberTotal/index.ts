@@ -25,7 +25,10 @@ import transformProps, {
 import thumbnail from './images/thumbnail.png';
 
 const metadata = new ChartMetadata({
-  description: '',
+  category: t('Composition'),
+  description: t(
+    'A single number that calls attention to an important metric. Good for KPI and strategic dashboards that showcase a few, focused set of metrics.',
+  ),
   name: t('Big Number'),
   thumbnail,
   useLegacyApi: true,
