@@ -27,7 +27,7 @@ import controlPanel from './controlPanel';
 const metadata = new ChartMetadata({
   description: '',
   exampleGallery: [
-    { url: example1, caption: 'Population age data' },
+    { url: example1, caption: t('Population age data') },
     { url: example2 },
     { url: example3 },
   ],
