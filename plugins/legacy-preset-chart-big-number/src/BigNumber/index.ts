@@ -30,7 +30,7 @@ const metadata = new ChartMetadata({
   ),
   exampleGallery: [
     { url: example1, caption: 'A Big Number' },
-    { url: example2, caption: 'With a titlee' },
+    { url: example2, caption: 'With a title' },
   ],
   name: t('Big Number with Trendline'),
   thumbnail,
