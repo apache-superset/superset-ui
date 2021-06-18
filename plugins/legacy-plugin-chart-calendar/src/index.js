@@ -22,7 +22,7 @@ import controlPanel from './controlPanel';
 import thumbnail from './images/thumbnail.png';
 
 const metadata = new ChartMetadata({
-  category: 'Time Series',
+  category: t('Time Series'),
   credits: ['https://github.com/wa0x6e/cal-heatmap'],
   description: t(
     'Displays periods of activity by using a color scale (shading) to highlight the most and least dates on a calendar.',
