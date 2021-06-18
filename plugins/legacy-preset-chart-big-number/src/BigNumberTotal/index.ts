@@ -22,10 +22,12 @@ import transformProps, {
   BigNumberChartProps,
   BigNumberFormData,
 } from '../BigNumber/transformProps';
+import example from './images/Big_Number_Trendline.jpg';
 import thumbnail from './images/thumbnail.png';
 
 const metadata = new ChartMetadata({
   description: '',
+  exampleGallery: [{ url: example }],
   name: t('Big Number'),
   thumbnail,
   useLegacyApi: true,

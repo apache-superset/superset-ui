@@ -19,10 +19,16 @@
 import { t, ChartMetadata, ChartPlugin } from '@superset-ui/core';
 import controlPanel from './controlPanel';
 import transformProps, { BigNumberChartProps, BigNumberFormData } from './transformProps';
+import example1 from './images/BigNumber.jpg';
+import example2 from './images/BigNumber2.jpg';
 import thumbnail from './images/thumbnail.png';
 
 const metadata = new ChartMetadata({
   description: '',
+  exampleGallery: [
+    { url: example1, caption: 'A Big Number' },
+    { url: example2, caption: 'With a titlee' },
+  ],
   name: t('Big Number with Trendline'),
   thumbnail,
   useLegacyApi: true,
