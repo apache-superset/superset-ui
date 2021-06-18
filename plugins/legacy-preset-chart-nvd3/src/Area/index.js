@@ -40,7 +40,7 @@ const metadata = new ChartMetadata({
   ],
   name: t('Area Chart'),
   supportedAnnotationTypes: [ANNOTATION_TYPES.INTERVAL, ANNOTATION_TYPES.EVENT],
-  tags: ['Time Series', 'Proportions'],
+  tags: [t('Time Series'), t('Proportions')],
   thumbnail,
   useLegacyApi: true,
 });

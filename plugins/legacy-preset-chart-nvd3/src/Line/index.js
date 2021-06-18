@@ -32,7 +32,7 @@ const metadata = new ChartMetadata({
   exampleGallery: [
     { url: example1 },
     { url: example2 },
-    { url: battery, caption: 'Battery level over time' },
+    { url: battery, caption: t('Battery level over time') },
   ],
   name: t('Line Chart'),
   supportedAnnotationTypes: [

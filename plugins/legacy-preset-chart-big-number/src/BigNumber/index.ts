@@ -29,8 +29,8 @@ const metadata = new ChartMetadata({
     'A single number accompanied by a simple line chart, to call attention to an important metric along with its change over time or other dimension. If you find yourself using a lot of big numbers on a dashboard, a more visual chart may help you make your dashboard more informative.',
   ),
   exampleGallery: [
-    { url: example1, caption: 'A Big Number' },
-    { url: example2, caption: 'With a title' },
+    { url: example1, caption: t('A Big Number') },
+    { url: example2, caption: t('With a subheader') },
   ],
   name: t('Big Number with Trendline'),
   thumbnail,
