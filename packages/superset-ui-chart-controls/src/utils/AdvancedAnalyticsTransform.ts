@@ -19,6 +19,8 @@
  */
 import { getMetricLabel, ensureIsArray, QueryFormData, QueryObject } from '@superset-ui/core';
 
+const TIME_COMPARISION = '__';
+
 function ensureIsInt<T>(value: T, defaultValue: number): number {
   return Number.isNaN(parseInt(String(value), 10)) ? defaultValue : parseInt(String(value), 10);
 }
@@ -81,7 +83,7 @@ export function timeCompareTransform(
   const timeCompareMapping: [string, string][] = [];
   metricLabels.forEach(m => {
     timeCompare.forEach((t: string) => {
-      timeCompareMapping.push([m, [m, t, 'offset'].join(' ')]);
+      timeCompareMapping.push([m, [m, t].join(TIME_COMPARISION)]);
     });
   });
 
@@ -89,17 +91,23 @@ export function timeCompareTransform(
     processing => processing?.operation === 'pivot',
   );
   if (pivotProcessingIdx > -1) {
+    const valuesAgg = Object.fromEntries(
+      metricLabels
+        .concat(timeCompareMapping.map(([col1, col2]) => col2))
+        .map(metric => [metric, { operator: 'sum' }]),
+    );
+    const changeAgg = Object.fromEntries(
+      timeCompareMapping
+        .map(([col1, col2]) => [comparisonType, col1, col2].join(TIME_COMPARISION))
+        .map(metric => [metric, { operator: 'sum' }]),
+    );
+
     post_processing[pivotProcessingIdx] = {
       operation: 'pivot',
       options: {
         index: ['__timestamp'],
         columns: formData.groupby || [],
-        // Create 'dummy' sum aggregates to assign cell values in pivot table
-        aggregates: Object.fromEntries(
-          metricLabels
-            .concat(timeCompareMapping.map(_ => _[1]))
-            .map(metric => [metric, { operator: 'sum' }]),
-        ),
+        aggregates: comparisonType === 'values' ? valuesAgg : changeAgg,
       },
     };
   }
