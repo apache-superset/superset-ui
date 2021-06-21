@@ -93,14 +93,14 @@ export const advancedAnalytics: ControlPanelSectionConfig = {
           freeForm: true,
           label: t('Time shift'),
           choices: formatSelectOptions<TimeShiftType>([
-            '1 day',
-            '1 week',
-            '28 days',
-            '30 days',
-            '52 weeks',
-            '1 year',
-            '104 weeks',
-            '2 years',
+            '1 day ago',
+            '1 week ago',
+            '28 days ago',
+            '30 days ago',
+            '52 weeks ago',
+            '1 year ago',
+            '104 weeks ago',
+            '2 years ago',
           ]),
           description: t(
             'Overlay one or more timeseries from a ' +
