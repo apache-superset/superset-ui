@@ -244,6 +244,7 @@ const propTypes = {
   sizeField: stringOrObjectWithLabelType,
   // time-pivot only
   baseColor: rgbObjectType,
+  orderDesc: PropTypes.bool,
 };
 
 const NOOP = () => {};
@@ -276,6 +277,7 @@ function nvd3Vis(element, props) {
     onBrushEnd = NOOP,
     onError = NOOP,
     orderBars,
+    orderDesc,
     pieLabelType,
     rangeLabels,
     ranges,
@@ -418,6 +420,16 @@ function nvd3Vis(element, props) {
         if (orderBars) {
           data.forEach(d => {
             d.values.sort((a, b) => (tryNumify(a.x) < tryNumify(b.x) ? -1 : 1));
+          });
+        }
+
+        // NVD3 data is not sorted, need to sort first(ASC)
+        data.forEach(d => {
+          d.values.sort((a, b) => (tryNumify(a.y) < tryNumify(b.y) ? -1 : 1));
+        });
+        if (orderDesc) {
+          data.forEach(d => {
+            d.values.reverse();
           });
         }
         if (!reduceXTicks) {
