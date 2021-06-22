@@ -25,7 +25,7 @@ const metadata = new ChartMetadata({
   category: t('Relationship'),
   credits: ['http://nvd3.org'],
   description: t(
-    'Visualize three dimensions of data in a single chart (x-axis, y-axis, and bubble size).',
+    'Visualize three dimensions of data in a single chart: x-axis, y-axis, and bubble size.',
   ),
   name: t('Bullet Chart'),
   tags: [t('Business')],
