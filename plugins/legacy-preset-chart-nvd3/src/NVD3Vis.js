@@ -424,6 +424,7 @@ function nvd3Vis(element, props) {
           width = computeBarChartWidth(data, isBarStacked, maxWidth);
         }
         chart.width(width);
+        chart.useInteractiveGuideline(true);
         break;
 
       case 'pie':
