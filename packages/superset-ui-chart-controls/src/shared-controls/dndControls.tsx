@@ -17,15 +17,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { Metric, t, validateNonEmpty } from '@superset-ui/core';
+import { t, validateNonEmpty } from '@superset-ui/core';
 import { ExtraControlProps, SharedControlConfig } from '../types';
-import { mainMetric } from '../utils';
 import { TIME_COLUMN_OPTION } from '../constants';
-
-type Control = {
-  savedMetrics?: Metric[] | null;
-  default?: unknown;
-};
 
 export const dndGroupByControl: SharedControlConfig<'DndColumnSelect'> = {
   type: 'DndColumnSelect',
@@ -40,6 +34,7 @@ export const dndGroupByControl: SharedControlConfig<'DndColumnSelect'> = {
         options.unshift(TIME_COLUMN_OPTION);
       }
       newState.options = Object.fromEntries(options.map(option => [option.column_name, option]));
+      newState.savedMetrics = state.datasource.metrics || [];
     }
     return newState;
   },
@@ -92,10 +87,6 @@ export const dnd_adhoc_metrics: SharedControlConfig<'DndMetricSelect'> = {
   multi: true,
   label: t('Metrics'),
   validators: [validateNonEmpty],
-  default: (c: Control) => {
-    const metric = mainMetric(c.savedMetrics);
-    return metric ? [metric] : null;
-  },
   mapStateToProps: ({ datasource }) => ({
     columns: datasource ? datasource.columns : [],
     savedMetrics: datasource ? datasource.metrics : [],
@@ -109,10 +100,9 @@ export const dnd_adhoc_metric: SharedControlConfig<'DndMetricSelect'> = {
   multi: false,
   label: t('Metric'),
   description: t('Metric'),
-  default: (c: Control) => mainMetric(c.savedMetrics),
 };
 
-export const dnd_timeseries_limit_metric: SharedControlConfig<'DndMetricSelect'> = {
+export const dnd_sort_by: SharedControlConfig<'DndMetricSelect'> = {
   type: 'DndMetricSelect',
   label: t('Sort by'),
   default: null,
@@ -122,4 +112,29 @@ export const dnd_timeseries_limit_metric: SharedControlConfig<'DndMetricSelect'>
     savedMetrics: datasource?.metrics || [],
     datasourceType: datasource?.type,
   }),
+};
+
+export const dnd_size: SharedControlConfig<'DndMetricSelect'> = {
+  ...dnd_adhoc_metric,
+  label: t('Bubble Size'),
+  description: t('Metric used to calculate bubble size'),
+};
+
+export const dnd_x: SharedControlConfig<'DndMetricSelect'> = {
+  ...dnd_adhoc_metric,
+  label: t('X Axis'),
+  description: t('Metric assigned to the [X] axis'),
+};
+
+export const dnd_y: SharedControlConfig<'DndMetricSelect'> = {
+  ...dnd_adhoc_metric,
+  label: t('Y Axis'),
+  description: t('Metric assigned to the [Y] axis'),
+};
+
+export const dnd_secondary_metric: SharedControlConfig<'DndMetricSelect'> = {
+  ...dnd_adhoc_metric,
+  label: t('Color Metric'),
+  validators: [],
+  description: t('A metric to use for color'),
 };

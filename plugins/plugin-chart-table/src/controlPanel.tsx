@@ -19,25 +19,29 @@
  */
 import React from 'react';
 import {
-  t,
   addLocaleData,
-  smartDateFormatter,
-  QueryMode,
-  QueryFormColumn,
   ChartDataResponseResult,
-  isFeatureEnabled,
+  ensureIsArray,
   FeatureFlag,
+  isFeatureEnabled,
+  QueryFormColumn,
+  QueryMode,
+  smartDateFormatter,
+  t,
 } from '@superset-ui/core';
 import {
-  D3_TIME_FORMAT_OPTIONS,
-  ControlConfig,
   ColumnOption,
-  ControlStateMapping,
+  ControlConfig,
   ControlPanelConfig,
   ControlPanelsContainerProps,
-  sharedControls,
-  sections,
+  ControlStateMapping,
+  D3_TIME_FORMAT_OPTIONS,
   QueryModeLabel,
+  sections,
+  sharedControls,
+  ControlPanelState,
+  ExtraControlProps,
+  ControlState,
 } from '@superset-ui/chart-controls';
 
 import i18n from './i18n';
@@ -59,11 +63,19 @@ function getQueryMode(controls: ControlStateMapping): QueryMode {
  * Visibility check
  */
 function isQueryMode(mode: QueryMode) {
-  return ({ controls }: ControlPanelsContainerProps) => getQueryMode(controls) === mode;
+  return ({ controls }: Pick<ControlPanelsContainerProps, 'controls'>) =>
+    getQueryMode(controls) === mode;
 }
 
 const isAggMode = isQueryMode(QueryMode.aggregate);
 const isRawMode = isQueryMode(QueryMode.raw);
+
+const validateAggControlValues = (controls: ControlStateMapping, values: any[]) => {
+  const areControlsEmpty = values.every(val => ensureIsArray(val).length === 0);
+  return areControlsEmpty && isAggMode({ controls })
+    ? [t('Group By, Metrics or Percentage Metrics must have a value')]
+    : [];
+};
 
 const queryMode: ControlConfig<'RadioButtonControl'> = {
   type: 'RadioButtonControl',
@@ -74,6 +86,7 @@ const queryMode: ControlConfig<'RadioButtonControl'> = {
     [QueryMode.raw, QueryModeLabel[QueryMode.raw]],
   ],
   mapStateToProps: ({ controls }) => ({ value: getQueryMode(controls) }),
+  rerender: ['all_columns', 'groupby', 'metrics', 'percent_metrics'],
 };
 
 const all_columns: typeof sharedControls.groupby = {
@@ -88,10 +101,35 @@ const all_columns: typeof sharedControls.groupby = {
   optionRenderer: c => <ColumnOption showType column={c} />,
   valueRenderer: c => <ColumnOption column={c} />,
   valueKey: 'column_name',
-  mapStateToProps: ({ datasource, controls }) => ({
+  mapStateToProps: ({ datasource, controls }, controlState) => ({
     options: datasource?.columns || [],
     queryMode: getQueryMode(controls),
+    externalValidationErrors:
+      isRawMode({ controls }) && ensureIsArray(controlState.value).length === 0
+        ? [t('must have a value')]
+        : [],
   }),
+  visibility: isRawMode,
+};
+
+const dnd_all_columns: typeof sharedControls.groupby = {
+  type: 'DndColumnSelect',
+  label: t('Columns'),
+  description: t('Columns to display'),
+  default: [],
+  mapStateToProps({ datasource, controls }, controlState) {
+    const newState: ExtraControlProps = {};
+    if (datasource) {
+      const options = datasource.columns;
+      newState.options = Object.fromEntries(options.map(option => [option.column_name, option]));
+    }
+    newState.queryMode = getQueryMode(controls);
+    newState.externalValidationErrors =
+      isRawMode({ controls }) && ensureIsArray(controlState.value).length === 0
+        ? [t('must have a value')]
+        : [];
+    return newState;
+  },
   visibility: isRawMode,
 };
 
@@ -103,12 +141,18 @@ const percent_metrics: typeof sharedControls.metrics = {
   ),
   multi: true,
   visibility: isAggMode,
-  mapStateToProps: ({ datasource, controls }) => ({
+  mapStateToProps: ({ datasource, controls }, controlState) => ({
     columns: datasource?.columns || [],
     savedMetrics: datasource?.metrics || [],
     datasourceType: datasource?.type,
     queryMode: getQueryMode(controls),
+    externalValidationErrors: validateAggControlValues(controls, [
+      controls.groupby?.value,
+      controls.metrics?.value,
+      controlState.value,
+    ]),
   }),
+  rerender: ['groupby', 'metrics'],
   default: [],
   validators: [],
 };
@@ -136,6 +180,20 @@ const config: ControlPanelConfig = {
             name: 'groupby',
             override: {
               visibility: isAggMode,
+              mapStateToProps: (state: ControlPanelState, controlState: ControlState) => {
+                const { controls } = state;
+                const originalMapStateToProps = sharedControls?.groupby?.mapStateToProps;
+                // @ts-ignore
+                const newState = originalMapStateToProps?.(state, controlState) ?? {};
+                newState.externalValidationErrors = validateAggControlValues(controls, [
+                  controls.metrics?.value,
+                  controls.percent_metrics?.value,
+                  controlState.value,
+                ]);
+
+                return newState;
+              },
+              rerender: ['metrics', 'percent_metrics'],
             },
           },
         ],
@@ -145,19 +203,39 @@ const config: ControlPanelConfig = {
             override: {
               validators: [],
               visibility: isAggMode,
+              mapStateToProps: (
+                { controls, datasource, form_data }: ControlPanelState,
+                controlState: ControlState,
+              ) => ({
+                columns: datasource?.columns.filter(c => c.filterable) || [],
+                savedMetrics: datasource?.metrics || [],
+                // current active adhoc metrics
+                selectedMetrics: form_data.metrics || (form_data.metric ? [form_data.metric] : []),
+                datasource,
+                externalValidationErrors: validateAggControlValues(controls, [
+                  controls.groupby?.value,
+                  controls.percent_metrics?.value,
+                  controlState.value,
+                ]),
+              }),
+              rerender: ['groupby', 'percent_metrics'],
             },
           },
           {
             name: 'all_columns',
-            config: all_columns,
+            config: isFeatureEnabled(FeatureFlag.ENABLE_EXPLORE_DRAG_AND_DROP)
+              ? dnd_all_columns
+              : all_columns,
           },
         ],
         [
           {
             name: 'percent_metrics',
-            config: isFeatureEnabled(FeatureFlag.ENABLE_EXPLORE_DRAG_AND_DROP)
-              ? dnd_percent_metrics
-              : percent_metrics,
+            config: {
+              ...(isFeatureEnabled(FeatureFlag.ENABLE_EXPLORE_DRAG_AND_DROP)
+                ? dnd_percent_metrics
+                : percent_metrics),
+            },
           },
         ],
         [

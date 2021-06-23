@@ -4,17 +4,27 @@ interface LookupTable {
   [key: string]: boolean;
 }
 
+export interface ExampleImage {
+  url: string;
+  caption?: string;
+}
+
 export interface ChartMetadataConfig {
   name: string;
   canBeAnnotationTypes?: string[];
   credits?: string[];
   description?: string;
   datasourceCount?: number;
+  enableNoResults?: boolean;
   show?: boolean;
   supportedAnnotationTypes?: string[];
   thumbnail: string;
   useLegacyApi?: boolean;
   behaviors?: Behavior[];
+  deprecated?: boolean;
+  exampleGallery?: ExampleImage[];
+  tags?: string[];
+  category?: string | null;
 }
 
 export default class ChartMetadata {
@@ -40,6 +50,16 @@ export default class ChartMetadata {
 
   datasourceCount: number;
 
+  enableNoResults: boolean;
+
+  deprecated: boolean;
+
+  exampleGallery: ExampleImage[];
+
+  tags: string[];
+
+  category: string | null;
+
   constructor(config: ChartMetadataConfig) {
     const {
       name,
@@ -52,6 +72,11 @@ export default class ChartMetadata {
       useLegacyApi = false,
       behaviors = [],
       datasourceCount = 1,
+      enableNoResults = true,
+      deprecated = false,
+      exampleGallery = [],
+      tags = [],
+      category = null,
     } = config;
 
     this.name = name;
@@ -73,6 +98,11 @@ export default class ChartMetadata {
     this.useLegacyApi = useLegacyApi;
     this.behaviors = behaviors;
     this.datasourceCount = datasourceCount;
+    this.enableNoResults = enableNoResults;
+    this.deprecated = deprecated;
+    this.exampleGallery = exampleGallery;
+    this.tags = tags;
+    this.category = category;
   }
 
   canBeAnnotationType(type: string): boolean {
@@ -80,17 +110,6 @@ export default class ChartMetadata {
   }
 
   clone() {
-    return new ChartMetadata({
-      canBeAnnotationTypes: this.canBeAnnotationTypes,
-      credits: this.credits,
-      description: this.description,
-      name: this.name,
-      show: this.show,
-      supportedAnnotationTypes: this.supportedAnnotationTypes,
-      thumbnail: this.thumbnail,
-      useLegacyApi: this.useLegacyApi,
-      behaviors: this.behaviors,
-      datasourceCount: this.datasourceCount,
-    });
+    return new ChartMetadata(this);
   }
 }

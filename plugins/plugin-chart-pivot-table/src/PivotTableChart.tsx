@@ -23,7 +23,13 @@ import PivotTable from '@superset-ui/react-pivottable/PivotTable';
 // @ts-ignore
 import { sortAs, aggregatorTemplates } from '@superset-ui/react-pivottable/Utilities';
 import '@superset-ui/react-pivottable/pivottable.css';
-import { FilterType, PivotTableProps, PivotTableStylesProps, SelectedFiltersType } from './types';
+import {
+  FilterType,
+  MetricsLayoutEnum,
+  PivotTableProps,
+  PivotTableStylesProps,
+  SelectedFiltersType,
+} from './types';
 
 const Styles = styled.div<PivotTableStylesProps>`
   padding: ${({ theme }) => theme.gridUnit * 4}px;
@@ -56,6 +62,8 @@ export default function PivotTableChart(props: PivotTableProps) {
     emitFilter,
     setDataMask,
     selectedFilters,
+    verboseMap,
+    metricsLayout,
   } = props;
 
   const adaptiveFormatter = getNumberFormatter(valueFormat);
@@ -97,9 +105,13 @@ export default function PivotTableChart(props: PivotTableProps) {
     [],
   );
 
-  const [rows, cols] = transposePivot
-    ? [groupbyColumns, [METRIC_KEY, ...groupbyRows]]
-    : [groupbyRows, [METRIC_KEY, ...groupbyColumns]];
+  let [rows, cols] = transposePivot ? [groupbyColumns, groupbyRows] : [groupbyRows, groupbyColumns];
+
+  if (metricsLayout === MetricsLayoutEnum.ROWS) {
+    rows = [METRIC_KEY, ...rows];
+  } else {
+    cols = [METRIC_KEY, ...cols];
+  }
 
   const handleChange = useCallback(
     (filters: SelectedFiltersType) => {
@@ -202,6 +214,7 @@ export default function PivotTableChart(props: PivotTableProps) {
           colSubtotalDisplay: { displayOnTop: colSubtotalPosition },
           rowSubtotalDisplay: { displayOnTop: rowSubtotalPosition },
         }}
+        namesMapping={verboseMap}
       />
     </Styles>
   );

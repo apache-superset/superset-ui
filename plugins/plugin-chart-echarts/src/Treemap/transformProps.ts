@@ -19,13 +19,14 @@
 import {
   CategoricalColorNamespace,
   DataRecord,
+  DataRecordValue,
   getMetricLabel,
   getNumberFormatter,
   getTimeFormatter,
+  NumberFormats,
   NumberFormatter,
 } from '@superset-ui/core';
 import { groupBy, isNumber, transform } from 'lodash';
-import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { TreemapSeriesNodeItemOption } from 'echarts/types/src/chart/treemap/TreemapSeries';
 import { EChartsOption, TreemapSeriesOption } from 'echarts';
 import {
@@ -33,17 +34,27 @@ import {
   EchartsTreemapChartProps,
   EchartsTreemapFormData,
   EchartsTreemapLabelType,
+  TreemapSeriesCallbackDataParams,
+  TreemapTransformedProps,
 } from './types';
-import { EchartsProps } from '../types';
-import { formatSeriesName } from '../utils/series';
+import { formatSeriesName, getColtypesMapping } from '../utils/series';
 import { defaultTooltip } from '../defaults';
+import {
+  COLOR_ALPHA,
+  COLOR_SATURATION,
+  BORDER_WIDTH,
+  GAP_WIDTH,
+  LABEL_FONTSIZE,
+  extractTreePathInfo,
+  BORDER_COLOR,
+} from './constants';
 
 export function formatLabel({
   params,
   labelType,
   numberFormatter,
 }: {
-  params: CallbackDataParams;
+  params: TreemapSeriesCallbackDataParams;
   labelType: EchartsTreemapLabelType;
   numberFormatter: NumberFormatter;
 }): string {
@@ -62,22 +73,58 @@ export function formatLabel({
   }
 }
 
-export default function transformProps(chartProps: EchartsTreemapChartProps): EchartsProps {
-  const { formData, height, queriesData, width } = chartProps;
+export function formatTooltip({
+  params,
+  numberFormatter,
+}: {
+  params: TreemapSeriesCallbackDataParams;
+  numberFormatter: NumberFormatter;
+}): string {
+  const { value, treePathInfo = [] } = params;
+  const formattedValue = numberFormatter(value as number);
+  const { metricLabel, treePath } = extractTreePathInfo(treePathInfo);
+  const percentFormatter = getNumberFormatter(NumberFormats.PERCENT_2_POINT);
+
+  let formattedPercent = '';
+  // the last item is current node, here we should find the parent node
+  const currentNode = treePathInfo[treePathInfo.length - 1];
+  const parentNode = treePathInfo[treePathInfo.length - 2];
+  if (parentNode) {
+    const percent: number = parentNode.value
+      ? (currentNode.value as number) / (parentNode.value as number)
+      : 0;
+    formattedPercent = percentFormatter(percent);
+  }
+
+  // groupby1/groupby2/...
+  // metric: value (percent of parent)
+  return [
+    `<div>${treePath.join(' ▸ ')}</div>`,
+    `${metricLabel}: ${formattedValue}`,
+    formattedPercent ? ` (${formattedPercent})` : '',
+  ].join('');
+}
+
+export default function transformProps(
+  chartProps: EchartsTreemapChartProps,
+): TreemapTransformedProps {
+  const { formData, height, queriesData, width, hooks, filterState } = chartProps;
   const { data = [] } = queriesData[0];
+  const { setDataMask = () => {} } = hooks;
+  const coltypeMapping = getColtypesMapping(queriesData[0]);
 
   const {
     colorScheme,
     groupby = [],
-    metrics = [],
+    metric = '',
     labelType,
     labelPosition,
     numberFormat,
     dateFormat,
     showLabels,
     showUpperLabels,
-    nodeClick,
-    roam,
+    dashboardId,
+    emitFilter,
   }: EchartsTreemapFormData = {
     ...DEFAULT_TREEMAP_FORM_DATA,
     ...formData,
@@ -85,18 +132,21 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
 
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const numberFormatter = getNumberFormatter(numberFormat);
-  const formatter = (params: CallbackDataParams) =>
+  const formatter = (params: TreemapSeriesCallbackDataParams) =>
     formatLabel({
       params,
       numberFormatter,
       labelType,
     });
 
+  const columnsLabelMap = new Map<string, DataRecordValue[]>();
+
   const transformer = (
     data: DataRecord[],
     groupbyData: string[],
     metric: string,
     depth: number,
+    path: string[],
   ): TreemapSeriesNodeItemOption[] => {
     const [currGroupby, ...restGroupby] = groupbyData;
     const currGrouping = groupBy(data, currGroupby);
@@ -108,11 +158,24 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
             const name = formatSeriesName(key, {
               numberFormatter,
               timeFormatter: getTimeFormatter(dateFormat),
+              ...(coltypeMapping[currGroupby] && { coltype: coltypeMapping[currGroupby] }),
             });
-            result.push({
+            const item: TreemapSeriesNodeItemOption = {
               name,
               value: isNumber(datum[metric]) ? (datum[metric] as number) : 0,
-            });
+            };
+            const joinedName = path.concat(name).join(',');
+            // map(joined_name: [columnLabel_1, columnLabel_2, ...])
+            columnsLabelMap.set(joinedName, path.concat(name));
+            if (filterState.selectedValues && !filterState.selectedValues.includes(joinedName)) {
+              item.itemStyle = {
+                colorAlpha: COLOR_ALPHA,
+              };
+              item.label = {
+                color: `rgba(0, 0, 0, ${COLOR_ALPHA})`,
+              };
+            }
+            result.push(item);
           });
         },
         [] as TreemapSeriesNodeItemOption[],
@@ -124,8 +187,9 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
         const name = formatSeriesName(key, {
           numberFormatter,
           timeFormatter: getTimeFormatter(dateFormat),
+          ...(coltypeMapping[currGroupby] && { coltype: coltypeMapping[currGroupby] }),
         });
-        const children = transformer(value, restGroupby, metric, depth + 1);
+        const children = transformer(value, restGroupby, metric, depth + 1, path.concat(name));
         result.push({
           name,
           children,
@@ -138,29 +202,33 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
     // sort according to the area and then take the color value in order
     return sortedData.map(child => ({
       ...child,
-      colorSaturation: [0.4, 0.7],
+      colorSaturation: COLOR_SATURATION,
       itemStyle: {
-        borderColor: showUpperLabels ? colorFn(`${child.name}_${depth - 1}`) : '#fff',
-        color: colorFn(`${child.name}_${depth}_${showUpperLabels}`),
-        borderWidth: 2,
-        gapWidth: 2,
+        borderColor: BORDER_COLOR,
+        color: colorFn(`${child.name}_${depth}`),
+        borderWidth: BORDER_WIDTH,
+        gapWidth: GAP_WIDTH,
       },
     }));
   };
 
-  const metricsLabel = metrics.map(metric => getMetricLabel(metric));
-
+  const metricLabel = getMetricLabel(metric);
   const initialDepth = 1;
-  const transformedData: TreemapSeriesNodeItemOption[] = metricsLabel.map(metricLabel => ({
-    name: metricLabel,
-    colorSaturation: [0.4, 0.7],
-    itemStyle: {
-      borderColor: showUpperLabels ? colorFn(`${metricLabel}_${initialDepth}`) : '#fff',
-      borderWidth: 2,
-      gapWidth: 2,
+  const transformedData: TreemapSeriesNodeItemOption[] = [
+    {
+      name: metricLabel,
+      colorSaturation: COLOR_SATURATION,
+      itemStyle: {
+        borderColor: BORDER_COLOR,
+        borderWidth: BORDER_WIDTH,
+        gapWidth: GAP_WIDTH,
+      },
+      upperLabel: {
+        show: false,
+      },
+      children: transformer(data, groupby, metricLabel, initialDepth, []),
     },
-    children: transformer(data, groupby, metricLabel, initialDepth),
-  }));
+  ];
 
   // set a default color when metric values are 0 over all.
   const levels = [
@@ -183,13 +251,12 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
       animation: false,
       width: '100%',
       height: '100%',
-      nodeClick,
-      roam,
+      nodeClick: undefined,
+      roam: !dashboardId,
       breadcrumb: {
         show: false,
         emptyItemWidth: 25,
       },
-      squareRatio: 0.5 * (1 + Math.sqrt(5)), // golden ratio
       emphasis: {
         label: {
           show: true,
@@ -201,13 +268,13 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
         position: labelPosition,
         formatter,
         color: '#000',
-        fontSize: 11,
+        fontSize: LABEL_FONTSIZE,
       },
       upperLabel: {
         show: showUpperLabels,
         formatter,
         textBorderColor: 'transparent',
-        fontSize: 11,
+        fontSize: LABEL_FONTSIZE,
       },
       data: transformedData,
     },
@@ -218,18 +285,23 @@ export default function transformProps(chartProps: EchartsTreemapChartProps): Ec
       ...defaultTooltip,
       trigger: 'item',
       formatter: (params: any) =>
-        formatLabel({
+        formatTooltip({
           params,
           numberFormatter,
-          labelType: EchartsTreemapLabelType.KeyValue,
         }),
     },
     series,
   };
 
   return {
+    formData,
     width,
     height,
     echartOptions,
+    setDataMask,
+    emitFilter,
+    labelMap: Object.fromEntries(columnsLabelMap),
+    groupby,
+    selectedValues: filterState.selectedValues || [],
   };
 }

@@ -16,25 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export default function transformProps(chartProps) {
-  const { height, datasource, formData, queriesData } = chartProps;
-  const { timeGrainSqla, groupby, dateFormat } = formData;
-  const { columnFormats, verboseMap } = datasource;
-  let { numberFormat } = formData;
+import { extractTimegrain } from '@superset-ui/core';
 
-  if (!numberFormat && chartProps.datasource && chartProps.datasource.metrics) {
-    chartProps.datasource.metrics.forEach(metric => {
-      if (metric.metric_name === chartProps.formData.metrics[0] && metric.d3format) {
-        numberFormat = metric.d3format;
-      }
-    });
-  }
+export default function transformProps(chartProps) {
+  const { height, datasource, formData, queriesData, rawFormData } = chartProps;
+  const { groupby, numberFormat, dateFormat } = formData;
+  const { columnFormats, verboseMap } = datasource;
+  const granularity = extractTimegrain(rawFormData);
 
   return {
     columnFormats,
     data: queriesData[0].data,
     dateFormat,
-    granularity: timeGrainSqla,
+    granularity,
     height,
     numberFormat,
     numGroups: groupby.length,

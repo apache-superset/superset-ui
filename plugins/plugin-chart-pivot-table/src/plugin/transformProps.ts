@@ -55,6 +55,7 @@ export default function transformProps(chartProps: ChartProps) {
     formData,
     hooks: { setDataMask = () => {} },
     filterState,
+    datasource: { verboseMap = {} },
   } = chartProps;
   const data = queriesData[0].data as DataRecord[];
   const {
@@ -72,6 +73,7 @@ export default function transformProps(chartProps: ChartProps) {
     rowTotals,
     valueFormat,
     emitFilter,
+    metricsLayout,
   } = formData;
   const { selectedFilters } = filterState;
 
@@ -95,5 +97,7 @@ export default function transformProps(chartProps: ChartProps) {
     emitFilter,
     setDataMask,
     selectedFilters,
+    verboseMap,
+    metricsLayout,
   };
 }

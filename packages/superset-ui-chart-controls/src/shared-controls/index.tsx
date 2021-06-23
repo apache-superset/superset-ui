@@ -46,7 +46,6 @@ import {
 } from '@superset-ui/core';
 
 import {
-  mainMetric,
   formatSelectOptions,
   D3_FORMAT_OPTIONS,
   D3_FORMAT_DOCS,
@@ -69,7 +68,11 @@ import {
   dnd_adhoc_filters,
   dnd_adhoc_metric,
   dnd_adhoc_metrics,
-  dnd_timeseries_limit_metric,
+  dnd_sort_by,
+  dnd_secondary_metric,
+  dnd_size,
+  dnd_x,
+  dnd_y,
   dndColumnsControl,
   dndEntity,
   dndGroupByControl,
@@ -126,10 +129,6 @@ const metrics: SharedControlConfig<'MetricsControl'> = {
   multi: true,
   label: t('Metrics'),
   validators: [validateNonEmpty],
-  default: (c: Control) => {
-    const metric = mainMetric(c.savedMetrics);
-    return metric ? [metric] : null;
-  },
   mapStateToProps: ({ datasource }) => ({
     columns: datasource ? datasource.columns : [],
     savedMetrics: datasource ? datasource.metrics : [],
@@ -143,7 +142,6 @@ const metric: SharedControlConfig<'MetricsControl'> = {
   multi: false,
   label: t('Metric'),
   description: t('Metric'),
-  default: (c: Control) => mainMetric(c.savedMetrics),
 };
 
 const datasourceControl: SharedControlConfig<'DatasourceControl'> = {
@@ -151,8 +149,9 @@ const datasourceControl: SharedControlConfig<'DatasourceControl'> = {
   label: t('Datasource'),
   default: null,
   description: null,
-  mapStateToProps: ({ datasource }) => ({
+  mapStateToProps: ({ datasource, form_data }) => ({
     datasource,
+    form_data,
   }),
 };
 
@@ -300,7 +299,7 @@ const time_range: SharedControlConfig<'DateFilterControl'> = {
   type: 'DateFilterControl',
   freeForm: true,
   label: TIME_FILTER_LABELS.time_range,
-  default: t('Last week'), // this value is translated, but the backend wouldn't understand a translated value?
+  default: t('No filter'), // this value is translated, but the backend wouldn't understand a translated value?
   description: t(
     'The time range for the visualization. All relative times, e.g. "Last month", ' +
       '"Last 7 days", "now", etc. are evaluated on the server using the server\'s ' +
@@ -339,7 +338,7 @@ const limit: SharedControlConfig<'SelectControl'> = {
   ),
 };
 
-const timeseries_limit_metric: SharedControlConfig<'MetricsControl'> = {
+const sort_by: SharedControlConfig<'MetricsControl'> = {
   type: 'MetricsControl',
   label: t('Sort By'),
   default: null,
@@ -389,6 +388,7 @@ const y: SharedControlConfig<'MetricsControl'> = {
 const size: SharedControlConfig<'MetricsControl'> = {
   ...metric,
   label: t('Bubble Size'),
+  description: t('Metric used to calculate bubble size'),
   default: null,
 };
 
@@ -471,7 +471,7 @@ const sharedControls = {
   color_picker,
   metric_2,
   linear_color_scheme,
-  secondary_metric,
+  secondary_metric: enableExploreDnd ? dnd_secondary_metric : secondary_metric,
   groupby: enableExploreDnd ? dndGroupByControl : groupByControl,
   columns: enableExploreDnd ? dndColumnsControl : columnsControl,
   druid_time_origin,
@@ -481,12 +481,13 @@ const sharedControls = {
   time_range,
   row_limit,
   limit,
-  timeseries_limit_metric: enableExploreDnd ? dnd_timeseries_limit_metric : timeseries_limit_metric,
+  timeseries_limit_metric: enableExploreDnd ? dnd_sort_by : sort_by,
+  orderby: enableExploreDnd ? dnd_sort_by : sort_by,
   series: enableExploreDnd ? dndSeries : series,
   entity: enableExploreDnd ? dndEntity : entity,
-  x,
-  y,
-  size,
+  x: enableExploreDnd ? dnd_x : x,
+  y: enableExploreDnd ? dnd_y : y,
+  size: enableExploreDnd ? dnd_size : size,
   y_axis_format,
   x_axis_time_format,
   adhoc_filters: enableExploreDnd ? dnd_adhoc_filters : adhoc_filters,

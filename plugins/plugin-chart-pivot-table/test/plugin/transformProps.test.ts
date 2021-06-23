@@ -1,5 +1,6 @@
 import { ChartProps } from '@superset-ui/core';
 import transformProps from '../../src/plugin/transformProps';
+import { MetricsLayoutEnum } from '../../src/types';
 
 describe('PivotTableChart transformProps', () => {
   const setDataMask = jest.fn();
@@ -18,6 +19,7 @@ describe('PivotTableChart transformProps', () => {
     rowTotals: true,
     valueFormat: 'SMART_NUMBER',
     emitFilter: false,
+    metricsLayout: MetricsLayoutEnum.COLUMNS,
   };
   const chartProps = new ChartProps({
     formData,
@@ -30,6 +32,7 @@ describe('PivotTableChart transformProps', () => {
     ],
     hooks: { setDataMask },
     filterState: { selectedFilters: {} },
+    datasource: { verboseMap: {} },
   });
 
   it('should transform chart props for viz', () => {
@@ -53,6 +56,8 @@ describe('PivotTableChart transformProps', () => {
       emitFilter: false,
       setDataMask,
       selectedFilters: {},
+      verboseMap: {},
+      metricsLayout: MetricsLayoutEnum.COLUMNS,
     });
   });
 });

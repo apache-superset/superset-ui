@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartMetadata, ChartPlugin, t } from '@superset-ui/core';
+import { Behavior, ChartMetadata, ChartPlugin, t } from '@superset-ui/core';
 import buildQuery from './buildQuery';
 import controlPanel from './controlPanel';
 import transformProps from './transformProps';
@@ -44,9 +44,10 @@ export default class EchartsTreemapChartPlugin extends ChartPlugin<
       controlPanel,
       loadChart: () => import('./EchartsTreemap'),
       metadata: new ChartMetadata({
+        behaviors: [Behavior.INTERACTIVE_CHART],
         credits: ['https://echarts.apache.org'],
         description: 'Treemap (Apache ECharts)',
-        name: t('Treemap'),
+        name: t('Treemap v2'),
         thumbnail,
       }),
       transformProps,

@@ -1,6 +1,6 @@
 {
   "name": "@superset-ui/core",
-  "version": "0.17.42",
+  "version": "0.17.59",
   "description": "Superset UI core",
   "sideEffects": false,
   "main": "lib/index.js",
@@ -63,10 +63,8 @@
   },
   "peerDependencies": {
     "@types/react": "*",
-    "@types/react-bootstrap": "*",
     "@types/react-loadable": "*",
     "react": "^16.13.1",
-    "react-bootstrap": "^0.33.1",
     "react-loadable": "^5.5.0"
   }
 }
