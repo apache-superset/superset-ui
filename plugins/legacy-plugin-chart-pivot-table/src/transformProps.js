@@ -20,9 +20,18 @@ import { extractTimegrain } from '@superset-ui/core';
 
 export default function transformProps(chartProps) {
   const { height, datasource, formData, queriesData, rawFormData } = chartProps;
-  const { groupby, numberFormat, dateFormat } = formData;
+  const { groupby, dateFormat } = formData;
   const { columnFormats, verboseMap } = datasource;
   const granularity = extractTimegrain(rawFormData);
+  let { numberFormat } = formData;
+
+  if (!numberFormat && chartProps.datasource && chartProps.datasource.metrics) {
+    chartProps.datasource.metrics.forEach(metric => {
+      if (metric.metric_name === chartProps.formData.metrics[0] && metric.d3format) {
+        numberFormat = metric.d3format;
+      }
+    });
+  }
 
   return {
     columnFormats,
