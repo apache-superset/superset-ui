@@ -22,8 +22,6 @@ export default function transformProps(chartProps) {
   const { columnFormats, verboseMap } = datasource;
   let { numberFormat } = formData;
 
-  console.log('chart-pivot-transform', formData);
-
   if (!numberFormat && chartProps.datasource && chartProps.datasource.metrics) {
     chartProps.datasource.metrics.forEach(metric => {
       if (metric.metric_name === chartProps.formData.metrics[0] && metric.d3format) {
