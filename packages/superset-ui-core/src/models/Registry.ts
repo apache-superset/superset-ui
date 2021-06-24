@@ -223,7 +223,7 @@ export default class Registry<V, W extends LoaderResult<V> = LoaderResult<V>> {
   entriesAsPromise(): Promise<{ key: string; value: V }[]> {
     const keys = this.keys();
 
-    return Promise.all(keys.map(key => this.getAsPromise(key))).then(values =>
+    return this.valuesAsPromise().then(values =>
       values.map((value, i) => ({
         key: keys[i],
         value,
