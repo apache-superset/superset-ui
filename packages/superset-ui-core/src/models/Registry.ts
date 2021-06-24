@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -262,27 +260,4 @@ export default class Registry<V, W extends LoaderResult<V> = LoaderResult<V>> {
       }
     });
   }
-}
-
-/**
- * A react hook that will re-render the component any time the registry gets new values
- * @param registry a superset-ui Registry (e.g. the chartMetadataRegistry)
- * @returns the result of registry.entries()
- */
-export function useRegistryEntries<V, W extends LoaderResult<V>>(
-  registry: Registry<V, W>,
-): RegistryEntry<V, W>[] {
-  const [entries, setEntries] = useState(registry.entries());
-
-  useEffect(() => {
-    const listener = () => {
-      setEntries(registry.entries());
-    };
-    registry.addListener(listener);
-    return () => {
-      registry.removeListener(listener);
-    };
-  }, [registry]);
-
-  return entries;
 }
