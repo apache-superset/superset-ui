@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -30,6 +32,24 @@ interface ItemWithLoader<T> {
   loader: () => T;
 }
 
+/**
+ * Type of value returned from loader function when using registerLoader()
+ */
+type LoaderResult<V> = V | Promise<V>;
+
+export type RegistryValue<V, W extends LoaderResult<V>> = V | W | undefined;
+
+export type RegistryEntry<V, W extends LoaderResult<V>> = {
+  key: string;
+  value: RegistryValue<V, W>;
+};
+
+/**
+ * A listener is called whenever a registry's entries change.
+ * Keys indicates which entries been affected.
+ */
+export type Listener = (keys: string[]) => void;
+
 export interface RegistryConfig {
   name?: string;
   overwritePolicy?: OverwritePolicy;
@@ -41,12 +61,11 @@ export interface RegistryConfig {
  * Can use generic to specify type of item in the registry
  * @type V Type of value
  * @type W Type of value returned from loader function when using registerLoader().
- * W can be either V, Promise<V> or V | Promise<V>
  * Set W=V when does not support asynchronous loader.
  * By default W is set to V | Promise<V> to support
  * both synchronous and asynchronous loaders.
  */
-export default class Registry<V, W extends V | Promise<V> = V | Promise<V>> {
+export default class Registry<V, W extends LoaderResult<V> = LoaderResult<V>> {
   name: string;
 
   overwritePolicy: OverwritePolicy;
@@ -59,17 +78,23 @@ export default class Registry<V, W extends V | Promise<V> = V | Promise<V>> {
     [key: string]: Promise<V>;
   };
 
+  listeners: Set<Listener>;
+
   constructor(config: RegistryConfig = {}) {
     const { name = '', overwritePolicy = OverwritePolicy.ALLOW } = config;
     this.name = name;
     this.overwritePolicy = overwritePolicy;
     this.items = {};
     this.promises = {};
+    this.listeners = new Set();
   }
 
   clear() {
+    const keys = this.keys();
+
     this.items = {};
     this.promises = {};
+    this.notifyListeners(keys);
 
     return this;
   }
@@ -95,6 +120,7 @@ export default class Registry<V, W extends V | Promise<V> = V | Promise<V>> {
     if (!item || willOverwrite) {
       this.items[key] = { value };
       delete this.promises[key];
+      this.notifyListeners([key]);
     }
 
     return this;
@@ -115,6 +141,7 @@ export default class Registry<V, W extends V | Promise<V> = V | Promise<V>> {
     if (!item || willOverwrite) {
       this.items[key] = { loader };
       delete this.promises[key];
+      this.notifyListeners([key]);
     }
 
     return this;
@@ -152,7 +179,7 @@ export default class Registry<V, W extends V | Promise<V> = V | Promise<V>> {
 
   getMap() {
     return this.keys().reduce<{
-      [key: string]: V | W | undefined;
+      [key: string]: RegistryValue<V, W>;
     }>((prev, key) => {
       const map = prev;
       map[key] = this.get(key);
@@ -180,7 +207,7 @@ export default class Registry<V, W extends V | Promise<V> = V | Promise<V>> {
     return Object.keys(this.items);
   }
 
-  values(): (V | W | undefined)[] {
+  values(): RegistryValue<V, W>[] {
     return this.keys().map(key => this.get(key));
   }
 
@@ -188,7 +215,7 @@ export default class Registry<V, W extends V | Promise<V> = V | Promise<V>> {
     return Promise.all(this.keys().map(key => this.getAsPromise(key)));
   }
 
-  entries(): { key: string; value: V | W | undefined }[] {
+  entries(): RegistryEntry<V, W>[] {
     return this.keys().map(key => ({
       key,
       value: this.get(key),
@@ -207,9 +234,55 @@ export default class Registry<V, W extends V | Promise<V> = V | Promise<V>> {
   }
 
   remove(key: string) {
+    const isChange = this.has(key);
     delete this.items[key];
     delete this.promises[key];
+    if (isChange) {
+      this.notifyListeners([key]);
+    }
 
     return this;
   }
+
+  addListener(listener: Listener) {
+    this.listeners.add(listener);
+  }
+
+  removeListener(listener: Listener) {
+    this.listeners.delete(listener);
+  }
+
+  private notifyListeners(keys: string[]) {
+    this.listeners.forEach(listener => {
+      try {
+        listener(keys);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Exception thrown from a registry listener:', e);
+      }
+    });
+  }
+}
+
+/**
+ * A react hook that will re-render the component any time the registry gets new values
+ * @param registry a superset-ui Registry (e.g. the chartMetadataRegistry)
+ * @returns the result of registry.entries()
+ */
+export function useRegistryEntries<V, W extends LoaderResult<V>>(
+  registry: Registry<V, W>,
+): RegistryEntry<V, W>[] {
+  const [entries, setEntries] = useState(registry.entries());
+
+  useEffect(() => {
+    const listener = () => {
+      setEntries(registry.entries());
+    };
+    registry.addListener(listener);
+    return () => {
+      registry.removeListener(listener);
+    };
+  }, [registry]);
+
+  return entries;
 }
