@@ -21,53 +21,6 @@ import { getMetricLabel, ensureIsArray, QueryFormData, QueryObject } from '@supe
 
 const TIME_COMPARISION = '__';
 
-function ensureIsInt<T>(value: T, defaultValue: number): number {
-  return Number.isNaN(parseInt(String(value), 10)) ? defaultValue : parseInt(String(value), 10);
-}
-
-export function rollingWindowTransform(
-  formData: QueryFormData,
-  queryObject: QueryObject,
-): QueryObject {
-  if (formData.rolling_type === 'None' || !formData.rolling_type) {
-    return queryObject;
-  }
-
-  const post_processing = ensureIsArray(queryObject.post_processing);
-  const columns = Object.fromEntries(
-    formData.metrics?.map(metric => {
-      if (typeof metric === 'string') {
-        return [metric, metric];
-      }
-      return [metric.label, metric.label];
-    }) || [],
-  );
-  if (formData.rolling_type === 'cumsum') {
-    // rolling must be the first operation(before pivot or other transforms)
-    post_processing.unshift({
-      operation: 'cum',
-      options: {
-        operator: 'sum',
-        columns,
-      },
-    });
-  }
-
-  if (['sum', 'mean', 'std'].includes(formData.rolling_type)) {
-    // same before
-    post_processing.unshift({
-      operation: 'rolling',
-      options: {
-        rolling_type: formData.rolling_type,
-        window: ensureIsInt(formData.rolling_periods, 1),
-        min_periods: ensureIsInt(formData.min_periods, 0),
-        columns,
-      },
-    });
-  }
-  return { ...queryObject, post_processing };
-}
-
 export function timeCompareTransform(
   formData: QueryFormData,
   queryObject: QueryObject,
@@ -112,7 +65,7 @@ export function timeCompareTransform(
     };
   }
   if (comparisonType === 'values') {
-    return { ...queryObject, post_processing, time_offset: timeCompare };
+    return { ...queryObject, post_processing, time_offsets: timeCompare };
   }
 
   const timeCompareProcessing = [
@@ -127,11 +80,7 @@ export function timeCompareTransform(
     },
   ].concat(post_processing);
 
-  return { ...queryObject, post_processing: timeCompareProcessing, time_offset: timeCompare };
-}
-
-export function resampleTransform(formData: QueryFormData, queryObject: QueryObject): QueryObject {
-  return queryObject;
+  return { ...queryObject, post_processing: timeCompareProcessing, time_offsets: timeCompare };
 }
 
 export default {};
