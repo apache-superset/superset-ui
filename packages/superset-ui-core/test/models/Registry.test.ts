@@ -405,5 +405,31 @@ describe('Registry', () => {
       registry.registerValue('foo', 'bar');
       expect(listener).not.toBeCalled();
     });
+
+    describe('with a broken listener', () => {
+      let restoreConsole: any;
+      beforeEach(() => {
+        restoreConsole = mockConsole();
+      });
+      afterEach(() => {
+        restoreConsole();
+      });
+
+      it('keeps working', () => {
+        const errorListener = jest.fn().mockImplementation(() => {
+          throw new Error('test error');
+        });
+        const lastListener = jest.fn();
+
+        registry.addListener(errorListener);
+        registry.addListener(lastListener);
+        registry.registerValue('foo', 'bar');
+
+        expect(listener).toBeCalledWith(['foo']);
+        expect(errorListener).toBeCalledWith(['foo']);
+        expect(lastListener).toBeCalledWith(['foo']);
+        expect(console.error).toBeCalled();
+      });
+    });
   });
 });
