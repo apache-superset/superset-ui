@@ -33,11 +33,11 @@ interface ItemWithLoader<T> {
 /**
  * Type of value returned from loader function when using registerLoader()
  */
-type LoaderResult<V> = V | Promise<V>;
+type InclusiveLoaderResult<V> = V | Promise<V>;
 
-export type RegistryValue<V, W extends LoaderResult<V>> = V | W | undefined;
+export type RegistryValue<V, W extends InclusiveLoaderResult<V>> = V | W | undefined;
 
-export type RegistryEntry<V, W extends LoaderResult<V>> = {
+export type RegistryEntry<V, W extends InclusiveLoaderResult<V>> = {
   key: string;
   value: RegistryValue<V, W>;
 };
@@ -63,7 +63,7 @@ export interface RegistryConfig {
  * By default W is set to V | Promise<V> to support
  * both synchronous and asynchronous loaders.
  */
-export default class Registry<V, W extends LoaderResult<V> = LoaderResult<V>> {
+export default class Registry<V, W extends InclusiveLoaderResult<V> = InclusiveLoaderResult<V>> {
   name: string;
 
   overwritePolicy: OverwritePolicy;
