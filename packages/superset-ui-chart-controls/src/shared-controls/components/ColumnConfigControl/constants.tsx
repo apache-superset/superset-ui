@@ -45,8 +45,10 @@ export type SharedColumnConfigProp =
 const emitTarget: ControlFormItemSpec<'Input'> = {
   controlType: 'Input',
   label: t('Emit Target'),
-  description: D3_FORMAT_DOCS,
-  defaultValue: 'this',
+  description: t(
+    'If you wish to specify a different target column than the original column, it can be entered here'
+  ),
+  defaultValue: '',
   debounceDelay: 500,
   validators: undefined,
 };
