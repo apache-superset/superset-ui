@@ -37,19 +37,17 @@ export default function buildQuery(formData: QueryFormData) {
         ? [[timeseries_limit_metric, !order_desc]]
         : [],
       post_processing: [
-        (formData.groupby || []).length > 0
-          ? {
-              operation: 'pivot',
-              options: {
-                index: ['__timestamp'],
-                columns: formData.groupby || [],
-                // Create 'dummy' sum aggregates to assign cell values in pivot table
-                aggregates: Object.fromEntries(
-                  metricLabels.map(metric => [metric, { operator: 'sum' }]),
-                ),
-              },
-            }
-          : undefined,
+        {
+          operation: 'pivot',
+          options: {
+            index: ['__timestamp'],
+            columns: formData.groupby || [],
+            // Create 'dummy' sum aggregates to assign cell values in pivot table
+            aggregates: Object.fromEntries(
+              metricLabels.map(metric => [metric, { operator: 'sum' }]),
+            ),
+          },
+        },
         formData.contributionMode
           ? {
               operation: 'contribution',
