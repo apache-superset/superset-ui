@@ -60,7 +60,6 @@ export default function ColumnConfigControl<T extends ColumnConfig>({
     });
   } else {
     Object.values(configFormLayout).forEach(array_of_array => {
-      console.log(array_of_array);
       const index = array_of_array.findIndex(arr => arr.includes('emitTarget'));
       if (index > -1) {
         array_of_array.splice(index, 1);
