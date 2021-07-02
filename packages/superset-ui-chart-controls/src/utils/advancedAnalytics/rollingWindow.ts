@@ -17,17 +17,24 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-import { ensureIsArray, ensureIsInt, QueryFormData, QueryObject } from '@superset-ui/core';
+import {
+  ensureIsArray,
+  ensureIsInt,
+  QueryFormData,
+  QueryObject,
+  RollingType,
+} from '@superset-ui/core';
 
 export function rollingWindowTransform(
   formData: QueryFormData,
   queryObject: QueryObject,
 ): QueryObject {
-  if (formData.rolling_type === 'None' || !formData.rolling_type) {
+  if (formData.rolling_type === RollingType.None || !formData.rolling_type) {
     return queryObject;
   }
 
-  const post_processing = ensureIsArray(queryObject.post_processing);
+  // ensure `post_processing` is a copy from queryObject
+  const post_processing = ensureIsArray(queryObject.post_processing).slice();
   const columns = Object.fromEntries(
     formData.metrics?.map(metric => {
       if (typeof metric === 'string') {
@@ -36,7 +43,7 @@ export function rollingWindowTransform(
       return [metric.label, metric.label];
     }) || [],
   );
-  if (formData.rolling_type === 'cumsum') {
+  if (formData.rolling_type === RollingType.Cumsum) {
     // rolling must be the first operation(before pivot or other transforms)
     post_processing.unshift({
       operation: 'cum',
@@ -47,7 +54,7 @@ export function rollingWindowTransform(
     });
   }
 
-  if (['sum', 'mean', 'std'].includes(formData.rolling_type)) {
+  if ([RollingType.Sum, RollingType.Mean, RollingType.Std].includes(formData.rolling_type)) {
     post_processing.unshift({
       operation: 'rolling',
       options: {

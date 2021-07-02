@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { t, RollingType, TimeShiftType } from '@superset-ui/core';
+import { t, RollingType, TimeShiftType, ComparisionType } from '@superset-ui/core';
 import { ControlPanelSectionConfig } from '../types';
 import { formatSelectOptions } from '../utils';
 
@@ -38,7 +38,7 @@ export const advancedAnalytics: ControlPanelSectionConfig = {
           type: 'SelectControl',
           label: t('Rolling function'),
           default: 'None',
-          choices: formatSelectOptions<RollingType>(['None', 'mean', 'sum', 'std', 'cumsum']),
+          choices: formatSelectOptions<RollingType>(Object.values(RollingType)),
           description: t(
             'Defines a rolling window function to apply, works along ' +
               'with the [Periods] text box',
@@ -113,10 +113,10 @@ export const advancedAnalytics: ControlPanelSectionConfig = {
           label: t('Calculation type'),
           default: 'values',
           choices: [
-            ['values', 'Actual values'],
-            ['absolute', 'Absolute difference'],
-            ['percentage', 'Percentage change'],
-            ['ratio', 'Ratio'],
+            [ComparisionType.Values, 'Actual values'],
+            [ComparisionType.Absolute, 'Absolute difference'],
+            [ComparisionType.Percentage, 'Percentage change'],
+            [ComparisionType.Ratio, 'Ratio'],
           ],
           description: t(
             'How to display time shifts: as individual lines; as the ' +
