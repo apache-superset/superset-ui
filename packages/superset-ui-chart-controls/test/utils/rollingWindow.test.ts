@@ -20,7 +20,7 @@ import { QueryObject, SqlaFormData } from '@superset-ui/core';
 import { rollingWindowTransform } from '../../src';
 
 const formData: SqlaFormData = {
-  metrics: ['count(*)'],
+  metrics: ['count(*)', { label: 'sum(val)', expressionType: 'SQL', sqlExpression: 'sum(val)' }],
   time_range: '2015 : 2016',
   granularity: 'month',
   datasource: 'foo',
@@ -65,7 +65,10 @@ describe('rollingWindowTransform', () => {
       operation: 'cum',
       options: {
         operator: 'sum',
-        columns: { 'count(*)': 'count(*)' },
+        columns: {
+          'count(*)': 'count(*)',
+          'sum(val)': 'sum(val)',
+        },
       },
     });
   });
@@ -85,7 +88,10 @@ describe('rollingWindowTransform', () => {
           rolling_type: rollingType,
           window: 1,
           min_periods: 0,
-          columns: { 'count(*)': 'count(*)' },
+          columns: {
+            'count(*)': 'count(*)',
+            'sum(val)': 'sum(val)',
+          },
         },
       });
     });
