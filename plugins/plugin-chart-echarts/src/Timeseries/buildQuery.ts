@@ -17,10 +17,7 @@
  * under the License.
  */
 import { buildQueryContext, getMetricLabel, QueryFormData, QueryObject } from '@superset-ui/core';
-import {
-  rollingWindowTransform,
-  timeCompareTransform,
-} from '@superset-ui/chart-controls';
+import { rollingWindowTransform, timeCompareTransform } from '@superset-ui/chart-controls';
 
 export default function buildQuery(formData: QueryFormData) {
   return buildQueryContext(formData, baseQueryObject => {
