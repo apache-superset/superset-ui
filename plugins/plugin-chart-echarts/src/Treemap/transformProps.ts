@@ -248,7 +248,6 @@ export default function transformProps(
   const series: TreemapSeriesOption[] = [
     {
       type: 'treemap',
-      animation: false,
       width: '100%',
       height: '100%',
       nodeClick: undefined,
