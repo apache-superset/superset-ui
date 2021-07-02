@@ -17,11 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import {
-  t,
-  RollingType,
-  TimeShiftType,
-} from '@superset-ui/core';
+import { t, RollingType, TimeShiftType } from '@superset-ui/core';
 import { ControlPanelSectionConfig } from '../types';
 import { formatSelectOptions } from '../utils';
 
