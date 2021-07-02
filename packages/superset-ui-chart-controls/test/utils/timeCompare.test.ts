@@ -43,6 +43,13 @@ const queryObject: QueryObject = {
         },
       },
     },
+    {
+      operation: 'aggregation',
+      options: {
+        groupby: ['col1'],
+        aggregates: 'count',
+      },
+    },
   ],
 };
 
