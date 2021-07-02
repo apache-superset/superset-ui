@@ -18,11 +18,11 @@
  */
 import {
   buildQueryContext,
+  ensureIsArray,
   getMetricLabel,
   QueryMode,
-  removeDuplicates,
-  ensureIsArray,
   QueryObject,
+  removeDuplicates,
 } from '@superset-ui/core';
 import { PostProcessingRule } from '@superset-ui/core/src/query/types/PostProcessing';
 import { BuildQuery } from '@superset-ui/core/src/chart/registries/ChartBuildQueryRegistrySingleton';
@@ -89,10 +89,10 @@ const buildQuery: BuildQuery<TableChartFormData> = (formData: TableChartFormData
     }
 
     const moreProps: Partial<QueryObject> = {};
+    const ownState = options?.ownState ?? {};
     if (formDataCopy.server_pagination) {
-      const rowLimit = formDataCopy.extra_form_data?.custom_form_data?.row_limit;
-      moreProps.row_limit = rowLimit ?? formDataCopy.server_page_length;
-      moreProps.row_offset = formDataCopy?.extra_form_data?.custom_form_data?.row_offset ?? 0;
+      moreProps.row_limit = ownState.pageSize ?? formDataCopy.server_page_length;
+      moreProps.row_offset = (ownState.currentPage ?? 0) * (ownState.pageSize ?? 0);
     }
 
     let queryObject = {
@@ -115,13 +115,31 @@ const buildQuery: BuildQuery<TableChartFormData> = (formData: TableChartFormData
     // Because we use same buildQuery for all table on the page we need split them by id
     options?.hooks?.setCachedChanges({ [formData.slice_id]: queryObject.filters });
 
+    const extraQueries: QueryObject[] = [];
+    if (metrics?.length && formData.show_totals && queryMode === QueryMode.aggregate) {
+      extraQueries.push({
+        ...queryObject,
+        columns: [],
+        row_limit: 0,
+        row_offset: 0,
+        post_processing: [],
+      });
+    }
+
+    const interactiveGroupBy = formData.extra_form_data?.interactive_groupby;
+    if (interactiveGroupBy && queryObject.columns) {
+      queryObject.columns = [...new Set([...queryObject.columns, ...interactiveGroupBy])];
+    }
+
     if (formData.server_pagination) {
       return [
         { ...queryObject },
         { ...queryObject, row_limit: 0, row_offset: 0, post_processing: [], is_rowcount: true },
+        ...extraQueries,
       ];
     }
-    return [queryObject];
+
+    return [queryObject, ...extraQueries];
   });
 };
 
@@ -138,6 +156,7 @@ export const cachedBuildQuery = (): BuildQuery<TableChartFormData> => {
       { ...formData },
       {
         extras: { cachedChanges },
+        ownState: options?.ownState ?? {},
         hooks: {
           ...options?.hooks,
           setDataMask: () => {},

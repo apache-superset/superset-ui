@@ -16,16 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { extractTimegrain } from '@superset-ui/core';
+
 export default function transformProps(chartProps) {
-  const { height, datasource, formData, queriesData } = chartProps;
-  const { timeGrainSqla, groupby, numberFormat, dateFormat } = formData;
+  const { height, datasource, formData, queriesData, rawFormData } = chartProps;
+  const { groupby, numberFormat, dateFormat } = formData;
   const { columnFormats, verboseMap } = datasource;
+  const granularity = extractTimegrain(rawFormData);
 
   return {
     columnFormats,
     data: queriesData[0].data,
     dateFormat,
-    granularity: timeGrainSqla,
+    granularity,
     height,
     numberFormat,
     numGroups: groupby.length,

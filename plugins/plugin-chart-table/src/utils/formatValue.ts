@@ -17,7 +17,7 @@
  * under the License.
  */
 import { FilterXSS, getDefaultWhiteList } from 'xss';
-import { DataRecordValue } from '@superset-ui/core';
+import { DataRecordValue, GenericDataType, getNumberFormatter } from '@superset-ui/core';
 import { DataColumnMeta } from '../types';
 
 const xss = new FilterXSS({
@@ -27,6 +27,7 @@ const xss = new FilterXSS({
     div: ['style', 'class'],
     a: ['style', 'class', 'href', 'title', 'target'],
     img: ['style', 'class', 'src', 'alt', 'title', 'width', 'height'],
+    video: ['autoplay', 'controls', 'loop', 'preload', 'src', 'height', 'width', 'muted'],
   },
   stripIgnoreTag: true,
   css: false,
@@ -35,22 +36,41 @@ const xss = new FilterXSS({
 function isProbablyHTML(text: string) {
   return /<[^>]+>/.test(text);
 }
+
 /**
  * Format text for cell value.
  */
-export default function formatValue(
-  { formatter }: DataColumnMeta,
+function formatValue(
+  formatter: DataColumnMeta['formatter'],
   value: DataRecordValue,
-): [boolean, string, string | null] {
+): [boolean, string] {
+  // render undefined as empty string
+  if (value === undefined) {
+    return [false, ''];
+  }
+  // render null as `N/A`
   if (value === null) {
-    return [false, 'N/A', 'dt-is-null'];
+    return [false, 'N/A'];
   }
   if (formatter) {
     // in case percent metric can specify percent format in the future
-    return [false, formatter(value as number), null];
+    return [false, formatter(value as number)];
   }
   if (typeof value === 'string') {
-    return isProbablyHTML(value) ? [true, xss.process(value), null] : [false, value, null];
+    return isProbablyHTML(value) ? [true, xss.process(value)] : [false, value];
   }
-  return [false, value.toString(), null];
+  return [false, value.toString()];
+}
+
+export function formatColumnValue(column: DataColumnMeta, value: DataRecordValue) {
+  const { dataType, formatter, config = {} } = column;
+  const isNumber = dataType === GenericDataType.NUMERIC;
+  const smallNumberFormatter =
+    config.d3SmallNumberFormat === undefined
+      ? formatter
+      : getNumberFormatter(config.d3SmallNumberFormat);
+  return formatValue(
+    isNumber && typeof value === 'number' && Math.abs(value) < 1 ? smallNumberFormatter : formatter,
+    value,
+  );
 }

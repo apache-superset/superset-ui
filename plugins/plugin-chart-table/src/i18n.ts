@@ -38,8 +38,8 @@ const translations: Partial<Record<Locale, typeof en>> = {
     'page_size.show': ['每页显示'],
     'page_size.all': ['全部'],
     'page_size.entries': ['条'],
-    'table.previous_page': ['以前的'],
-    'table.next_page': ['下一個'],
+    'table.previous_page': ['上一页'],
+    'table.next_page': ['下一页'],
     'search.num_records': ['%s条记录...'],
   },
 };

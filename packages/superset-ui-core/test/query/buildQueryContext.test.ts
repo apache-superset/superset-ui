@@ -31,7 +31,6 @@ describe('buildQueryContext', () => {
     expect(queryContext.result_format).toBe('json');
     expect(queryContext.result_type).toBe('full');
   });
-
   it('should build datasource for druid sources and set force to true', () => {
     const queryContext = buildQueryContext({
       datasource: '5__druid',

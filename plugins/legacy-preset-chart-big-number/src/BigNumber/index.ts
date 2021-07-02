@@ -19,10 +19,15 @@
 import { t, ChartMetadata, ChartPlugin } from '@superset-ui/core';
 import controlPanel from './controlPanel';
 import transformProps, { BigNumberChartProps, BigNumberFormData } from './transformProps';
+import example from './images/Big_Number_Trendline.jpg';
 import thumbnail from './images/thumbnail.png';
 
 const metadata = new ChartMetadata({
-  description: '',
+  category: t('Time Series'),
+  description: t(
+    'A single number accompanied by a simple line chart, to call attention to an important metric along with its change over time or another dimension. If you find yourself using a lot of big numbers on a dashboard, a more visual chart may help you make your dashboard more informative.',
+  ),
+  exampleGallery: [{ url: example }],
   name: t('Big Number with Trendline'),
   thumbnail,
   useLegacyApi: true,

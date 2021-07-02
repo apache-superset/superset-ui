@@ -38,9 +38,8 @@ export type SharedControlComponents = typeof sharedControlComponents;
 /** ----------------------------------------------
  * Input data/props while rendering
  * ---------------------------------------------*/
-export type ColumnMeta = Omit<Column, 'id' | 'type'> & {
+export type ColumnMeta = Omit<Column, 'id'> & {
   id?: number;
-  type?: string;
 } & AnyDict;
 
 export interface DatasourceMeta {
@@ -186,8 +185,15 @@ export interface BaseControlConfig<
   validators?: ControlValueValidator<T, O, V>[];
   warning?: ReactNode;
   error?: ReactNode;
-  // override control panel state props
-  mapStateToProps?: (state: ControlPanelState, control: this) => ExtraControlProps;
+  /**
+   * Add additional props to chart control.
+   */
+  mapStateToProps?: (
+    state: ControlPanelState,
+    controlState: this & ExtraControlProps,
+    // TODO: add strict `chartState` typing (see superset-frontend/src/explore/types)
+    chartState?: AnyDict,
+  ) => ExtraControlProps;
   visibility?: (props: ControlPanelsContainerProps) => boolean;
 }
 
@@ -196,7 +202,7 @@ export interface ControlValueValidator<
   O extends SelectOption = SelectOption,
   V = unknown
 > {
-  (value: V, state: ControlState<T, O>): boolean | string;
+  (value: V, state?: ControlState<T, O>): boolean | string;
 }
 
 /** --------------------------------------------

@@ -30,8 +30,9 @@ export default function EchartsTimeseries({
   groupby,
   labelMap,
   setDataMask,
-  selectedValues,
 }: TimeseriesChartTransformedProps) {
+  const { filterState } = formData;
+  console.log(formData);
   const handleChange = useCallback(
     (values: string[]) => {
       if (!formData.emitFilter) {
@@ -40,39 +41,42 @@ export default function EchartsTimeseries({
       const groupbyValues = values.map(value => labelMap[value]);
 
       setDataMask({
-        crossFilters: {
-          extraFormData: {
-            append_form_data: {
-              filters:
-                values.length === 0
-                  ? []
-                  : groupby.map((col, idx) => {
-                      const val = groupbyValues.map(v => v[idx]);
-                      if (val === null || val === undefined)
-                        return {
-                          col,
-                          op: 'IS NULL',
-                        };
-                      return {
-                        col,
-                        op: 'IN',
-                        val: val as (string | number | boolean)[],
-                      };
-                    }),
-            },
-          },
-          currentState: {
-            value: groupbyValues.length ? groupbyValues : null,
-          },
+        extraFormData: {
+          filters:
+            values.length === 0
+              ? []
+              : groupby.map((col, idx) => {
+                  const val = groupbyValues.map(v => v[idx]);
+                  if (val === null || val === undefined)
+                    return {
+                      col,
+                      op: 'IS NULL',
+                    };
+                  return {
+                    col,
+                    op: 'IN',
+                    val: val as (string | number | boolean)[],
+                  };
+                }),
         },
-        ownFilters: {
-          currentState: {
-            selectedValues: values.length ? values : null,
-          },
+        filterState: {
+          label: groupbyValues.length ? groupbyValues : undefined,
+          value: groupbyValues.length ? groupbyValues : null,
         },
       });
     },
-    [groupby, labelMap, setDataMask, selectedValues],
+    [groupby, labelMap, setDataMask],
+  );
+
+  const selectedValues = (filterState || []).reduce(
+    (acc: Record<string, number>, selectedValue: string) => {
+      const index = Object.keys(labelMap).indexOf(selectedValue);
+      return {
+        ...acc,
+        [index]: selectedValue,
+      };
+    },
+    {},
   );
 
   const eventHandlers: EventHandlers = {

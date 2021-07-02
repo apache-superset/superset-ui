@@ -77,7 +77,7 @@ export function formatPieLabel({
 }
 
 export default function transformProps(chartProps: EchartsPieChartProps): PieChartTransformedProps {
-  const { formData, height, hooks, ownCurrentState, queriesData, width } = chartProps;
+  const { formData, height, hooks, filterState, queriesData, width } = chartProps;
   const { data = [] } = queriesData[0];
   const coltypeMapping = getColtypesMapping(queriesData[0]);
 
@@ -102,6 +102,7 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
     emitFilter,
   }: EchartsPieFormData = { ...DEFAULT_LEGEND_FORM_DATA, ...DEFAULT_PIE_FORM_DATA, ...formData };
   const metricLabel = getMetricLabel(metric);
+  const minShowLabelAngle = (showLabelsThreshold || 0) * 3.6;
 
   const keys = data.map(datum =>
     extractGroupbyLabel({
@@ -146,7 +147,7 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
     };
   });
 
-  const selectedValues = (ownCurrentState.selectedValues || []).reduce(
+  const selectedValues = (filterState.selectedValues || []).reduce(
     (acc: Record<string, number>, selectedValue: string) => {
       const index = transformedData.findIndex(({ name }) => name === selectedValue);
       return {
@@ -157,15 +158,12 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
     {},
   );
 
-  const formatter = (params: CallbackDataParams) => {
-    if (params.percent && params.percent < showLabelsThreshold) return '';
-
-    return formatPieLabel({
+  const formatter = (params: CallbackDataParams) =>
+    formatPieLabel({
       params,
       numberFormatter,
       labelType,
     });
-  };
 
   const defaultLabel = {
     formatter,
@@ -182,6 +180,7 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
       center: ['50%', '50%'],
       avoidLabelOverlap: true,
       labelLine: labelsOutside && labelLine ? { show: true } : { show: false },
+      minShowLabelAngle,
       label: labelsOutside
         ? {
             ...defaultLabel,

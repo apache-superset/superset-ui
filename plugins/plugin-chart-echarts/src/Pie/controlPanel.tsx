@@ -20,18 +20,14 @@ import React from 'react';
 import { FeatureFlag, isFeatureEnabled, t, validateNonEmpty } from '@superset-ui/core';
 import {
   ControlPanelConfig,
+  ControlPanelsContainerProps,
   D3_FORMAT_DOCS,
   D3_FORMAT_OPTIONS,
   D3_TIME_FORMAT_OPTIONS,
   sections,
 } from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from './types';
-import {
-  legendMarginControl,
-  legendOrientationControl,
-  legendTypeControl,
-  showLegendControl,
-} from '../controls';
+import { legendSection } from '../controls';
 
 const {
   donut,
@@ -60,6 +56,7 @@ const config: ControlPanelConfig = {
           {
             name: 'sort_by_metric',
             config: {
+              default: true,
               type: 'CheckboxControl',
               label: t('Sort by metric'),
               description: t('Whether to sort results by the selected metric in descending order.'),
@@ -86,7 +83,6 @@ const config: ControlPanelConfig = {
             },
           },
         ],
-
         isFeatureEnabled(FeatureFlag.DASHBOARD_CROSS_FILTERS)
           ? [
               {
@@ -101,13 +97,7 @@ const config: ControlPanelConfig = {
               },
             ]
           : [],
-
-        // eslint-disable-next-line react/jsx-key
-        [<h1 className="section-header">{t('Legend')}</h1>],
-        [showLegendControl],
-        [legendTypeControl],
-        [legendOrientationControl],
-        [legendMarginControl],
+        ...legendSection,
         // eslint-disable-next-line react/jsx-key
         [<h1 className="section-header">{t('Labels')}</h1>],
         [
@@ -181,6 +171,8 @@ const config: ControlPanelConfig = {
               default: labelsOutside,
               renderTrigger: true,
               description: t('Put the labels outside of the pie?'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.show_labels?.value),
             },
           },
         ],
@@ -193,6 +185,8 @@ const config: ControlPanelConfig = {
               default: labelLine,
               renderTrigger: true,
               description: t('Draw line from Pie to label when labels outside?'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.show_labels?.value),
             },
           },
         ],
@@ -237,6 +231,8 @@ const config: ControlPanelConfig = {
               step: 1,
               default: innerRadius,
               description: t('Inner radius of donut hole'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.donut?.value),
             },
           },
         ],

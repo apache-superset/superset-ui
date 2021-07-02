@@ -1,31 +1,31 @@
 import { ExtraFormData } from '../../query';
+import { JsonObject } from '../..';
 
 export type HandlerFunction = (...args: unknown[]) => void;
 
 export enum Behavior {
-  CROSS_FILTER = 'CROSS_FILTER',
+  INTERACTIVE_CHART = 'INTERACTIVE_CHART',
   NATIVE_FILTER = 'NATIVE_FILTER',
 }
 
-export type DataMaskCurrentState = { value?: any; [key: string]: any };
+export enum AppSection {
+  EXPLORE = 'EXPLORE',
+  DASHBOARD = 'DASHBOARD',
+  FILTER_BAR = 'FILTER_BAR',
+  FILTER_CONFIG_MODAL = 'FILTER_CONFIG_MODAL',
+  EMBEDDED = 'EMBEDDED',
+}
+
+export type FilterState = { value?: any; [key: string]: any };
 
 export type DataMask = {
-  nativeFilters?: {
-    extraFormData?: ExtraFormData;
-    currentState: DataMaskCurrentState;
-  };
-  crossFilters?: {
-    extraFormData?: ExtraFormData;
-    currentState: DataMaskCurrentState;
-  };
-  ownFilters?: {
-    extraFormData?: ExtraFormData;
-    currentState: { [key: string]: any };
-  };
+  extraFormData?: ExtraFormData;
+  filterState?: FilterState;
+  ownState?: JsonObject;
 };
 
 export type SetDataMaskHook = {
-  ({ nativeFilters, crossFilters, ownFilters }: DataMask): void;
+  ({ filterState, extraFormData, ownState }: DataMask): void;
 };
 
 export interface PlainObject {

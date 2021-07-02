@@ -107,11 +107,11 @@ export default function DataTable<D extends object>({
     sortBy: sortByRef.current,
     pageSize: initialPageSize > 0 ? initialPageSize : resultsSize || 10,
   };
-
   const defaultWrapperRef = useRef<HTMLDivElement>(null);
   const globalControlRef = useRef<HTMLDivElement>(null);
   const paginationRef = useRef<HTMLDivElement>(null);
   const wrapperRef = userWrapperRef || defaultWrapperRef;
+  const paginationData = JSON.stringify(serverPaginationData);
 
   const defaultGetTableSize = useCallback(() => {
     if (wrapperRef.current) {
@@ -134,7 +134,7 @@ export default function DataTable<D extends object>({
     hasGlobalControl,
     paginationRef,
     resultsSize,
-    JSON.stringify(serverPaginationData),
+    paginationData,
   ]);
 
   const defaultGlobalFilter: FilterType<D> = useCallback(
@@ -154,6 +154,7 @@ export default function DataTable<D extends object>({
     getTableBodyProps,
     prepareRow,
     headerGroups,
+    footerGroups,
     page,
     pageCount,
     gotoPage,
@@ -193,6 +194,8 @@ export default function DataTable<D extends object>({
     return (wrapStickyTable ? wrapStickyTable(getNoResults) : getNoResults()) as JSX.Element;
   }
 
+  const shouldRenderFooter = columns.some(x => !!x.Footer);
+
   const renderTable = () => (
     <table {...getTableProps({ className: tableClassName })}>
       <thead>
@@ -229,6 +232,18 @@ export default function DataTable<D extends object>({
           </tr>
         )}
       </tbody>
+      {shouldRenderFooter && (
+        <tfoot>
+          {footerGroups.map(footerGroup => {
+            const { key: footerGroupKey, ...footerGroupProps } = footerGroup.getHeaderGroupProps();
+            return (
+              <tr key={footerGroupKey || footerGroup.id} {...footerGroupProps}>
+                {footerGroup.headers.map(column => column.render('Footer', { key: column.id }))}
+              </tr>
+            );
+          })}
+        </tfoot>
+      )}
     </table>
   );
 

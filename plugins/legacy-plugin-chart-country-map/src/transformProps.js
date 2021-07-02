@@ -24,7 +24,7 @@ export default function transformProps(chartProps) {
     width,
     height,
     data: queriesData[0].data,
-    country: selectCountry,
+    country: selectCountry ? String(selectCountry).toLowerCase() : null,
     linearColorScheme,
     numberFormat,
   };

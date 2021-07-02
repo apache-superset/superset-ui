@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState, useMemo, useCallback } from 'react';
-import { ColumnInstance, DefaultSortTypes, ColumnWithLooseAccessor } from 'react-table';
+import React, { CSSProperties, useCallback, useMemo, useState } from 'react';
+import { ColumnInstance, ColumnWithLooseAccessor, DefaultSortTypes } from 'react-table';
 import { extent as d3Extent, max as d3Max } from 'd3-array';
-import { FaSort, FaSortUp as FaSortAsc, FaSortDown as FaSortDesc } from 'react-icons/fa';
-import { t, tn, DataRecordValue, DataRecord, GenericDataType } from '@superset-ui/core';
+import { FaSort, FaSortDown as FaSortDesc, FaSortUp as FaSortAsc } from 'react-icons/fa';
+import { DataRecord, DataRecordValue, GenericDataType, t, tn } from '@superset-ui/core';
 
-import { TableChartTransformedProps, DataColumnMeta } from './types';
+import { DataColumnMeta, TableChartTransformedProps } from './types';
 import DataTable, {
   DataTableProps,
   SearchInputProps,
@@ -31,7 +31,7 @@ import DataTable, {
 } from './DataTable';
 
 import Styles from './Styles';
-import formatValue from './utils/formatValue';
+import { formatColumnValue } from './utils/formatValue';
 import { PAGE_SIZE_OPTIONS } from './consts';
 import { updateExternalFormData } from './DataTable/utils/externalAPIs';
 
@@ -147,11 +147,12 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     height,
     width,
     data,
+    totals,
     isRawRecords,
     rowCount = 0,
     columns: columnsMeta,
-    alignPositiveNegative = false,
-    colorPositiveNegative = false,
+    alignPositiveNegative: defaultAlignPN = false,
+    colorPositiveNegative: defaultColorPN = false,
     includeSearch = false,
     pageSize = 0,
     serverPagination = false,
@@ -160,12 +161,46 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     showCellBars = true,
     emitFilter = false,
     sortDesc = false,
-    onChangeFilter,
-    filters: initialFilters,
+    filters: initialFilters = {},
     sticky = true, // whether to use sticky header
   } = props;
 
   const [filters, setFilters] = useState(initialFilters);
+
+  const handleChange = useCallback(
+    (filters: { [x: string]: DataRecordValue[] }) => {
+      if (!emitFilter) {
+        return;
+      }
+
+      const groupBy = Object.keys(filters);
+      const groupByValues = Object.values(filters);
+      setDataMask({
+        extraFormData: {
+          filters:
+            groupBy.length === 0
+              ? []
+              : groupBy.map(col => {
+                  const val = filters?.[col];
+                  if (val === null || val === undefined)
+                    return {
+                      col,
+                      op: 'IS NULL',
+                    };
+                  return {
+                    col,
+                    op: 'IN',
+                    val: val as (string | number | boolean)[],
+                  };
+                }),
+        },
+        filterState: {
+          value: groupByValues.length ? groupByValues : null,
+        },
+      });
+    },
+    [emitFilter, setDataMask],
+  );
 
   // only take relevant page size options
   const pageSizeOptions = useMemo(() => {
@@ -173,10 +208,10 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     return PAGE_SIZE_OPTIONS.filter(([n]) =>
       serverPagination ? getServerPagination(n) : n <= 2 * data.length,
     ) as SizeOption[];
-  }, [data.length, rowCount]);
+  }, [data.length, rowCount, serverPagination]);
 
   const getValueRange = useCallback(
-    function getValueRange(key: string) {
+    function getValueRange(key: string, alignPositiveNegative: boolean) {
       if (typeof data?.[0]?.[key] === 'number') {
         const nums = data.map(row => row[key]) as number[];
         return (alignPositiveNegative
@@ -185,7 +220,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
       }
       return null;
     },
-    [alignPositiveNegative, data],
+    [data],
   );
 
   const isActiveFilterValue = useCallback(
@@ -203,51 +238,82 @@ export default function TableChart<D extends DataRecord = DataRecord>(
       } else {
         updatedFilters[key] = [...(filters?.[key] || []), val];
       }
-      setFilters(updatedFilters);
-      if (onChangeFilter) {
-        onChangeFilter(updatedFilters);
+      if (Array.isArray(updatedFilters[key]) && updatedFilters[key].length === 0) {
+        delete updatedFilters[key];
       }
+      setFilters(updatedFilters);
+      handleChange(updatedFilters);
     },
-    [filters, isActiveFilterValue, onChangeFilter],
+    [filters, handleChange, isActiveFilterValue],
   );
+
+  const getSharedStyle = (column: DataColumnMeta): CSSProperties => {
+    const { isNumeric, config = {} } = column;
+    const textAlign = config.horizontalAlign
+      ? config.horizontalAlign
+      : isNumeric
+      ? 'right'
+      : 'left';
+    return {
+      textAlign,
+    };
+  };
 
   const getColumnConfigs = useCallback(
     (column: DataColumnMeta, i: number): ColumnWithLooseAccessor<D> => {
-      const { key, label, dataType, isMetric } = column;
+      const { key, label, isNumeric, dataType, isMetric, config = {} } = column;
+      const isFilter = !isNumeric && emitFilter;
+      const columnWidth = Number.isNaN(Number(config.columnWidth))
+        ? config.columnWidth
+        : Number(config.columnWidth);
+
+      // inline style for both th and td cell
+      const sharedStyle: CSSProperties = getSharedStyle(column);
+
+      const alignPositiveNegative =
+        config.alignPositiveNegative === undefined ? defaultAlignPN : config.alignPositiveNegative;
+      const colorPositiveNegative =
+        config.colorPositiveNegative === undefined ? defaultColorPN : config.colorPositiveNegative;
+
+      const valueRange =
+        (config.showCellBars === undefined ? showCellBars : config.showCellBars) &&
+        (isMetric || isRawRecords) &&
+        getValueRange(key, alignPositiveNegative);
+
       let className = '';
-      if (dataType === GenericDataType.NUMERIC) {
-        className += ' dt-metric';
-      } else if (emitFilter) {
+      if (isFilter) {
         className += ' dt-is-filter';
       }
-      const valueRange = showCellBars && (isMetric || isRawRecords) && getValueRange(key);
+
       return {
         id: String(i), // to allow duplicate column keys
         // must use custom accessor to allow `.` in column names
         // typing is incorrect in current version of `@types/react-table`
         // so we ask TS not to check.
         accessor: ((datum: D) => datum[key]) as never,
-        Cell: ({ value }: { column: ColumnInstance<D>; value: DataRecordValue }) => {
-          const [isHtml, text, customClassName] = formatValue(column, value);
-          const style = {
-            background: valueRange
-              ? cellBar({
-                  value: value as number,
-                  valueRange,
-                  alignPositiveNegative,
-                  colorPositiveNegative,
-                })
-              : undefined,
-          };
+        Cell: ({ value }: { value: DataRecordValue }) => {
+          const [isHtml, text] = formatColumnValue(column, value);
           const html = isHtml ? { __html: text } : undefined;
           const cellProps = {
             // show raw number in title in case of numeric values
             title: typeof value === 'number' ? String(value) : undefined,
             onClick: emitFilter && !valueRange ? () => toggleFilter(key, value) : undefined,
-            className: `${className} ${customClassName || ''} ${
-              isActiveFilterValue(key, value) ? ' dt-is-active-filter' : ''
-            }`,
-            style,
+            className: [
+              className,
+              value == null ? 'dt-is-null' : '',
+              isActiveFilterValue(key, value) ? ' dt-is-active-filter' : '',
+            ].join(' '),
+            style: {
+              ...sharedStyle,
+              background: valueRange
+                ? cellBar({
+                    value: value as number,
+                    valueRange,
+                    alignPositiveNegative,
+                    colorPositiveNegative,
+                  })
+                : undefined,
+            },
           };
           if (html) {
             // eslint-disable-next-line react/no-danger
@@ -260,27 +326,51 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         Header: ({ column: col, onClick, style }) => (
           <th
             title="Shift + Click to sort by multiple columns"
-            className={col.isSorted ? `${className || ''} is-sorted` : className}
-            style={style}
+            className={[className, col.isSorted ? 'is-sorted' : ''].join(' ')}
+            style={{
+              ...sharedStyle,
+              ...style,
+            }}
             onClick={onClick}
           >
+            {/* can't use `columnWidth &&` because it may also be zero */}
+            {config.columnWidth ? (
+              // column width hint
+              <div
+                style={{
+                  width: columnWidth,
+                  height: 0.01,
+                }}
+              />
+            ) : null}
             {label}
             <SortIcon column={col} />
           </th>
         ),
+        Footer: totals ? (
+          i === 0 ? (
+            <th>{t('Totals')}</th>
+          ) : (
+            <td style={sharedStyle}>
+              <strong>{formatColumnValue(column, totals[key])[1]}</strong>
+            </td>
+          )
+        ) : undefined,
         sortDescFirst: sortDesc,
         sortType: getSortTypeByDataType(dataType),
       };
     },
     [
-      alignPositiveNegative,
-      colorPositiveNegative,
+      defaultAlignPN,
+      defaultColorPN,
       emitFilter,
       getValueRange,
       isActiveFilterValue,
+      isRawRecords,
       showCellBars,
       sortDesc,
       toggleFilter,
+      totals,
     ],
   );
 

@@ -22,10 +22,19 @@ import transformProps, {
   BigNumberChartProps,
   BigNumberFormData,
 } from '../BigNumber/transformProps';
+import example1 from './images/BigNumber.jpg';
+import example2 from './images/BigNumber2.jpg';
 import thumbnail from './images/thumbnail.png';
 
 const metadata = new ChartMetadata({
-  description: '',
+  category: t('Composition'),
+  description: t(
+    'A single number that calls attention to an important metric. Good for KPI and strategic dashboards that showcase a few, focused set of metrics.',
+  ),
+  exampleGallery: [
+    { url: example1, caption: t('A Big Number') },
+    { url: example2, caption: t('With a subheader') },
+  ],
   name: t('Big Number'),
   thumbnail,
   useLegacyApi: true,

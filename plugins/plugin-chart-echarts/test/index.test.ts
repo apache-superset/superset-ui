@@ -17,15 +17,21 @@
  * under the License.
  */
 import {
+  EchartsBoxPlotChartPlugin,
   EchartsPieChartPlugin,
   EchartsTimeseriesChartPlugin,
   EchartsGraphChartPlugin,
+  EchartsFunnelChartPlugin,
+  EchartsTreemapChartPlugin,
 } from '../src';
 
 describe('@superset-ui/plugin-chart-echarts', () => {
   it('exists', () => {
+    expect(EchartsBoxPlotChartPlugin).toBeDefined();
     expect(EchartsPieChartPlugin).toBeDefined();
     expect(EchartsTimeseriesChartPlugin).toBeDefined();
     expect(EchartsGraphChartPlugin).toBeDefined();
+    expect(EchartsFunnelChartPlugin).toBeDefined();
+    expect(EchartsTreemapChartPlugin).toBeDefined();
   });
 });
