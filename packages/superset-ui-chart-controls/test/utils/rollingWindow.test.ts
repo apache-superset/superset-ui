@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { rollingWindowTransform } from '../../src';
 import { QueryObject, SqlaFormData } from '@superset-ui/core';
+import { rollingWindowTransform } from '../../src';
 
 const formData: SqlaFormData = {
   metrics: ['count(*)'],
