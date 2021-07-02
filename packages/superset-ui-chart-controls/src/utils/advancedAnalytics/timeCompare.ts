@@ -23,6 +23,7 @@ import {
   QueryFormData,
   QueryObject,
   ComparisionType,
+  QueryFormMetric,
 } from '@superset-ui/core';
 import { PostProcessingPivot } from '@superset-ui/core/lib/query/types/PostProcessing';
 
@@ -44,7 +45,7 @@ export function timeCompareTransform(
 
   // ensure `post_processing` is a copy from queryObject
   let post_processing = ensureIsArray(queryObject.post_processing).slice();
-  const metricLabels = (queryObject.metrics || []).map(getMetricLabel);
+  const metricLabels = (queryObject.metrics as QueryFormMetric[]).map(getMetricLabel);
   // metric offset label and metric label mapping, for instance:
   // {
   //   "SUM(value)__1 year ago": "SUM(value)",

@@ -73,6 +73,22 @@ describe('rollingWindowTransform', () => {
     });
   });
 
+  it('rolling_type: cumsum when metrics is empty', () => {
+    const expected = rollingWindowTransform(
+      { ...formData, metrics: [], rolling_type: 'cumsum' },
+      queryObject,
+    ).post_processing;
+    expect(expected).not.toEqual(queryObject.post_processing);
+    expect(expected[1]).toEqual(queryObject.post_processing[0]);
+    expect(expected[0]).toEqual({
+      operation: 'cum',
+      options: {
+        operator: 'sum',
+        columns: {},
+      },
+    });
+  });
+
   it('rolling_type: sum/mean/std', () => {
     const rollingTypes = ['sum', 'mean', 'std'];
     rollingTypes.forEach(rollingType => {
