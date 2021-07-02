@@ -20,7 +20,6 @@ import { buildQueryContext, getMetricLabel, QueryFormData, QueryObject } from '@
 import {
   rollingWindowTransform,
   timeCompareTransform,
-  resampleTransform,
 } from '@superset-ui/chart-controls';
 
 export default function buildQuery(formData: QueryFormData) {
@@ -73,9 +72,6 @@ export default function buildQuery(formData: QueryFormData) {
     };
     queryObject = rollingWindowTransform(formData, queryObject);
     queryObject = timeCompareTransform(formData, queryObject);
-    queryObject = resampleTransform(formData, queryObject);
-
-    console.log(queryObject);
 
     return [queryObject];
   });

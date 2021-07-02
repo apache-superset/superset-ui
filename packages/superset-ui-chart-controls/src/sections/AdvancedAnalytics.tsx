@@ -21,8 +21,6 @@ import {
   t,
   RollingType,
   TimeShiftType,
-  ResampleRuleType,
-  ResampleMethodType,
 } from '@superset-ui/core';
 import { ControlPanelSectionConfig } from '../types';
 import { formatSelectOptions } from '../utils';
@@ -129,42 +127,6 @@ export const advancedAnalytics: ControlPanelSectionConfig = {
               'absolute difference between the main time series and each time shift; ' +
               'as the percentage change; or as the ratio between series and time shifts.',
           ),
-        },
-      },
-    ],
-    [<h1 className="section-header">{t('Python functions')}</h1>],
-    // eslint-disable-next-line jsx-a11y/heading-has-content
-    [<h2 className="section-header">pandas.resample</h2>],
-    [
-      {
-        name: 'resample_rule',
-        config: {
-          type: 'SelectControl',
-          freeForm: true,
-          label: t('Rule'),
-          default: null,
-          choices: formatSelectOptions<ResampleRuleType>(['1T', '1H', '1D', '7D', '1M', '1AS']),
-          description: t('Pandas resample rule'),
-        },
-      },
-    ],
-    [
-      {
-        name: 'resample_method',
-        config: {
-          type: 'SelectControl',
-          freeForm: true,
-          label: t('Method'),
-          default: null,
-          choices: formatSelectOptions<ResampleMethodType>([
-            'asfreq',
-            'bfill',
-            'ffill',
-            'median',
-            'mean',
-            'sum',
-          ]),
-          description: t('Pandas resample method'),
         },
       },
     ],

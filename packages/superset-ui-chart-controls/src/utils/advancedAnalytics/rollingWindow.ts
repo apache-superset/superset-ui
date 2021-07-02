@@ -17,11 +17,7 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-import { ensureIsArray, QueryFormData, QueryObject } from '@superset-ui/core';
-
-function ensureIsInt<T>(value: T, defaultValue: number): number {
-  return Number.isNaN(parseInt(String(value), 10)) ? defaultValue : parseInt(String(value), 10);
-}
+import { ensureIsArray, ensureIsInt, QueryFormData, QueryObject } from '@superset-ui/core';
 
 export function rollingWindowTransform(
   formData: QueryFormData,
@@ -52,7 +48,6 @@ export function rollingWindowTransform(
   }
 
   if (['sum', 'mean', 'std'].includes(formData.rolling_type)) {
-    // same before
     post_processing.unshift({
       operation: 'rolling',
       options: {

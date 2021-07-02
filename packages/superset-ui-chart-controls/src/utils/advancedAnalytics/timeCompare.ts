@@ -18,6 +18,7 @@
  * under the License.
  */
 import { getMetricLabel, ensureIsArray, QueryFormData, QueryObject } from '@superset-ui/core';
+import { PostProcessingPivot } from '@superset-ui/core/lib/query/types/PostProcessing';
 
 const TIME_COMPARISION = '__';
 
@@ -25,62 +26,67 @@ export function timeCompareTransform(
   formData: QueryFormData,
   queryObject: QueryObject,
 ): QueryObject {
-  const timeCompare = ensureIsArray(formData.time_compare);
+  const timeOffsets = ensureIsArray(formData.time_compare);
   const comparisonType = formData.comparison_type;
-  if (timeCompare.length === 0 || !comparisonType) {
+  if (timeOffsets.length === 0 || !comparisonType) {
     return queryObject;
   }
 
-  const post_processing = ensureIsArray(queryObject.post_processing);
+  let post_processing = ensureIsArray(queryObject.post_processing);
   const metricLabels = (queryObject.metrics || []).map(getMetricLabel);
-  const timeCompareMapping: [string, string][] = [];
-  metricLabels.forEach(m => {
-    timeCompare.forEach((t: string) => {
-      timeCompareMapping.push([m, [m, t].join(TIME_COMPARISION)]);
+  // metric offset label and metric label mapping, for instance:
+  // {
+  //   "SUM(value)__1 year ago": "SUM(value)",
+  //   "SUM(value)__2 year ago": "SUM(value)"
+  // }
+  const metricOffsetMap = new Map<string, string>();
+
+  metricLabels.forEach((metric: string) => {
+    timeOffsets.forEach((offset: string) => {
+      metricOffsetMap.set([metric, offset].join(TIME_COMPARISION), metric);
     });
   });
 
-  const pivotProcessingIdx = post_processing.findIndex(
-    processing => processing?.operation === 'pivot',
-  );
-  if (pivotProcessingIdx > -1) {
-    const valuesAgg = Object.fromEntries(
-      metricLabels
-        .concat(timeCompareMapping.map(([col1, col2]) => col2))
-        .map(metric => [metric, { operator: 'sum' }]),
-    );
-    const changeAgg = Object.fromEntries(
-      timeCompareMapping
-        .map(([col1, col2]) => [comparisonType, col1, col2].join(TIME_COMPARISION))
-        .map(metric => [metric, { operator: 'sum' }]),
-    );
+  post_processing = post_processing.map(processing => {
+    if (processing?.operation === 'pivot') {
+      const valuesAgg = Object.fromEntries(
+        metricLabels
+          .concat(Array.from(metricOffsetMap.keys()))
+          .map(metric => [metric, { operator: 'sum' }]),
+      );
+      const changeAgg = Object.fromEntries(
+        Array.from(metricOffsetMap.entries())
+          .map(([offset, metric]) => [comparisonType, metric, offset].join(TIME_COMPARISION))
+          .map(metric => [metric, { operator: 'sum' }]),
+      );
 
-    post_processing[pivotProcessingIdx] = {
-      operation: 'pivot',
-      options: {
-        index: ['__timestamp'],
-        columns: formData.groupby || [],
-        aggregates: comparisonType === 'values' ? valuesAgg : changeAgg,
-      },
-    };
-  }
+      return {
+        operation: 'pivot',
+        options: {
+          index: ['__timestamp'],
+          columns: formData.groupby || [],
+          aggregates: comparisonType === 'values' ? valuesAgg : changeAgg,
+        },
+      } as PostProcessingPivot;
+    }
+    return processing;
+  });
+
   if (comparisonType === 'values') {
-    return { ...queryObject, post_processing, time_offsets: timeCompare };
+    return { ...queryObject, post_processing, time_offsets: timeOffsets };
   }
 
-  const timeCompareProcessing = [
-    {
-      operation: 'compare',
-      options: {
-        source_columns: timeCompareMapping.map(_ => _[0]),
-        compare_columns: timeCompareMapping.map(_ => _[1]),
-        compare_type: comparisonType,
-        drop_original_columns: true,
-      },
+  post_processing.unshift({
+    operation: 'compare',
+    options: {
+      source_columns: Array.from(metricOffsetMap.values()),
+      compare_columns: Array.from(metricOffsetMap.keys()),
+      compare_type: comparisonType,
+      drop_original_columns: true,
     },
-  ].concat(post_processing);
+  });
 
-  return { ...queryObject, post_processing: timeCompareProcessing, time_offsets: timeCompare };
+  return { ...queryObject, post_processing, time_offsets: timeOffsets };
 }
 
 export default {};
