@@ -17,6 +17,5 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-export * from './resample';
 export * from './rollingWindow';
 export * from './timeCompare';

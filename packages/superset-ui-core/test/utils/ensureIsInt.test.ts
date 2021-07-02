@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -14,13 +13,19 @@
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitationsxw
+ * specific language governing permissions and limitations
  * under the License.
  */
-import { getMetricLabel, ensureIsArray, QueryFormData, QueryObject } from '@superset-ui/core';
+import { ensureIsInt } from '../../src';
 
-export function resampleTransform(formData: QueryFormData, queryObject: QueryObject): QueryObject {
-  return queryObject;
-}
-
-export default {};
+describe('ensureIsInt', () => {
+  it('handle inputs correctly', () => {
+    expect(ensureIsInt(undefined, 0)).toEqual(0);
+    expect(ensureIsInt('abc', 1)).toEqual(1);
+    expect(ensureIsInt(undefined)).toEqual(NaN);
+    expect(ensureIsInt('abc')).toEqual(NaN);
+    expect(ensureIsInt('12.5')).toEqual(12);
+    expect(ensureIsInt(12)).toEqual(12);
+    expect(ensureIsInt(12, 0)).toEqual(12);
+  });
+});
