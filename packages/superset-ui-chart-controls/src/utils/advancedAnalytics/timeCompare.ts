@@ -17,7 +17,13 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-import { getMetricLabel, ensureIsArray, QueryFormData, QueryObject } from '@superset-ui/core';
+import {
+  getMetricLabel,
+  ensureIsArray,
+  QueryFormData,
+  QueryObject,
+  ComparisionType,
+} from '@superset-ui/core';
 import { PostProcessingPivot } from '@superset-ui/core/lib/query/types/PostProcessing';
 
 const TIME_COMPARISION = '__';
@@ -28,11 +34,16 @@ export function timeCompareTransform(
 ): QueryObject {
   const timeOffsets = ensureIsArray(formData.time_compare);
   const comparisonType = formData.comparison_type;
-  if (timeOffsets.length === 0 || !comparisonType) {
+  if (
+    timeOffsets.length === 0 ||
+    !comparisonType ||
+    !Object.values(ComparisionType).includes(comparisonType)
+  ) {
     return queryObject;
   }
 
-  let post_processing = ensureIsArray(queryObject.post_processing);
+  // ensure `post_processing` is a copy from queryObject
+  let post_processing = ensureIsArray(queryObject.post_processing).slice();
   const metricLabels = (queryObject.metrics || []).map(getMetricLabel);
   // metric offset label and metric label mapping, for instance:
   // {
@@ -65,14 +76,14 @@ export function timeCompareTransform(
         options: {
           index: ['__timestamp'],
           columns: formData.groupby || [],
-          aggregates: comparisonType === 'values' ? valuesAgg : changeAgg,
+          aggregates: comparisonType === ComparisionType.Values ? valuesAgg : changeAgg,
         },
       } as PostProcessingPivot;
     }
     return processing;
   });
 
-  if (comparisonType === 'values') {
+  if (comparisonType === ComparisionType.Values) {
     return { ...queryObject, post_processing, time_offsets: timeOffsets };
   }
 

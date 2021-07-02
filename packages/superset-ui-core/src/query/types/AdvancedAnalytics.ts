@@ -17,7 +17,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export type RollingType = 'None' | 'mean' | 'sum' | 'std' | 'cumsum';
+export enum RollingType {
+  None = 'None',
+  Mean = 'mean',
+  Sum = 'sum',
+  Std = 'std',
+  Cumsum = 'cumsum',
+}
 export interface RollingWindow {
   rolling_type?: RollingType;
   rolling_periods?: number;
@@ -33,17 +39,29 @@ export type TimeShiftType =
   | '1 year ago'
   | '104 weeks ago'
   | '2 years ago';
-export type ComparisionType = 'values' | 'absolute' | 'percentage' | 'ratio';
+export enum ComparisionType {
+  Values = 'values',
+  Absolute = 'absolute',
+  Percentage = 'percentage',
+  Ratio = 'ratio',
+}
 export interface TimeCompare {
   time_compare?: TimeShiftType;
   comparison_type?: ComparisionType;
 }
 
-export type ResampleRuleType = '1T' | '1H' | '1D' | '7D' | '1M' | '1AS';
-export type ResampleMethodType = 'asfreq' | 'bfill' | 'ffill' | 'median' | 'mean' | 'sum';
+export type ResampleRule = '1T' | '1H' | '1D' | '7D' | '1M' | '1AS';
+export enum ResampleType {
+  Asfreq = 'asfreq',
+  Bfill = 'bfill',
+  Ffill = 'ffill',
+  Median = 'median',
+  Mean = 'mean',
+  Sum = 'sum',
+}
 export interface Resample {
-  resample_rule?: ResampleRuleType;
-  resample_method?: ResampleMethodType;
+  resample_rule?: ResampleRule;
+  resample_method?: ResampleType;
 }
 
 export default {};
