@@ -29,19 +29,23 @@ export function rollingWindowTransform(
   formData: QueryFormData,
   queryObject: QueryObject,
 ): QueryObject {
-  if (formData.rolling_type === RollingType.None || !formData.rolling_type) {
+  if (
+    formData.rolling_type === RollingType.None ||
+    !formData.rolling_type ||
+    formData.metrics === undefined
+  ) {
     return queryObject;
   }
 
   // ensure `post_processing` is a copy from queryObject
   const post_processing = ensureIsArray(queryObject.post_processing).slice();
   const columns = Object.fromEntries(
-    formData.metrics?.map(metric => {
+    formData.metrics.map(metric => {
       if (typeof metric === 'string') {
         return [metric, metric];
       }
       return [metric.label, metric.label];
-    }) || [],
+    }),
   );
   if (formData.rolling_type === RollingType.Cumsum) {
     // rolling must be the first operation(before pivot or other transforms)

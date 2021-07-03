@@ -54,6 +54,12 @@ describe('rollingWindowTransform', () => {
     expect(
       rollingWindowTransform({ ...formData, rolling_type: 'None' }, queryObject).post_processing,
     ).toEqual(queryObject.post_processing);
+
+    const formDataWithoutMetrics = { ...formData };
+    formDataWithoutMetrics.metrics = undefined;
+    expect(rollingWindowTransform(formDataWithoutMetrics, queryObject).post_processing).toEqual(
+      queryObject.post_processing,
+    );
   });
 
   it('rolling_type: cumsum', () => {
@@ -69,22 +75,6 @@ describe('rollingWindowTransform', () => {
           'count(*)': 'count(*)',
           'sum(val)': 'sum(val)',
         },
-      },
-    });
-  });
-
-  it('rolling_type: cumsum when metrics is empty', () => {
-    const expected = rollingWindowTransform(
-      { ...formData, metrics: [], rolling_type: 'cumsum' },
-      queryObject,
-    ).post_processing;
-    expect(expected).not.toEqual(queryObject.post_processing);
-    expect(expected[1]).toEqual(queryObject.post_processing[0]);
-    expect(expected[0]).toEqual({
-      operation: 'cum',
-      options: {
-        operator: 'sum',
-        columns: {},
       },
     });
   });
