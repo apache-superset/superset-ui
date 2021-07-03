@@ -58,8 +58,6 @@ export type EchartsTimeseriesFormData = {
   truncateYAxis: boolean;
   yAxisFormat?: string;
   yAxisTitle: string;
-  xAxisShowMinLabel?: boolean;
-  xAxisShowMaxLabel?: boolean;
   xAxisTimeFormat?: string;
   timeGrainSqla?: TimeGranularity;
   yAxisBounds: [number | undefined | null, number | undefined | null];
@@ -90,8 +88,6 @@ export const DEFAULT_FORM_DATA: EchartsTimeseriesFormData = {
   tooltipTimeFormat: 'smart_date',
   truncateYAxis: true,
   yAxisBounds: [null, null],
-  xAxisShowMinLabel: false,
-  xAxisShowMaxLabel: false,
   zoomable: false,
   richTooltip: true,
   xAxisLabelRotation: 0,
