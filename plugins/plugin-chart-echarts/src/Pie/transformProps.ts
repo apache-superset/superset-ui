@@ -140,11 +140,14 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
       timeFormatter: getTimeFormatter(dateFormat),
     });
 
+    const isFiltered = filterState.selectedValues && !filterState.selectedValues.includes(name);
+
     return {
       value: datum[metricLabel],
       name,
       itemStyle: {
         color: colorFn(name),
+        opacity: isFiltered ? 0.3 : 1,
       },
     };
   });
