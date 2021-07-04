@@ -114,12 +114,19 @@ export default function transformProps(
       groupby.map(col => datum[col]),
     );
 
+    const isFiltered =
+      filterState.selectedValues && !filterState.selectedValues.includes(joinedName);
+
     // generate transformedData
     transformedData.push({
       value: metricsLabel.map(metricLabel => datum[metricLabel]),
       name: joinedName,
       itemStyle: {
         color: colorFn(joinedName),
+        opacity: isFiltered ? 0 : 1,
+      },
+      lineStyle: {
+        opacity: isFiltered ? 0.3 : 1,
       },
       label: {
         show: showLabels,
