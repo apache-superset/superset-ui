@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartProps } from '@superset-ui/core';
+import { ChartDataResponseResult, ChartProps, QueryFormData } from '@superset-ui/core';
 import { DEFAULT_LEGEND_FORM_DATA, EChartTransformedProps } from '../types';
 
 export type AxisTickLineStyle = {
@@ -24,7 +24,7 @@ export type AxisTickLineStyle = {
   color: string;
 };
 
-export type EchartsGaugeFormData = {
+export type EchartsGaugeFormData = QueryFormData & {
   colorScheme?: string;
   groupby: string[];
   metric?: object;
@@ -49,7 +49,7 @@ export type EchartsGaugeFormData = {
   emitFilter: boolean;
 };
 
-export const DEFAULT_FORM_DATA: EchartsGaugeFormData = {
+export const DEFAULT_FORM_DATA: Partial<EchartsGaugeFormData> = {
   ...DEFAULT_LEGEND_FORM_DATA,
   groupby: [],
   rowLimit: 10,
@@ -75,6 +75,7 @@ export const DEFAULT_FORM_DATA: EchartsGaugeFormData = {
 
 export interface EchartsGaugeChartProps extends ChartProps {
   formData: EchartsGaugeFormData;
+  queriesData: ChartDataResponseResult[];
 }
 
 export type GaugeChartTransformedProps = EChartTransformedProps<EchartsGaugeFormData>;
