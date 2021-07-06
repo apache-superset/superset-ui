@@ -28,6 +28,7 @@ import {
 import { EChartsOption, GaugeSeriesOption } from 'echarts';
 import { GaugeDataItemOption } from 'echarts/types/src/chart/gauge/GaugeSeries';
 import range from 'lodash/range';
+import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { parseNumbersList } from '../utils/controls';
 import {
   DEFAULT_FORM_DATA as DEFAULT_GAUGE_FORM_DATA,
@@ -71,6 +72,12 @@ const setIntervalBoundsAndColors = (
 const calculateAxisLineWidth = (data: DataRecord[], fontSize: number, overlap: boolean): number =>
   overlap ? fontSize : data.length * fontSize;
 
+const calculateMin = (data: GaugeDataItemOption[]) =>
+  2 * Math.min(...data.map(d => d.value as number).concat([0]));
+
+const calculateMax = (data: GaugeDataItemOption[]) =>
+  2 * Math.max(...data.map(d => d.value as number).concat([0]));
+
 export default function transformProps(chartProps: ChartProps) {
   const { width, height, formData, queriesData } = chartProps;
   const {
@@ -98,26 +105,15 @@ export default function transformProps(chartProps: ChartProps) {
   const data = (queriesData[0]?.data || []) as DataRecord[];
   const numberFormatter = getNumberFormatter(numberFormat);
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
-  const normalizer = maxVal;
   const axisLineWidth = calculateAxisLineWidth(data, fontSize, overlap);
-  const axisLabels = range(minVal, maxVal, (maxVal - minVal) / splitNumber);
-  const axisLabelLength = Math.max(
-    ...axisLabels.map(label => numberFormatter(label).length).concat([1]),
-  );
   const formatValue = (value: number) => valueFormatter.replace('{value}', numberFormatter(value));
   const axisTickLength = FONT_SIZE_MULTIPLIERS.axisTickLength * fontSize;
   const splitLineLength = FONT_SIZE_MULTIPLIERS.splitLineLength * fontSize;
   const titleOffsetFromTitle = FONT_SIZE_MULTIPLIERS.titleOffsetFromTitle * fontSize;
   const detailOffsetFromTitle = FONT_SIZE_MULTIPLIERS.detailOffsetFromTitle * fontSize;
-  const intervalBoundsAndColors = setIntervalBoundsAndColors(
-    intervals,
-    intervalColorIndices,
-    colorFn,
-    normalizer,
-  );
   const transformedData: GaugeDataItemOption[] = data.map((data_point, index) => ({
     value: data_point[getMetricLabel(metric as QueryFormMetric)] as number,
-    name: groupby.map(column => `${column}: ${data_point[column]}`).join(', '),
+    name: groupby.map(column => `${column} = ${data_point[column]}`).join(', '),
     itemStyle: {
       color: colorFn(index),
     },
@@ -133,6 +129,19 @@ export default function transformProps(chartProps: ChartProps) {
       fontSize: FONT_SIZE_MULTIPLIERS.detailFontSize * fontSize,
     },
   }));
+  const min = minVal ?? calculateMin(transformedData);
+  const max = maxVal ?? calculateMax(transformedData);
+  const axisLabels = range(min, max, (max - min) / splitNumber);
+  const axisLabelLength = Math.max(
+    ...axisLabels.map(label => numberFormatter(label).length).concat([1]),
+  );
+  const normalizer = max;
+  const intervalBoundsAndColors = setIntervalBoundsAndColors(
+    intervals,
+    intervalColorIndices,
+    colorFn,
+    normalizer,
+  );
 
   const progress = {
     show: showProgress,
@@ -181,6 +190,12 @@ export default function transformProps(chartProps: ChartProps) {
     formatter: (value: number) => formatValue(value),
     color: DEFAULT_GAUGE_SERIES_OPTION.detail?.color,
   };
+  const tooltip = {
+    formatter: (params: CallbackDataParams) => {
+      const { name, value } = params;
+      return `${name} : ${formatValue(value as number)}`;
+    },
+  };
   let pointer;
 
   if (intervalBoundsAndColors.length) {
@@ -203,8 +218,8 @@ export default function transformProps(chartProps: ChartProps) {
       type: 'gauge',
       startAngle,
       endAngle,
-      min: minVal,
-      max: maxVal,
+      min,
+      max,
       progress,
       animation,
       axisLine: axisLine as GaugeSeriesOption['axisLine'],
@@ -214,11 +229,13 @@ export default function transformProps(chartProps: ChartProps) {
       axisTick,
       pointer,
       detail,
+      tooltip,
       data: transformedData,
     },
   ];
 
   const echartOptions: EChartsOption = {
+    tooltip: { trigger: 'item' },
     series,
   };
 
