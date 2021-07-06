@@ -124,5 +124,4 @@ export interface TimeseriesChartTransformedProps {
   setDataMask: SetDataMaskHook;
   labelMap: Record<string, DataRecordValue[]>;
   groupby: string[];
-  selectedValues: Record<number, string>;
 }
