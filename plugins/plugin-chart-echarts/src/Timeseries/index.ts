@@ -22,6 +22,7 @@ import controlPanel from './controlPanel';
 import transformProps from './transformProps';
 import thumbnail from './images/thumbnail.png';
 import { EchartsTimeseriesChartProps, EchartsTimeseriesFormData } from './types';
+import example from './images/Time-series_Chart.jpg';
 
 export default class EchartsTimeseriesChartPlugin extends ChartPlugin<
   EchartsTimeseriesFormData,
@@ -43,9 +44,13 @@ export default class EchartsTimeseriesChartPlugin extends ChartPlugin<
       controlPanel,
       loadChart: () => import('./EchartsTimeseries'),
       metadata: new ChartMetadata({
-        behaviors: [Behavior.CROSS_FILTER],
+        behaviors: [Behavior.INTERACTIVE_CHART],
+        category: t('Evolution'),
         credits: ['https://echarts.apache.org'],
-        description: 'Time-series (Apache ECharts)',
+        description: t(
+          'Swiss army knife for visualizing time series data. Choose between  step, line, scatter, and bar charts. This viz type has many customization options as well.',
+        ),
+        exampleGallery: [{ url: example }],
         supportedAnnotationTypes: [
           AnnotationType.Event,
           AnnotationType.Formula,
@@ -53,6 +58,15 @@ export default class EchartsTimeseriesChartPlugin extends ChartPlugin<
           AnnotationType.Timeseries,
         ],
         name: t('Time-series Chart'),
+        tags: [
+          t('Advanced-Analytics'),
+          t('Aesthetic'),
+          t('ECharts'),
+          t('Line'),
+          t('Predictive'),
+          t('Time'),
+          t('Transformable'),
+        ],
         thumbnail,
       }),
       transformProps,

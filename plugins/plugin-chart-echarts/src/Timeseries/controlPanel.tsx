@@ -43,6 +43,7 @@ const {
   area,
   annotationLayers,
   contributionMode,
+  emitFilter,
   forecastEnabled,
   forecastInterval,
   forecastPeriods,
@@ -62,9 +63,6 @@ const {
   yAxisBounds,
   zoomable,
   xAxisLabelRotation,
-  emitFilter,
-  xAxisShowMinLabel,
-  xAxisShowMaxLabel,
 } = DEFAULT_FORM_DATA;
 const config: ControlPanelConfig = {
   controlPanelSections: [
@@ -352,30 +350,6 @@ const config: ControlPanelConfig = {
               description: `${D3_TIME_FORMAT_DOCS}. ${t(
                 'When using other than adaptive formatting, labels may overlap.',
               )}`,
-            },
-          },
-        ],
-        [
-          {
-            name: 'xAxisShowMinLabel',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Show Min Label'),
-              default: xAxisShowMinLabel,
-              renderTrigger: true,
-              description: t('Show Min Label'),
-            },
-          },
-        ],
-        [
-          {
-            name: 'xAxisShowMaxLabel',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Show Max Label'),
-              default: xAxisShowMaxLabel,
-              renderTrigger: true,
-              description: t('Show Max Label'),
             },
           },
         ],

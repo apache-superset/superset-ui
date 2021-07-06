@@ -86,8 +86,6 @@ export default function transformProps(
     stack,
     truncateYAxis,
     yAxisFormat,
-    xAxisShowMinLabel,
-    xAxisShowMaxLabel,
     xAxisTimeFormat,
     yAxisBounds,
     yAxisTitle,
@@ -168,8 +166,6 @@ export default function transformProps(
     xAxis: {
       type: 'time',
       axisLabel: {
-        showMinLabel: xAxisShowMinLabel,
-        showMaxLabel: xAxisShowMaxLabel,
         formatter: xAxisFormatter,
         rotate: xAxisLabelRotation,
       },
