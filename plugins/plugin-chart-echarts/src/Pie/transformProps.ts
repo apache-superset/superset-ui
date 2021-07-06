@@ -24,6 +24,7 @@ import {
   getTimeFormatter,
   NumberFormats,
   NumberFormatter,
+  DrillDown,
 } from '@superset-ui/core';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { EChartsOption, PieSeriesOption } from 'echarts';
@@ -79,14 +80,14 @@ export function formatPieLabel({
 }
 
 export default function transformProps(chartProps: EchartsPieChartProps): PieChartTransformedProps {
-  const { formData, height, hooks, filterState, queriesData, width } = chartProps;
+  const { formData, height, hooks, filterState, queriesData, width, ownState } = chartProps;
   const { data = [] } = queriesData[0];
   const coltypeMapping = getColtypesMapping(queriesData[0]);
 
   const {
     colorScheme,
     donut,
-    groupby,
+    groupby: hierarchyOrColumns,
     innerRadius,
     labelsOutside,
     labelLine,
@@ -102,9 +103,11 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
     showLegend,
     showLabelsThreshold,
     emitFilter,
+    drillDown,
   }: EchartsPieFormData = { ...DEFAULT_LEGEND_FORM_DATA, ...DEFAULT_PIE_FORM_DATA, ...formData };
   const metricLabel = getMetricLabel(metric);
   const minShowLabelAngle = (showLabelsThreshold || 0) * 3.6;
+  const groupby = drillDown && ownState?.drilldown ? [DrillDown.getColumn(ownState.drilldown)] : hierarchyOrColumns;
 
   const keys = data.map(datum =>
     extractGroupbyLabel({
@@ -233,6 +236,7 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
     echartOptions,
     setDataMask,
     emitFilter,
+    ownState,
     labelMap,
     groupby,
     selectedValues,
