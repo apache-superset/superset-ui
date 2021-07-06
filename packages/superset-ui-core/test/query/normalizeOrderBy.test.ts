@@ -98,7 +98,7 @@ describe('normalizeOrderBy', () => {
     expect(normalizeOrderBy(query)).toEqual(query);
   });
 
-  it('remove invalid orderby', () => {
+  it('remove empty orderby', () => {
     const query: QueryObject = {
       datasource: '5__table',
       viz_type: 'table',
@@ -108,7 +108,7 @@ describe('normalizeOrderBy', () => {
     expect(normalizeOrderBy(query)).not.toHaveProperty('orderby');
   });
 
-  it('remove invalid orderby', () => {
+  it('remove orderby with an empty array', () => {
     const query: QueryObject = {
       datasource: '5__table',
       viz_type: 'table',
@@ -118,7 +118,7 @@ describe('normalizeOrderBy', () => {
     expect(normalizeOrderBy(query)).not.toHaveProperty('orderby');
   });
 
-  it('remove invalid orderby', () => {
+  it('remove orderby with an empty metric', () => {
     const query: QueryObject = {
       datasource: '5__table',
       viz_type: 'table',
@@ -128,7 +128,7 @@ describe('normalizeOrderBy', () => {
     expect(normalizeOrderBy(query)).not.toHaveProperty('orderby');
   });
 
-  it('remove invalid orderby', () => {
+  it('remove orderby with an empty adhoc metric', () => {
     const query: QueryObject = {
       datasource: '5__table',
       viz_type: 'table',
@@ -138,7 +138,7 @@ describe('normalizeOrderBy', () => {
     expect(normalizeOrderBy(query)).not.toHaveProperty('orderby');
   });
 
-  it('remove invalid orderby', () => {
+  it('remove orderby with an non-boolean type', () => {
     const query: QueryObject = {
       datasource: '5__table',
       viz_type: 'table',
