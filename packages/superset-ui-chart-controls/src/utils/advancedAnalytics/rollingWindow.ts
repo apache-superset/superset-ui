@@ -18,48 +18,60 @@
  * under the License.
  */
 import {
-  ensureIsArray,
   ensureIsInt,
+  ensureIsArray,
   QueryFormData,
-  QueryObject,
   RollingType,
+  PostProcessingRolling,
+  PostProcessingCum,
+  QueryFormMetric,
+  ComparisionType,
 } from '@superset-ui/core';
+import { getMetricOffsetsMap, isValidTimeCompare, TIME_COMPARISION } from './utils';
 
 export function rollingWindowTransform(
   formData: QueryFormData,
-  queryObject: QueryObject,
-): QueryObject {
-  if (
-    formData.rolling_type === RollingType.None ||
-    !formData.rolling_type ||
-    formData.metrics === undefined
-  ) {
-    return queryObject;
+  queryMetrics: QueryFormMetric[],
+): PostProcessingRolling | PostProcessingCum | undefined {
+  let columns;
+  if (isValidTimeCompare(formData, queryMetrics)) {
+    const metricsMap = getMetricOffsetsMap(formData, queryMetrics);
+    const comparisonType = formData.comparison_type;
+    if (formData.comparison_type === ComparisionType.Values) {
+      columns = Object.fromEntries(
+        [...Array.from(metricsMap.values()), ...Array.from(metricsMap.keys())].map(m => [m, m]),
+      );
+    } else {
+      columns = Object.fromEntries(
+        Array.from(metricsMap.entries()).map(([offset, metric]) => [
+          [comparisonType, metric, offset].join(TIME_COMPARISION),
+          [comparisonType, metric, offset].join(TIME_COMPARISION),
+        ]),
+      );
+    }
+  } else {
+    columns = Object.fromEntries(
+      ensureIsArray(formData.metrics).map(metric => {
+        if (typeof metric === 'string') {
+          return [metric, metric];
+        }
+        return [metric.label, metric.label];
+      }),
+    );
   }
 
-  // ensure `post_processing` is a copy from queryObject
-  const post_processing = ensureIsArray(queryObject.post_processing).slice();
-  const columns = Object.fromEntries(
-    formData.metrics.map(metric => {
-      if (typeof metric === 'string') {
-        return [metric, metric];
-      }
-      return [metric.label, metric.label];
-    }),
-  );
   if (formData.rolling_type === RollingType.Cumsum) {
-    // rolling must be the first operation(before pivot or other transforms)
-    post_processing.unshift({
+    return {
       operation: 'cum',
       options: {
         operator: 'sum',
         columns,
       },
-    });
+    };
   }
 
   if ([RollingType.Sum, RollingType.Mean, RollingType.Std].includes(formData.rolling_type)) {
-    post_processing.unshift({
+    return {
       operation: 'rolling',
       options: {
         rolling_type: formData.rolling_type,
@@ -67,9 +79,10 @@ export function rollingWindowTransform(
         min_periods: ensureIsInt(formData.min_periods, 0),
         columns,
       },
-    });
+    };
   }
-  return { ...queryObject, post_processing };
+
+  return undefined;
 }
 
 export default {};

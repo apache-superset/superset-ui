@@ -16,60 +16,69 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { buildQueryContext, getMetricLabel, QueryFormData, QueryObject } from '@superset-ui/core';
-import { rollingWindowTransform, timeCompareTransform } from '@superset-ui/chart-controls';
+import { buildQueryContext, getMetricLabel, QueryFormData } from '@superset-ui/core';
+import {
+  rollingWindowTransform,
+  timeCompareTransform,
+  timeComparePivotTransform,
+  isValidTimeCompare,
+} from '@superset-ui/chart-controls';
 
 export default function buildQuery(formData: QueryFormData) {
   return buildQueryContext(formData, baseQueryObject => {
-    const metricLabels = (baseQueryObject.metrics || []).map(getMetricLabel);
+    const formMetrics = baseQueryObject.metrics || [];
+    const metricLabels = formMetrics.map(getMetricLabel);
     const { timeseries_limit_metric, order_desc, orderby } = baseQueryObject;
-    let queryObject: QueryObject = {
-      ...baseQueryObject,
-      groupby: formData.groupby || [],
-      is_timeseries: true,
-      orderby: orderby?.length
-        ? orderby
-        : timeseries_limit_metric
-        ? [[timeseries_limit_metric, !order_desc]]
-        : [],
-      post_processing: [
-        {
-          operation: 'pivot',
-          options: {
-            index: ['__timestamp'],
-            columns: formData.groupby || [],
-            // Create 'dummy' sum aggregates to assign cell values in pivot table
-            aggregates: Object.fromEntries(
-              metricLabels.map(metric => [metric, { operator: 'sum' }]),
-            ),
-          },
-        },
-        formData.contributionMode
-          ? {
-              operation: 'contribution',
-              options: {
-                orientation: formData.contributionMode,
+    return [
+      {
+        ...baseQueryObject,
+        groupby: formData.groupby || [],
+        is_timeseries: true,
+        orderby: orderby?.length
+          ? orderby
+          : timeseries_limit_metric
+          ? [[timeseries_limit_metric, !order_desc]]
+          : [],
+        time_offsets: isValidTimeCompare(formData, formMetrics) ? formData.time_compare : [],
+        post_processing: [
+          timeCompareTransform(formData, formMetrics),
+          isValidTimeCompare(formData, formMetrics)
+            ? timeComparePivotTransform(formData, formMetrics)
+            : {
+                operation: 'pivot',
+                options: {
+                  index: ['__timestamp'],
+                  columns: formData.groupby || [],
+                  // Create 'dummy' sum aggregates to assign cell values in pivot table
+                  aggregates: Object.fromEntries(
+                    metricLabels.map(metric => [metric, { operator: 'sum' }]),
+                  ),
+                },
               },
-            }
-          : undefined,
-        formData.forecastEnabled
-          ? {
-              operation: 'prophet',
-              options: {
-                time_grain: formData.time_grain_sqla,
-                periods: parseInt(formData.forecastPeriods, 10),
-                confidence_interval: parseFloat(formData.forecastInterval),
-                yearly_seasonality: formData.forecastSeasonalityYearly,
-                weekly_seasonality: formData.forecastSeasonalityWeekly,
-                daily_seasonality: formData.forecastSeasonalityDaily,
-              },
-            }
-          : undefined,
-      ],
-    };
-    queryObject = rollingWindowTransform(formData, queryObject);
-    queryObject = timeCompareTransform(formData, queryObject);
-
-    return [queryObject];
+          rollingWindowTransform(formData, formMetrics),
+          formData.contributionMode
+            ? {
+                operation: 'contribution',
+                options: {
+                  orientation: formData.contributionMode,
+                },
+              }
+            : undefined,
+          formData.forecastEnabled
+            ? {
+                operation: 'prophet',
+                options: {
+                  time_grain: formData.time_grain_sqla,
+                  periods: parseInt(formData.forecastPeriods, 10),
+                  confidence_interval: parseFloat(formData.forecastInterval),
+                  yearly_seasonality: formData.forecastSeasonalityYearly,
+                  weekly_seasonality: formData.forecastSeasonalityWeekly,
+                  daily_seasonality: formData.forecastSeasonalityDaily,
+                },
+              }
+            : undefined,
+        ],
+      },
+    ];
   });
 }

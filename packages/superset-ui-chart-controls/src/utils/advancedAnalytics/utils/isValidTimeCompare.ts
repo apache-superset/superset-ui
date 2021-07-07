@@ -17,6 +17,22 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-export * from './rollingWindow';
-export * from './timeCompare';
-export * from './utils';
+import { QueryFormData, ComparisionType, QueryFormMetric } from '@superset-ui/core';
+import { getMetricOffsetsMap } from './getMetricOffsetsMap';
+
+export function isValidTimeCompare(
+  formData: QueryFormData,
+  queryMetrics: QueryFormMetric[],
+): boolean {
+  const comparisonType = formData.comparison_type;
+  const metricOffsetMap = getMetricOffsetsMap(formData, queryMetrics);
+
+  return (
+    [
+      ComparisionType.Values,
+      ComparisionType.Absolute,
+      ComparisionType.Percentage,
+      ComparisionType.Ratio,
+    ].includes(comparisonType) && metricOffsetMap.size > 0
+  );
+}

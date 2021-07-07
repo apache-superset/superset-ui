@@ -144,7 +144,7 @@ export interface PostProcessingCompare {
   options: {
     source_columns: string[];
     compare_columns: string[];
-    compare_type: ComparisionType;
+    compare_type: Omit<ComparisionType, ComparisionType.Values>;
     drop_original_columns: boolean;
   };
 }
