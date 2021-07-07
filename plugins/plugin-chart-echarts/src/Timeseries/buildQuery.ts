@@ -42,6 +42,7 @@ export default function buildQuery(formData: QueryFormData) {
         time_offsets: isValidTimeCompare(formData, formMetrics) ? formData.time_compare : [],
         post_processing: [
           timeCompareTransform(formData, formMetrics),
+          rollingWindowTransform(formData, formMetrics),
           isValidTimeCompare(formData, formMetrics)
             ? timeComparePivotTransform(formData, formMetrics)
             : {
@@ -55,7 +56,6 @@ export default function buildQuery(formData: QueryFormData) {
                   ),
                 },
               },
-          rollingWindowTransform(formData, formMetrics),
           formData.contributionMode
             ? {
                 operation: 'contribution',

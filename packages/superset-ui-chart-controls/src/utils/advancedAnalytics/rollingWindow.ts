@@ -33,39 +33,31 @@ export function rollingWindowTransform(
   formData: QueryFormData,
   queryMetrics: QueryFormMetric[],
 ): PostProcessingRolling | PostProcessingCum | undefined {
-  let columns;
+  let columns: string[];
   if (isValidTimeCompare(formData, queryMetrics)) {
     const metricsMap = getMetricOffsetsMap(formData, queryMetrics);
     const comparisonType = formData.comparison_type;
     if (formData.comparison_type === ComparisionType.Values) {
-      columns = Object.fromEntries(
-        [...Array.from(metricsMap.values()), ...Array.from(metricsMap.keys())].map(m => [m, m]),
-      );
+      columns = [...Array.from(metricsMap.values()), ...Array.from(metricsMap.keys())]
     } else {
-      columns = Object.fromEntries(
-        Array.from(metricsMap.entries()).map(([offset, metric]) => [
-          [comparisonType, metric, offset].join(TIME_COMPARISION),
-          [comparisonType, metric, offset].join(TIME_COMPARISION),
-        ]),
-      );
+      columns = Array.from(metricsMap.entries()).map(([offset, metric]) => [comparisonType, metric, offset].join(TIME_COMPARISION));
     }
   } else {
-    columns = Object.fromEntries(
-      ensureIsArray(formData.metrics).map(metric => {
-        if (typeof metric === 'string') {
-          return [metric, metric];
-        }
-        return [metric.label, metric.label];
-      }),
-    );
+    columns = ensureIsArray(formData.metrics).map(metric => {
+      if (typeof metric === 'string') {
+        return metric;
+      }
+      return metric.label;
+    });
   }
+  const columnsMap = Object.fromEntries(columns.map(col => [col, col]));
 
   if (formData.rolling_type === RollingType.Cumsum) {
     return {
       operation: 'cum',
       options: {
         operator: 'sum',
-        columns,
+        columns: columnsMap,
       },
     };
   }
@@ -77,7 +69,7 @@ export function rollingWindowTransform(
         rolling_type: formData.rolling_type,
         window: ensureIsInt(formData.rolling_periods, 1),
         min_periods: ensureIsInt(formData.min_periods, 0),
-        columns,
+        columns: columnsMap,
       },
     };
   }
