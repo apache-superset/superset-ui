@@ -26,6 +26,7 @@ export * from './QueryFormData';
 export * from './QueryResponse';
 export * from './Time';
 export * from './AdvancedAnalytics';
+export * from './PostProcessing';
 
 export { default as __hack_reexport_Datasource } from './Datasource';
 export { default as __hack_reexport_Column } from './Column';

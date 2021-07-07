@@ -17,6 +17,28 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-export * from './rollingWindow';
-export * from './timeCompare';
-export * from './utils';
+import { getMetricLabel, ensureIsArray, QueryFormData, QueryFormMetric } from '@superset-ui/core';
+
+export const TIME_COMPARISION = '__';
+
+export function getMetricOffsetsMap(
+  formData: QueryFormData,
+  queryMetrics: QueryFormMetric[],
+): Map<string, string> {
+  const timeOffsets = ensureIsArray(formData.time_compare);
+
+  const metricLabels = queryMetrics.map(getMetricLabel);
+  // metric offset label and metric label mapping, for instance:
+  // {
+  //   "SUM(value)__1 year ago": "SUM(value)",
+  //   "SUM(value)__2 year ago": "SUM(value)"
+  // }
+  const metricOffsetMap = new Map<string, string>();
+  metricLabels.forEach((metric: string) => {
+    timeOffsets.forEach((offset: string) => {
+      metricOffsetMap.set([metric, offset].join(TIME_COMPARISION), metric);
+    });
+  });
+
+  return metricOffsetMap;
+}

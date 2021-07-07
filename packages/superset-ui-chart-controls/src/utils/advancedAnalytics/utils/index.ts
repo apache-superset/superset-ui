@@ -17,6 +17,5 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-export * from './rollingWindow';
-export * from './timeCompare';
-export * from './utils';
+export * from './getMetricOffsetsMap';
+export * from './isValidTimeCompare';

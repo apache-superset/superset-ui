@@ -18,87 +18,67 @@
  * under the License.
  */
 import {
-  getMetricLabel,
-  ensureIsArray,
   QueryFormData,
-  QueryObject,
   ComparisionType,
   QueryFormMetric,
+  PostProcessingPivot,
+  PostProcessingCompare,
+  NumpyFunction,
 } from '@superset-ui/core';
-import { PostProcessingPivot } from '@superset-ui/core/lib/query/types/PostProcessing';
-
-const TIME_COMPARISION = '__';
+import { getMetricOffsetsMap, isValidTimeCompare, TIME_COMPARISION } from './utils';
 
 export function timeCompareTransform(
   formData: QueryFormData,
-  queryObject: QueryObject,
-): QueryObject {
-  const timeOffsets = ensureIsArray(formData.time_compare);
+  queryMetrics: QueryFormMetric[],
+): PostProcessingCompare | undefined {
   const comparisonType = formData.comparison_type;
-  if (
-    timeOffsets.length === 0 ||
-    !comparisonType ||
-    !Object.values(ComparisionType).includes(comparisonType)
-  ) {
-    return queryObject;
+  const metricOffsetMap = getMetricOffsetsMap(formData, queryMetrics);
+
+  if (isValidTimeCompare(formData, queryMetrics) && comparisonType !== ComparisionType.Values) {
+    return {
+      operation: 'compare',
+      options: {
+        source_columns: Array.from(metricOffsetMap.values()),
+        compare_columns: Array.from(metricOffsetMap.keys()),
+        compare_type: comparisonType,
+        drop_original_columns: true,
+      },
+    };
   }
 
-  // ensure `post_processing` is a copy from queryObject
-  let post_processing = ensureIsArray(queryObject.post_processing).slice();
-  const metricLabels = (queryObject.metrics as QueryFormMetric[]).map(getMetricLabel);
-  // metric offset label and metric label mapping, for instance:
-  // {
-  //   "SUM(value)__1 year ago": "SUM(value)",
-  //   "SUM(value)__2 year ago": "SUM(value)"
-  // }
-  const metricOffsetMap = new Map<string, string>();
+  return undefined;
+}
 
-  metricLabels.forEach((metric: string) => {
-    timeOffsets.forEach((offset: string) => {
-      metricOffsetMap.set([metric, offset].join(TIME_COMPARISION), metric);
-    });
-  });
+export function timeComparePivotTransform(
+  formData: QueryFormData,
+  queryMetrics: QueryFormMetric[],
+): PostProcessingPivot | undefined {
+  const comparisonType = formData.comparison_type;
+  const metricOffsetMap = getMetricOffsetsMap(formData, queryMetrics);
 
-  post_processing = post_processing.map(processing => {
-    if (processing?.operation === 'pivot') {
-      const valuesAgg = Object.fromEntries(
-        metricLabels
-          .concat(Array.from(metricOffsetMap.keys()))
-          .map(metric => [metric, { operator: 'sum' }]),
-      );
-      const changeAgg = Object.fromEntries(
-        Array.from(metricOffsetMap.entries())
-          .map(([offset, metric]) => [comparisonType, metric, offset].join(TIME_COMPARISION))
-          .map(metric => [metric, { operator: 'sum' }]),
-      );
+  if (isValidTimeCompare(formData, queryMetrics)) {
+    const valuesAgg = Object.fromEntries(
+      Array.from(metricOffsetMap.values())
+        .concat(Array.from(metricOffsetMap.keys()))
+        .map(metric => [metric, { operator: 'sum' as NumpyFunction }]),
+    );
+    const changeAgg = Object.fromEntries(
+      Array.from(metricOffsetMap.entries())
+        .map(([offset, metric]) => [comparisonType, metric, offset].join(TIME_COMPARISION))
+        .map(metric => [metric, { operator: 'sum' as NumpyFunction }]),
+    );
 
-      return {
-        operation: 'pivot',
-        options: {
-          index: ['__timestamp'],
-          columns: formData.groupby || [],
-          aggregates: comparisonType === ComparisionType.Values ? valuesAgg : changeAgg,
-        },
-      } as PostProcessingPivot;
-    }
-    return processing;
-  });
-
-  if (comparisonType === ComparisionType.Values) {
-    return { ...queryObject, post_processing, time_offsets: timeOffsets };
+    return {
+      operation: 'pivot',
+      options: {
+        index: ['__timestamp'],
+        columns: formData.groupby || [],
+        aggregates: comparisonType === ComparisionType.Values ? valuesAgg : changeAgg,
+      },
+    };
   }
 
-  post_processing.unshift({
-    operation: 'compare',
-    options: {
-      source_columns: Array.from(metricOffsetMap.values()),
-      compare_columns: Array.from(metricOffsetMap.keys()),
-      compare_type: comparisonType,
-      drop_original_columns: true,
-    },
-  });
-
-  return { ...queryObject, post_processing, time_offsets: timeOffsets };
+  return undefined;
 }
 
 export default {};
