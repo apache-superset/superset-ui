@@ -33,17 +33,19 @@ export function rollingWindowTransform(
   formData: QueryFormData,
   queryMetrics: QueryFormMetric[],
 ): PostProcessingRolling | PostProcessingCum | undefined {
-  let columns: string[];
+  let columns: (string | undefined)[];
   if (isValidTimeCompare(formData, queryMetrics)) {
     const metricsMap = getMetricOffsetsMap(formData, queryMetrics);
     const comparisonType = formData.comparison_type;
     if (formData.comparison_type === ComparisionType.Values) {
-      columns = [...Array.from(metricsMap.values()), ...Array.from(metricsMap.keys())]
+      columns = [...Array.from(metricsMap.values()), ...Array.from(metricsMap.keys())];
     } else {
-      columns = Array.from(metricsMap.entries()).map(([offset, metric]) => [comparisonType, metric, offset].join(TIME_COMPARISION));
+      columns = Array.from(metricsMap.entries()).map(([offset, metric]) =>
+        [comparisonType, metric, offset].join(TIME_COMPARISION),
+      );
     }
   } else {
-    columns = ensureIsArray(formData.metrics).map(metric => {
+    columns = ensureIsArray(queryMetrics).map(metric => {
       if (typeof metric === 'string') {
         return metric;
       }
