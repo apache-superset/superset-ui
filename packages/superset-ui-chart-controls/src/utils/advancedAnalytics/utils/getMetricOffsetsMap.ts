@@ -17,14 +17,15 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-import { getMetricLabel, ensureIsArray, QueryFormData, QueryFormMetric } from '@superset-ui/core';
+import { getMetricLabel, ensureIsArray, PostProcessingFactory } from '@superset-ui/core';
 
 export const TIME_COMPARISION = '__';
 
-export function getMetricOffsetsMap(
-  formData: QueryFormData,
-  queryMetrics: QueryFormMetric[],
-): Map<string, string> {
+export const getMetricOffsetsMap: PostProcessingFactory<Map<string, string>> = (
+  formData,
+  queryObject,
+) => {
+  const queryMetrics = ensureIsArray(queryObject.metrics);
   const timeOffsets = ensureIsArray(formData.time_compare);
 
   const metricLabels = queryMetrics.map(getMetricLabel);
@@ -41,4 +42,4 @@ export function getMetricOffsetsMap(
   });
 
   return metricOffsetMap;
-}
+};

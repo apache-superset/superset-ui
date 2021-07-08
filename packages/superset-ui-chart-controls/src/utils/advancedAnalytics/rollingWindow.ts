@@ -20,22 +20,20 @@
 import {
   ensureIsInt,
   ensureIsArray,
-  QueryFormData,
   RollingType,
   PostProcessingRolling,
   PostProcessingCum,
-  QueryFormMetric,
   ComparisionType,
+  PostProcessingFactory,
 } from '@superset-ui/core';
 import { getMetricOffsetsMap, isValidTimeCompare, TIME_COMPARISION } from './utils';
 
-export function rollingWindowTransform(
-  formData: QueryFormData,
-  queryMetrics: QueryFormMetric[],
-): PostProcessingRolling | PostProcessingCum | undefined {
+export const rollingWindowTransform: PostProcessingFactory<
+  PostProcessingRolling | PostProcessingCum | undefined
+> = (formData, queryObject) => {
   let columns: (string | undefined)[];
-  if (isValidTimeCompare(formData, queryMetrics)) {
-    const metricsMap = getMetricOffsetsMap(formData, queryMetrics);
+  if (isValidTimeCompare(formData, queryObject)) {
+    const metricsMap = getMetricOffsetsMap(formData, queryObject);
     const comparisonType = formData.comparison_type;
     if (formData.comparison_type === ComparisionType.Values) {
       columns = [...Array.from(metricsMap.values()), ...Array.from(metricsMap.keys())];
@@ -45,7 +43,7 @@ export function rollingWindowTransform(
       );
     }
   } else {
-    columns = ensureIsArray(queryMetrics).map(metric => {
+    columns = ensureIsArray(queryObject.metrics).map(metric => {
       if (typeof metric === 'string') {
         return metric;
       }
@@ -77,6 +75,6 @@ export function rollingWindowTransform(
   }
 
   return undefined;
-}
+};
 
 export default {};
