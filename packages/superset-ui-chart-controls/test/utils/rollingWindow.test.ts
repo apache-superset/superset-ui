@@ -93,4 +93,59 @@ describe('rollingWindowOperator', () => {
       });
     });
   });
+
+  it('rolling window and "actual values" in the time compare', () => {
+    expect(
+      rollingWindowOperator(
+        {
+          ...formData,
+          rolling_type: 'cumsum',
+          comparison_type: 'values',
+          time_compare: ['1 year ago', '1 year later'],
+        },
+        queryObject,
+      ),
+    ).toEqual({
+      operation: 'cum',
+      options: {
+        operator: 'sum',
+        columns: {
+          'count(*)': 'count(*)',
+          'count(*)__1 year ago': 'count(*)__1 year ago',
+          'count(*)__1 year later': 'count(*)__1 year later',
+          'sum(val)': 'sum(val)',
+          'sum(val)__1 year ago': 'sum(val)__1 year ago',
+          'sum(val)__1 year later': 'sum(val)__1 year later',
+        },
+      },
+    });
+  });
+
+  it('rolling window and "absolute / percentage / ratio" in the time compare', () => {
+    const comparisionTypes = ['absolute', 'percentage', 'ratio'];
+    comparisionTypes.forEach(cType => {
+      expect(
+        rollingWindowOperator(
+          {
+            ...formData,
+            rolling_type: 'cumsum',
+            comparison_type: cType,
+            time_compare: ['1 year ago', '1 year later'],
+          },
+          queryObject,
+        ),
+      ).toEqual({
+        operation: 'cum',
+        options: {
+          operator: 'sum',
+          columns: {
+            [`${cType}__count(*)__count(*)__1 year ago`]: `${cType}__count(*)__count(*)__1 year ago`,
+            [`${cType}__count(*)__count(*)__1 year later`]: `${cType}__count(*)__count(*)__1 year later`,
+            [`${cType}__sum(val)__sum(val)__1 year ago`]: `${cType}__sum(val)__sum(val)__1 year ago`,
+            [`${cType}__sum(val)__sum(val)__1 year later`]: `${cType}__sum(val)__sum(val)__1 year later`,
+          },
+        },
+      });
+    });
+  });
 });
