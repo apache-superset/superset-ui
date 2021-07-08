@@ -37,7 +37,7 @@ import {
 import { DEFAULT_LEGEND_FORM_DATA } from '../types';
 import { extractGroupbyLabel, getColtypesMapping, getLegendProps } from '../utils/series';
 import { defaultGrid, defaultTooltip } from '../defaults';
-import { OPACITY } from '../constants';
+import { OpacityEnum } from '../constants';
 
 export function formatLabel({
   params,
@@ -124,10 +124,10 @@ export default function transformProps(
       name: joinedName,
       itemStyle: {
         color: colorFn(joinedName),
-        opacity: isFiltered ? OPACITY.TRANSPARENT : OPACITY.OPAQUE,
+        opacity: isFiltered ? OpacityEnum.Transparent : OpacityEnum.NonTransparent,
       },
       lineStyle: {
-        opacity: isFiltered ? OPACITY.FILTERED : OPACITY.OPAQUE,
+        opacity: isFiltered ? OpacityEnum.SemiTransparent : OpacityEnum.NonTransparent,
       },
       label: {
         show: showLabels,
