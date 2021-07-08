@@ -26,8 +26,7 @@ import {
 
 export default function buildQuery(formData: QueryFormData) {
   return buildQueryContext(formData, baseQueryObject => {
-    const formMetrics = baseQueryObject.metrics || [];
-    const metricLabels = formMetrics.map(getMetricLabel);
+    const metricLabels = (baseQueryObject.metrics || []).map(getMetricLabel);
     const { timeseries_limit_metric, order_desc, orderby } = baseQueryObject;
     return [
       {
