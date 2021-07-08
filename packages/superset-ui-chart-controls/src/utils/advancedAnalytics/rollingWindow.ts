@@ -36,8 +36,10 @@ export const rollingWindowOperator: PostProcessingFactory<
     const metricsMap = getMetricOffsetsMap(formData, queryObject);
     const comparisonType = formData.comparison_type;
     if (formData.comparison_type === ComparisionType.Values) {
+      // time compare type: actual values
       columns = [...Array.from(metricsMap.values()), ...Array.from(metricsMap.keys())];
     } else {
+      // time compare type: absolute / percentage / ratio
       columns = Array.from(metricsMap.entries()).map(([offset, metric]) =>
         [comparisonType, metric, offset].join(TIME_COMPARISION),
       );
