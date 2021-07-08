@@ -28,7 +28,7 @@ import {
 } from '@superset-ui/core';
 import { getMetricOffsetsMap, isValidTimeCompare, TIME_COMPARISION } from './utils';
 
-export const rollingWindowTransform: PostProcessingFactory<
+export const rollingWindowOperator: PostProcessingFactory<
   PostProcessingRolling | PostProcessingCum | undefined
 > = (formData, queryObject) => {
   let columns: (string | undefined)[];

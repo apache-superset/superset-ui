@@ -26,7 +26,7 @@ import {
 } from '@superset-ui/core';
 import { getMetricOffsetsMap, isValidTimeCompare, TIME_COMPARISION } from './utils';
 
-export const timeCompareTransform: PostProcessingFactory<PostProcessingCompare | undefined> = (
+export const timeCompareOperator: PostProcessingFactory<PostProcessingCompare | undefined> = (
   formData,
   queryObject,
 ) => {
@@ -48,7 +48,7 @@ export const timeCompareTransform: PostProcessingFactory<PostProcessingCompare |
   return undefined;
 };
 
-export const timeComparePivotTransform: PostProcessingFactory<PostProcessingPivot | undefined> = (
+export const timeComparePivotOperator: PostProcessingFactory<PostProcessingPivot | undefined> = (
   formData,
   queryObject,
 ) => {
