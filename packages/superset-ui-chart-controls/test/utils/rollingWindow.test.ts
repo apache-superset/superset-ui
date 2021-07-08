@@ -27,7 +27,7 @@ const formData: SqlaFormData = {
   viz_type: 'table',
 };
 const queryObject: QueryObject = {
-  metrics: ['count(*)'],
+  metrics: ['count(*)', { label: 'sum(val)', expressionType: 'SQL', sqlExpression: 'sum(val)' }],
   time_range: '2015 : 2016',
   granularity: 'month',
   post_processing: [
@@ -48,26 +48,21 @@ const queryObject: QueryObject = {
 
 describe('rollingWindowTransform', () => {
   it('skip transformation', () => {
-    expect(rollingWindowTransform(formData, queryObject).post_processing).toEqual(
-      queryObject.post_processing,
+    expect(rollingWindowTransform(formData, queryObject)).toEqual(undefined);
+    expect(rollingWindowTransform({ ...formData, rolling_type: 'None' }, queryObject)).toEqual(
+      undefined,
     );
-    expect(
-      rollingWindowTransform({ ...formData, rolling_type: 'None' }, queryObject).post_processing,
-    ).toEqual(queryObject.post_processing);
+    expect(rollingWindowTransform({ ...formData, rolling_type: 'foobar' }, queryObject)).toEqual(
+      undefined,
+    );
 
     const formDataWithoutMetrics = { ...formData };
-    formDataWithoutMetrics.metrics = undefined;
-    expect(rollingWindowTransform(formDataWithoutMetrics, queryObject).post_processing).toEqual(
-      queryObject.post_processing,
-    );
+    delete formDataWithoutMetrics.metrics;
+    expect(rollingWindowTransform(formDataWithoutMetrics, queryObject)).toEqual(undefined);
   });
 
   it('rolling_type: cumsum', () => {
-    const expected = rollingWindowTransform({ ...formData, rolling_type: 'cumsum' }, queryObject)
-      .post_processing;
-    expect(expected).not.toEqual(queryObject.post_processing);
-    expect(expected[1]).toEqual(queryObject.post_processing[0]);
-    expect(expected[0]).toEqual({
+    expect(rollingWindowTransform({ ...formData, rolling_type: 'cumsum' }, queryObject)).toEqual({
       operation: 'cum',
       options: {
         operator: 'sum',
@@ -82,13 +77,9 @@ describe('rollingWindowTransform', () => {
   it('rolling_type: sum/mean/std', () => {
     const rollingTypes = ['sum', 'mean', 'std'];
     rollingTypes.forEach(rollingType => {
-      const expected = rollingWindowTransform(
-        { ...formData, rolling_type: rollingType },
-        queryObject,
-      ).post_processing;
-      expect(expected).not.toEqual(queryObject.post_processing);
-      expect(expected[1]).toEqual(queryObject.post_processing[0]);
-      expect(expected[0]).toEqual({
+      expect(
+        rollingWindowTransform({ ...formData, rolling_type: rollingType }, queryObject),
+      ).toEqual({
         operation: 'rolling',
         options: {
           rolling_type: rollingType,
