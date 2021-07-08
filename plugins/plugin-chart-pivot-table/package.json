@@ -31,7 +31,8 @@
     "@superset-ui/react-pivottable": "^0.12.8"
   },
   "peerDependencies": {
-    "react": "^16.13.1"
+    "react": "^16.13.1",
+    "@ant-design/icons": "^4.2.2"
   },
   "devDependencies": {
     "@babel/types": "^7.13.12",

@@ -16,8 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useCallback } from 'react';
-import { styled, AdhocMetric, getNumberFormatter, DataRecordValue } from '@superset-ui/core';
+import React, { useCallback, useMemo } from 'react';
+import { PlusSquareOutlined, MinusSquareOutlined } from '@ant-design/icons';
+import {
+  styled,
+  AdhocMetric,
+  getNumberFormatter,
+  DataRecordValue,
+  NumberFormatter,
+} from '@superset-ui/core';
 // @ts-ignore
 import PivotTable from '@superset-ui/react-pivottable/PivotTable';
 // @ts-ignore
@@ -41,6 +48,51 @@ const Styles = styled.div<PivotTableStylesProps>`
 
 const METRIC_KEY = 'metric';
 
+const aggregatorsFactory = (formatter: NumberFormatter) => ({
+  Count: aggregatorTemplates.count(formatter),
+  'Count Unique Values': aggregatorTemplates.countUnique(formatter),
+  'List Unique Values': aggregatorTemplates.listUnique(', '),
+  Sum: aggregatorTemplates.sum(formatter),
+  Average: aggregatorTemplates.average(formatter),
+  Median: aggregatorTemplates.median(formatter),
+  'Sample Variance': aggregatorTemplates.var(1, formatter),
+  'Sample Standard Deviation': aggregatorTemplates.stdev(1, formatter),
+  Minimum: aggregatorTemplates.min(formatter),
+  Maximum: aggregatorTemplates.max(formatter),
+  First: aggregatorTemplates.first(),
+  Last: aggregatorTemplates.last(formatter),
+  'Sum as Fraction of Total': aggregatorTemplates.fractionOf(
+    aggregatorTemplates.sum(),
+    'total',
+    formatter,
+  ),
+  'Sum as Fraction of Rows': aggregatorTemplates.fractionOf(
+    aggregatorTemplates.sum(),
+    'row',
+    formatter,
+  ),
+  'Sum as Fraction of Columns': aggregatorTemplates.fractionOf(
+    aggregatorTemplates.sum(),
+    'col',
+    formatter,
+  ),
+  'Count as Fraction of Total': aggregatorTemplates.fractionOf(
+    aggregatorTemplates.count(),
+    'total',
+    formatter,
+  ),
+  'Count as Fraction of Rows': aggregatorTemplates.fractionOf(
+    aggregatorTemplates.count(),
+    'row',
+    formatter,
+  ),
+  'Count as Fraction of Columns': aggregatorTemplates.fractionOf(
+    aggregatorTemplates.count(),
+    'col',
+    formatter,
+  ),
+});
+
 export default function PivotTableChart(props: PivotTableProps) {
   const {
     data,
@@ -49,11 +101,11 @@ export default function PivotTableChart(props: PivotTableProps) {
     groupbyRows,
     groupbyColumns,
     metrics,
-    tableRenderer,
     colOrder,
     rowOrder,
     aggregateFunction,
     transposePivot,
+    combineMetric,
     rowSubtotalPosition,
     colSubtotalPosition,
     colTotals,
@@ -63,54 +115,51 @@ export default function PivotTableChart(props: PivotTableProps) {
     setDataMask,
     selectedFilters,
     verboseMap,
+    columnFormats,
     metricsLayout,
+    metricColorFormatters,
+    dateFormatters,
   } = props;
 
-  const adaptiveFormatter = getNumberFormatter(valueFormat);
+  const defaultFormatter = getNumberFormatter(valueFormat);
+  const columnFormatsArray = Object.entries(columnFormats);
+  const hasCustomMetricFormatters = columnFormatsArray.length > 0;
+  const metricFormatters =
+    hasCustomMetricFormatters &&
+    Object.fromEntries(
+      columnFormatsArray.map(([metric, format]) => [metric, getNumberFormatter(format)]),
+    );
 
-  const aggregators = (tpl => ({
-    Count: tpl.count(adaptiveFormatter),
-    'Count Unique Values': tpl.countUnique(adaptiveFormatter),
-    'List Unique Values': tpl.listUnique(', '),
-    Sum: tpl.sum(adaptiveFormatter),
-    Average: tpl.average(adaptiveFormatter),
-    Median: tpl.median(adaptiveFormatter),
-    'Sample Variance': tpl.var(1, adaptiveFormatter),
-    'Sample Standard Deviation': tpl.stdev(1, adaptiveFormatter),
-    Minimum: tpl.min(adaptiveFormatter),
-    Maximum: tpl.max(adaptiveFormatter),
-    First: tpl.first(adaptiveFormatter),
-    Last: tpl.last(adaptiveFormatter),
-    'Sum as Fraction of Total': tpl.fractionOf(tpl.sum(), 'total', adaptiveFormatter),
-    'Sum as Fraction of Rows': tpl.fractionOf(tpl.sum(), 'row', adaptiveFormatter),
-    'Sum as Fraction of Columns': tpl.fractionOf(tpl.sum(), 'col', adaptiveFormatter),
-    'Count as Fraction of Total': tpl.fractionOf(tpl.count(), 'total', adaptiveFormatter),
-    'Count as Fraction of Rows': tpl.fractionOf(tpl.count(), 'row', adaptiveFormatter),
-    'Count as Fraction of Columns': tpl.fractionOf(tpl.count(), 'col', adaptiveFormatter),
-  }))(aggregatorTemplates);
-
-  const metricNames = metrics.map((metric: string | AdhocMetric) =>
-    typeof metric === 'string' ? metric : (metric.label as string),
+  const metricNames = useMemo(
+    () =>
+      metrics.map((metric: string | AdhocMetric) =>
+        typeof metric === 'string' ? metric : (metric.label as string),
+      ),
+    [metrics],
   );
 
-  const unpivotedData = data.reduce(
-    (acc: Record<string, any>[], record: Record<string, any>) => [
-      ...acc,
-      ...metricNames.map((name: string) => ({
-        ...record,
-        [METRIC_KEY]: name,
-        value: record[name],
-      })),
-    ],
-    [],
+  const unpivotedData = useMemo(
+    () =>
+      data.reduce(
+        (acc: Record<string, any>[], record: Record<string, any>) => [
+          ...acc,
+          ...metricNames.map((name: string) => ({
+            ...record,
+            [METRIC_KEY]: name,
+            value: record[name],
+          })),
+        ],
+        [],
+      ),
+    [data, metricNames],
   );
 
   let [rows, cols] = transposePivot ? [groupbyColumns, groupbyRows] : [groupbyRows, groupbyColumns];
 
   if (metricsLayout === MetricsLayoutEnum.ROWS) {
-    rows = [METRIC_KEY, ...rows];
+    rows = combineMetric ? [...rows, METRIC_KEY] : [METRIC_KEY, ...rows];
   } else {
-    cols = [METRIC_KEY, ...cols];
+    cols = combineMetric ? [...cols, METRIC_KEY] : [METRIC_KEY, ...cols];
   }
 
   const handleChange = useCallback(
@@ -144,11 +193,6 @@ export default function PivotTableChart(props: PivotTableProps) {
     [setDataMask],
   );
 
-  const isActiveFilterValue = useCallback(
-    (key: string, val: DataRecordValue) => !!selectedFilters && selectedFilters[key]?.includes(val),
-    [selectedFilters],
-  );
-
   const toggleFilter = useCallback(
     (
       e: MouseEvent,
@@ -161,6 +205,9 @@ export default function PivotTableChart(props: PivotTableProps) {
       if (isSubtotal || isGrandTotal || !emitFilter) {
         return;
       }
+
+      const isActiveFilterValue = (key: string, val: DataRecordValue) =>
+        !!selectedFilters && selectedFilters[key]?.includes(val);
 
       const filtersCopy = { ...filters };
       delete filtersCopy[METRIC_KEY];
@@ -192,10 +239,13 @@ export default function PivotTableChart(props: PivotTableProps) {
         data={unpivotedData}
         rows={rows}
         cols={cols}
-        aggregators={aggregators}
+        aggregatorsFactory={aggregatorsFactory}
+        defaultFormatter={defaultFormatter}
+        customFormatters={
+          hasCustomMetricFormatters ? { [METRIC_KEY]: metricFormatters } : undefined
+        }
         aggregatorName={aggregateFunction}
         vals={['value']}
-        rendererName={tableRenderer}
         colOrder={colOrder}
         rowOrder={rowOrder}
         sorters={{
@@ -209,10 +259,14 @@ export default function PivotTableChart(props: PivotTableProps) {
           highlightHeaderCellsOnHover: emitFilter,
           highlightedHeaderCells: selectedFilters,
           omittedHighlightHeaderGroups: [METRIC_KEY],
+          cellColorFormatters: { [METRIC_KEY]: metricColorFormatters },
+          dateFormatters,
         }}
         subtotalOptions={{
           colSubtotalDisplay: { displayOnTop: colSubtotalPosition },
           rowSubtotalDisplay: { displayOnTop: rowSubtotalPosition },
+          arrowCollapsed: <MinusSquareOutlined />,
+          arrowExpanded: <PlusSquareOutlined />,
         }}
         namesMapping={verboseMap}
       />
