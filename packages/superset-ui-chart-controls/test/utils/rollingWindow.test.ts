@@ -17,7 +17,7 @@
  * under the License.
  */
 import { QueryObject, SqlaFormData } from '@superset-ui/core';
-import { rollingWindowTransform } from '../../src';
+import { rollingWindowOperator } from '../../src';
 
 const formData: SqlaFormData = {
   metrics: ['count(*)', { label: 'sum(val)', expressionType: 'SQL', sqlExpression: 'sum(val)' }],
@@ -46,23 +46,23 @@ const queryObject: QueryObject = {
   ],
 };
 
-describe('rollingWindowTransform', () => {
+describe('rollingWindowOperator', () => {
   it('skip transformation', () => {
-    expect(rollingWindowTransform(formData, queryObject)).toEqual(undefined);
-    expect(rollingWindowTransform({ ...formData, rolling_type: 'None' }, queryObject)).toEqual(
+    expect(rollingWindowOperator(formData, queryObject)).toEqual(undefined);
+    expect(rollingWindowOperator({ ...formData, rolling_type: 'None' }, queryObject)).toEqual(
       undefined,
     );
-    expect(rollingWindowTransform({ ...formData, rolling_type: 'foobar' }, queryObject)).toEqual(
+    expect(rollingWindowOperator({ ...formData, rolling_type: 'foobar' }, queryObject)).toEqual(
       undefined,
     );
 
     const formDataWithoutMetrics = { ...formData };
     delete formDataWithoutMetrics.metrics;
-    expect(rollingWindowTransform(formDataWithoutMetrics, queryObject)).toEqual(undefined);
+    expect(rollingWindowOperator(formDataWithoutMetrics, queryObject)).toEqual(undefined);
   });
 
   it('rolling_type: cumsum', () => {
-    expect(rollingWindowTransform({ ...formData, rolling_type: 'cumsum' }, queryObject)).toEqual({
+    expect(rollingWindowOperator({ ...formData, rolling_type: 'cumsum' }, queryObject)).toEqual({
       operation: 'cum',
       options: {
         operator: 'sum',
@@ -78,7 +78,7 @@ describe('rollingWindowTransform', () => {
     const rollingTypes = ['sum', 'mean', 'std'];
     rollingTypes.forEach(rollingType => {
       expect(
-        rollingWindowTransform({ ...formData, rolling_type: rollingType }, queryObject),
+        rollingWindowOperator({ ...formData, rolling_type: rollingType }, queryObject),
       ).toEqual({
         operation: 'rolling',
         options: {

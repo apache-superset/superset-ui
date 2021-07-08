@@ -17,7 +17,7 @@
  * under the License.
  */
 import { QueryObject, SqlaFormData } from '@superset-ui/core';
-import { timeCompareTransform, timeComparePivotTransform } from '../../src';
+import { timeCompareOperator, timeComparePivotOperator } from '../../src';
 
 const formData: SqlaFormData = {
   metrics: ['count(*)'],
@@ -55,16 +55,16 @@ const queryObject: QueryObject = {
 
 describe('timeCompare', () => {
   it('time compare: skip transformation', () => {
-    expect(timeCompareTransform(formData, queryObject)).toEqual(undefined);
-    expect(timeCompareTransform({ ...formData, time_compare: [] }, queryObject)).toEqual(undefined);
-    expect(timeCompareTransform({ ...formData, comparison_type: null }, queryObject)).toEqual(
+    expect(timeCompareOperator(formData, queryObject)).toEqual(undefined);
+    expect(timeCompareOperator({ ...formData, time_compare: [] }, queryObject)).toEqual(undefined);
+    expect(timeCompareOperator({ ...formData, comparison_type: null }, queryObject)).toEqual(
       undefined,
     );
-    expect(timeCompareTransform({ ...formData, comparison_type: 'foobar' }, queryObject)).toEqual(
+    expect(timeCompareOperator({ ...formData, comparison_type: 'foobar' }, queryObject)).toEqual(
       undefined,
     );
     expect(
-      timeCompareTransform(
+      timeCompareOperator(
         { ...formData, comparison_type: 'values', time_compare: ['1 year ago', '1 year later'] },
         queryObject,
       ),
@@ -75,7 +75,7 @@ describe('timeCompare', () => {
     const comparisionTypes = ['absolute', 'percentage', 'ratio'];
     comparisionTypes.forEach(cType => {
       expect(
-        timeCompareTransform(
+        timeCompareOperator(
           { ...formData, comparison_type: cType, time_compare: ['1 year ago', '1 year later'] },
           queryObject,
         ),
@@ -92,21 +92,21 @@ describe('timeCompare', () => {
   });
 
   it('time compare pivot: skip transformation', () => {
-    expect(timeComparePivotTransform(formData, queryObject)).toEqual(undefined);
-    expect(timeComparePivotTransform({ ...formData, time_compare: [] }, queryObject)).toEqual(
+    expect(timeComparePivotOperator(formData, queryObject)).toEqual(undefined);
+    expect(timeComparePivotOperator({ ...formData, time_compare: [] }, queryObject)).toEqual(
       undefined,
     );
-    expect(timeComparePivotTransform({ ...formData, comparison_type: null }, queryObject)).toEqual(
+    expect(timeComparePivotOperator({ ...formData, comparison_type: null }, queryObject)).toEqual(
       undefined,
     );
-    expect(timeCompareTransform({ ...formData, comparison_type: 'foobar' }, queryObject)).toEqual(
+    expect(timeCompareOperator({ ...formData, comparison_type: 'foobar' }, queryObject)).toEqual(
       undefined,
     );
   });
 
   it('time compare pivot: values', () => {
     expect(
-      timeComparePivotTransform(
+      timeComparePivotOperator(
         { ...formData, comparison_type: 'values', time_compare: ['1 year ago', '1 year later'] },
         queryObject,
       ),
@@ -128,7 +128,7 @@ describe('timeCompare', () => {
     const comparisionTypes = ['absolute', 'percentage', 'ratio'];
     comparisionTypes.forEach(cType => {
       expect(
-        timeComparePivotTransform(
+        timeComparePivotOperator(
           { ...formData, comparison_type: cType, time_compare: ['1 year ago', '1 year later'] },
           queryObject,
         ),

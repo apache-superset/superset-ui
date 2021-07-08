@@ -18,9 +18,9 @@
  */
 import { buildQueryContext, getMetricLabel, QueryFormData } from '@superset-ui/core';
 import {
-  rollingWindowTransform,
-  timeCompareTransform,
-  timeComparePivotTransform,
+  rollingWindowOperator,
+  timeCompareOperator,
+  timeComparePivotOperator,
   isValidTimeCompare,
 } from '@superset-ui/chart-controls';
 
@@ -41,10 +41,10 @@ export default function buildQuery(formData: QueryFormData) {
           : [],
         time_offsets: isValidTimeCompare(formData, baseQueryObject) ? formData.time_compare : [],
         post_processing: [
-          timeCompareTransform(formData, baseQueryObject),
-          rollingWindowTransform(formData, baseQueryObject),
+          timeCompareOperator(formData, baseQueryObject),
+          rollingWindowOperator(formData, baseQueryObject),
           isValidTimeCompare(formData, baseQueryObject)
-            ? timeComparePivotTransform(formData, baseQueryObject)
+            ? timeComparePivotOperator(formData, baseQueryObject)
             : {
                 operation: 'pivot',
                 options: {
