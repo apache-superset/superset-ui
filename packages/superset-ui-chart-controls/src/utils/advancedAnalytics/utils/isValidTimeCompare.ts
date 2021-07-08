@@ -17,15 +17,12 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-import { QueryFormData, ComparisionType, QueryFormMetric } from '@superset-ui/core';
+import { ComparisionType, PostProcessingFactory } from '@superset-ui/core';
 import { getMetricOffsetsMap } from './getMetricOffsetsMap';
 
-export function isValidTimeCompare(
-  formData: QueryFormData,
-  queryMetrics: QueryFormMetric[],
-): boolean {
+export const isValidTimeCompare: PostProcessingFactory<boolean> = (formData, queryObject) => {
   const comparisonType = formData.comparison_type;
-  const metricOffsetMap = getMetricOffsetsMap(formData, queryMetrics);
+  const metricOffsetMap = getMetricOffsetsMap(formData, queryObject);
 
   return (
     [
@@ -35,4 +32,4 @@ export function isValidTimeCompare(
       ComparisionType.Ratio,
     ].includes(comparisonType) && metricOffsetMap.size > 0
   );
-}
+};

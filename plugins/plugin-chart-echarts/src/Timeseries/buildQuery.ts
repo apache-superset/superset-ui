@@ -39,12 +39,12 @@ export default function buildQuery(formData: QueryFormData) {
           : timeseries_limit_metric
           ? [[timeseries_limit_metric, !order_desc]]
           : [],
-        time_offsets: isValidTimeCompare(formData, formMetrics) ? formData.time_compare : [],
+        time_offsets: isValidTimeCompare(formData, baseQueryObject) ? formData.time_compare : [],
         post_processing: [
-          timeCompareTransform(formData, formMetrics),
-          rollingWindowTransform(formData, formMetrics),
-          isValidTimeCompare(formData, formMetrics)
-            ? timeComparePivotTransform(formData, formMetrics)
+          timeCompareTransform(formData, baseQueryObject),
+          rollingWindowTransform(formData, baseQueryObject),
+          isValidTimeCompare(formData, baseQueryObject)
+            ? timeComparePivotTransform(formData, baseQueryObject)
             : {
                 operation: 'pivot',
                 options: {

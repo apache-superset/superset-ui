@@ -18,23 +18,22 @@
  * under the License.
  */
 import {
-  QueryFormData,
   ComparisionType,
-  QueryFormMetric,
   PostProcessingPivot,
   PostProcessingCompare,
   NumpyFunction,
+  PostProcessingFactory,
 } from '@superset-ui/core';
 import { getMetricOffsetsMap, isValidTimeCompare, TIME_COMPARISION } from './utils';
 
-export function timeCompareTransform(
-  formData: QueryFormData,
-  queryMetrics: QueryFormMetric[],
-): PostProcessingCompare | undefined {
+export const timeCompareTransform: PostProcessingFactory<PostProcessingCompare | undefined> = (
+  formData,
+  queryObject,
+) => {
   const comparisonType = formData.comparison_type;
-  const metricOffsetMap = getMetricOffsetsMap(formData, queryMetrics);
+  const metricOffsetMap = getMetricOffsetsMap(formData, queryObject);
 
-  if (isValidTimeCompare(formData, queryMetrics) && comparisonType !== ComparisionType.Values) {
+  if (isValidTimeCompare(formData, queryObject) && comparisonType !== ComparisionType.Values) {
     return {
       operation: 'compare',
       options: {
@@ -47,16 +46,16 @@ export function timeCompareTransform(
   }
 
   return undefined;
-}
+};
 
-export function timeComparePivotTransform(
-  formData: QueryFormData,
-  queryMetrics: QueryFormMetric[],
-): PostProcessingPivot | undefined {
+export const timeComparePivotTransform: PostProcessingFactory<PostProcessingPivot | undefined> = (
+  formData,
+  queryObject,
+) => {
   const comparisonType = formData.comparison_type;
-  const metricOffsetMap = getMetricOffsetsMap(formData, queryMetrics);
+  const metricOffsetMap = getMetricOffsetsMap(formData, queryObject);
 
-  if (isValidTimeCompare(formData, queryMetrics)) {
+  if (isValidTimeCompare(formData, queryObject)) {
     const valuesAgg = Object.fromEntries(
       Array.from(metricOffsetMap.values())
         .concat(Array.from(metricOffsetMap.keys()))
@@ -79,6 +78,6 @@ export function timeComparePivotTransform(
   }
 
   return undefined;
-}
+};
 
 export default {};
