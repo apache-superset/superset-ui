@@ -79,5 +79,3 @@ export const FONT_SIZE_MULTIPLIERS = {
   detailOffsetFromTitle: 0.9,
   detailFontSize: 1.2,
 };
-
-export const FILTER_OPACITY = 0.1;

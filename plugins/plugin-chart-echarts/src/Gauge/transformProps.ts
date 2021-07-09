@@ -41,8 +41,8 @@ import {
   INTERVAL_GAUGE_SERIES_OPTION,
   OFFSETS,
   FONT_SIZE_MULTIPLIERS,
-  FILTER_OPACITY,
 } from './constants';
+import { OpacityEnum } from '../constants';
 
 const setIntervalBoundsAndColors = (
   intervals: string,
@@ -152,7 +152,7 @@ export default function transformProps(
         ...item,
         itemStyle: {
           color: colorFn(index),
-          opacity: FILTER_OPACITY,
+          opacity: OpacityEnum.SemiTransparent,
         },
         detail: {
           show: false,

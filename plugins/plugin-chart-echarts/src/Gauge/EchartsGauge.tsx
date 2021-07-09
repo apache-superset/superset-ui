@@ -29,11 +29,11 @@ export default function EchartsGauge({
   labelMap,
   groupby,
   selectedValues,
-  formData,
+  formData: { emitFilter },
 }: GaugeChartTransformedProps) {
   const handleChange = useCallback(
     (values: string[]) => {
-      if (!formData.emitFilter) {
+      if (!emitFilter) {
         return;
       }
 
