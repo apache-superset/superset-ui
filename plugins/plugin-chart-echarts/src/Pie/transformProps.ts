@@ -43,6 +43,7 @@ import {
   sanitizeHtml,
 } from '../utils/series';
 import { defaultGrid, defaultTooltip } from '../defaults';
+import { OpacityEnum } from '../constants';
 
 const percentFormatter = getNumberFormatter(NumberFormats.PERCENT_2_POINT);
 
@@ -147,7 +148,7 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
       name,
       itemStyle: {
         color: colorFn(name),
-        opacity: isFiltered ? 0.3 : 1,
+        opacity: isFiltered ? OpacityEnum.Transparent : OpacityEnum.NonTransparent,
       },
     };
   });
