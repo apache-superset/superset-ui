@@ -16,6 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { EChartsOption } from 'echarts';
+import {
+  ChartDataResponseResult,
+  ChartProps,
+  DataRecordValue,
+  QueryFormData,
+  SetDataMaskHook,
+} from '@superset-ui/core';
 import { GraphNodeItemOption } from 'echarts/types/src/chart/graph/GraphSeries';
 import { SeriesTooltipOption } from 'echarts/types/src/util/types';
 import {
@@ -26,6 +34,11 @@ import {
 } from '../types';
 
 export type EdgeSymbol = 'none' | 'circle' | 'arrow';
+
+export interface EchartsGraphChartProps extends ChartProps {
+  formData: EchartsGraphFormData;
+  queriesData: ChartDataResponseResult[];
+}
 
 export type EchartsGraphFormData = EchartsLegendFormData & {
   source: string;
@@ -46,6 +59,7 @@ export type EchartsGraphFormData = EchartsLegendFormData & {
   edgeLength: number;
   edgeSymbol: string;
   friction: number;
+  emitFilter: boolean;
 };
 
 export type EChartGraphNode = Omit<GraphNodeItemOption, 'value'> & {
@@ -71,8 +85,20 @@ export const DEFAULT_FORM_DATA: EchartsGraphFormData = {
   friction: 0.2,
   legendOrientation: LegendOrientation.Top,
   legendType: LegendType.Scroll,
+  emitFilter: false,
 };
 
 export type tooltipFormatParams = {
   data: { [name: string]: string };
 };
+export interface EchartsGraphChartTransformedProps {
+  formData: EchartsGraphFormData;
+  height: number;
+  width: number;
+  echartOptions: EChartsOption;
+  emitFilter: boolean;
+  setDataMask: SetDataMaskHook;
+  labelMap: Record<string, DataRecordValue[]>;
+  groupby: string[];
+  selectedValues: Record<number, string>;
+}
