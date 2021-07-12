@@ -230,16 +230,22 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     [filters],
   );
 
+  function getEmitTarget(col: string) {
+    const meta = columnsMeta?.find(x => x.key == col);
+    return meta?.config?.emitTarget || col;
+  }
+
   const toggleFilter = useCallback(
     function toggleFilter(key: string, val: DataRecordValue) {
       const updatedFilters = { ...(filters || {}) };
-      if (filters && isActiveFilterValue(key, val)) {
-        updatedFilters[key] = filters[key].filter((x: DataRecordValue) => x !== val);
+      const target = getEmitTarget(key);
+      if (filters && isActiveFilterValue(target, val)) {
+        updatedFilters[target] = filters[target].filter((x: DataRecordValue) => x !== val);
       } else {
-        updatedFilters[key] = [...(filters?.[key] || []), val];
+        updatedFilters[target] = [...(filters?.[target] || []), val];
       }
-      if (Array.isArray(updatedFilters[key]) && updatedFilters[key].length === 0) {
-        delete updatedFilters[key];
+      if (Array.isArray(updatedFilters[target]) && updatedFilters[target].length === 0) {
+        delete updatedFilters[target];
       }
       setFilters(updatedFilters);
       handleChange(updatedFilters);
