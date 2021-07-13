@@ -16,24 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {
-  EchartsBoxPlotChartPlugin,
-  EchartsPieChartPlugin,
-  EchartsTimeseriesChartPlugin,
-  EchartsGraphChartPlugin,
-  EchartsFunnelChartPlugin,
-  EchartsTreemapChartPlugin,
-  EchartsBarChartPlugin,
-} from '../src';
+import buildQuery from '../../src/Bar/buildQuery';
 
-describe('@superset-ui/plugin-chart-echarts', () => {
-  it('exists', () => {
-    expect(EchartsBoxPlotChartPlugin).toBeDefined();
-    expect(EchartsPieChartPlugin).toBeDefined();
-    expect(EchartsTimeseriesChartPlugin).toBeDefined();
-    expect(EchartsGraphChartPlugin).toBeDefined();
-    expect(EchartsFunnelChartPlugin).toBeDefined();
-    expect(EchartsTreemapChartPlugin).toBeDefined();
-    expect(EchartsBarChartPlugin).toBeDefined();
+describe('Bar buildQuery', () => {
+  const formData = {
+    datasource: '2__table',
+    granularity_sqla: 'year',
+    groupby: ['foo', 'bar'],
+    metrics: ['bar', 'baz'],
+    viz_type: 'my_chart',
+  };
+
+  it('should build groupby with series in form data', () => {
+    const queryContext = buildQuery(formData);
+    const [query] = queryContext.queries;
+    expect(query.groupby).toEqual(['foo', 'bar']);
+    expect(query.metrics).toEqual(['bar', 'baz']);
   });
 });
