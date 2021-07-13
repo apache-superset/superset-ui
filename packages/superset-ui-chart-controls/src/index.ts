@@ -28,6 +28,7 @@ export * from './components/InfoTooltipWithTrigger';
 export * from './components/ColumnOption';
 export * from './components/ColumnTypeLabel';
 export * from './components/MetricOption';
+export { default as ControlHeader } from './components/ControlHeader';
 
 // React control components
 export { default as sharedControls } from './shared-controls';
