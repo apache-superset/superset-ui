@@ -1,7 +1,7 @@
 {
-  "name": "@superset-ui/plugin-chart-echarts",
+  "name": "@superset-ui/plugin-chart-ixora",
   "version": "0.17.63",
-  "description": "Superset Chart - Echarts",
+  "description": "Superset Chart - Ixora",
   "sideEffects": false,
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -16,7 +16,7 @@
   "keywords": [
     "superset"
   ],
-  "author": "Superset",
+  "author": "Maksim Melnikov (Ixora)",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/apache-superset/superset-ui/issues"
