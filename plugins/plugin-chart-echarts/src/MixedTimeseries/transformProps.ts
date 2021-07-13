@@ -20,7 +20,8 @@
 import {
   AnnotationLayer,
   CategoricalColorNamespace,
-  ChartProps,
+  DataRecordValue,
+  TimeseriesDataRecord,
   getNumberFormatter,
   isEventAnnotationLayer,
   isFormulaAnnotationLayer,
@@ -28,8 +29,12 @@ import {
   isTimeseriesAnnotationLayer,
 } from '@superset-ui/core';
 import { EChartsOption, SeriesOption } from 'echarts';
-import { DEFAULT_FORM_DATA, EchartsMixedTimeseriesFormData } from './types';
-import { EchartsProps, ForecastSeriesEnum, ProphetValue } from '../types';
+import {
+  DEFAULT_FORM_DATA,
+  EchartsMixedTimeseriesFormData,
+  EchartsMixedTimeseriesChartTransformedProps,
+} from './types';
+import { ForecastSeriesEnum, ProphetValue } from '../types';
 import { parseYAxisBound } from '../utils/controls';
 import { dedupSeries, extractTimeseriesSeries, getLegendProps } from '../utils/series';
 import { extractAnnotationLabels } from '../utils/annotation';
@@ -50,13 +55,16 @@ import {
   transformSeries,
   transformTimeseriesAnnotation,
 } from '../Timeseries/transformers';
-import { TIMESERIES_CONSTANTS } from '../constants';
+import { TIMESERIES_CONSTANTS, OpacityEnum } from '../constants';
 
-export default function transformProps(chartProps: ChartProps): EchartsProps {
-  const { width, height, formData, queriesData } = chartProps;
-  const { annotation_data: annotationData_, data: data1 = [] } = queriesData[0];
-  const { data: data2 = [] } = queriesData[1];
+export default function transformProps(
+  chartProps: EchartsMixedTimeseriesFormData,
+): EchartsMixedTimeseriesChartTransformedProps {
+  const { width, height, formData, queriesData, hooks, filterState } = chartProps;
+  const { annotation_data: annotationData_ } = queriesData[0];
   const annotationData = annotationData_ || {};
+  const data1: TimeseriesDataRecord[] = queriesData[0].data || [];
+  const data2: TimeseriesDataRecord[] = queriesData[1].data || [];
 
   const {
     area,
@@ -95,6 +103,9 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     zoomable,
     richTooltip,
     xAxisLabelRotation,
+    groupby,
+    groupbyB,
+    emitFilter,
   }: EchartsMixedTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
@@ -104,6 +115,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const rawSeriesB = extractTimeseriesSeries(rebaseTimeseriesDatum(data2), {
     fillNeighborValue: stackB ? 0 : undefined,
   });
+  debugger;
 
   const series: SeriesOption[] = [];
   const formatter = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormat);
@@ -131,7 +143,19 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       stack,
       yAxisIndex,
     });
-    if (transformedSeries) series.push(transformedSeries);
+    if (transformedSeries) {
+      series.push(transformedSeries);
+      const opacity =
+        filterState.selectedValues && !filterState.selectedValues.includes(transformedSeries.name)
+          ? OpacityEnum.SemiTransparent
+          : OpacityEnum.NonTransparent;
+      // @ts-ignore
+      transformedSeries.itemStyle.opacity = opacity;
+      // @ts-ignore
+      transformedSeries.lineStyle.opacity = opacity;
+      // @ts-ignore
+      transformedSeries.areaStyle.opacity = opacity;
+    }
   });
   rawSeriesB.forEach(entry => {
     const transformedSeries = transformSeries(entry, colorScale, {
@@ -143,7 +167,19 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       stack: stackB,
       yAxisIndex: yAxisIndexB,
     });
-    if (transformedSeries) series.push(transformedSeries);
+    if (transformedSeries) {
+      series.push(transformedSeries);
+      const opacity =
+        filterState.selectedValues && !filterState.selectedValues.includes(transformedSeries.name)
+          ? OpacityEnum.SemiTransparent
+          : OpacityEnum.NonTransparent;
+      // @ts-ignore
+      transformedSeries.itemStyle.opacity = opacity;
+      // @ts-ignore
+      transformedSeries.lineStyle.opacity = opacity;
+      // @ts-ignore
+      transformedSeries.areaStyle.opacity = opacity;
+    }
   });
 
   annotationLayers
@@ -174,6 +210,52 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
 
   const addYAxisLabelOffset = !!(yAxisTitle || yAxisTitleSecondary);
   const chartPadding = getPadding(showLegend, legendOrientation, addYAxisLabelOffset, zoomable);
+
+  const labelMapA = rawSeriesA.reduce((acc, datum) => {
+    const label = datum.name as string;
+    return {
+      ...acc,
+      [label]: label.split(', '),
+    };
+  }, {}) as Record<string, DataRecordValue[]>;
+
+  const labelMapB = rawSeriesB.reduce((acc, datum) => {
+    const label = datum.name as string;
+    return {
+      ...acc,
+      [label]: label.split(', '),
+    };
+  }, {}) as Record<string, DataRecordValue[]>;
+
+  const selectedValuesA = (filterState.selectedValues || []).reduce(
+    (acc: Record<string, number>, selectedValue: string) => {
+      const index = rawSeriesA.findIndex(({ name }) => name === selectedValue);
+      if (index === -1) {
+        return { ...acc };
+      }
+      return {
+        ...acc,
+        [index]: selectedValue,
+      };
+    },
+    {},
+  );
+  const selectedValuesB = (filterState.selectedValues || []).reduce(
+    (acc: Record<string, number>, selectedValue: string) => {
+      const index = rawSeriesB.findIndex(({ name }) => name === selectedValue);
+      if (index === -1) {
+        return { ...acc };
+      }
+      return {
+        ...acc,
+        [index]: selectedValue,
+      };
+    },
+    {},
+  );
+
+  const { setDataMask = () => {} } = hooks;
+
   const echartOptions: EChartsOption = {
     useUTC: true,
     grid: {
@@ -280,8 +362,16 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   };
 
   return {
-    echartOptions,
+    formData,
     width,
     height,
+    echartOptions,
+    setDataMask,
+    emitFilter,
+    labelMap: labelMapA,
+    labelMapB,
+    groupby,
+    groupbyB,
+    selectedValues: { ...selectedValuesA, ...selectedValuesB },
   };
 }
