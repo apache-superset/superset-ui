@@ -18,4 +18,4 @@
  */
 
 export * from './sections';
-export * from './AdvancedAnalytics';
+export * from './advancedAnalytics';

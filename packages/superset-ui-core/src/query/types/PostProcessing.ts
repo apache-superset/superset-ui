@@ -19,8 +19,6 @@
 import { JsonObject } from '../../connection';
 import { TimeGranularity } from '../../time-format';
 import { RollingType, ComparisionType } from './AdvancedAnalytics';
-import { QueryFormData } from './QueryFormData';
-import { QueryObject } from './Query';
 
 export type NumpyFunction =
   | 'average'
@@ -165,7 +163,3 @@ export type PostProcessingRule =
   | PostProcessingRolling
   | PostProcessingCum
   | PostProcessingCompare;
-
-export interface PostProcessingFactory<T> {
-  (formData: QueryFormData, queryObject: QueryObject): T;
-}

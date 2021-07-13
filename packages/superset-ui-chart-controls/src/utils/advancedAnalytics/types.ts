@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -14,30 +13,11 @@
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
+ * specific language governing permissions and limitationsxw
  * under the License.
  */
-export enum RollingType {
-  Mean = 'mean',
-  Sum = 'sum',
-  Std = 'std',
-  Cumsum = 'cumsum',
-}
-export interface RollingWindow {
-  rolling_type?: RollingType;
-  rolling_periods?: number;
-  min_periods?: number;
-}
+import { QueryFormData, QueryObject } from '@superset-ui/core';
 
-export enum ComparisionType {
-  Values = 'values',
-  Absolute = 'absolute',
-  Percentage = 'percentage',
-  Ratio = 'ratio',
+export interface PostProcessingFactory<T> {
+  (formData: QueryFormData, queryObject: QueryObject): T;
 }
-export interface TimeCompare {
-  time_compare?: string;
-  comparison_type?: ComparisionType;
-}
-
-export default {};
