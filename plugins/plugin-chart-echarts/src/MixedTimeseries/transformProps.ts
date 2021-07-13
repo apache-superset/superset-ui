@@ -115,7 +115,6 @@ export default function transformProps(
   const rawSeriesB = extractTimeseriesSeries(rebaseTimeseriesDatum(data2), {
     fillNeighborValue: stackB ? 0 : undefined,
   });
-  debugger;
 
   const series: SeriesOption[] = [];
   const formatter = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormat);
