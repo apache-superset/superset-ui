@@ -22,8 +22,6 @@ import { QueryFormData, DatasourceType, Metric, JsonValue, Column } from '@super
 import sharedControls from './shared-controls';
 import sharedControlComponents from './shared-controls/components';
 
-export { Metric } from '@superset-ui/core';
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyDict = Record<string, any>;
 interface Action {
@@ -34,6 +32,7 @@ interface AnyAction extends Action, AnyDict {}
 export type SharedControls = typeof sharedControls;
 export type SharedControlAlias = keyof typeof sharedControls;
 export type SharedControlComponents = typeof sharedControlComponents;
+export type { Metric };
 
 /** ----------------------------------------------
  * Input data/props while rendering
