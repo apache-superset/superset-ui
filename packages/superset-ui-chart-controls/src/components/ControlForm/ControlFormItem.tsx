@@ -27,7 +27,6 @@ export * from './controls';
 export type ControlFormItemProps = ControlFormItemSpec & {
   name: string;
   onChange?: (fieldValue: JsonValue) => void;
-  returnValidationErrorsOnChange?: boolean;
 };
 
 export type ControlFormItemNode = FunctionComponentElement<ControlFormItemProps>;
@@ -50,7 +49,6 @@ export function ControlFormItem({
   value: initialValue,
   defaultValue,
   controlType,
-  returnValidationErrorsOnChange = false,
   ...props
 }: ControlFormItemProps) {
   const { gridUnit } = useTheme();
@@ -75,9 +73,6 @@ export function ControlFormItem({
     setValue(fieldValue);
     if (errors.length === 0 && onChange) {
       onChange(fieldValue as JsonValue);
-    }
-    if (errors.length > 0 && onChange && returnValidationErrorsOnChange) {
-      onChange({ errors });
     }
   };
 
