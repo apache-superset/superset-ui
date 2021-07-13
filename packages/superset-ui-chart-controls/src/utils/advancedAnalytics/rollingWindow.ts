@@ -24,9 +24,9 @@ import {
   PostProcessingRolling,
   PostProcessingCum,
   ComparisionType,
-  PostProcessingFactory,
 } from '@superset-ui/core';
 import { getMetricOffsetsMap, isValidTimeCompare, TIME_COMPARISION } from './utils';
+import { PostProcessingFactory } from './types';
 
 export const rollingWindowOperator: PostProcessingFactory<
   PostProcessingRolling | PostProcessingCum | undefined
@@ -35,7 +35,7 @@ export const rollingWindowOperator: PostProcessingFactory<
   if (isValidTimeCompare(formData, queryObject)) {
     const metricsMap = getMetricOffsetsMap(formData, queryObject);
     const comparisonType = formData.comparison_type;
-    if (formData.comparison_type === ComparisionType.Values) {
+    if (comparisonType === ComparisionType.Values) {
       // time compare type: actual values
       columns = [...Array.from(metricsMap.values()), ...Array.from(metricsMap.keys())];
     } else {

@@ -22,9 +22,9 @@ import {
   PostProcessingPivot,
   PostProcessingCompare,
   NumpyFunction,
-  PostProcessingFactory,
 } from '@superset-ui/core';
 import { getMetricOffsetsMap, isValidTimeCompare, TIME_COMPARISION } from './utils';
+import { PostProcessingFactory } from './types';
 
 export const timeCompareOperator: PostProcessingFactory<PostProcessingCompare | undefined> = (
   formData,

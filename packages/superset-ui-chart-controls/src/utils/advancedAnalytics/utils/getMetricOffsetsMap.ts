@@ -17,7 +17,8 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-import { getMetricLabel, ensureIsArray, PostProcessingFactory } from '@superset-ui/core';
+import { getMetricLabel, ensureIsArray } from '@superset-ui/core';
+import { PostProcessingFactory } from '../types';
 
 export const TIME_COMPARISION = '__';
 

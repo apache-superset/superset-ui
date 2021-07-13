@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { t, RollingType, TimeShiftType, ComparisionType } from '@superset-ui/core';
+import { t, RollingType, ComparisionType } from '@superset-ui/core';
 import { ControlPanelSectionConfig } from '../types';
 import { formatSelectOptions } from '../utils';
 
@@ -37,8 +37,8 @@ export const advancedAnalytics: ControlPanelSectionConfig = {
         config: {
           type: 'SelectControl',
           label: t('Rolling function'),
-          default: 'None',
-          choices: formatSelectOptions<RollingType>(Object.values(RollingType)),
+          default: null,
+          choices: [[null, t('None')]].concat(formatSelectOptions(Object.values(RollingType))),
           description: t(
             'Defines a rolling window function to apply, works along ' +
               'with the [Periods] text box',
@@ -86,7 +86,7 @@ export const advancedAnalytics: ControlPanelSectionConfig = {
           multi: true,
           freeForm: true,
           label: t('Time shift'),
-          choices: formatSelectOptions<TimeShiftType>([
+          choices: formatSelectOptions([
             '1 day ago',
             '1 week ago',
             '28 days ago',
