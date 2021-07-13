@@ -322,4 +322,40 @@ export type SectionOverrides = {
   [P in SharedSectionAlias]?: Partial<ControlPanelSectionConfig>;
 };
 
+// Ref:
+//  - superset-frontend/src/explore/components/ConditionalFormattingControl.tsx
+export enum COMPARE_OPERATOR {
+  GREATER_THAN = '>',
+  LESS_THAN = '<',
+  GREATER_OR_EQUAL = '≥',
+  LESS_OR_EQUAL = '≤',
+  EQUAL = '=',
+  NOT_EQUAL = '≠',
+  BETWEEN = '< x <',
+  BETWEEN_OR_EQUAL = '≤ x ≤',
+  BETWEEN_OR_LEFT_EQUAL = '≤ x <',
+  BETWEEN_OR_RIGHT_EQUAL = '< x ≤',
+}
+
+export const MULTIPLE_VALUE_COMPARATORS = [
+  COMPARE_OPERATOR.BETWEEN,
+  COMPARE_OPERATOR.BETWEEN_OR_EQUAL,
+  COMPARE_OPERATOR.BETWEEN_OR_LEFT_EQUAL,
+  COMPARE_OPERATOR.BETWEEN_OR_RIGHT_EQUAL,
+];
+
+export type ConditionalFormattingConfig = {
+  operator?: COMPARE_OPERATOR;
+  targetValue?: number;
+  targetValueLeft?: number;
+  targetValueRight?: number;
+  column?: string;
+  colorScheme?: string;
+};
+
+export type ColorFormatters = {
+  column: string;
+  getColorFromValue: (value: number) => string | undefined;
+}[];
+
 export default {};
