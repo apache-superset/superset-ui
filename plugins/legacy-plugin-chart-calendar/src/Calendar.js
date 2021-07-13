@@ -26,19 +26,7 @@ import {
 } from '@superset-ui/core';
 import CalHeatMap from './vendor/cal-heatmap';
 import './vendor/cal-heatmap.css';
-
-function convertUTC(dttm) {
-  return new Date(
-    dttm.getUTCFullYear(),
-    dttm.getUTCMonth(),
-    dttm.getUTCDate(),
-    dttm.getUTCHours(),
-    dttm.getUTCMinutes(),
-    dttm.getUTCSeconds(),
-  );
-}
-
-const convertUTCTS = uts => convertUTC(new Date(uts)).getTime();
+import { convertUTCTS, getUTC } from './utils';
 
 const propTypes = {
   data: PropTypes.shape({
@@ -126,9 +114,11 @@ function Calendar(element, props) {
     const legend = d3Range(steps).map(i => extents[0] + step * i);
     const legendColors = legend.map(x => colorScale(x));
 
+    const newTimeFormatter = val => timeFormatter(getUTC(new Date(val)));
+
     const cal = new CalHeatMap();
     cal.init({
-      start: convertUTCTS(data.start),
+      start: data.start,
       data: timestamps,
       itemSelector: calContainer.node(),
       legendVerticalPosition: 'top',
@@ -153,7 +143,7 @@ function Calendar(element, props) {
       displayLegend: showLegend,
       itemName: '',
       valueFormatter,
-      timeFormatter,
+      timeFormatter: newTimeFormatter,
       subDomainTextFormat,
     });
   });
