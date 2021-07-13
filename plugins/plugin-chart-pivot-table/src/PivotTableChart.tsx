@@ -47,6 +47,7 @@ const Styles = styled.div<PivotTableStylesProps>`
 `;
 
 const METRIC_KEY = 'metric';
+const iconStyle = { stroke: 'black', strokeWidth: '16px' };
 
 const aggregatorsFactory = (formatter: NumberFormatter) => ({
   Count: aggregatorTemplates.count(formatter),
@@ -246,6 +247,7 @@ export default function PivotTableChart(props: PivotTableProps) {
         }
         aggregatorName={aggregateFunction}
         vals={['value']}
+        rendererName="Table With Subtotal"
         colOrder={colOrder}
         rowOrder={rowOrder}
         sorters={{
@@ -265,8 +267,8 @@ export default function PivotTableChart(props: PivotTableProps) {
         subtotalOptions={{
           colSubtotalDisplay: { displayOnTop: colSubtotalPosition },
           rowSubtotalDisplay: { displayOnTop: rowSubtotalPosition },
-          arrowCollapsed: <MinusSquareOutlined />,
-          arrowExpanded: <PlusSquareOutlined />,
+          arrowCollapsed: <PlusSquareOutlined style={iconStyle} />,
+          arrowExpanded: <MinusSquareOutlined style={iconStyle} />,
         }}
         namesMapping={verboseMap}
       />
