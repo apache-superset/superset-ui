@@ -23,11 +23,12 @@ import {
   GenericDataType,
   getTimeFormatter,
   getTimeFormatterForGranularity,
+  QueryFormData,
   smartDateFormatter,
   TimeFormats,
 } from '@superset-ui/core';
 import { getColorFormatters } from '@superset-ui/chart-controls';
-import { DateFormatter, PivotTableQueryFormData } from '../types';
+import { DateFormatter } from '../types';
 
 const { DATABASE_DATETIME } = TimeFormats;
 const TIME_COLUMN = '__timestamp';
@@ -36,7 +37,7 @@ function isNumeric(key: string, data: DataRecord[] = []) {
   return data.every(x => x[key] === null || x[key] === undefined || typeof x[key] === 'number');
 }
 
-export default function transformProps(chartProps: ChartProps<PivotTableQueryFormData>) {
+export default function transformProps(chartProps: ChartProps<QueryFormData>) {
   /**
    * This function is called after a successful response has been
    * received from the chart data endpoint, and is used to transform

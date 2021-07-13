@@ -1,4 +1,4 @@
-import { ChartProps } from '@superset-ui/core';
+import { ChartProps, QueryFormData } from '@superset-ui/core';
 import transformProps from '../../src/plugin/transformProps';
 import { MetricsLayoutEnum } from '../../src/types';
 
@@ -21,8 +21,12 @@ describe('PivotTableChart transformProps', () => {
     valueFormat: 'SMART_NUMBER',
     emitFilter: false,
     metricsLayout: MetricsLayoutEnum.COLUMNS,
+    viz_type: '',
+    datasource: '',
+    conditionalFormatting: [],
+    dateFormat: '',
   };
-  const chartProps = new ChartProps({
+  const chartProps = new ChartProps<QueryFormData>({
     formData,
     width: 800,
     height: 600,
@@ -33,7 +37,7 @@ describe('PivotTableChart transformProps', () => {
     ],
     hooks: { setDataMask },
     filterState: { selectedFilters: {} },
-    datasource: { verboseMap: {} },
+    datasource: { verboseMap: {}, columnFormats: {} },
   });
 
   it('should transform chart props for viz', () => {
@@ -60,6 +64,8 @@ describe('PivotTableChart transformProps', () => {
       selectedFilters: {},
       verboseMap: {},
       metricsLayout: MetricsLayoutEnum.COLUMNS,
+      metricColorFormatters: [],
+      dateFormatters: {},
     });
   });
 });
