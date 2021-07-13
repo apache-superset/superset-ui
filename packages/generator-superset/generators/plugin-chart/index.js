@@ -24,21 +24,6 @@ module.exports = class extends Generator {
       },
       {
         type: 'list',
-        name: 'componentType',
-        message: 'What type of React component would you like?',
-        choices: [
-          {
-            name: 'Class component',
-            value: 'class',
-          },
-          {
-            name: 'Function component (with hooks)',
-            value: 'function',
-          },
-        ],
-      },
-      {
-        type: 'list',
         name: 'chartType',
         message: 'What type of chart would you like?',
         choices: [
