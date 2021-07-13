@@ -324,7 +324,7 @@ export type SectionOverrides = {
 
 // Ref:
 //  - superset-frontend/src/explore/components/ConditionalFormattingControl.tsx
-export enum COMPARE_OPERATOR {
+export enum COMPARATOR {
   GREATER_THAN = '>',
   LESS_THAN = '<',
   GREATER_OR_EQUAL = '≥',
@@ -338,14 +338,14 @@ export enum COMPARE_OPERATOR {
 }
 
 export const MULTIPLE_VALUE_COMPARATORS = [
-  COMPARE_OPERATOR.BETWEEN,
-  COMPARE_OPERATOR.BETWEEN_OR_EQUAL,
-  COMPARE_OPERATOR.BETWEEN_OR_LEFT_EQUAL,
-  COMPARE_OPERATOR.BETWEEN_OR_RIGHT_EQUAL,
+  COMPARATOR.BETWEEN,
+  COMPARATOR.BETWEEN_OR_EQUAL,
+  COMPARATOR.BETWEEN_OR_LEFT_EQUAL,
+  COMPARATOR.BETWEEN_OR_RIGHT_EQUAL,
 ];
 
 export type ConditionalFormattingConfig = {
-  operator?: COMPARE_OPERATOR;
+  operator?: COMPARATOR;
   targetValue?: number;
   targetValueLeft?: number;
   targetValueRight?: number;

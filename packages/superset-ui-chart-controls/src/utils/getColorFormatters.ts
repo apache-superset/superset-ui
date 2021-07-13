@@ -19,7 +19,7 @@
 import { DataRecord } from '@superset-ui/core';
 import {
   ColorFormatters,
-  COMPARE_OPERATOR,
+  COMPARATOR,
   ConditionalFormattingConfig,
   MULTIPLE_VALUE_COMPARATORS,
 } from '../types';
@@ -54,35 +54,35 @@ export const getColorFunction = (
     return () => undefined;
   }
   switch (operator) {
-    case COMPARE_OPERATOR.GREATER_THAN:
+    case COMPARATOR.GREATER_THAN:
       comparatorFunction = (value: number, allValues: number[]) =>
         value > targetValue!
           ? { cutoffValue: targetValue!, extremeValue: Math.max(...allValues) }
           : false;
       break;
-    case COMPARE_OPERATOR.LESS_THAN:
+    case COMPARATOR.LESS_THAN:
       comparatorFunction = (value: number, allValues: number[]) =>
         value < targetValue!
           ? { cutoffValue: targetValue!, extremeValue: Math.min(...allValues) }
           : false;
       break;
-    case COMPARE_OPERATOR.GREATER_OR_EQUAL:
+    case COMPARATOR.GREATER_OR_EQUAL:
       comparatorFunction = (value: number, allValues: number[]) =>
         value >= targetValue!
           ? { cutoffValue: targetValue!, extremeValue: Math.max(...allValues) }
           : false;
       break;
-    case COMPARE_OPERATOR.LESS_OR_EQUAL:
+    case COMPARATOR.LESS_OR_EQUAL:
       comparatorFunction = (value: number, allValues: number[]) =>
         value <= targetValue!
           ? { cutoffValue: targetValue!, extremeValue: Math.min(...allValues) }
           : false;
       break;
-    case COMPARE_OPERATOR.EQUAL:
+    case COMPARATOR.EQUAL:
       comparatorFunction = (value: number) =>
         value === targetValue! ? { cutoffValue: targetValue!, extremeValue: targetValue! } : false;
       break;
-    case COMPARE_OPERATOR.NOT_EQUAL:
+    case COMPARATOR.NOT_EQUAL:
       comparatorFunction = (value: number, allValues: number[]) => {
         if (value === targetValue!) {
           return false;
@@ -95,25 +95,25 @@ export const getColorFunction = (
         };
       };
       break;
-    case COMPARE_OPERATOR.BETWEEN:
+    case COMPARATOR.BETWEEN:
       comparatorFunction = (value: number) =>
         value > targetValueLeft! && value < targetValueRight!
           ? { cutoffValue: targetValueLeft!, extremeValue: targetValueRight! }
           : false;
       break;
-    case COMPARE_OPERATOR.BETWEEN_OR_EQUAL:
+    case COMPARATOR.BETWEEN_OR_EQUAL:
       comparatorFunction = (value: number) =>
         value >= targetValueLeft! && value <= targetValueRight!
           ? { cutoffValue: targetValueLeft!, extremeValue: targetValueRight! }
           : false;
       break;
-    case COMPARE_OPERATOR.BETWEEN_OR_LEFT_EQUAL:
+    case COMPARATOR.BETWEEN_OR_LEFT_EQUAL:
       comparatorFunction = (value: number) =>
         value >= targetValueLeft! && value < targetValueRight!
           ? { cutoffValue: targetValueLeft!, extremeValue: targetValueRight! }
           : false;
       break;
-    case COMPARE_OPERATOR.BETWEEN_OR_RIGHT_EQUAL:
+    case COMPARATOR.BETWEEN_OR_RIGHT_EQUAL:
       comparatorFunction = (value: number) =>
         value > targetValueLeft! && value <= targetValueRight!
           ? { cutoffValue: targetValueLeft!, extremeValue: targetValueRight! }
