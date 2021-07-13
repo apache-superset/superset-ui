@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { t } from '@superset-ui/core';
+import { FeatureFlag, isFeatureEnabled, t } from '@superset-ui/core';
 import { ControlPanelConfig, sections, sharedControls } from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from './types';
 import { legendSection } from '../controls';
@@ -93,6 +93,20 @@ const controlPanel: ControlPanelConfig = {
       expanded: true,
       controlSetRows: [
         ['color_scheme'],
+        isFeatureEnabled(FeatureFlag.DASHBOARD_CROSS_FILTERS)
+          ? [
+              {
+                name: 'emit_filter',
+                config: {
+                  type: 'CheckboxControl',
+                  label: t('Enable emitting filters'),
+                  default: DEFAULT_FORM_DATA.emitFilter,
+                  renderTrigger: true,
+                  description: t('Enable emmiting filters.'),
+                },
+              },
+            ]
+          : [],
         ...legendSection,
         [<h1 className="section-header">{t('Layout')}</h1>],
         [

@@ -18,7 +18,6 @@
  */
 import {
   CategoricalColorNamespace,
-  ChartProps,
   getMetricLabel,
   DataRecord,
   DataRecordValue,
@@ -27,14 +26,21 @@ import { EChartsOption, GraphSeriesOption } from 'echarts';
 import { extent as d3Extent } from 'd3-array';
 import { GraphEdgeItemOption } from 'echarts/types/src/chart/graph/GraphSeries';
 import {
+  EdgeSymbol,
+  EchartsGraphChartProps,
   EchartsGraphFormData,
   EChartGraphNode,
   DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA,
-  EdgeSymbol,
+  EchartsGraphChartTransformedProps,
 } from './types';
 import { DEFAULT_GRAPH_SERIES_OPTION } from './constants';
-import { EchartsProps } from '../types';
-import { getChartPadding, getLegendProps, sanitizeHtml } from '../utils/series';
+import {
+  getChartPadding,
+  getLegendProps,
+  sanitizeHtml,
+  getColtypesMapping,
+  extractGroupbyLabel,
+} from '../utils/series';
 
 type EdgeWithStyles = GraphEdgeItemOption & {
   lineStyle: Exclude<GraphEdgeItemOption['lineStyle'], undefined>;
@@ -145,8 +151,20 @@ function getCategoryName(columnName: string, name?: DataRecordValue) {
   return String(name);
 }
 
-export default function transformProps(chartProps: ChartProps): EchartsProps {
-  const { width, height, formData, queriesData } = chartProps;
+function getGroupby(...args: Array<string | undefined>): Array<string> {
+  const groupby: Set<string> = new Set();
+  args.forEach(item => {
+    if (item) {
+      groupby.add(item);
+    }
+  });
+  return [...groupby];
+}
+
+export default function transformProps(
+  chartProps: EchartsGraphChartProps,
+): EchartsGraphChartTransformedProps {
+  const { width, height, formData, queriesData, hooks, filterState } = chartProps;
   const data: DataRecord[] = queriesData[0].data || [];
 
   const {
@@ -172,6 +190,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     baseEdgeWidth,
     baseNodeSize,
     edgeSymbol,
+    emitFilter,
   }: EchartsGraphFormData = { ...DEFAULT_GRAPH_FORM_DATA, ...formData };
 
   const metricLabel = getMetricLabel(metric);
@@ -180,6 +199,34 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const categories: Set<string> = new Set();
   const echartNodes: EChartGraphNode[] = [];
   const echartLinks: EdgeWithStyles[] = [];
+
+  const coltypeMapping = getColtypesMapping(queriesData[0]);
+  const groupby: Array<string> = getGroupby(source, target, sourceCategory, targetCategory);
+  const { setDataMask = () => {} } = hooks;
+  const labelMap = data.reduce((acc: Record<string, DataRecordValue[]>, datum) => {
+    const label = extractGroupbyLabel({
+      datum,
+      groupby,
+      coltypeMapping,
+      timeFormatter: undefined,
+    });
+    return {
+      ...acc,
+      [label]: groupby.map(col => datum[col]),
+    };
+  }, {});
+  const selectedValues = (filterState.selectedValues || []).reduce(
+    (acc: Record<string, number>, selectedValue: string) => {
+      const index = data.findIndex(
+        ({ source, target }) => source === selectedValue || target === selectedValue,
+      );
+      return {
+        ...acc,
+        [index]: selectedValue,
+      };
+    },
+    {},
+  );
 
   /**
    * Get the node id of an existing node,
@@ -279,8 +326,14 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     series,
   };
   return {
+    formData,
     width,
     height,
     echartOptions,
+    setDataMask,
+    emitFilter,
+    labelMap,
+    groupby,
+    selectedValues,
   };
 }
