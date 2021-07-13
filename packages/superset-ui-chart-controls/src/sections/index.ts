@@ -16,9 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export * from './selectOptions';
-export * from './D3Formatting';
-export * from './expandControlConfig';
+
+export * from './sections';
 export * from './advancedAnalytics';
-export { default as mainMetric } from './mainMetric';
-export { default as columnChoices } from './columnChoices';

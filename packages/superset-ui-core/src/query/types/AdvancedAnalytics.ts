@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,9 +17,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export * from './selectOptions';
-export * from './D3Formatting';
-export * from './expandControlConfig';
-export * from './advancedAnalytics';
-export { default as mainMetric } from './mainMetric';
-export { default as columnChoices } from './columnChoices';
+export enum RollingType {
+  Mean = 'mean',
+  Sum = 'sum',
+  Std = 'std',
+  Cumsum = 'cumsum',
+}
+export interface RollingWindow {
+  rolling_type?: RollingType;
+  rolling_periods?: number;
+  min_periods?: number;
+}
+
+export enum ComparisionType {
+  Values = 'values',
+  Absolute = 'absolute',
+  Percentage = 'percentage',
+  Ratio = 'ratio',
+}
+export interface TimeCompare {
+  time_compare?: string;
+  comparison_type?: ComparisionType;
+}
+
+export default {};

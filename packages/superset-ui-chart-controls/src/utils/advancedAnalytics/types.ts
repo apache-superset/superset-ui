@@ -13,12 +13,11 @@
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
+ * specific language governing permissions and limitationsxw
  * under the License.
  */
-export * from './selectOptions';
-export * from './D3Formatting';
-export * from './expandControlConfig';
-export * from './advancedAnalytics';
-export { default as mainMetric } from './mainMetric';
-export { default as columnChoices } from './columnChoices';
+import { QueryFormData, QueryObject } from '@superset-ui/core';
+
+export interface PostProcessingFactory<T> {
+  (formData: QueryFormData, queryObject: QueryObject): T;
+}

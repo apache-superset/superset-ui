@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export * from './selectOptions';
-export * from './D3Formatting';
-export * from './expandControlConfig';
-export * from './advancedAnalytics';
-export { default as mainMetric } from './mainMetric';
-export { default as columnChoices } from './columnChoices';
+
+export default function ensureIsInt<T>(value: T, defaultValue?: number): number {
+  const val = parseInt(String(value), 10);
+  const defaultOrNaN = defaultValue === undefined ? NaN : defaultValue;
+  return Number.isNaN(val) ? defaultOrNaN : val;
+}

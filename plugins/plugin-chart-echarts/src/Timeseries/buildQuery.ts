@@ -17,6 +17,12 @@
  * under the License.
  */
 import { buildQueryContext, getMetricLabel, QueryFormData } from '@superset-ui/core';
+import {
+  rollingWindowOperator,
+  timeCompareOperator,
+  timeComparePivotOperator,
+  isValidTimeCompare,
+} from '@superset-ui/chart-controls';
 
 export default function buildQuery(formData: QueryFormData) {
   return buildQueryContext(formData, baseQueryObject => {
@@ -32,18 +38,23 @@ export default function buildQuery(formData: QueryFormData) {
           : timeseries_limit_metric
           ? [[timeseries_limit_metric, !order_desc]]
           : [],
+        time_offsets: isValidTimeCompare(formData, baseQueryObject) ? formData.time_compare : [],
         post_processing: [
-          {
-            operation: 'pivot',
-            options: {
-              index: ['__timestamp'],
-              columns: formData.groupby || [],
-              // Create 'dummy' sum aggregates to assign cell values in pivot table
-              aggregates: Object.fromEntries(
-                metricLabels.map(metric => [metric, { operator: 'sum' }]),
-              ),
-            },
-          },
+          timeCompareOperator(formData, baseQueryObject),
+          rollingWindowOperator(formData, baseQueryObject),
+          isValidTimeCompare(formData, baseQueryObject)
+            ? timeComparePivotOperator(formData, baseQueryObject)
+            : {
+                operation: 'pivot',
+                options: {
+                  index: ['__timestamp'],
+                  columns: formData.groupby || [],
+                  // Create 'dummy' sum aggregates to assign cell values in pivot table
+                  aggregates: Object.fromEntries(
+                    metricLabels.map(metric => [metric, { operator: 'sum' }]),
+                  ),
+                },
+              },
           formData.contributionMode
             ? {
                 operation: 'contribution',
