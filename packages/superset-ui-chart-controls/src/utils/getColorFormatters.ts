@@ -24,11 +24,25 @@ import {
   MULTIPLE_VALUE_COMPARATORS,
 } from '../types';
 
-const round = (num: number, precision = 0) =>
+export const round = (num: number, precision = 0) =>
   Number(`${Math.round(Number(`${num}e+${precision}`))}e-${precision}`);
 
 export const rgbToRgba = (rgb: string, alpha: number) =>
   rgb.replace(/rgb/i, 'rgba').replace(/\)/i, `,${alpha})`);
+
+export const getOpacity = (value: number, cutoffPoint: number, extremeValue: number) => {
+  const MIN_OPACITY = 0.3;
+  const MAX_OPACITY = 1;
+
+  return extremeValue === cutoffPoint
+    ? MAX_OPACITY
+    : round(
+        Math.abs(
+          ((MAX_OPACITY - MIN_OPACITY) / (extremeValue - cutoffPoint)) * (value - cutoffPoint),
+        ) + MIN_OPACITY,
+        2,
+      );
+};
 
 export const getColorFunction = (
   {
@@ -126,18 +140,7 @@ export const getColorFunction = (
       comparatorFunction = () => false;
       break;
   }
-  const MIN_OPACITY = 0.3;
-  const MAX_OPACITY = 1;
 
-  const getOpacity = (value: number, cutoffPoint: number, extremeValue: number) =>
-    extremeValue === cutoffPoint
-      ? MAX_OPACITY
-      : round(
-          Math.abs(
-            ((MAX_OPACITY - MIN_OPACITY) / (extremeValue - cutoffPoint)) * (value - cutoffPoint),
-          ) + MIN_OPACITY,
-          2,
-        );
   return (value: number) => {
     const compareResult = comparatorFunction(value, columnValues);
     if (compareResult === false) return undefined;

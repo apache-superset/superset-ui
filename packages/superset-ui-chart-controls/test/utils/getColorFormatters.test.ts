@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { COMPARATOR, rgbToRgba } from '../../src';
+import { COMPARATOR, getOpacity, rgbToRgba, round } from '../../src';
 import { getColorFormatters, getColorFunction } from '../../lib';
 
 const mockData = [
@@ -24,6 +24,25 @@ const mockData = [
   { count: 100, sum: 400 },
 ];
 const countValues = mockData.map(row => row.count);
+
+describe('round', () => {
+  it('round', () => {
+    expect(round(1)).toEqual(1);
+    expect(round(1, 2)).toEqual(1);
+    expect(round(0.6)).toEqual(1);
+    expect(round(0.6, 1)).toEqual(0.6);
+    expect(round(0.64999, 2)).toEqual(0.65);
+  });
+});
+
+describe('getOpacity', () => {
+  it('getOpacity', () => {
+    expect(getOpacity(100, 100, 100)).toEqual(1);
+    expect(getOpacity(75, 50, 100)).toEqual(0.65);
+    expect(getOpacity(75, 100, 50)).toEqual(0.65);
+    expect(getOpacity(100, 100, 50)).toEqual(0.3);
+  });
+});
 
 describe('rgba', () => {
   it('returns correct rgba value', () => {
