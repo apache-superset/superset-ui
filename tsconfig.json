@@ -114,6 +114,9 @@
     },
     {
       "path": "plugins/preset-chart-xy/test"
+    },
+    {
+      "path": "plugins/plugin-chart-ixora"
     }
   ],
   "extends": "./tsconfig.options.json"

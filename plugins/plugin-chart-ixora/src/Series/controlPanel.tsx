@@ -18,11 +18,44 @@
  */
 import React from 'react';
 import { FeatureFlag, isFeatureEnabled, t, validateNonEmpty } from '@superset-ui/core';
-import { ControlPanelConfig, ControlPanelsContainerProps } from '@superset-ui/chart-controls';
+import {
+  ColumnOption,
+  ControlPanelConfig,
+  ControlPanelsContainerProps,
+  ExtraControlProps,
+  SharedControlConfig,
+  ColumnMeta,
+  ControlPanelState,
+} from '@superset-ui/chart-controls';
 
 import { DEFAULT_FORM_DATA, EchartsSeriesContributionType, EchartsSeriesType } from './types';
 import { legendSection } from '../controls';
-import { StyledColumnOption } from 'src/explore/components/optionRenderers';
+
+const seriesByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
+  type: 'SelectControl',
+  label: t('Series by'),
+  multi: false,
+  freeForm: true,
+  clearable: true,
+  default: [],
+  includeTime: false,
+  validators: [validateNonEmpty],
+  description: t('One or many columns to group by'),
+  optionRenderer: (c: ColumnMeta) => <ColumnOption showType column={c} />,
+  valueRenderer: (c: ColumnMeta) => <ColumnOption column={c} />,
+  valueKey: 'column_name',
+  allowAll: true,
+  promptTextCreator: (label: unknown) => label,
+  mapStateToProps(state: ControlPanelState) {
+    const newState: ExtraControlProps = {};
+    if (state.datasource) {
+      const options = state.datasource.columns.filter((c: ColumnMeta) => c.groupby);
+      newState.options = options;
+    }
+    return newState;
+  },
+  commaChoosesOption: false,
+};
 
 const {
   area,
@@ -52,34 +85,7 @@ const config: ControlPanelConfig = {
         [
           {
             name: 'series',
-            config: {
-              type: 'SelectControl',
-              validators: [validateNonEmpty],
-              multi: false,
-              freeForm: true,
-              label: t('Series by'),
-              default: [],
-              includeTime: false,
-              description: t('One or many controls to series by'),
-              optionRenderer: (c: any) => <StyledColumnOption column={c} showType />,
-              valueRenderer: (c: any) => <StyledColumnOption column={c} />,
-              valueKey: 'column_name',
-              allowAll: true,
-              filterOption: ({ data: { opt } }, text: string) =>
-                (opt.column_name &&
-                  opt.column_name.toLowerCase().indexOf(text.toLowerCase()) >= 0) ||
-                (opt.verbose_name &&
-                  opt.verbose_name.toLowerCase().indexOf(text.toLowerCase()) >= 0),
-              promptTextCreator: (label: any) => label,
-              mapStateToProps: (state, control) => {
-                const newState: any = {};
-                if (state.datasource) {
-                  newState.options = state.datasource.columns.filter(c => c.groupby);
-                }
-                return newState;
-              },
-              commaChoosesOption: false,
-            },
+            config: seriesByControl,
           },
         ],
       ],

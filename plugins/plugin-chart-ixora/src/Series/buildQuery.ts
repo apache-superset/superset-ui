@@ -22,7 +22,7 @@ export default function buildQuery(formData: QueryFormData) {
   return buildQueryContext(formData, baseQueryObject => {
     const metricLabels = (baseQueryObject.metrics || []).map(getMetricLabel);
     const { timeseries_limit_metric, order_desc, orderby } = baseQueryObject;
-    const result = [
+    return [
       {
         ...baseQueryObject,
         groupby: formData.groupby ? [formData.series, ...formData.groupby] : [],
@@ -52,10 +52,9 @@ export default function buildQuery(formData: QueryFormData) {
                 },
               }
             : undefined,
+          undefined,
         ],
       },
     ];
-
-    return result;
   });
 }
