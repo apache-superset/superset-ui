@@ -64,7 +64,7 @@ describe('getColorFunction()', () => {
     const colorFunction = getColorFunction(
       {
         operator: COMPARATOR.GREATER_OR_EQUAL,
-        targetValue: 100,
+        targetValue: 50,
         colorScheme: 'rgb(255,0,0)',
         column: 'count',
       },
@@ -267,8 +267,8 @@ describe('getColorFormatters()', () => {
       {
         operator: COMPARATOR.GREATER_THAN,
         targetValue: 150,
-        colorScheme: undefined,
-        column: 'count',
+        colorScheme: 'rgb(255,0,0)',
+        column: undefined,
       },
     ];
     const colorFormatters = getColorFormatters(columnConfig, mockData);
