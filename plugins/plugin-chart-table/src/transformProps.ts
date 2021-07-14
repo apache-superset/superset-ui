@@ -222,7 +222,7 @@ const transformProps = (chartProps: TableChartProps): TableChartTransformedProps
   }
   const data = processDataRecords(baseQuery?.data, columns);
   const totals = showTotals && queryMode === QueryMode.aggregate ? totalQuery?.data[0] : undefined;
-  const columnColorFormatters = getColorFormatters(conditionalFormatting, data);
+  const columnColorFormatters = getColorFormatters(conditionalFormatting, data) ?? [];
 
   return {
     height,
