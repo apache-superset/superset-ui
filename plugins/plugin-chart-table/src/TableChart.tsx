@@ -297,8 +297,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
           const html = isHtml ? { __html: text } : undefined;
 
           let backgroundColor;
-          isNumeric &&
-            Array.isArray(columnColorFormatters) &&
+          if (isNumeric && Array.isArray(columnColorFormatters)) {
             columnColorFormatters
               .filter(formatter => formatter.column === column.key)
               .forEach(formatter => {
@@ -307,6 +306,8 @@ export default function TableChart<D extends DataRecord = DataRecord>(
                   backgroundColor = formatterResult;
                 }
               });
+          }
+
           const cellProps = {
             // show raw number in title in case of numeric values
             title: typeof value === 'number' ? String(value) : undefined,
