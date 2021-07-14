@@ -33,6 +33,8 @@ describe('PivotTableChart transformProps', () => {
     queriesData: [
       {
         data: [{ name: 'Hulk', sum__num: 1, __timestamp: 599616000000 }],
+        colnames: ['name', 'sum__num', '__timestamp'],
+        coltypes: [1, 0, 2],
       },
     ],
     hooks: { setDataMask },
@@ -66,6 +68,7 @@ describe('PivotTableChart transformProps', () => {
       metricsLayout: MetricsLayoutEnum.COLUMNS,
       metricColorFormatters: [],
       dateFormatters: {},
+      columnFormats: {},
     });
   });
 });
