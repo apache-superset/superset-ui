@@ -1,6 +1,6 @@
 {
   "name": "@mcmedisoft/mc-superset-ui",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Superset UI",
   "private": true,
   "scripts": {
@@ -38,7 +38,10 @@
     "ci:release-from-tag": "yarn clean-npm-lock && lerna publish from-package --yes",
     "ci:release-conventional": "yarn clean-npm-lock && lerna publish --conventional-commits --create-release github --yes"
   },
-  "repository": "https://github.com/apache-superset/superset-ui.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Anushka-Hapukotuwa/superset-ui/tree/finland-country-map"
+  },
   "keywords": [
     "apache",
     "superset",
@@ -160,5 +163,15 @@
     "*.{js,jsx,ts,tsx,json,md}": [
       "prettier --write"
     ]
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/Anushka-Hapukotuwa/superset-ui/tree/finland-country-map"
+  },
+  "homepage": "https://github.com/Anushka-Hapukotuwa/superset-ui/tree/finland-country-map",
+  "main": ".eslintrc.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "author": ""
 }
