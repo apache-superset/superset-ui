@@ -17,30 +17,5 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-import { getMetricLabel, ensureIsArray } from '@superset-ui/core';
-import { PostProcessingFactory } from '../types';
-
 export const TIME_COMPARISION = '__';
-
-export const getMetricOffsetsMap: PostProcessingFactory<Map<string, string>> = (
-  formData,
-  queryObject,
-) => {
-  const queryMetrics = ensureIsArray(queryObject.metrics);
-  const timeOffsets = ensureIsArray(formData.time_compare);
-
-  const metricLabels = queryMetrics.map(getMetricLabel);
-  // metric offset label and metric label mapping, for instance:
-  // {
-  //   "SUM(value)__1 year ago": "SUM(value)",
-  //   "SUM(value)__2 year ago": "SUM(value)"
-  // }
-  const metricOffsetMap = new Map<string, string>();
-  metricLabels.forEach((metric: string) => {
-    timeOffsets.forEach((offset: string) => {
-      metricOffsetMap.set([metric, offset].join(TIME_COMPARISION), metric);
-    });
-  });
-
-  return metricOffsetMap;
-};
+export const TIME_COLUMN = '__timestamp';

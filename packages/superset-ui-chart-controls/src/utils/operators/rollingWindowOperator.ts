@@ -78,5 +78,3 @@ export const rollingWindowOperator: PostProcessingFactory<
 
   return undefined;
 };
-
-export default {};

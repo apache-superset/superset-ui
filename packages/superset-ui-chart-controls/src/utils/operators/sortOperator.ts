@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -13,13 +14,26 @@
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
+ * specific language governing permissions and limitationsxw
  * under the License.
  */
-export * from './selectOptions';
-export * from './D3Formatting';
-export * from './expandControlConfig';
-export * from './getColorFormatters';
-export * from './operators';
-export { default as mainMetric } from './mainMetric';
-export { default as columnChoices } from './columnChoices';
+import { PostProcessingSort, RollingType } from '@superset-ui/core';
+import { PostProcessingFactory } from './types';
+import { TIME_COLUMN } from './utils/constants';
+
+export const sortOperator: PostProcessingFactory<PostProcessingSort | undefined> = (
+  formData,
+  queryObject,
+) => {
+  if (queryObject.is_timeseries && Object.values(RollingType).includes(formData.rolling_type)) {
+    return {
+      operation: 'sort',
+      options: {
+        columns: {
+          [TIME_COLUMN]: true,
+        },
+      },
+    };
+  }
+  return undefined;
+};

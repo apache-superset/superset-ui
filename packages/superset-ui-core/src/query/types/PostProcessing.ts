@@ -149,6 +149,13 @@ export interface PostProcessingCompare {
   };
 }
 
+export interface PostProcessingSort {
+  operation: 'sort';
+  options: {
+    columns: Record<string, boolean>;
+  };
+}
+
 /**
  * Parameters for chart data postprocessing.
  * See superset/utils/pandas_processing.py.
@@ -162,4 +169,5 @@ export type PostProcessingRule =
   | PostProcessingDiff
   | PostProcessingRolling
   | PostProcessingCum
-  | PostProcessingCompare;
+  | PostProcessingCompare
+  | PostProcessingSort;

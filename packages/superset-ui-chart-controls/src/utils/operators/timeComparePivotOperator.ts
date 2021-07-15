@@ -17,36 +17,9 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-import {
-  ComparisionType,
-  PostProcessingPivot,
-  PostProcessingCompare,
-  NumpyFunction,
-} from '@superset-ui/core';
+import { ComparisionType, PostProcessingPivot, NumpyFunction } from '@superset-ui/core';
 import { getMetricOffsetsMap, isValidTimeCompare, TIME_COMPARISION } from './utils';
 import { PostProcessingFactory } from './types';
-
-export const timeCompareOperator: PostProcessingFactory<PostProcessingCompare | undefined> = (
-  formData,
-  queryObject,
-) => {
-  const comparisonType = formData.comparison_type;
-  const metricOffsetMap = getMetricOffsetsMap(formData, queryObject);
-
-  if (isValidTimeCompare(formData, queryObject) && comparisonType !== ComparisionType.Values) {
-    return {
-      operation: 'compare',
-      options: {
-        source_columns: Array.from(metricOffsetMap.values()),
-        compare_columns: Array.from(metricOffsetMap.keys()),
-        compare_type: comparisonType,
-        drop_original_columns: true,
-      },
-    };
-  }
-
-  return undefined;
-};
 
 export const timeComparePivotOperator: PostProcessingFactory<PostProcessingPivot | undefined> = (
   formData,
@@ -71,7 +44,7 @@ export const timeComparePivotOperator: PostProcessingFactory<PostProcessingPivot
       operation: 'pivot',
       options: {
         index: ['__timestamp'],
-        columns: formData.groupby || [],
+        columns: queryObject.columns || [],
         aggregates: comparisonType === ComparisionType.Values ? valuesAgg : changeAgg,
       },
     };
@@ -79,5 +52,3 @@ export const timeComparePivotOperator: PostProcessingFactory<PostProcessingPivot
 
   return undefined;
 };
-
-export default {};

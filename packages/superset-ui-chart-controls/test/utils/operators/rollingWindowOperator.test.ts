@@ -17,7 +17,7 @@
  * under the License.
  */
 import { QueryObject, SqlaFormData } from '@superset-ui/core';
-import { rollingWindowOperator } from '../../src';
+import { rollingWindowOperator } from '../../../src';
 
 const formData: SqlaFormData = {
   metrics: ['count(*)', { label: 'sum(val)', expressionType: 'SQL', sqlExpression: 'sum(val)' }],

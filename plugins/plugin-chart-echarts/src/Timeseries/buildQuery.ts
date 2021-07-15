@@ -16,45 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { buildQueryContext, getMetricLabel, QueryFormData } from '@superset-ui/core';
+import { buildQueryContext, QueryFormData, normalizeOrderBy } from '@superset-ui/core';
 import {
   rollingWindowOperator,
   timeCompareOperator,
   timeComparePivotOperator,
   isValidTimeCompare,
+  sortOperator,
+  pivotOperator,
 } from '@superset-ui/chart-controls';
 
 export default function buildQuery(formData: QueryFormData) {
   return buildQueryContext(formData, baseQueryObject => {
-    const metricLabels = (baseQueryObject.metrics || []).map(getMetricLabel);
-    const { timeseries_limit_metric, order_desc, orderby } = baseQueryObject;
     return [
       {
         ...baseQueryObject,
-        groupby: formData.groupby || [],
         is_timeseries: true,
-        orderby: orderby?.length
-          ? orderby
-          : timeseries_limit_metric
-          ? [[timeseries_limit_metric, !order_desc]]
-          : [],
+        // todo: move `normalizeOrderBy to extractQueryFields`
+        orderby: normalizeOrderBy(baseQueryObject).orderby,
         time_offsets: isValidTimeCompare(formData, baseQueryObject) ? formData.time_compare : [],
         post_processing: [
           timeCompareOperator(formData, baseQueryObject),
+          sortOperator(formData, { ...baseQueryObject, is_timeseries: true }),
           rollingWindowOperator(formData, baseQueryObject),
           isValidTimeCompare(formData, baseQueryObject)
             ? timeComparePivotOperator(formData, baseQueryObject)
-            : {
-                operation: 'pivot',
-                options: {
-                  index: ['__timestamp'],
-                  columns: formData.groupby || [],
-                  // Create 'dummy' sum aggregates to assign cell values in pivot table
-                  aggregates: Object.fromEntries(
-                    metricLabels.map(metric => [metric, { operator: 'sum' }]),
-                  ),
-                },
-              },
+            : pivotOperator(formData, { ...baseQueryObject, is_timeseries: true }),
           formData.contributionMode
             ? {
                 operation: 'contribution',
