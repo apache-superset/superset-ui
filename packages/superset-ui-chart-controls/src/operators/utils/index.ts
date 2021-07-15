@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,25 +17,6 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-import { ensureIsArray, getMetricLabel, PostProcessingPivot } from '@superset-ui/core';
-import { PostProcessingFactory } from './types';
-import { TIME_COLUMN } from './utils/constants';
-
-export const pivotOperator: PostProcessingFactory<PostProcessingPivot | undefined> = (
-  formData,
-  queryObject,
-) => {
-  const metricLabels = ensureIsArray(queryObject.metrics).map(getMetricLabel);
-  if (queryObject.is_timeseries && metricLabels.length > 0) {
-    return {
-      operation: 'pivot',
-      options: {
-        index: [TIME_COLUMN],
-        columns: queryObject.columns || [],
-        // Create 'dummy' sum aggregates to assign cell values in pivot table
-        aggregates: Object.fromEntries(metricLabels.map(metric => [metric, { operator: 'sum' }])),
-      },
-    };
-  }
-  return undefined;
-};
+export { getMetricOffsetsMap } from './getMetricOffsetsMap';
+export { isValidTimeCompare } from './isValidTimeCompare';
+export { TIME_COMPARISION, TIME_COLUMN } from './constants';

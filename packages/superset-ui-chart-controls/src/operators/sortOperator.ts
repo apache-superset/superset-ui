@@ -17,6 +17,23 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-export { getMetricOffsetsMap } from './getMetricOffsetsMap';
-export { isValidTimeCompare } from './isValidTimeCompare';
-export { TIME_COMPARISION } from './constants';
+import { PostProcessingSort, RollingType } from '@superset-ui/core';
+import { PostProcessingFactory } from './types';
+import { TIME_COLUMN } from './utils';
+
+export const sortOperator: PostProcessingFactory<PostProcessingSort | undefined> = (
+  formData,
+  queryObject,
+) => {
+  if (queryObject.is_timeseries && Object.values(RollingType).includes(formData.rolling_type)) {
+    return {
+      operation: 'sort',
+      options: {
+        columns: {
+          [TIME_COLUMN]: true,
+        },
+      },
+    };
+  }
+  return undefined;
+};

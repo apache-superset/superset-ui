@@ -20,51 +20,46 @@ import { buildQueryContext, QueryFormData, normalizeOrderBy } from '@superset-ui
 import {
   rollingWindowOperator,
   timeCompareOperator,
-  timeComparePivotOperator,
   isValidTimeCompare,
   sortOperator,
   pivotOperator,
 } from '@superset-ui/chart-controls';
 
 export default function buildQuery(formData: QueryFormData) {
-  return buildQueryContext(formData, baseQueryObject => {
-    return [
-      {
-        ...baseQueryObject,
-        is_timeseries: true,
-        // todo: move `normalizeOrderBy to extractQueryFields`
-        orderby: normalizeOrderBy(baseQueryObject).orderby,
-        time_offsets: isValidTimeCompare(formData, baseQueryObject) ? formData.time_compare : [],
-        post_processing: [
-          timeCompareOperator(formData, baseQueryObject),
-          sortOperator(formData, { ...baseQueryObject, is_timeseries: true }),
-          rollingWindowOperator(formData, baseQueryObject),
-          isValidTimeCompare(formData, baseQueryObject)
-            ? timeComparePivotOperator(formData, baseQueryObject)
-            : pivotOperator(formData, { ...baseQueryObject, is_timeseries: true }),
-          formData.contributionMode
-            ? {
-                operation: 'contribution',
-                options: {
-                  orientation: formData.contributionMode,
-                },
-              }
-            : undefined,
-          formData.forecastEnabled
-            ? {
-                operation: 'prophet',
-                options: {
-                  time_grain: formData.time_grain_sqla,
-                  periods: parseInt(formData.forecastPeriods, 10),
-                  confidence_interval: parseFloat(formData.forecastInterval),
-                  yearly_seasonality: formData.forecastSeasonalityYearly,
-                  weekly_seasonality: formData.forecastSeasonalityWeekly,
-                  daily_seasonality: formData.forecastSeasonalityDaily,
-                },
-              }
-            : undefined,
-        ],
-      },
-    ];
-  });
+  return buildQueryContext(formData, baseQueryObject => [
+    {
+      ...baseQueryObject,
+      is_timeseries: true,
+      // todo: move `normalizeOrderBy to extractQueryFields`
+      orderby: normalizeOrderBy(baseQueryObject).orderby,
+      time_offsets: isValidTimeCompare(formData, baseQueryObject) ? formData.time_compare : [],
+      post_processing: [
+        timeCompareOperator(formData, baseQueryObject),
+        sortOperator(formData, { ...baseQueryObject, is_timeseries: true }),
+        rollingWindowOperator(formData, baseQueryObject),
+        pivotOperator(formData, { ...baseQueryObject, is_timeseries: true }),
+        formData.contributionMode
+          ? {
+              operation: 'contribution',
+              options: {
+                orientation: formData.contributionMode,
+              },
+            }
+          : undefined,
+        formData.forecastEnabled
+          ? {
+              operation: 'prophet',
+              options: {
+                time_grain: formData.time_grain_sqla,
+                periods: parseInt(formData.forecastPeriods, 10),
+                confidence_interval: parseFloat(formData.forecastInterval),
+                yearly_seasonality: formData.forecastSeasonalityYearly,
+                weekly_seasonality: formData.forecastSeasonalityWeekly,
+                daily_seasonality: formData.forecastSeasonalityDaily,
+              },
+            }
+          : undefined,
+      ],
+    },
+  ]);
 }

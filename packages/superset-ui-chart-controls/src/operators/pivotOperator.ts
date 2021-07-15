@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,23 +16,31 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-import { PostProcessingSort, RollingType } from '@superset-ui/core';
+import { ensureIsArray, getMetricLabel, PostProcessingPivot } from '@superset-ui/core';
 import { PostProcessingFactory } from './types';
-import { TIME_COLUMN } from './utils/constants';
+import { TIME_COLUMN, isValidTimeCompare } from './utils';
+import { timeComparePivotOperator } from './timeComparePivotOperator';
 
-export const sortOperator: PostProcessingFactory<PostProcessingSort | undefined> = (
+export const pivotOperator: PostProcessingFactory<PostProcessingPivot | undefined> = (
   formData,
   queryObject,
 ) => {
-  if (queryObject.is_timeseries && Object.values(RollingType).includes(formData.rolling_type)) {
+  const metricLabels = ensureIsArray(queryObject.metrics).map(getMetricLabel);
+  if (queryObject.is_timeseries && metricLabels.length > 0) {
+    if (isValidTimeCompare(formData, queryObject)) {
+      return timeComparePivotOperator(formData, queryObject);
+    }
+
     return {
-      operation: 'sort',
+      operation: 'pivot',
       options: {
-        columns: {
-          [TIME_COLUMN]: true,
-        },
+        index: [TIME_COLUMN],
+        columns: queryObject.columns || [],
+        // Create 'dummy' sum aggregates to assign cell values in pivot table
+        aggregates: Object.fromEntries(metricLabels.map(metric => [metric, { operator: 'sum' }])),
       },
     };
   }
+
   return undefined;
 };
