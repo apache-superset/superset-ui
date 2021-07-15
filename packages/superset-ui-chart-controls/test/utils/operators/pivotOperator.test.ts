@@ -84,4 +84,41 @@ describe('pivotOperator', () => {
       },
     });
   });
+
+  it('timecompare in formdata', () => {
+    expect(
+      pivotOperator(
+        {
+          ...formData,
+          comparison_type: 'values',
+          time_compare: ['1 year ago', '1 year later'],
+        },
+        {
+          ...queryObject,
+          columns: ['foo', 'bar'],
+          is_timeseries: true,
+        },
+      ),
+    ).toEqual({
+      operation: 'pivot',
+      options: {
+        aggregates: {
+          'count(*)': { operator: 'sum' },
+          'count(*)__1 year ago': { operator: 'sum' },
+          'count(*)__1 year later': { operator: 'sum' },
+          'sum(val)': {
+            operator: 'sum',
+          },
+          'sum(val)__1 year ago': {
+            operator: 'sum',
+          },
+          'sum(val)__1 year later': {
+            operator: 'sum',
+          },
+        },
+        columns: ['foo', 'bar'],
+        index: ['__timestamp'],
+      },
+    });
+  });
 });
