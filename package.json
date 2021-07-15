@@ -1,5 +1,5 @@
 {
-  "name": "@superset-ui/monorepo",
+  "name": "@mcmedisoft/mc-superset-ui",
   "version": "0.0.0",
   "description": "Superset UI",
   "private": true,
