@@ -238,7 +238,7 @@ const transformProps = (chartProps: TableChartProps): TableChartTransformedProps
     setDataMask,
     alignPositiveNegative,
     colorPositiveNegative,
-    showCellBars: showCellBars && columnColorFormatters.length === 0,
+    showCellBars,
     sortDesc,
     includeSearch,
     rowCount,

@@ -276,7 +276,11 @@ export default function TableChart<D extends DataRecord = DataRecord>(
       const colorPositiveNegative =
         config.colorPositiveNegative === undefined ? defaultColorPN : config.colorPositiveNegative;
 
+      const hasColumnColorFormatters =
+        isNumeric && Array.isArray(columnColorFormatters) && columnColorFormatters.length > 0;
+
       const valueRange =
+        !hasColumnColorFormatters &&
         (config.showCellBars === undefined ? showCellBars : config.showCellBars) &&
         (isMetric || isRawRecords) &&
         getValueRange(key, alignPositiveNegative);
@@ -297,8 +301,8 @@ export default function TableChart<D extends DataRecord = DataRecord>(
           const html = isHtml ? { __html: text } : undefined;
 
           let backgroundColor;
-          if (isNumeric && Array.isArray(columnColorFormatters)) {
-            columnColorFormatters
+          if (hasColumnColorFormatters) {
+            columnColorFormatters!
               .filter(formatter => formatter.column === column.key)
               .forEach(formatter => {
                 const formatterResult = formatter.getColorFromValue(value as number);
