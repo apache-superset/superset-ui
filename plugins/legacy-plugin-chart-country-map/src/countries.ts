@@ -32,6 +32,7 @@ import ukraine from 'file-loader!./countries/ukraine.geojson';
 import uruguay from 'file-loader!./countries/uruguay.geojson';
 import usa from 'file-loader!./countries/usa.geojson';
 import zambia from 'file-loader!./countries/zambia.geojson';
+import finland from 'file-loader!./countries/finland.geojson';
 
 export const countries = {
   belgium,
@@ -67,6 +68,7 @@ export const countries = {
   uruguay,
   usa,
   zambia,
+  finland,
 };
 
 export const countryOptions = Object.keys(countries).map(x => {
