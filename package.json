@@ -1,8 +1,8 @@
 {
-  "name": "@mcmedisoft/mc-superset-ui",
-  "version": "1.0.0",
+  "name": "@mcdevsl/mc-superset-ui",
+  "version": "1.0.2",
   "description": "Superset UI",
-  "private": true,
+  "private": false,
   "scripts": {
     "build": "node ./scripts/build.js",
     "build:assets": "node ./scripts/copyAssets.js",
@@ -40,7 +40,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Anushka-Hapukotuwa/superset-ui/tree/finland-country-map"
+    "url": "git+https://github.com/Anushka-Hapukotuwa/superset-ui.git#finland-country-map"
   },
   "keywords": [
     "apache",

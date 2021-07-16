@@ -1,6 +1,6 @@
 {
-  "name": "@superset-ui/legacy-plugin-chart-country-map",
-  "version": "0.17.66",
+  "name": "@mc-superset-ui/legacy-plugin-chart-country-map",
+  "version": "0.17.67",
   "description": "Superset Legacy Chart - Country Map",
   "sideEffects": [
     "*.css"
@@ -13,7 +13,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/apache-superset/superset-ui.git"
+    "url": "git+https://github.com/Anushka-Hapukotuwa/superset-ui/tree/finland-country-map/plugins/legacy-plugin-chart-country-map"
   },
   "keywords": [
     "superset"
@@ -23,13 +23,13 @@
   "bugs": {
     "url": "https://github.com/apache-superset/superset-ui/issues"
   },
-  "homepage": "https://github.com/apache-superset/superset-ui#readme",
+  "homepage": "https://github.com/Anushka-Hapukotuwa/superset-ui/tree/finland-country-map/plugins/legacy-plugin-chart-country-map",
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
-    "@superset-ui/chart-controls": "0.17.66",
-    "@superset-ui/core": "0.17.64",
+    "@mc-superset-ui/chart-controls": "0.17.66",
+    "@mc-superset-ui/core": "0.17.64",
     "d3": "^3.5.17",
     "d3-array": "^2.0.3",
     "prop-types": "^15.6.2"
