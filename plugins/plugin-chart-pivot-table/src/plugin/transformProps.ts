@@ -34,7 +34,9 @@ const { DATABASE_DATETIME } = TimeFormats;
 const TIME_COLUMN = '__timestamp';
 
 function isNumeric(key: string, data: DataRecord[] = []) {
-  return data.every(x => x[key] === null || x[key] === undefined || typeof x[key] === 'number');
+  return data.every(
+    record => record[key] === null || record[key] === undefined || typeof record[key] === 'number',
+  );
 }
 
 export default function transformProps(chartProps: ChartProps<QueryFormData>) {
