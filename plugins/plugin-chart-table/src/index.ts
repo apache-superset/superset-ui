@@ -49,6 +49,7 @@ const metadata = new ChartMetadata({
     t('Sequential'),
     t('Tabular'),
     t('Text'),
+    t('Popular'),
   ],
   thumbnail,
 });

@@ -48,6 +48,7 @@ const metadata = new ChartMetadata({
     t('Stacked'),
     t('Vertical'),
     t('nvd3'),
+    t('Popular'),
   ],
   thumbnail,
   useLegacyApi: true,
