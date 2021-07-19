@@ -45,7 +45,6 @@ const metadata = new ChartMetadata({
     t('Highly-used'),
     t('Report'),
     t('Text'),
-    t('Popular'),
   ],
   thumbnail,
   useLegacyApi: true,
