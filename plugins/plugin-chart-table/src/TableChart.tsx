@@ -233,13 +233,6 @@ export default function TableChart<D extends DataRecord = DataRecord>(
   const toggleFilter = useCallback(
     function toggleFilter(key: string, val: DataRecordValue) {
       let updatedFilters = { ...(filters || {}) };
-      // mutil select
-      // if (filters && isActiveFilterValue(key, val)) {
-      //   updatedFilters[key] = filters[key].filter((x: DataRecordValue) => x !== val);
-      // } else {
-      //   updatedFilters[key] = [...(filters?.[key] || []), val];
-      // }
-      // single select
       if (filters && isActiveFilterValue(key, val)) {
         updatedFilters = {};
       } else {
