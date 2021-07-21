@@ -128,5 +128,3 @@ export const advancedAnalytics: ControlPanelSectionConfig = {
     ],
   ],
 };
-
-export default {};

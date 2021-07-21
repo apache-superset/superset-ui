@@ -25,7 +25,7 @@ import {
   PostProcessingCum,
   ComparisionType,
 } from '@superset-ui/core';
-import { getMetricOffsetsMap, isValidTimeCompare, TIME_COMPARISION } from './utils';
+import { getMetricOffsetsMap, isValidTimeCompare, TIME_COMPARISON_SEPARATOR } from './utils';
 import { PostProcessingFactory } from './types';
 
 export const rollingWindowOperator: PostProcessingFactory<
@@ -41,7 +41,7 @@ export const rollingWindowOperator: PostProcessingFactory<
     } else {
       // time compare type: absolute / percentage / ratio
       columns = Array.from(metricsMap.entries()).map(([offset, metric]) =>
-        [comparisonType, metric, offset].join(TIME_COMPARISION),
+        [comparisonType, metric, offset].join(TIME_COMPARISON_SEPARATOR),
       );
     }
   } else {

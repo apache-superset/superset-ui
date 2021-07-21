@@ -18,7 +18,7 @@
  * under the License.
  */
 import { ComparisionType, PostProcessingPivot, NumpyFunction } from '@superset-ui/core';
-import { getMetricOffsetsMap, isValidTimeCompare, TIME_COMPARISION } from './utils';
+import { getMetricOffsetsMap, isValidTimeCompare, TIME_COMPARISON_SEPARATOR } from './utils';
 import { PostProcessingFactory } from './types';
 
 export const timeComparePivotOperator: PostProcessingFactory<PostProcessingPivot | undefined> = (
@@ -30,13 +30,14 @@ export const timeComparePivotOperator: PostProcessingFactory<PostProcessingPivot
 
   if (isValidTimeCompare(formData, queryObject)) {
     const valuesAgg = Object.fromEntries(
-      Array.from(metricOffsetMap.values())
-        .concat(Array.from(metricOffsetMap.keys()))
-        .map(metric => [metric, { operator: 'sum' as NumpyFunction }]),
+      [...metricOffsetMap.values(), ...metricOffsetMap.keys()].map(metric => [
+        metric,
+        { operator: 'sum' as NumpyFunction },
+      ]),
     );
     const changeAgg = Object.fromEntries(
-      Array.from(metricOffsetMap.entries())
-        .map(([offset, metric]) => [comparisonType, metric, offset].join(TIME_COMPARISION))
+      [...metricOffsetMap.entries()]
+        .map(([offset, metric]) => [comparisonType, metric, offset].join(TIME_COMPARISON_SEPARATOR))
         .map(metric => [metric, { operator: 'sum' as NumpyFunction }]),
     );
 

@@ -17,5 +17,5 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-export const TIME_COMPARISION = '__';
+export const TIME_COMPARISON_SEPARATOR = '__';
 export const TIME_COLUMN = '__timestamp';

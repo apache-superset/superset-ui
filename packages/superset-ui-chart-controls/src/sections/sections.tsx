@@ -126,5 +126,3 @@ export const annotations: ControlPanelSectionConfig = {
     ],
   ],
 };
-
-export default {};
