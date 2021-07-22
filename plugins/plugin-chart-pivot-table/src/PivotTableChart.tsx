@@ -40,11 +40,12 @@ import {
 } from './types';
 
 const Styles = styled.div<PivotTableStylesProps>`
-  margin: ${({ margin }) => margin}px;
-  height: ${({ height, margin }) => height - margin * 2}px;
-  width: ${({ width, margin }) => width - margin * 2}px;
-  overflow-y: scroll;
-  }
+  ${({ height, width, margin }) => `
+      margin: ${margin}px;
+      height: ${height - margin * 2}px;
+      width: ${width - margin * 2}px;
+      overflow-y: scroll;
+ `}
 `;
 
 const METRIC_KEY = 'metric';
