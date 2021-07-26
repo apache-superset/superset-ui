@@ -97,7 +97,7 @@ const config: ControlPanelConfig = {
         ['timeseries_limit_metric'],
         [
           {
-            name: 'orderDesc',
+            name: 'order_desc',
             config: {
               type: 'CheckboxControl',
               label: t('Sort descending'),

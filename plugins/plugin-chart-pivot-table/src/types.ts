@@ -68,7 +68,7 @@ interface PivotTableCustomizeProps {
   metricColorFormatters: ColorFormatters;
   dateFormatters: Record<string, DateFormatter | undefined>;
   timeseries_limit_metric: QueryFormMetric[] | QueryFormMetric | null;
-  orderDesc: boolean;
+  order_desc: boolean;
 }
 
 export type PivotTableQueryFormData = QueryFormData &

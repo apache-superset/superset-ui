@@ -26,7 +26,7 @@ describe('PivotTableChart buildQuery', () => {
     dateFormatters: {},
     setDataMask: () => {},
     timeseries_limit_metric: 'count',
-    orderDesc: true,
+    order_desc: true,
   };
 
   it('should build groupby with series in form data', () => {

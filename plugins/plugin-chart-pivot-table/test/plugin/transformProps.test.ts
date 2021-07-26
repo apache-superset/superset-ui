@@ -26,7 +26,7 @@ describe('PivotTableChart transformProps', () => {
     conditionalFormatting: [],
     dateFormat: '',
     timeseries_limit_metric: 'count',
-    orderDesc: true,
+    order_desc: true,
   };
   const chartProps = new ChartProps<QueryFormData>({
     formData,
