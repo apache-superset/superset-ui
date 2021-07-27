@@ -16,7 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { AdhocMetric, buildQueryContext, ensureIsArray, normalizeOrderBy } from '@superset-ui/core';
+import {
+  buildQueryContext,
+  ensureIsArray,
+  getMetricLabel,
+  normalizeOrderBy,
+} from '@superset-ui/core';
 import { PivotTableQueryFormData } from '../types';
 
 export default function buildQuery(formData: PivotTableQueryFormData) {
@@ -35,11 +40,8 @@ export default function buildQuery(formData: PivotTableQueryFormData) {
     const { metrics } = queryObject;
     const orderBy = ensureIsArray(timeseries_limit_metric);
     if (
-      orderBy.length > 0 &&
-      ((typeof orderBy[0] === 'string' && !metrics?.includes(orderBy[0])) ||
-        !metrics?.find(
-          metric => (metric as AdhocMetric).label === (orderBy[0] as AdhocMetric).label,
-        ))
+      orderBy.length &&
+      !metrics?.find(metric => getMetricLabel(metric) === getMetricLabel(orderBy[0]))
     ) {
       metrics?.push(orderBy[0]);
     }
