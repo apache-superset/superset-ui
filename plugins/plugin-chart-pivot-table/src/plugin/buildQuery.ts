@@ -16,21 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { buildQueryContext, ensureIsArray, normalizeOrderBy } from '@superset-ui/core';
+import { AdhocMetric, buildQueryContext, ensureIsArray, normalizeOrderBy } from '@superset-ui/core';
 import { PivotTableQueryFormData } from '../types';
 
 export default function buildQuery(formData: PivotTableQueryFormData) {
-  const { groupbyColumns = [], groupbyRows = [], order_desc = true } = formData;
+  const {
+    groupbyColumns = [],
+    groupbyRows = [],
+    order_desc = true,
+    timeseries_limit_metric,
+  } = formData;
   const groupbySet = new Set([
     ...ensureIsArray<string>(groupbyColumns),
     ...ensureIsArray<string>(groupbyRows),
   ]);
   return buildQueryContext(formData, baseQueryObject => {
     const queryObject = normalizeOrderBy({ ...baseQueryObject, order_desc });
+    const { metrics } = queryObject;
+    const orderBy = ensureIsArray(timeseries_limit_metric);
+    if (
+      orderBy.length > 0 &&
+      ((typeof orderBy[0] === 'string' && !metrics?.includes(orderBy[0])) ||
+        !metrics?.find(
+          metric => (metric as AdhocMetric).label === (orderBy[0] as AdhocMetric).label,
+        ))
+    ) {
+      metrics?.push(orderBy[0]);
+    }
     return [
       {
         ...queryObject,
         columns: [...groupbySet],
+        metrics,
       },
     ];
   });
