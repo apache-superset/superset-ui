@@ -32,13 +32,15 @@ export const timeComparePivotOperator: PostProcessingFactory<PostProcessingPivot
     const valuesAgg = Object.fromEntries(
       [...metricOffsetMap.values(), ...metricOffsetMap.keys()].map(metric => [
         metric,
-        { operator: 'sum' as NumpyFunction },
+        // use the 'mean' aggregates to avoid drop NaN
+        { operator: 'mean' as NumpyFunction },
       ]),
     );
     const changeAgg = Object.fromEntries(
       [...metricOffsetMap.entries()]
         .map(([offset, metric]) => [comparisonType, metric, offset].join(TIME_COMPARISON_SEPARATOR))
-        .map(metric => [metric, { operator: 'sum' as NumpyFunction }]),
+        // use the 'mean' aggregates to avoid drop NaN
+        .map(metric => [metric, { operator: 'mean' as NumpyFunction }]),
     );
 
     return {
@@ -47,6 +49,7 @@ export const timeComparePivotOperator: PostProcessingFactory<PostProcessingPivot
         index: ['__timestamp'],
         columns: queryObject.columns || [],
         aggregates: comparisonType === ComparisionType.Values ? valuesAgg : changeAgg,
+        drop_missing_columns: false,
       },
     };
   }

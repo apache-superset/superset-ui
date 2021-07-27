@@ -38,9 +38,10 @@ const queryObject: QueryObject = {
         columns: ['nation'],
         aggregates: {
           'count(*)': {
-            operator: 'sum',
+            operator: 'mean',
           },
         },
+        drop_missing_columns: false,
       },
     },
   ],
@@ -62,9 +63,10 @@ describe('pivotOperator', () => {
         index: ['__timestamp'],
         columns: [],
         aggregates: {
-          'count(*)': { operator: 'sum' },
-          'sum(val)': { operator: 'sum' },
+          'count(*)': { operator: 'mean' },
+          'sum(val)': { operator: 'mean' },
         },
+        drop_missing_columns: false,
       },
     });
   });
@@ -78,9 +80,10 @@ describe('pivotOperator', () => {
         index: ['__timestamp'],
         columns: ['foo', 'bar'],
         aggregates: {
-          'count(*)': { operator: 'sum' },
-          'sum(val)': { operator: 'sum' },
+          'count(*)': { operator: 'mean' },
+          'sum(val)': { operator: 'mean' },
         },
+        drop_missing_columns: false,
       },
     });
   });
@@ -103,19 +106,20 @@ describe('pivotOperator', () => {
       operation: 'pivot',
       options: {
         aggregates: {
-          'count(*)': { operator: 'sum' },
-          'count(*)__1 year ago': { operator: 'sum' },
-          'count(*)__1 year later': { operator: 'sum' },
+          'count(*)': { operator: 'mean' },
+          'count(*)__1 year ago': { operator: 'mean' },
+          'count(*)__1 year later': { operator: 'mean' },
           'sum(val)': {
-            operator: 'sum',
+            operator: 'mean',
           },
           'sum(val)__1 year ago': {
-            operator: 'sum',
+            operator: 'mean',
           },
           'sum(val)__1 year later': {
-            operator: 'sum',
+            operator: 'mean',
           },
         },
+        drop_missing_columns: false,
         columns: ['foo', 'bar'],
         index: ['__timestamp'],
       },

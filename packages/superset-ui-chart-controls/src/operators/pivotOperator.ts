@@ -36,8 +36,10 @@ export const pivotOperator: PostProcessingFactory<PostProcessingPivot | undefine
       options: {
         index: [TIME_COLUMN],
         columns: queryObject.columns || [],
-        // Create 'dummy' sum aggregates to assign cell values in pivot table
-        aggregates: Object.fromEntries(metricLabels.map(metric => [metric, { operator: 'sum' }])),
+        // Create 'dummy' mean aggregates to assign cell values in pivot table
+        // use the 'mean' aggregates to avoid drop NaN
+        aggregates: Object.fromEntries(metricLabels.map(metric => [metric, { operator: 'mean' }])),
+        drop_missing_columns: false,
       },
     };
   }
