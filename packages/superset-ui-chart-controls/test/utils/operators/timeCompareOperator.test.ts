@@ -38,9 +38,10 @@ const queryObject: QueryObject = {
         columns: ['nation'],
         aggregates: {
           'count(*)': {
-            operator: 'sum',
+            operator: 'mean',
           },
         },
+        drop_missing_columns: false,
       },
     },
     {
@@ -114,10 +115,11 @@ describe('timeCompare', () => {
       operation: 'pivot',
       options: {
         aggregates: {
-          'count(*)': { operator: 'sum' },
-          'count(*)__1 year ago': { operator: 'sum' },
-          'count(*)__1 year later': { operator: 'sum' },
+          'count(*)': { operator: 'mean' },
+          'count(*)__1 year ago': { operator: 'mean' },
+          'count(*)__1 year later': { operator: 'mean' },
         },
+        drop_missing_columns: false,
         columns: [],
         index: ['__timestamp'],
       },
@@ -136,9 +138,10 @@ describe('timeCompare', () => {
         operation: 'pivot',
         options: {
           aggregates: {
-            [`${cType}__count(*)__count(*)__1 year ago`]: { operator: 'sum' },
-            [`${cType}__count(*)__count(*)__1 year later`]: { operator: 'sum' },
+            [`${cType}__count(*)__count(*)__1 year ago`]: { operator: 'mean' },
+            [`${cType}__count(*)__count(*)__1 year later`]: { operator: 'mean' },
           },
+          drop_missing_columns: false,
           columns: [],
           index: ['__timestamp'],
         },
