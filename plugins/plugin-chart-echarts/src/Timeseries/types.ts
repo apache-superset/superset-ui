@@ -20,13 +20,10 @@ import {
   AnnotationLayer,
   ChartDataResponseResult,
   ChartProps,
-  DataRecordValue,
   QueryFormData,
-  SetDataMaskHook,
   TimeGranularity,
 } from '@superset-ui/core';
-import { EChartsOption } from 'echarts';
-import { DEFAULT_LEGEND_FORM_DATA, EchartsLegendFormData } from '../types';
+import { DEFAULT_LEGEND_FORM_DATA, EchartsLegendFormData, EChartTransformedProps } from '../types';
 
 export enum EchartsTimeseriesContributionType {
   Row = 'row',
@@ -115,14 +112,4 @@ export interface EchartsTimeseriesChartProps extends ChartProps {
   queriesData: ChartDataResponseResult[];
 }
 
-export interface TimeseriesChartTransformedProps {
-  echartOptions: EChartsOption;
-  emitFilter: boolean;
-  formData: EchartsTimeseriesFormData;
-  groupby: string[];
-  height: number;
-  labelMap: Record<string, DataRecordValue[]>;
-  selectedValues: Record<number, string>;
-  setDataMask: SetDataMaskHook;
-  width: number;
-}
+export type TimeseriesChartTransformedProps = EChartTransformedProps<EchartsTimeseriesFormData>;

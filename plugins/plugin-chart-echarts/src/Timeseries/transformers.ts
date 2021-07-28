@@ -119,7 +119,7 @@ export function transformSeries(
   } else {
     plotType = seriesType === 'bar' ? 'bar' : 'line';
   }
-  const lineStyle = isConfidenceBand ? { opacity: 0 } : { opacity };
+  const lineStyle = isConfidenceBand ? { opacity: OpacityEnum.Transparent } : { opacity };
   return {
     ...series,
     yAxisIndex,
