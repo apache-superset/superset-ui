@@ -116,12 +116,13 @@ export interface EchartsTimeseriesChartProps extends ChartProps {
 }
 
 export interface TimeseriesChartTransformedProps {
-  formData: EchartsTimeseriesFormData;
-  height: number;
-  width: number;
   echartOptions: EChartsOption;
   emitFilter: boolean;
-  setDataMask: SetDataMaskHook;
-  labelMap: Record<string, DataRecordValue[]>;
+  formData: EchartsTimeseriesFormData;
   groupby: string[];
+  height: number;
+  labelMap: Record<string, DataRecordValue[]>;
+  selectedValues: Record<number, string>;
+  setDataMask: SetDataMaskHook;
+  width: number;
 }
