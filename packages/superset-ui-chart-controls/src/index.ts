@@ -33,5 +33,6 @@ export * from './components/MetricOption';
 // React control components
 export { default as sharedControls } from './shared-controls';
 export { default as sharedControlComponents } from './shared-controls/components';
+export * from './shared-controls/emitFilterControl';
 export * from './shared-controls/components';
 export * from './types';
