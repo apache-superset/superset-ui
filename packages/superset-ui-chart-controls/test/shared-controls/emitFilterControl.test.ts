@@ -17,27 +17,10 @@
  * under the License.
  */
 
-import { FeatureFlag } from '@superset-ui/core';
-import { emitFilterControl } from '../../src';
+import { emitFilterControl } from '../../src/shared-controls/emitFilterControl';
 
 describe('isFeatureFlagEnabled', () => {
   it('returns empty array for unset feature flag', () => {
-    window.featureFlags = {
-      [FeatureFlag.DASHBOARD_CROSS_FILTERS]: false,
-    };
     expect(emitFilterControl).toHaveLength(0);
-  });
-
-  it('returns an array contains a object for set feature flag', () => {
-    window.featureFlags = {
-      [FeatureFlag.DASHBOARD_CROSS_FILTERS]: true,
-    };
-    expect(emitFilterControl).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          name: 'emit_filter',
-        }),
-      ]),
-    );
   });
 });
