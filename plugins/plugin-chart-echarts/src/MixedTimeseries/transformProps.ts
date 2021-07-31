@@ -106,6 +106,7 @@ export default function transformProps(
     groupby,
     groupbyB,
     emitFilter,
+    emitFilterB,
   }: EchartsMixedTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
@@ -141,20 +142,9 @@ export default function transformProps(
       seriesType,
       stack,
       yAxisIndex,
+      filterState,
     });
-    if (transformedSeries) {
-      series.push(transformedSeries);
-      const opacity =
-        filterState.selectedValues && !filterState.selectedValues.includes(transformedSeries.name)
-          ? OpacityEnum.SemiTransparent
-          : OpacityEnum.NonTransparent;
-      // @ts-ignore
-      transformedSeries.itemStyle.opacity = opacity;
-      // @ts-ignore
-      transformedSeries.lineStyle.opacity = opacity;
-      // @ts-ignore
-      transformedSeries.areaStyle.opacity = opacity;
-    }
+    if (transformedSeries) series.push(transformedSeries);
   });
   rawSeriesB.forEach(entry => {
     const transformedSeries = transformSeries(entry, colorScale, {
@@ -165,20 +155,9 @@ export default function transformProps(
       seriesType: seriesTypeB,
       stack: stackB,
       yAxisIndex: yAxisIndexB,
+      filterState,
     });
-    if (transformedSeries) {
-      series.push(transformedSeries);
-      const opacity =
-        filterState.selectedValues && !filterState.selectedValues.includes(transformedSeries.name)
-          ? OpacityEnum.SemiTransparent
-          : OpacityEnum.NonTransparent;
-      // @ts-ignore
-      transformedSeries.itemStyle.opacity = opacity;
-      // @ts-ignore
-      transformedSeries.lineStyle.opacity = opacity;
-      // @ts-ignore
-      transformedSeries.areaStyle.opacity = opacity;
-    }
+    if (transformedSeries) series.push(transformedSeries);
   });
 
   annotationLayers
@@ -210,7 +189,7 @@ export default function transformProps(
   const addYAxisLabelOffset = !!(yAxisTitle || yAxisTitleSecondary);
   const chartPadding = getPadding(showLegend, legendOrientation, addYAxisLabelOffset, zoomable);
 
-  const labelMapA = rawSeriesA.reduce((acc, datum) => {
+  const labelMap = rawSeriesA.reduce((acc, datum) => {
     const label = datum.name as string;
     return {
       ...acc,
@@ -225,33 +204,6 @@ export default function transformProps(
       [label]: label.split(', '),
     };
   }, {}) as Record<string, DataRecordValue[]>;
-
-  const selectedValuesA = (filterState.selectedValues || []).reduce(
-    (acc: Record<string, number>, selectedValue: string) => {
-      const index = rawSeriesA.findIndex(({ name }) => name === selectedValue);
-      if (index === -1) {
-        return { ...acc };
-      }
-      return {
-        ...acc,
-        [index]: selectedValue,
-      };
-    },
-    {},
-  );
-  const selectedValuesB = (filterState.selectedValues || []).reduce(
-    (acc: Record<string, number>, selectedValue: string) => {
-      const index = rawSeriesB.findIndex(({ name }) => name === selectedValue);
-      if (index === -1) {
-        return { ...acc };
-      }
-      return {
-        ...acc,
-        [index]: selectedValue,
-      };
-    },
-    {},
-  );
 
   const { setDataMask = () => {} } = hooks;
 
@@ -367,10 +319,11 @@ export default function transformProps(
     echartOptions,
     setDataMask,
     emitFilter,
-    labelMap: labelMapA,
+    emitFilterB,
+    labelMap,
     labelMapB,
     groupby,
     groupbyB,
-    selectedValues: { ...selectedValuesA, ...selectedValuesB },
+    selectedValues: filterState.selectedValues || [],
   };
 }

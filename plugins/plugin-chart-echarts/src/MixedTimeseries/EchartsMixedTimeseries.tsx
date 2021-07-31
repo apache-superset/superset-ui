@@ -34,13 +34,15 @@ export default function EchartsMixedTimeseries({
   formData,
 }: EchartsMixedTimeseriesChartTransformedProps) {
   const handleChange = useCallback(
-    (values: string[]) => {
-      if (!formData.emitFilter) {
+    (values: string[], seriesIndex: number) => {
+      const emitFilter = seriesIndex === 0 ? formData.emitFilter : formData.emitFilterB;
+      if (!emitFilter) {
         return;
       }
 
-      const groupbyValues = values.map(value => labelMap[value]).filter(value => !!value);
-      const groupbyValuesB = values.map(value => labelMapB[value]).filter(value => !!value);
+      const currentGroupBy = seriesIndex === 0 ? groupby : groupbyB;
+      const currentLabelMap = seriesIndex === 0 ? labelMap : labelMapB;
+      const groupbyValues = values.map(value => currentLabelMap[value]).filter(value => !!value);
 
       setDataMask({
         extraFormData: {
@@ -49,21 +51,8 @@ export default function EchartsMixedTimeseries({
             values.length === 0
               ? []
               : [
-                  ...groupby.map((col, idx) => {
+                  ...currentGroupBy.map((col, idx) => {
                     const val = groupbyValues.map(v => v[idx]);
-                    if (val === null || val === undefined)
-                      return {
-                        col,
-                        op: 'IS NULL',
-                      };
-                    return {
-                      col,
-                      op: 'IN',
-                      val: val as (string | number | boolean)[],
-                    };
-                  }),
-                  ...groupbyB.map((col, idx) => {
-                    const val = groupbyValuesB.map(v => v[idx]);
                     if (val === null || val === undefined)
                       return {
                         col,
@@ -78,25 +67,25 @@ export default function EchartsMixedTimeseries({
                 ],
         },
         filterState: {
-          value:
-            !groupbyValues.length && !groupbyValuesB
-              ? null
-              : [...new Set([...groupbyValues, groupbyValuesB])],
+          value: !groupbyValues.length ? null : groupbyValues,
           selectedValues: values.length ? values : null,
         },
       });
     },
-    [groupby, groupbyB, labelMap, labelMapB, setDataMask, selectedValues],
+    [groupby, labelMap, setDataMask, selectedValues],
   );
 
   const eventHandlers: EventHandlers = {
     click: props => {
-      const { seriesName } = props;
-      const values = Object.values(selectedValues);
+      const { seriesName, seriesIndex } = props;
+      const values: string[] = Object.values(selectedValues);
       if (values.includes(seriesName)) {
-        handleChange(values.filter(v => v !== seriesName));
+        handleChange(
+          values.filter(v => v !== seriesName),
+          seriesIndex,
+        );
       } else {
-        handleChange([seriesName]);
+        handleChange([seriesName], seriesIndex);
       }
     },
   };

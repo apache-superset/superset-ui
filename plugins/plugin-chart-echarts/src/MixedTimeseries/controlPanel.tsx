@@ -17,11 +17,12 @@
  * under the License.
  */
 import React from 'react';
-import { FeatureFlag, isFeatureEnabled, t } from '@superset-ui/core';
+import { t } from '@superset-ui/core';
 import {
   ControlPanelConfig,
   ControlPanelSectionConfig,
   ControlSetRow,
+  emitFilterControl,
   sections,
   sharedControls,
 } from '@superset-ui/chart-controls';
@@ -47,7 +48,6 @@ const {
   zoomable,
   xAxisLabelRotation,
   yAxisIndex,
-  emitFilter,
 } = DEFAULT_FORM_DATA;
 
 function createQuerySection(label: string, controlSuffix: string): ControlPanelSectionConfig {
@@ -73,6 +73,14 @@ function createQuerySection(label: string, controlSuffix: string): ControlPanelS
           config: sharedControls.adhoc_filters,
         },
       ],
+      emitFilterControl.length > 0
+        ? [
+            {
+              ...emitFilterControl[0],
+              name: `emit_filter${controlSuffix}`,
+            },
+          ]
+        : [],
       [
         {
           name: `limit${controlSuffix}`,
@@ -244,20 +252,6 @@ const config: ControlPanelConfig = {
       expanded: true,
       controlSetRows: [
         ['color_scheme', 'label_colors'],
-        isFeatureEnabled(FeatureFlag.DASHBOARD_CROSS_FILTERS)
-          ? [
-              {
-                name: 'emit_filter',
-                config: {
-                  type: 'CheckboxControl',
-                  label: t('Enable emitting filters'),
-                  default: emitFilter,
-                  renderTrigger: true,
-                  description: t('Enable emmiting filters.'),
-                },
-              },
-            ]
-          : [],
         ...createCustomizeSection(t('Query A'), ''),
         ...createCustomizeSection(t('Query B'), 'B'),
         [

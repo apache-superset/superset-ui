@@ -124,7 +124,6 @@ export const DEFAULT_FORM_DATA: EchartsMixedTimeseriesFormData = {
   zoomable: TIMESERIES_DEFAULTS.zoomable,
   richTooltip: TIMESERIES_DEFAULTS.richTooltip,
   xAxisLabelRotation: TIMESERIES_DEFAULTS.xAxisLabelRotation,
-  emitFilter: false,
 };
 
 export interface EchartsMixedTimeseriesProps extends ChartProps {
@@ -138,6 +137,7 @@ export type EchartsMixedTimeseriesChartTransformedProps = {
   width: number;
   echartOptions: EChartsOption;
   emitFilter: boolean;
+  emitFilterB: boolean;
   setDataMask: SetDataMaskHook;
   groupby: string[];
   groupbyB: string[];
