@@ -144,4 +144,5 @@ export type EchartsMixedTimeseriesChartTransformedProps = {
   labelMap: Record<string, DataRecordValue[]>;
   labelMapB: Record<string, DataRecordValue[]>;
   selectedValues: Record<number, string>;
+  seriesBreakdown: number;
 };

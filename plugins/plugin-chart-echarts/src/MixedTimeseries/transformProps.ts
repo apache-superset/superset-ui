@@ -55,7 +55,7 @@ import {
   transformSeries,
   transformTimeseriesAnnotation,
 } from '../Timeseries/transformers';
-import { TIMESERIES_CONSTANTS, OpacityEnum } from '../constants';
+import { TIMESERIES_CONSTANTS } from '../constants';
 
 export default function transformProps(
   chartProps: EchartsMixedTimeseriesFormData,
@@ -324,6 +324,7 @@ export default function transformProps(
     labelMapB,
     groupby,
     groupbyB,
+    seriesBreakdown: rawSeriesA.length,
     selectedValues: filterState.selectedValues || [],
   };
 }
