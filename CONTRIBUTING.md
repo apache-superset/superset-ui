@@ -61,8 +61,8 @@ committing. You can use `npm run commit` to help you create a commit message.
 
 ### Publishing
 
-**Prerequisite:** You'll need an [npmjs.com](https://npmjs.com) account that is part of the
-`superset-ui` organization.
+**Prerequisite:** You'll need to be a committer on the `apache-superset` organization to be able to
+publish new versions of `superset-ui`.
 
 1. Checkout the `master` branch from the main repo at `apache-superset/superset-ui` - NOT A FORK!
 2. run `yarn run ci:create-patch-version` to bump the patch version (the most common case) or
