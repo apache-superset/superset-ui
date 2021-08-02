@@ -4396,10 +4396,10 @@
     d3-cloud "^1.2.1"
     prop-types "^15.6.2"
 
-"@superset-ui/react-pivottable@^0.12.9":
-  version "0.12.9"
-  resolved "https://registry.yarnpkg.com/@superset-ui/react-pivottable/-/react-pivottable-0.12.9.tgz#f46ceef940c2f99c197db4acd7487efc48be05bf"
-  integrity sha512-wztcGEGg4Fc/zxHTDSP2ANyE9aZYiDPHf01FSx6rBapxtXP04NvyLPJl3RKNN/D5l98o5bj5xO/5KSailM9LjQ==
+"@superset-ui/react-pivottable@^0.12.10":
+  version "0.12.10"
+  resolved "https://registry.yarnpkg.com/@superset-ui/react-pivottable/-/react-pivottable-0.12.10.tgz#cd1e06a965ac1fed45b5157f04e5c786f556f5ae"
+  integrity sha512-+/DgVlfiJgXrswtnf7NOHpobgJFqF4h61kPn/cUeWdC6tDRjfnDc3xDqQMSqvbBjjaSnUD3880eBIxmrJD9ZGA==
   dependencies:
     immutability-helper "^3.1.1"
     prop-types "^15.7.2"
@@ -4596,10 +4596,15 @@
   dependencies:
     "@types/d3" "^3"
 
-"@types/d3-color@^1", "@types/d3-color@^1.2.2":
+"@types/d3-color@^1":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@types/d3-color/-/d3-color-1.4.1.tgz#0d9746c84dfef28807b2989eed4f37b2575e1f33"
   integrity sha512-xkPLi+gbgUU9ED6QX4g6jqYL2KCB0/3AlM+ncMGqn49OgH0gFMY/ITGqPF8HwEiLzJaC+2L0I+gNwBgABv1Pvg==
+
+"@types/d3-color@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@types/d3-color/-/d3-color-3.0.2.tgz#53f2d6325f66ee79afd707c05ac849e8ae0edbb0"
+  integrity sha512-WVx6zBiz4sWlboCy7TCgjeyHpNjMsoF36yaagny1uXfbadc9f+5BeBf7U+lRmQqY3EHbGQpP8UdW8AC+cywSwQ==
 
 "@types/d3-format@^1.3.0", "@types/d3-format@^1.3.1":
   version "1.4.1"
