@@ -20,13 +20,12 @@ import { t, ChartMetadata, ChartPlugin, AnnotationType, Behavior } from '@supers
 import buildQuery from '../../buildQuery';
 import controlPanel from '../controlPanel';
 import transformProps from '../../transformProps';
-import thumbnail from '../../images/thumbnail.png';
+import thumbnail from './images/thumbnail.png';
 import {
   EchartsTimeseriesChartProps,
   EchartsTimeseriesFormData,
   EchartsTimeseriesSeriesType,
 } from '../../types';
-import example from '../../images/Time-series_Chart.jpg';
 
 const scatterTransformProps = (chartProps: EchartsTimeseriesChartProps) =>
   transformProps({
@@ -58,16 +57,16 @@ export default class EchartsTimeseriesScatterChartPlugin extends ChartPlugin<
         category: t('Evolution'),
         credits: ['https://echarts.apache.org'],
         description: t(
-          'Swiss army knife for visualizing scattered time series data. This viz type has many customization options as well.',
+          'Time-series Scatter Plot has time on the horizontal axis in linear units, and the points are connected in order. It shows a statistical relationship between two variables.',
         ),
-        exampleGallery: [{ url: example }],
+        exampleGallery: [],
         supportedAnnotationTypes: [
           AnnotationType.Event,
           AnnotationType.Formula,
           AnnotationType.Interval,
           AnnotationType.Timeseries,
         ],
-        name: t('Time-series Scatter Chart'),
+        name: t('Time-series Scatter Plot (Echarts)'),
         tags: [
           t('Advanced-Analytics'),
           t('Aesthetic'),

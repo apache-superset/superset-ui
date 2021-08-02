@@ -20,13 +20,12 @@ import { t, ChartMetadata, ChartPlugin, AnnotationType, Behavior } from '@supers
 import buildQuery from '../../buildQuery';
 import controlPanel from '../controlPanel';
 import transformProps from '../../transformProps';
-import thumbnail from '../../images/thumbnail.png';
+import thumbnail from './images/thumbnail.png';
 import {
   EchartsTimeseriesChartProps,
   EchartsTimeseriesFormData,
   EchartsTimeseriesSeriesType,
 } from '../../types';
-import example from '../../images/Time-series_Chart.jpg';
 
 const startTransformProps = (chartProps: EchartsTimeseriesChartProps) =>
   transformProps({
@@ -58,25 +57,24 @@ export default class EchartsTimeseriesScatterChartPlugin extends ChartPlugin<
         category: t('Evolution'),
         credits: ['https://echarts.apache.org'],
         description: t(
-          'Swiss army knife for visualizing step time series data. This viz type has many customization options as well.',
+          'Time-series Stepped-line graph (also called step chart) is a variation of line chart but with the line forming a series of steps between data points. A step chart can be useful when you want to show the changes that occur at irregular intervals.',
         ),
-        exampleGallery: [{ url: example }],
+        exampleGallery: [],
         supportedAnnotationTypes: [
           AnnotationType.Event,
           AnnotationType.Formula,
           AnnotationType.Interval,
           AnnotationType.Timeseries,
         ],
-        name: t('Time-series Step-Start Chart'),
+        name: t('Time-series Stepped Line (Echarts)'),
         tags: [
           t('Advanced-Analytics'),
           t('Aesthetic'),
           t('ECharts'),
-          t('Step'),
+          t('Stacked'),
           t('Predictive'),
           t('Time'),
           t('Transformable'),
-          t('Highly-used'),
         ],
         thumbnail,
       }),

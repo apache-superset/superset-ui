@@ -38,7 +38,7 @@ const metadata = new ChartMetadata({
     { url: example3, caption: t('Video game consoles') },
     { url: example4, caption: t('Vehicle Types') },
   ],
-  name: t('Area Chart (deprecated)'),
+  name: t('Area Chart'),
   supportedAnnotationTypes: [ANNOTATION_TYPES.INTERVAL, ANNOTATION_TYPES.EVENT],
   tags: [
     t('Aesthetic'),
@@ -52,7 +52,7 @@ const metadata = new ChartMetadata({
     t('Time'),
     t('Trend'),
     t('nvd3'),
-    t('Highly-used'),
+    t('Deprecated'),
   ],
   thumbnail,
   useLegacyApi: true,

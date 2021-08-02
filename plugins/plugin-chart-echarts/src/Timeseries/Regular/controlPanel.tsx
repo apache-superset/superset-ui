@@ -17,17 +17,12 @@
  * under the License.
  */
 import React from 'react';
-import {
-  FeatureFlag,
-  isFeatureEnabled,
-  legacyValidateInteger,
-  legacyValidateNumber,
-  t,
-} from '@superset-ui/core';
+import { legacyValidateInteger, legacyValidateNumber, t } from '@superset-ui/core';
 import {
   ControlPanelConfig,
   ControlPanelsContainerProps,
   D3_TIME_FORMAT_DOCS,
+  emitFilterControl,
   sections,
   sharedControls,
 } from '@superset-ui/chart-controls';
@@ -38,7 +33,6 @@ import { legendSection } from '../../controls';
 const {
   annotationLayers,
   contributionMode,
-  emitFilter,
   forecastEnabled,
   forecastInterval,
   forecastPeriods,
@@ -83,6 +77,7 @@ const config: ControlPanelConfig = {
           },
         ],
         ['adhoc_filters'],
+        emitFilterControl,
         ['limit'],
         ['timeseries_limit_metric'],
         [
@@ -268,20 +263,6 @@ const config: ControlPanelConfig = {
             },
           },
         ],
-        isFeatureEnabled(FeatureFlag.DASHBOARD_CROSS_FILTERS)
-          ? [
-              {
-                name: 'emit_filter',
-                config: {
-                  type: 'CheckboxControl',
-                  label: t('Enable emitting filters'),
-                  default: emitFilter,
-                  renderTrigger: true,
-                  description: t('Enable emmiting filters.'),
-                },
-              },
-            ]
-          : [],
         ...legendSection,
         [<h1 className="section-header">{t('X Axis')}</h1>],
         [
