@@ -66,7 +66,7 @@ export default class EchartsTimeseriesScatterChartPlugin extends ChartPlugin<
           AnnotationType.Interval,
           AnnotationType.Timeseries,
         ],
-        name: t('Time-series Bar (Echarts)'),
+        name: t('Time-series Bar Chart'),
         tags: [
           t('Advanced-Analytics'),
           t('Aesthetic'),
