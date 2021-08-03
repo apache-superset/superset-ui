@@ -46,7 +46,7 @@ const emitTarget: ControlFormItemSpec<'Input'> = {
   controlType: 'Input',
   label: t('Emit Target'),
   description: t(
-    'If you wish to specify a different target column than the original column, it can be entered here'
+    'If you wish to specify a different target column than the original column, it can be entered here',
   ),
   defaultValue: '',
   debounceDelay: 500,

@@ -233,7 +233,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
   );
 
   function getEmitTarget(col: string) {
-    const meta = columnsMeta?.find(x => x.key == col);
+    const meta = columnsMeta?.find(x => x.key === col);
     return meta?.config?.emitTarget || col;
   }
 
