@@ -23,9 +23,7 @@ export { default as EchartsTimeseriesBarChartPlugin } from './Timeseries/Regular
 export { default as EchartsTimeseriesLineChartPlugin } from './Timeseries/Regular/Line';
 export { default as EchartsTimeseriesScatterChartPlugin } from './Timeseries/Regular/Scatter';
 export { default as EchartsTimeseriesSmoothLineChartPlugin } from './Timeseries/Regular/SmoothLine';
-export { default as EchartsTimeseriesStepEndChartPlugin } from './Timeseries/Regular/StepEnd';
-export { default as EchartsTimeseriesStepMiddleChartPlugin } from './Timeseries/Regular/StepMiddle';
-export { default as EchartsTimeseriesStepStartChartPlugin } from './Timeseries/Regular/StepStart';
+export { default as EchartsTimeseriesStepChartPlugin } from './Timeseries/Step';
 export { default as EchartsMixedTimeseriesChartPlugin } from './MixedTimeseries';
 export { default as EchartsPieChartPlugin } from './Pie';
 export { default as EchartsGraphChartPlugin } from './Graph';

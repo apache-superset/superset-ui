@@ -17,57 +17,38 @@
  * under the License.
  */
 import { t, ChartMetadata, ChartPlugin, AnnotationType, Behavior } from '@superset-ui/core';
-import buildQuery from '../../buildQuery';
-import controlPanel from '../controlPanel';
-import transformProps from '../../transformProps';
-import thumbnail from '../../images/thumbnail.png';
-import {
-  EchartsTimeseriesChartProps,
-  EchartsTimeseriesFormData,
-  EchartsTimeseriesSeriesType,
-} from '../../types';
-import example from '../../images/Time-series_Chart.jpg';
-
-const middleTransformProps = (chartProps: EchartsTimeseriesChartProps) =>
-  transformProps({
-    ...chartProps,
-    formData: { ...chartProps.formData, seriesType: EchartsTimeseriesSeriesType.Middle },
-  });
+import buildQuery from '../buildQuery';
+import controlPanel from './controlPanel';
+import transformProps from '../transformProps';
+import thumbnail from './images/thumbnail.png';
+import { EchartsTimeseriesChartProps, EchartsTimeseriesFormData } from '../types';
+import example1 from './images/Step1.png';
+import example2 from './images/Step2.png';
 
 export default class EchartsTimeseriesScatterChartPlugin extends ChartPlugin<
   EchartsTimeseriesFormData,
   EchartsTimeseriesChartProps
 > {
-  /**
-   * The constructor is used to pass relevant metadata and callbacks that get
-   * registered in respective registries that are used throughout the library
-   * and application. A more thorough description of each property is given in
-   * the respective imported file.
-   *
-   * It is worth noting that `buildQuery` and is optional, and only needed for
-   * advanced visualizations that require either post processing operations
-   * (pivoting, rolling aggregations, sorting etc) or submitting multiple queries.
-   */
   constructor() {
     super({
       buildQuery,
       controlPanel,
-      loadChart: () => import('../../EchartsTimeseries'),
+      loadChart: () => import('../EchartsTimeseries'),
       metadata: new ChartMetadata({
         behaviors: [Behavior.INTERACTIVE_CHART],
         category: t('Evolution'),
         credits: ['https://echarts.apache.org'],
         description: t(
-          'Swiss army knife for visualizing step time series data. This viz type has many customization options as well.',
+          'Time-series Stepped-line graph (also called step chart) is a variation of line chart but with the line forming a series of steps between data points. A step chart can be useful when you want to show the changes that occur at irregular intervals.',
         ),
-        exampleGallery: [{ url: example }],
+        exampleGallery: [{ url: example1 }, { url: example2 }],
         supportedAnnotationTypes: [
           AnnotationType.Event,
           AnnotationType.Formula,
           AnnotationType.Interval,
           AnnotationType.Timeseries,
         ],
-        name: t('Time-series Step-Middle Chart'),
+        name: t('Time-series Stepped Line'),
         tags: [
           t('Advanced-Analytics'),
           t('Aesthetic'),
@@ -76,11 +57,10 @@ export default class EchartsTimeseriesScatterChartPlugin extends ChartPlugin<
           t('Predictive'),
           t('Time'),
           t('Transformable'),
-          t('Highly-used'),
         ],
         thumbnail,
       }),
-      transformProps: middleTransformProps,
+      transformProps,
     });
   }
 }
