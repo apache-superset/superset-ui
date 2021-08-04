@@ -26,6 +26,9 @@ import {
   EchartsTimeseriesFormData,
   EchartsTimeseriesSeriesType,
 } from '../../types';
+import example1 from './images/Bar1.png';
+import example2 from './images/Bar2.png';
+import example3 from './images/Bar3.png';
 
 const barTransformProps = (chartProps: EchartsTimeseriesChartProps) =>
   transformProps({
@@ -37,16 +40,6 @@ export default class EchartsTimeseriesScatterChartPlugin extends ChartPlugin<
   EchartsTimeseriesFormData,
   EchartsTimeseriesChartProps
 > {
-  /**
-   * The constructor is used to pass relevant metadata and callbacks that get
-   * registered in respective registries that are used throughout the library
-   * and application. A more thorough description of each property is given in
-   * the respective imported file.
-   *
-   * It is worth noting that `buildQuery` and is optional, and only needed for
-   * advanced visualizations that require either post processing operations
-   * (pivoting, rolling aggregations, sorting etc) or submitting multiple queries.
-   */
   constructor() {
     super({
       buildQuery,
@@ -59,7 +52,7 @@ export default class EchartsTimeseriesScatterChartPlugin extends ChartPlugin<
         description: t(
           'Time-series Bar Charts are used to show the changes in a metric over time as a series of bars.',
         ),
-        exampleGallery: [],
+        exampleGallery: [{ url: example1 }, { url: example2 }, { url: example3 }],
         supportedAnnotationTypes: [
           AnnotationType.Event,
           AnnotationType.Formula,

@@ -26,6 +26,8 @@ import {
   EchartsTimeseriesFormData,
   EchartsTimeseriesSeriesType,
 } from '../../types';
+import example1 from './images/Line1.png';
+import example2 from './images/Line2.png';
 
 const lineTransformProps = (chartProps: EchartsTimeseriesChartProps) =>
   transformProps({
@@ -37,16 +39,6 @@ export default class EchartsTimeseriesScatterChartPlugin extends ChartPlugin<
   EchartsTimeseriesFormData,
   EchartsTimeseriesChartProps
 > {
-  /**
-   * The constructor is used to pass relevant metadata and callbacks that get
-   * registered in respective registries that are used throughout the library
-   * and application. A more thorough description of each property is given in
-   * the respective imported file.
-   *
-   * It is worth noting that `buildQuery` and is optional, and only needed for
-   * advanced visualizations that require either post processing operations
-   * (pivoting, rolling aggregations, sorting etc) or submitting multiple queries.
-   */
   constructor() {
     super({
       buildQuery,
@@ -59,7 +51,7 @@ export default class EchartsTimeseriesScatterChartPlugin extends ChartPlugin<
         description: t(
           'Time-series line chart is used to visualize repeated measurements taken over regular time intervals. Line chart is a type of chart which displays information as a series of data points connected by straight line segments. It is a basic type of chart common in many fields.',
         ),
-        exampleGallery: [],
+        exampleGallery: [{ url: example1 }, { url: example2 }],
         supportedAnnotationTypes: [
           AnnotationType.Event,
           AnnotationType.Formula,

@@ -22,6 +22,7 @@ import controlPanel from './controlPanel';
 import transformProps from '../transformProps';
 import thumbnail from './images/thumbnail.png';
 import { EchartsTimeseriesChartProps, EchartsTimeseriesFormData } from '../types';
+import example1 from './images/Area1.png';
 
 const areaTransformProps = (chartProps: EchartsTimeseriesChartProps) =>
   transformProps({
@@ -55,7 +56,7 @@ export default class EchartsTimeseriesScatterChartPlugin extends ChartPlugin<
         description: t(
           'Time-series Area chart are similar to line chart in that they represent variables with the same scale, but area charts stack the metrics on top of each other. An area chart in Superset can be stream, stack, or expand.',
         ),
-        exampleGallery: [],
+        exampleGallery: [{ url: example1 }],
         supportedAnnotationTypes: [
           AnnotationType.Event,
           AnnotationType.Formula,
