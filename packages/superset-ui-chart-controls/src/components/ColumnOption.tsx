@@ -55,7 +55,7 @@ export function ColumnOption({
         </Tooltip>
       ) : (
         <span className="m-r-5 option-label column-option-label" ref={labelRef}>
-          column.verbose_name || column.column_name
+          {column.verbose_name || column.column_name}
         </span>
       )}
       {column.description && (
