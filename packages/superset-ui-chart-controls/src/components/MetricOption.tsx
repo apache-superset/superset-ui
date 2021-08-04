@@ -72,15 +72,17 @@ export function MetricOption({
           details={metric.certification_details}
         />
       )}
-      <span className="option-label metric-option-label" ref={labelRef}>
-        {showTooltip ? (
-          <Tooltip id="metric-name-tooltip" title={verbose} trigger={['hover']} placement="top">
+      {showTooltip ? (
+        <Tooltip id="metric-name-tooltip" title={verbose} trigger={['hover']} placement="top">
+          <span className="option-label metric-option-label" ref={labelRef}>
             {link}
-          </Tooltip>
-        ) : (
-          link
-        )}
-      </span>
+          </span>
+        </Tooltip>
+      ) : (
+        <span className="option-label metric-option-label" ref={labelRef}>
+          {link}
+        </span>
+      )}
       {metric.description && (
         <InfoTooltipWithTrigger
           className="text-muted"

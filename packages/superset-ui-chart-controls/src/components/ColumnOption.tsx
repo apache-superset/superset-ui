@@ -42,20 +42,22 @@ export function ColumnOption({
   return (
     <span>
       {showType && type !== undefined && <ColumnTypeLabel type={type} />}
-      <span className="m-r-5 option-label column-option-label" ref={labelRef}>
-        {showTooltip ? (
-          <Tooltip
-            id="metric-name-tooltip"
-            title={column.verbose_name || column.column_name}
-            trigger={['hover']}
-            placement="top"
-          >
+      {showTooltip ? (
+        <Tooltip
+          id="metric-name-tooltip"
+          title={column.verbose_name || column.column_name}
+          trigger={['hover']}
+          placement="top"
+        >
+          <span className="m-r-5 option-label column-option-label" ref={labelRef}>
             {column.verbose_name || column.column_name}
-          </Tooltip>
-        ) : (
+          </span>
+        </Tooltip>
+      ) : (
+        <span className="m-r-5 option-label column-option-label" ref={labelRef}>
           column.verbose_name || column.column_name
-        )}
-      </span>
+        </span>
+      )}
       {column.description && (
         <InfoTooltipWithTrigger
           className="m-r-5 text-muted"
