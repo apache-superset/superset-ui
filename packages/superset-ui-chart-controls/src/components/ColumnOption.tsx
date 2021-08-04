@@ -42,7 +42,7 @@ export function ColumnOption({
   return (
     <span>
       {showType && type !== undefined && <ColumnTypeLabel type={type} />}
-      <span className="m-r-5 option-label column-option" ref={labelRef}>
+      <span className="m-r-5 option-label column-option-label" ref={labelRef}>
         {showTooltip ? (
           <Tooltip
             id="metric-name-tooltip"

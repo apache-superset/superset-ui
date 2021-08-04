@@ -48,7 +48,7 @@ export function MetricOption({
   openInNewWindow = false,
   showFormula = true,
   showType = false,
-  showTooltip = false,
+  showTooltip = true,
   url = '',
 }: MetricOptionProps) {
   const verbose = metric.verbose_name || metric.metric_name || metric.label;
@@ -72,7 +72,7 @@ export function MetricOption({
           details={metric.certification_details}
         />
       )}
-      <span className="option-label metric-option" ref={labelRef}>
+      <span className="option-label metric-option-label" ref={labelRef}>
         {showTooltip ? (
           <Tooltip id="metric-name-tooltip" title={verbose} trigger={['hover']} placement="top">
             {link}
