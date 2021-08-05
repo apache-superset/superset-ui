@@ -40,11 +40,32 @@ import {
 } from './types';
 
 const Styles = styled.div<PivotTableStylesProps>`
-  ${({ height, width, margin }) => `
+  ${({ height, width, margin, borderColor }) => `
       margin: ${margin}px;
       height: ${height - margin * 2}px;
       width: ${width - margin * 2}px;
       overflow-y: scroll;
+
+      table.pvtTable thead tr th,
+      table.pvtTable tbody tr th {
+        border-top: 1px solid ${borderColor};
+        border-left: 1px solid ${borderColor};
+      }
+      table.pvtTable tbody tr td {
+        border-left: 1px solid ${borderColor};
+      }
+      table.pvtTable tbody tr td:last-child,
+      table.pvtTable thead tr th:last-child:not(.pvtSubtotalLabel) {
+        border-right: 1px solid ${borderColor};
+      }
+      table.pvtTable thead tr:last-child th,
+      table.pvtTable thead tr:first-child th.pvtTotalLabel,
+      table.pvtTable thead tr:nth-last-child(2) th.pvtColLabel,
+      table.pvtTable thead th.pvtSubtotalLabel,
+      table.pvtTable tbody tr:last-child th,
+      table.pvtTable tbody tr:last-child td {
+        border-bottom: 1px solid ${borderColor};
+      }
  `}
 `;
 
@@ -249,7 +270,12 @@ export default function PivotTableChart(props: PivotTableProps) {
   );
 
   return (
-    <Styles height={height} width={width} margin={theme.gridUnit * 4}>
+    <Styles
+      height={height}
+      width={width}
+      margin={theme.gridUnit * 4}
+      borderColor={theme.colors.grayscale.light2}
+    >
       <PivotTable
         data={unpivotedData}
         rows={rows}

@@ -33,6 +33,7 @@ export interface PivotTableStylesProps {
   height: number;
   width: number;
   margin: number;
+  borderColor: string;
 }
 
 export type FilterType = Record<string, DataRecordValue>;
