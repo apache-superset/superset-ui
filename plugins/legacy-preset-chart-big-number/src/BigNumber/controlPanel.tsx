@@ -58,6 +58,18 @@ const config: ControlPanelConfig = {
         ['y_axis_format'],
         [
           {
+            name: 'show_timestamp',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Show Timestamp'),
+              renderTrigger: true,
+              default: false,
+              description: t('Whether to display the timestamp'),
+            },
+          },
+        ],
+        [
+          {
             name: 'show_trend_line',
             config: {
               type: 'CheckboxControl',
