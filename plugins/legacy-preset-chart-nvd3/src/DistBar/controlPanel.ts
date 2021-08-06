@@ -115,7 +115,7 @@ const config: ControlPanelConfig = {
       mapStateToProps: (state, controlState) => {
         const groupbyProps = sharedControls.groupby.mapStateToProps?.(state, controlState) || {};
         groupbyProps.canDropValue = (column: ColumnMeta) =>
-          !ensureIsArray(state.controls.columns.value).includes(column.column_name);
+          !ensureIsArray(state.controls?.columns?.value).includes(column.column_name);
         return groupbyProps;
       },
       rerender: ['columns'],
@@ -126,7 +126,7 @@ const config: ControlPanelConfig = {
       mapStateToProps: (state, controlState) => {
         const columnsProps = sharedControls.columns.mapStateToProps?.(state, controlState) || {};
         columnsProps.canDropValue = (column: ColumnMeta) =>
-          !ensureIsArray(state.controls.groupby.value).includes(column.column_name);
+          !ensureIsArray(state.controls?.groupby?.value).includes(column.column_name);
         return columnsProps;
       },
       rerender: ['groupby'],
