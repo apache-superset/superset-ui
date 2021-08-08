@@ -169,7 +169,7 @@ export function transformSeries(
       position: 'top',
       formatter: (params: any) => {
         const {
-          value: [_, numericValue],
+          value: [, numericValue],
           dataIndex,
           seriesIndex,
         } = params;
