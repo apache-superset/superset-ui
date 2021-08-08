@@ -74,7 +74,7 @@ export function transformSeries(
     seriesType?: EchartsTimeseriesSeriesType;
     stack?: boolean;
     yAxisIndex?: number;
-    showLabelValue?: boolean;
+    showValue?: boolean;
     formatter?: NumberFormatter;
     totalStackedValues?: number[];
     showValueIndexes?: number[];
@@ -91,7 +91,7 @@ export function transformSeries(
     seriesType,
     stack,
     yAxisIndex = 0,
-    showLabelValue,
+    showValue,
     formatter,
     totalStackedValues = [],
     showValueIndexes = [],
@@ -134,7 +134,7 @@ export function transformSeries(
       showSymbol = true;
     } else if (forecastEnabled && isObservation) {
       showSymbol = true;
-    } else if (plotType === 'line' && showLabelValue) {
+    } else if (plotType === 'line' && showValue) {
       showSymbol = true;
     } else if (markerEnabled) {
       showSymbol = true;
@@ -165,7 +165,7 @@ export function transformSeries(
     showSymbol,
     symbolSize: markerSize,
     label: {
-      show: !!showLabelValue,
+      show: !!showValue,
       position: 'top',
       formatter: (params: any) => {
         const {

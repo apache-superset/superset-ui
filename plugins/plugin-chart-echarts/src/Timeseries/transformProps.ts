@@ -132,7 +132,6 @@ export default function transformProps(
   }
 
   rawSeries.forEach(entry => {
-    const showLabelValue = showValue;
     const transformedSeries = transformSeries(entry, colorScale, {
       area,
       filterState,
@@ -143,7 +142,7 @@ export default function transformProps(
       seriesType,
       stack,
       formatter,
-      showLabelValue,
+      showValue,
       totalStackedValues,
       showValueIndexes,
     });
