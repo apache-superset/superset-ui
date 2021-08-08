@@ -95,6 +95,7 @@ export default function transformProps(
     xAxisLabelRotation,
     emitFilter,
     groupby,
+    showValue,
   }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
@@ -105,7 +106,33 @@ export default function transformProps(
   const series: SeriesOption[] = [];
   const formatter = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormat);
 
+  const totalStackedValues: number[] = [];
+  const showValueIndexes: number[] = [];
+
+  if (stack) {
+    rebasedData.forEach(data => {
+      const values = Object.keys(data).reduce((prev, curr) => {
+        if (curr === '__timestamp') {
+          return prev;
+        }
+        const value = data[curr] || 0;
+        return prev + (value as number);
+      }, 0);
+      totalStackedValues.push(values);
+    });
+
+    rawSeries.forEach((entry, seriesIndex) => {
+      const { data = [] } = entry;
+      (data as [Date, number][]).forEach((datum, dataIndex) => {
+        if (datum[1] !== null) {
+          showValueIndexes[dataIndex] = seriesIndex;
+        }
+      });
+    });
+  }
+
   rawSeries.forEach(entry => {
+    const showLabelValue = showValue;
     const transformedSeries = transformSeries(entry, colorScale, {
       area,
       filterState,
@@ -115,6 +142,10 @@ export default function transformProps(
       areaOpacity: opacity,
       seriesType,
       stack,
+      formatter,
+      showLabelValue,
+      totalStackedValues,
+      showValueIndexes,
     });
     if (transformedSeries) series.push(transformedSeries);
   });

@@ -56,6 +56,7 @@ const {
   yAxisBounds,
   zoomable,
   xAxisLabelRotation,
+  showValue,
 } = DEFAULT_FORM_DATA;
 const config: ControlPanelConfig = {
   controlPanelSections: [
@@ -234,6 +235,18 @@ const config: ControlPanelConfig = {
               description: t(
                 'Defines whether the step should appear at the beginning, middle or end between two data points',
               ),
+            },
+          },
+        ],
+        [
+          {
+            name: 'show_value',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Show Value'),
+              default: showValue,
+              renderTrigger: true,
+              description: t('Show the value on top of the chart'),
             },
           },
         ],
