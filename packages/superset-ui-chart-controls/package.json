@@ -26,6 +26,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@emotion/react": "^11.4.1",
     "@react-icons/all-files": "^4.1.0",
     "@superset-ui/core": "0.17.75",
     "lodash": "^4.17.15",
