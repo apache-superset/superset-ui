@@ -32,7 +32,7 @@ import {
   EchartsTimeseriesContributionType,
   EchartsTimeseriesSeriesType,
 } from '../types';
-import { legendSection } from '../../controls';
+import { legendSection, showValueControl } from '../../controls';
 
 const {
   annotationLayers,
@@ -56,7 +56,6 @@ const {
   yAxisBounds,
   zoomable,
   xAxisLabelRotation,
-  showValue,
 } = DEFAULT_FORM_DATA;
 const config: ControlPanelConfig = {
   controlPanelSections: [
@@ -252,18 +251,7 @@ const config: ControlPanelConfig = {
             },
           },
         ],
-        [
-          {
-            name: 'show_value',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Show Value'),
-              default: showValue,
-              renderTrigger: true,
-              description: t('Show the value on top of the chart'),
-            },
-          },
-        ],
+        [showValueControl],
         [
           {
             name: 'stack',
