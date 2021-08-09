@@ -34,6 +34,8 @@ export interface PivotTableStylesProps {
   width: number;
   margin: number;
   borderColor: string;
+  fontFamily: string;
+  fontSize: number;
 }
 
 export type FilterType = Record<string, DataRecordValue>;

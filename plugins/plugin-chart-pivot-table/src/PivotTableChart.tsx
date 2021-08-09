@@ -40,11 +40,18 @@ import {
 } from './types';
 
 const Styles = styled.div<PivotTableStylesProps>`
-  ${({ height, width, margin, borderColor }) => `
+  ${({ borderColor, fontFamily, fontSize, height, margin, width }) => `
       margin: ${margin}px;
       height: ${height - margin * 2}px;
       width: ${width - margin * 2}px;
       overflow-y: scroll;
+
+      table.pvtTable th,
+      table.pvtTable td {
+        font-family: ${fontFamily};
+        font-size: ${fontSize}px;
+        line-height: 1.4;
+      }
 
       table.pvtTable thead tr th,
       table.pvtTable tbody tr th {
@@ -275,6 +282,8 @@ export default function PivotTableChart(props: PivotTableProps) {
       width={width}
       margin={theme.gridUnit * 4}
       borderColor={theme.colors.grayscale.light2}
+      fontFamily={theme.typography.families.sansSerif}
+      fontSize={theme.typography.sizes.s}
     >
       <PivotTable
         data={unpivotedData}
