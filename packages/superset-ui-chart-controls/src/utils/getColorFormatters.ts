@@ -30,13 +30,14 @@ export const round = (num: number, precision = 0) =>
 export const rgbToRgba = (rgb: string, alpha: number) =>
   rgb.replace(/rgb/i, 'rgba').replace(/\)/i, `,${alpha})`);
 
-const MIN_OPACITY = 0.05;
+const MIN_OPACITY_BOUNDED = 0.05;
+const MIN_OPACITY_UNBOUNDED = 0;
 const MAX_OPACITY = 1;
 export const getOpacity = (
   value: number,
   cutoffPoint: number,
   extremeValue: number,
-  minOpacity = MIN_OPACITY,
+  minOpacity = MIN_OPACITY_BOUNDED,
   maxOpacity = MAX_OPACITY,
 ) =>
   extremeValue === cutoffPoint
@@ -58,7 +59,7 @@ export const getColorFunction = (
   }: ConditionalFormattingConfig,
   columnValues: number[],
 ) => {
-  let minOpacity = MIN_OPACITY;
+  let minOpacity = MIN_OPACITY_BOUNDED;
   const maxOpacity = MAX_OPACITY;
 
   let comparatorFunction: (
@@ -83,7 +84,7 @@ export const getColorFunction = (
   }
   switch (operator) {
     case COMPARATOR.NONE:
-      minOpacity = 0;
+      minOpacity = MIN_OPACITY_UNBOUNDED;
       comparatorFunction = (value: number, allValues: number[]) => {
         const cutoffValue = Math.min(...allValues);
         const extremeValue = Math.max(...allValues);
