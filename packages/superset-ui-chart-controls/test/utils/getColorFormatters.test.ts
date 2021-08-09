@@ -291,8 +291,8 @@ describe('getColorFunction()', () => {
       countValues,
     );
     expect(colorFunction(20)).toEqual(undefined);
-    expect(colorFunction(50)).toEqual('rgba(255,0,0,0.05)');
-    expect(colorFunction(75)).toEqual('rgba(255,0,0,0.53)');
+    expect(colorFunction(50)).toEqual('rgba(255,0,0,0)');
+    expect(colorFunction(75)).toEqual('rgba(255,0,0,0.5)');
     expect(colorFunction(100)).toEqual('rgba(255,0,0,1)');
     expect(colorFunction(120)).toEqual(undefined);
   });

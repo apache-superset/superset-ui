@@ -83,7 +83,7 @@ export const getColorFunction = (
   }
   switch (operator) {
     case COMPARATOR.NONE:
-      minOpacity = 0.05;
+      minOpacity = 0;
       comparatorFunction = (value: number, allValues: number[]) => {
         const cutoffValue = Math.min(...allValues);
         const extremeValue = Math.max(...allValues);
