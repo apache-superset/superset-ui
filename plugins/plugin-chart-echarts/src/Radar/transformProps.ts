@@ -118,6 +118,7 @@ export default function transformProps(
     );
 
     // put max value of series into metricLabelAndMaxValueMap
+    // eslint-disable-next-line no-restricted-syntax
     for (const [metricLabel, value] of Object.entries(datum)) {
       if (metricLabelAndMaxValueMap.has(metricLabel)) {
         metricLabelAndMaxValueMap.set(
