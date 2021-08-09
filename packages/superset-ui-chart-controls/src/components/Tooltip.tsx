@@ -23,10 +23,10 @@ export const Tooltip = ({ overlayStyle, color, ...props }: TooltipProps) => {
           }
         `}
       />
-    <BaseTooltip
-      overlayStyle={{ fontSize: theme.typography.sizes.s, lineHeight: '1.6', ...overlayStyle }}
-      color={defaultColor || color}
-      {...props}
+      <BaseTooltip
+        overlayStyle={{ fontSize: theme.typography.sizes.s, lineHeight: '1.6', ...overlayStyle }}
+        color={defaultColor || color}
+        {...props}
       />
     </>
   );
