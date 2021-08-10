@@ -26,13 +26,13 @@
     "access": "public"
   },
   "dependencies": {
-    "@emotion/react": "^11.4.1",
     "@react-icons/all-files": "^4.1.0",
     "@superset-ui/core": "0.17.75",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2"
   },
   "peerDependencies": {
+    "@emotion/react": "^11.1.5",
     "@types/react": "*",
     "antd": "^4.9.4",
     "react": "^16.13.1"
