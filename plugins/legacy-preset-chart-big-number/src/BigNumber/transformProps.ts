@@ -19,12 +19,14 @@
 import * as color from 'd3-color';
 import {
   extractTimegrain,
-  getTimeFormatter,
   getNumberFormatter,
+  getTimeFormatter,
+  getTimeFormatterForGranularity,
   NumberFormats,
   ChartProps,
   LegacyQueryData,
   QueryFormData,
+  smartDateFormatter,
 } from '@superset-ui/core';
 
 const TIME_COLUMN = '__timestamp';
@@ -63,7 +65,7 @@ export default function transformProps(chartProps: BigNumberChartProps) {
     colorPicker,
     compareLag: compareLag_,
     compareSuffix = '',
-    timestampFormat,
+    timeFormat,
     headerFontSize,
     metric = 'value',
     showTimestamp,
@@ -145,7 +147,10 @@ export default function transformProps(chartProps: BigNumberChartProps) {
   }
 
   const formatNumber = getNumberFormatter(yAxisFormat);
-  const formatTime = getTimeFormatter(timestampFormat, granularity);
+  const formatTime =
+    timeFormat === smartDateFormatter.id
+      ? getTimeFormatterForGranularity(granularity)
+      : getTimeFormatter(timeFormat);
 
   return {
     width,

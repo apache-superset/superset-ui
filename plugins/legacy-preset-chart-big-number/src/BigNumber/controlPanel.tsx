@@ -76,11 +76,11 @@ const config: ControlPanelConfig = {
         ],
         [
           {
-            name: 'timestamp_format',
+            name: 'time_format',
             config: {
               type: 'SelectControl',
               freeForm: true,
-              label: t('Date format'),
+              label: t('Timestamp format'),
               renderTrigger: true,
               choices: D3_TIME_FORMAT_OPTIONS,
               default: '%d-%m-%Y %H:%M:%S',
