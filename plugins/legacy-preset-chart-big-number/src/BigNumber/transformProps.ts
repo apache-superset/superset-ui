@@ -19,7 +19,7 @@
 import * as color from 'd3-color';
 import {
   extractTimegrain,
-  getTimeFormatterForGranularity,
+  getTimeFormatter,
   getNumberFormatter,
   NumberFormats,
   ChartProps,
@@ -63,6 +63,7 @@ export default function transformProps(chartProps: BigNumberChartProps) {
     colorPicker,
     compareLag: compareLag_,
     compareSuffix = '',
+    timestampFormat,
     headerFontSize,
     metric = 'value',
     showTimestamp,
@@ -144,7 +145,7 @@ export default function transformProps(chartProps: BigNumberChartProps) {
   }
 
   const formatNumber = getNumberFormatter(yAxisFormat);
-  const formatTime = getTimeFormatterForGranularity(granularity);
+  const formatTime = getTimeFormatter(timestampFormat, granularity);
 
   return {
     width,
