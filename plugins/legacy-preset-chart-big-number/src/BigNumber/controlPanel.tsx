@@ -86,7 +86,6 @@ const config: ControlPanelConfig = {
               default: '%d-%m-%Y %H:%M:%S',
               description: D3_FORMAT_DOCS,
               visibility(props) {
-                console.log(123, props);
                 const { show_timestamp } = props.form_data;
                 return !!show_timestamp;
               },

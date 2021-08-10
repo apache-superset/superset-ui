@@ -128,6 +128,20 @@ class BigNumberVis extends React.PureComponent<BigNumberVisProps, {}> {
     return container;
   }
 
+  renderFallbackWarning() {
+    const { bigNumberFallback, formatTime, showTimestamp } = this.props;
+    if (!bigNumberFallback || showTimestamp) return null;
+    return (
+      <span
+        className="alert alert-warning"
+        role="alert"
+        title={t(`Last available value seen on %s`, formatTime(bigNumberFallback.x))}
+      >
+        {t('Not up to date')}
+      </span>
+    );
+  }
+
   renderKicker(maxHeight: number) {
     const { timestamp, showTimestamp, formatTime, width } = this.props;
     if (!showTimestamp) return null;
@@ -305,6 +319,7 @@ class BigNumberVis extends React.PureComponent<BigNumberVisProps, {}> {
       return (
         <div className={className}>
           <div className="text-container" style={{ height: allTextHeight }}>
+            {this.renderFallbackWarning()}
             {this.renderKicker(Math.ceil(kickerFontSize * (1 - PROPORTION.TRENDLINE) * height))}
             {this.renderHeader(Math.ceil(headerFontSize * (1 - PROPORTION.TRENDLINE) * height))}
             {this.renderSubheader(
@@ -318,6 +333,7 @@ class BigNumberVis extends React.PureComponent<BigNumberVisProps, {}> {
 
     return (
       <div className={className} style={{ height }}>
+        {this.renderFallbackWarning()}
         {this.renderKicker(kickerFontSize * height)}
         {this.renderHeader(Math.ceil(headerFontSize * height))}
         {this.renderSubheader(Math.ceil(subheaderFontSize * height))}
@@ -342,6 +358,13 @@ export default styled(BigNumberVis)`
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+    .alert {
+      font-size: ${({ theme }) => theme.typography.sizes.s};
+      margin: -0.5em 0 0.4em;
+      line-height: 1;
+      padding: 2px 4px 3px;
+      border-radius: 3px;
+    }
   }
 
   .kicker {
