@@ -78,6 +78,7 @@ export function transformSeries(
     formatter?: NumberFormatter;
     totalStackedValues?: number[];
     showValueIndexes?: number[];
+    richTooltip?: boolean;
   },
 ): SeriesOption | undefined {
   const { name } = series;
@@ -95,6 +96,7 @@ export function transformSeries(
     formatter,
     totalStackedValues = [],
     showValueIndexes = [],
+    richTooltip,
   } = opts;
 
   const forecastSeries = extractForecastSeriesContext(name || '');
@@ -129,6 +131,7 @@ export function transformSeries(
     plotType = seriesType === 'bar' ? 'bar' : 'line';
   }
   let showSymbol = false;
+  let symbolSize = markerSize;
   if (!isConfidenceBand) {
     if (plotType === 'scatter') {
       showSymbol = true;
@@ -136,6 +139,11 @@ export function transformSeries(
       showSymbol = true;
     } else if (plotType === 'line' && showValue) {
       showSymbol = true;
+    } else if (plotType === 'line' && !richTooltip && !markerEnabled) {
+      // this is hack to make timeseries line chart clickable when tooltip trigger way is 'item'
+      // so that the chart can emit cross-filtering
+      showSymbol = true;
+      symbolSize = 0.1;
     } else if (markerEnabled) {
       showSymbol = true;
     }
@@ -163,7 +171,7 @@ export function transformSeries(
           : 0,
     },
     showSymbol,
-    symbolSize: markerSize,
+    symbolSize,
     label: {
       show: !!showValue,
       position: 'top',
