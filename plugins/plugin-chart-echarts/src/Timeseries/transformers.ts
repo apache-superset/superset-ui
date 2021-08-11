@@ -130,6 +130,11 @@ export function transformSeries(
   } else {
     plotType = seriesType === 'bar' ? 'bar' : 'line';
   }
+  const itemStyle = {
+    color: colorScale(forecastSeries.name),
+    opacity,
+  };
+  let emphasis = {};
   let showSymbol = false;
   let symbolSize = markerSize;
   if (!isConfidenceBand) {
@@ -143,7 +148,13 @@ export function transformSeries(
       // this is hack to make timeseries line chart clickable when tooltip trigger way is 'item'
       // so that the chart can emit cross-filtering
       showSymbol = true;
-      symbolSize = 0.1;
+      symbolSize = 10;
+      itemStyle.opacity = 0;
+      emphasis = {
+        itemStyle: {
+          opacity: 1,
+        },
+      };
     } else if (markerEnabled) {
       showSymbol = true;
     }
@@ -153,10 +164,7 @@ export function transformSeries(
     ...series,
     yAxisIndex,
     name: forecastSeries.name,
-    itemStyle: {
-      color: colorScale(forecastSeries.name),
-      opacity,
-    },
+    itemStyle,
     // @ts-ignore
     type: plotType,
     smooth: seriesType === 'smooth',
@@ -170,6 +178,7 @@ export function transformSeries(
           ? opacity * areaOpacity
           : 0,
     },
+    emphasis,
     showSymbol,
     symbolSize,
     label: {
