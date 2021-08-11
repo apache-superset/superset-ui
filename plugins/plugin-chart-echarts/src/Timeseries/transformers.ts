@@ -136,7 +136,6 @@ export function transformSeries(
   };
   let emphasis = {};
   let showSymbol = false;
-  let symbolSize = markerSize;
   if (!isConfidenceBand) {
     if (plotType === 'scatter') {
       showSymbol = true;
@@ -145,10 +144,9 @@ export function transformSeries(
     } else if (plotType === 'line' && showValue) {
       showSymbol = true;
     } else if (plotType === 'line' && !richTooltip && !markerEnabled) {
-      // this is hack to make timeseries line chart clickable when tooltip trigger way is 'item'
+      // this is hack to make timeseries line chart clickable when tooltip trigger is 'item'
       // so that the chart can emit cross-filtering
       showSymbol = true;
-      symbolSize = 10;
       itemStyle.opacity = 0;
       emphasis = {
         itemStyle: {
@@ -180,7 +178,7 @@ export function transformSeries(
     },
     emphasis,
     showSymbol,
-    symbolSize,
+    symbolSize: markerSize,
     label: {
       show: !!showValue,
       position: 'top',
