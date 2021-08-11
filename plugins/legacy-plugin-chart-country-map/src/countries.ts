@@ -26,6 +26,7 @@ import switzerland from 'file-loader!./countries/switzerland.geojson';
 import syria from 'file-loader!./countries/syria.geojson';
 import thailand from 'file-loader!./countries/thailand.geojson';
 import timorleste from 'file-loader!./countries/timorleste.geojson';
+import turkey from 'file-loader!./countries/turkey.geojson';
 import uk from 'file-loader!./countries/uk.geojson';
 import ukraine from 'file-loader!./countries/ukraine.geojson';
 import uruguay from 'file-loader!./countries/uruguay.geojson';
@@ -60,6 +61,7 @@ export const countries = {
   syria,
   thailand,
   timorleste,
+  turkey,
   uk,
   ukraine,
   uruguay,
