@@ -73,7 +73,7 @@ function createQuerySection(label: string, controlSuffix: string): ControlPanelS
           config: {
             ...sharedControls.adhoc_filters,
             mapStateToProps: (state, controlState) => ({
-              ...(sharedControls?.adhoc_filters?.mapStateToProps?.(state, controlState) || {}),
+              ...(sharedControls.adhoc_filters?.mapStateToProps?.(state, controlState) || {}),
               value: [
                 ...((state?.controls?.adhoc_filters?.value as any[]) || []).filter(
                   filter => filter.isExtra,
