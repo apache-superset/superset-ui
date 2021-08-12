@@ -37,7 +37,12 @@ import {
 } from './types';
 import { ForecastSeriesEnum, ProphetValue } from '../types';
 import { parseYAxisBound } from '../utils/controls';
-import { dedupSeries, extractTimeseriesSeries, getLegendProps } from '../utils/series';
+import {
+  dedupSeries,
+  extractTimeseriesSeries,
+  getLegendProps,
+  currentSeries,
+} from '../utils/series';
 import { extractAnnotationLabels } from '../utils/annotation';
 import {
   extractForecastSeriesContext,
@@ -225,6 +230,7 @@ export default function transformProps(
     },
     tooltip: {
       ...defaultTooltip,
+      appendToBody: true,
       trigger: richTooltip ? 'axis' : 'item',
       formatter: (params: any) => {
         const value: number = !richTooltip ? params.value : params[0].value[0];
@@ -242,6 +248,7 @@ export default function transformProps(
               ...value,
               seriesName: key,
               formatter,
+              currentSeriesName: currentSeries.name,
             }),
           );
         });
