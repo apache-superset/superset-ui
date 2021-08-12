@@ -70,7 +70,20 @@ function createQuerySection(label: string, controlSuffix: string): ControlPanelS
       [
         {
           name: `adhoc_filters${controlSuffix}`,
-          config: sharedControls.adhoc_filters,
+          config: {
+            ...sharedControls.adhoc_filters,
+            mapStateToProps: (state, controlState) => {
+              return {
+                ...(sharedControls?.adhoc_filters?.mapStateToProps?.(state, controlState) || {}),
+                value: [
+                  ...((state?.controls?.adhoc_filters?.value as any[]) || []).filter(
+                    filter => filter.isExtra,
+                  ),
+                  ...((state?.controls?.adhoc_filters_2?.value as any[]) || []),
+                ],
+              };
+            },
+          },
         },
       ],
       emitFilterControl.length > 0
@@ -269,30 +282,6 @@ const config: ControlPanelConfig = {
         ...legendSection,
         [<h1 className="section-header">{t('X Axis')}</h1>],
         ['x_axis_time_format'],
-        [
-          {
-            name: 'xAxisShowMinLabel',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Show Min Label'),
-              default: true,
-              renderTrigger: true,
-              description: t('Show Min Label'),
-            },
-          },
-        ],
-        [
-          {
-            name: 'xAxisShowMaxLabel',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Show Max Label'),
-              default: true,
-              renderTrigger: true,
-              description: t('Show Max Label'),
-            },
-          },
-        ],
         [
           {
             name: 'xAxisLabelRotation',

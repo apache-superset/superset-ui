@@ -92,8 +92,6 @@ export default function transformProps(
     tooltipTimeFormat,
     yAxisFormat,
     yAxisFormatSecondary,
-    xAxisShowMinLabel,
-    xAxisShowMaxLabel,
     xAxisTimeFormat,
     yAxisBounds,
     yAxisIndex,
@@ -216,8 +214,6 @@ export default function transformProps(
     xAxis: {
       type: 'time',
       axisLabel: {
-        showMinLabel: xAxisShowMinLabel,
-        showMaxLabel: xAxisShowMaxLabel,
         formatter: xAxisFormatter,
         rotate: xAxisLabelRotation,
       },

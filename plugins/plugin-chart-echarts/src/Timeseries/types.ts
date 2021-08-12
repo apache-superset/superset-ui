@@ -64,8 +64,6 @@ export type EchartsTimeseriesFormData = QueryFormData & {
   truncateYAxis: boolean;
   yAxisFormat?: string;
   yAxisTitle: string;
-  xAxisShowMinLabel?: boolean;
-  xAxisShowMaxLabel?: boolean;
   xAxisTimeFormat?: string;
   timeGrainSqla?: TimeGranularity;
   yAxisBounds: [number | undefined | null, number | undefined | null];
