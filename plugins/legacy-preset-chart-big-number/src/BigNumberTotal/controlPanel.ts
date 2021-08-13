@@ -66,7 +66,7 @@ export default {
             config: {
               type: 'SelectControl',
               freeForm: true,
-              label: t('Timestamp format'),
+              label: t('Date format'),
               renderTrigger: true,
               choices: D3_TIME_FORMAT_OPTIONS,
               default: '%d-%m-%Y %H:%M:%S',
