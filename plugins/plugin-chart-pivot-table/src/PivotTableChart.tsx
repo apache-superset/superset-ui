@@ -44,8 +44,13 @@ const Styles = styled.div<PivotTableStylesProps>`
       margin: ${margin}px;
       height: ${height - margin * 2}px;
       width: ${width - margin * 2}px;
-      overflow-y: scroll;
  `}
+`;
+
+const PivotTableWrapper = styled.div`
+  height: 100%;
+  width: min-content;
+  overflow-y: auto;
 `;
 
 const METRIC_KEY = 'metric';
@@ -250,42 +255,44 @@ export default function PivotTableChart(props: PivotTableProps) {
 
   return (
     <Styles height={height} width={width} margin={theme.gridUnit * 4}>
-      <PivotTable
-        data={unpivotedData}
-        rows={rows}
-        cols={cols}
-        aggregatorsFactory={aggregatorsFactory}
-        defaultFormatter={defaultFormatter}
-        customFormatters={
-          hasCustomMetricFormatters ? { [METRIC_KEY]: metricFormatters } : undefined
-        }
-        aggregatorName={aggregateFunction}
-        vals={['value']}
-        rendererName="Table With Subtotal"
-        colOrder={colOrder}
-        rowOrder={rowOrder}
-        sorters={{
-          metric: sortAs(metricNames),
-        }}
-        tableOptions={{
-          clickRowHeaderCallback: toggleFilter,
-          clickColumnHeaderCallback: toggleFilter,
-          colTotals,
-          rowTotals,
-          highlightHeaderCellsOnHover: emitFilter,
-          highlightedHeaderCells: selectedFilters,
-          omittedHighlightHeaderGroups: [METRIC_KEY],
-          cellColorFormatters: { [METRIC_KEY]: metricColorFormatters },
-          dateFormatters,
-        }}
-        subtotalOptions={{
-          colSubtotalDisplay: { displayOnTop: colSubtotalPosition },
-          rowSubtotalDisplay: { displayOnTop: rowSubtotalPosition },
-          arrowCollapsed: <PlusSquareOutlined style={iconStyle} />,
-          arrowExpanded: <MinusSquareOutlined style={iconStyle} />,
-        }}
-        namesMapping={verboseMap}
-      />
+      <PivotTableWrapper>
+        <PivotTable
+          data={unpivotedData}
+          rows={rows}
+          cols={cols}
+          aggregatorsFactory={aggregatorsFactory}
+          defaultFormatter={defaultFormatter}
+          customFormatters={
+            hasCustomMetricFormatters ? { [METRIC_KEY]: metricFormatters } : undefined
+          }
+          aggregatorName={aggregateFunction}
+          vals={['value']}
+          rendererName="Table With Subtotal"
+          colOrder={colOrder}
+          rowOrder={rowOrder}
+          sorters={{
+            metric: sortAs(metricNames),
+          }}
+          tableOptions={{
+            clickRowHeaderCallback: toggleFilter,
+            clickColumnHeaderCallback: toggleFilter,
+            colTotals,
+            rowTotals,
+            highlightHeaderCellsOnHover: emitFilter,
+            highlightedHeaderCells: selectedFilters,
+            omittedHighlightHeaderGroups: [METRIC_KEY],
+            cellColorFormatters: { [METRIC_KEY]: metricColorFormatters },
+            dateFormatters,
+          }}
+          subtotalOptions={{
+            colSubtotalDisplay: { displayOnTop: colSubtotalPosition },
+            rowSubtotalDisplay: { displayOnTop: rowSubtotalPosition },
+            arrowCollapsed: <PlusSquareOutlined style={iconStyle} />,
+            arrowExpanded: <MinusSquareOutlined style={iconStyle} />,
+          }}
+          namesMapping={verboseMap}
+        />
+      </PivotTableWrapper>
     </Styles>
   );
 }
