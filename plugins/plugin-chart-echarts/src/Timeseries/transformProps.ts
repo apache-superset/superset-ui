@@ -243,14 +243,16 @@ export default function transformProps(
 
         Object.keys(prophetValues).forEach(key => {
           const value = prophetValues[key];
-          rows.push(
-            formatProphetTooltipSeries({
-              ...value,
-              seriesName: key,
-              formatter,
-              currentSeriesName: currentSeries.name,
-            }),
-          );
+          const content = formatProphetTooltipSeries({
+            ...value,
+            seriesName: key,
+            formatter,
+          });
+          if (currentSeries.name === key) {
+            rows.push(`<span style="font-weight: 700">${content}</span>`);
+          } else {
+            rows.push(`<span style="opacity: 0.7">${content}</span>`);
+          }
         });
         return rows.join('<br />');
       },

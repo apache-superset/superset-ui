@@ -69,12 +69,10 @@ export const formatProphetTooltipSeries = ({
   forecastUpper,
   marker,
   formatter,
-  currentSeriesName = '',
 }: ProphetValue & {
   seriesName: string;
   marker: TooltipMarker;
   formatter: NumberFormatter;
-  currentSeriesName?: string;
 }): string => {
   let row = `${marker}${sanitizeHtml(seriesName)}: `;
   let isObservation = false;
@@ -89,10 +87,7 @@ export const formatProphetTooltipSeries = ({
       // the lower bound needs to be added to the upper bound
       row += ` (${formatter(forecastLower)}, ${formatter(forecastLower + forecastUpper)})`;
   }
-  if (currentSeriesName === seriesName) {
-    return `<span style="font-weight: 700">${row.trim()}</span>`;
-  }
-  return `<span style="opacity: 0.7">${row.trim()}</span>`;
+  return `${row.trim()}`;
 };
 
 export function rebaseTimeseriesDatum(data: TimeseriesDataRecord[]) {
