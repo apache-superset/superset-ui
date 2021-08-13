@@ -195,6 +195,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
         category,
         select: DEFAULT_GRAPH_SERIES_OPTION.select,
         tooltip: DEFAULT_GRAPH_SERIES_OPTION.tooltip,
+        itemStyle: category ? {} : { color: colorFn(name) },
       });
     }
     const node = echartNodes[nodes[name]];
@@ -232,7 +233,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
       source: sourceNode.id,
       target: targetNode.id,
       value,
-      lineStyle: {},
+      lineStyle: sourceCategory ? {} : { color: colorFn(sourceName!) },
       emphasis: {},
       select: {},
     });

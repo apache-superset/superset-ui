@@ -66,10 +66,12 @@ const controlPanel: ControlPanelConfig = {
             name: 'source_category',
             config: {
               ...optionalEntity,
-              label: t('Source category'),
+              label: t('Source color category'),
               description: t(
-                'The category of source nodes used to assign colors. ' +
-                  'If a node is associated with more than one category, only the first will be used.',
+                'The column used to determine the color of the source node and ' +
+                  'line. Leave blank to use the source column value to determine ' +
+                  'the color. If a node is associated with more than one category, ' +
+                  'only the first will be used.',
               ),
             },
           },
@@ -79,8 +81,12 @@ const controlPanel: ControlPanelConfig = {
             name: 'target_category',
             config: {
               ...optionalEntity,
-              label: t('Target category'),
-              description: t('Category of target nodes'),
+              label: t('Target color category'),
+              description: t(
+                'The column used to detrmine the color of the target ' +
+                  'node. Leave blank to use the target column value to determine ' +
+                  'the color.',
+              ),
             },
           },
         ],
