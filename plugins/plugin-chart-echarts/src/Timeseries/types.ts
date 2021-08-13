@@ -23,6 +23,7 @@ import {
   QueryFormData,
   TimeGranularity,
 } from '@superset-ui/core';
+import { sections } from '@superset-ui/chart-controls';
 import { DEFAULT_LEGEND_FORM_DATA, EchartsLegendFormData, EChartTransformedProps } from '../types';
 
 export enum EchartsTimeseriesContributionType {
@@ -80,14 +81,14 @@ export type EchartsTimeseriesFormData = QueryFormData & {
 // @ts-ignore
 export const DEFAULT_FORM_DATA: EchartsTimeseriesFormData = {
   ...DEFAULT_LEGEND_FORM_DATA,
-  annotationLayers: [],
+  annotationLayers: sections.annotationLayers,
   area: false,
-  forecastEnabled: false,
-  forecastInterval: 0.8,
-  forecastPeriods: 10,
-  forecastSeasonalityDaily: null,
-  forecastSeasonalityWeekly: null,
-  forecastSeasonalityYearly: null,
+  forecastEnabled: sections.forecastEnabled,
+  forecastInterval: sections.forecastInterval,
+  forecastPeriods: sections.forecastPeriods,
+  forecastSeasonalityDaily: sections.forecastSeasonalityDaily,
+  forecastSeasonalityWeekly: sections.forecastSeasonalityWeekly,
+  forecastSeasonalityYearly: sections.forecastSeasonalityYearly,
   logAxis: false,
   markerEnabled: false,
   markerSize: 6,
