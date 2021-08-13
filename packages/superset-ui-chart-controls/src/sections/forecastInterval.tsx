@@ -19,12 +19,14 @@
 import { legacyValidateInteger, legacyValidateNumber, t } from '@superset-ui/core';
 import { ControlPanelSectionConfig } from '../types';
 
-export const forecastEnabled = false;
-export const forecastInterval = 0.8;
-export const forecastPeriods = 10;
-export const forecastSeasonalityDaily = null;
-export const forecastSeasonalityWeekly = null;
-export const forecastSeasonalityYearly = null;
+export const FORECAST_DEFAULT_DATA = {
+  forecastEnabled: false,
+  forecastInterval: 0.8,
+  forecastPeriods: 10,
+  forecastSeasonalityDaily: null,
+  forecastSeasonalityWeekly: null,
+  forecastSeasonalityYearly: null,
+};
 
 export const forecastIntervalControls: ControlPanelSectionConfig = {
   label: t('Predictive Analytics'),
@@ -37,7 +39,7 @@ export const forecastIntervalControls: ControlPanelSectionConfig = {
           type: 'CheckboxControl',
           label: t('Enable forecast'),
           renderTrigger: false,
-          default: forecastEnabled,
+          default: FORECAST_DEFAULT_DATA.forecastEnabled,
           description: t('Enable forecasting'),
         },
       },
@@ -49,7 +51,7 @@ export const forecastIntervalControls: ControlPanelSectionConfig = {
           type: 'TextControl',
           label: t('Forecast periods'),
           validators: [legacyValidateInteger],
-          default: forecastPeriods,
+          default: FORECAST_DEFAULT_DATA.forecastPeriods,
           description: t('How many periods into the future do we want to predict'),
         },
       },
@@ -61,7 +63,7 @@ export const forecastIntervalControls: ControlPanelSectionConfig = {
           type: 'TextControl',
           label: t('Confidence interval'),
           validators: [legacyValidateNumber],
-          default: forecastInterval,
+          default: FORECAST_DEFAULT_DATA.forecastInterval,
           description: t('Width of the confidence interval. Should be between 0 and 1'),
         },
       },
@@ -76,7 +78,7 @@ export const forecastIntervalControls: ControlPanelSectionConfig = {
             [true, 'Yes'],
             [false, 'No'],
           ],
-          default: forecastSeasonalityYearly,
+          default: FORECAST_DEFAULT_DATA.forecastSeasonalityYearly,
           description: t(
             'Should yearly seasonality be applied. An integer value will specify Fourier order of seasonality.',
           ),
@@ -95,7 +97,7 @@ export const forecastIntervalControls: ControlPanelSectionConfig = {
             [true, 'Yes'],
             [false, 'No'],
           ],
-          default: forecastSeasonalityWeekly,
+          default: FORECAST_DEFAULT_DATA.forecastSeasonalityWeekly,
           description: t(
             'Should weekly seasonality be applied. An integer value will specify Fourier order of seasonality.',
           ),
@@ -112,7 +114,7 @@ export const forecastIntervalControls: ControlPanelSectionConfig = {
             [true, 'Yes'],
             [false, 'No'],
           ],
-          default: forecastSeasonalityDaily,
+          default: FORECAST_DEFAULT_DATA.forecastSeasonalityDaily,
           description: t(
             'Should daily seasonality be applied. An integer value will specify Fourier order of seasonality.',
           ),
