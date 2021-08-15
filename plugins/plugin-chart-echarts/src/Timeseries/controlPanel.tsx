@@ -32,7 +32,7 @@ import {
   EchartsTimeseriesContributionType,
   EchartsTimeseriesSeriesType,
 } from './types';
-import { legendSection, showValueControl } from '../controls';
+import { legendSection, showValueSection } from '../controls';
 
 const {
   area,
@@ -123,7 +123,7 @@ const config: ControlPanelConfig = {
             },
           },
         ],
-        [showValueControl],
+        ...showValueSection,
         [
           {
             name: 'stack',

@@ -94,7 +94,7 @@ export const legendSection = [
   [legendMarginControl],
 ];
 
-export const showValueControl = {
+const showValueControl = {
   name: 'show_value',
   config: {
     type: 'CheckboxControl',
@@ -104,3 +104,17 @@ export const showValueControl = {
     description: t('Show series values on the chart'),
   },
 };
+
+const onlyTotalControl = {
+  name: 'only_total',
+  config: {
+    type: 'CheckboxControl',
+    label: t('Only Total'),
+    default: false,
+    renderTrigger: true,
+    description: t('Only show the total value on the chart'),
+    visibility: ({ controls }: ControlPanelsContainerProps) => Boolean(controls?.show_value?.value),
+  },
+};
+
+export const showValueSection = [[showValueControl], [onlyTotalControl]];
