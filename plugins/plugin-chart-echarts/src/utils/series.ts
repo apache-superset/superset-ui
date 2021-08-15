@@ -205,6 +205,7 @@ export function sanitizeHtml(text: string): string {
   return format.encodeHTML(text);
 }
 
+// TODO: Better use other method to maintain this state
 export const currentSeries = {
   name: '',
 };
