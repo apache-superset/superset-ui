@@ -7,6 +7,9 @@ import SuperChartCore, { Props as SuperChartCoreProps } from './SuperChartCore';
 import DefaultFallbackComponent from './FallbackComponent';
 import ChartProps, { ChartPropsConfig } from '../models/ChartProps';
 import NoResultsComponent from './NoResultsComponent';
+import { ensureIsArray } from '../../utils';
+import { AdhocMetric } from '../../query';
+import { t } from '../../translation';
 
 const defaultProps = {
   FallbackComponent: DefaultFallbackComponent,
@@ -132,8 +135,28 @@ export default class SuperChart extends React.PureComponent<Props, {}> {
       enableNoResults &&
       (!queriesData ||
         queriesData.every(({ data }) => !data || (Array.isArray(data) && data.length === 0)));
+    const metricLabels = ensureIsArray(chartProps.formData?.metrics || chartProps.formData?.metric)
+      .map((metric: AdhocMetric | string) => (typeof metric === 'string' ? metric : metric.label))
+      .filter(Boolean);
+    const hasNullMetrics =
+      metricLabels.length > 0 &&
+      metricLabels.every(label =>
+        queriesData?.every(({ data }) =>
+          ensureIsArray(data).every(record => record[label!] === null),
+        ),
+      );
     if (noResultQueries) {
       chart = <NoResultsComponent id={id} className={className} height={height} width={width} />;
+    } else if (hasNullMetrics) {
+      chart = (
+        <NoResultsComponent
+          id={id}
+          className={className}
+          height={height}
+          width={width}
+          message={t('All metrics values are null for this query')}
+        />
+      );
     } else {
       const chartWithoutWrapper = (
         <SuperChartCore

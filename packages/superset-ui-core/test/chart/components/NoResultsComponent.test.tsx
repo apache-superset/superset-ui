@@ -13,4 +13,12 @@ describe('NoResultsComponent', () => {
       'No ResultsNo results were returned for this query. If you expected results to be returned, ensure any filters are configured properly and the datasource contains data for the selected time range.',
     );
   });
+
+  it('renders with custom message', () => {
+    const wrapper = shallow(
+      <NoResultsComponent height="400" width="300" message="test message" title="Test title" />,
+    );
+
+    expect(wrapper.text()).toEqual('Test titletest message');
+  });
 });

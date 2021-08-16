@@ -25,17 +25,21 @@ type Props = {
   height: number | string;
   id?: string;
   width: number | string;
+  title?: string;
+  message?: string;
 };
 
-const NoResultsComponent = ({ className, height, id, width }: Props) => {
+const NoResultsComponent = ({ className, height, id, width, title, message }: Props) => {
   const containerStyles = useMemo(() => generateContainerStyles(height, width), [height, width]);
 
   // render the body if the width is auto/100% or greater than 250 pixels
   const shouldRenderBody = typeof width === 'string' || width > MIN_WIDTH_FOR_BODY;
 
-  const BODY_STRING = t(
-    'No results were returned for this query. If you expected results to be returned, ensure any filters are configured properly and the datasource contains data for the selected time range.',
-  );
+  const BODY_STRING =
+    message ||
+    t(
+      'No results were returned for this query. If you expected results to be returned, ensure any filters are configured properly and the datasource contains data for the selected time range.',
+    );
 
   return (
     <div
@@ -45,7 +49,7 @@ const NoResultsComponent = ({ className, height, id, width }: Props) => {
       title={shouldRenderBody ? undefined : BODY_STRING}
     >
       <div style={MESSAGE_STYLES}>
-        <div style={TITLE_STYLES}>{t('No Results')}</div>
+        <div style={TITLE_STYLES}>{title || t('No Results')}</div>
         {shouldRenderBody && <div style={BODY_STYLES}>{BODY_STRING}</div>}
       </div>
     </div>
