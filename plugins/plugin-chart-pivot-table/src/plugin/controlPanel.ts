@@ -196,6 +196,17 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+        [
+          {
+            name: 'disallowNullMetrics',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Disallow null metrics'),
+              default: true,
+              visibility: () => false,
+            },
+          },
+        ],
       ],
     },
     {
