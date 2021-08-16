@@ -49,8 +49,9 @@ const Styles = styled.div<PivotTableStylesProps>`
 
 const PivotTableWrapper = styled.div`
   height: 100%;
+  max-width: 100%;
+  overflow: auto;
   width: min-content;
-  overflow-y: auto;
 `;
 
 const METRIC_KEY = 'metric';
