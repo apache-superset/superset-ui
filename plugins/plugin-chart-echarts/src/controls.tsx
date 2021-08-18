@@ -105,16 +105,28 @@ const showValueControl = {
   },
 };
 
+const stackControl = {
+  name: 'stack',
+  config: {
+    type: 'CheckboxControl',
+    label: t('Stack series'),
+    renderTrigger: true,
+    default: false,
+    description: t('Stack series on top of each other'),
+  },
+};
+
 const onlyTotalControl = {
   name: 'only_total',
   config: {
     type: 'CheckboxControl',
     label: t('Only Total'),
-    default: false,
+    default: true,
     renderTrigger: true,
-    description: t('Only show the total value on the chart'),
-    visibility: ({ controls }: ControlPanelsContainerProps) => Boolean(controls?.show_value?.value),
+    description: t('Only show the total value on the stacked chart'),
+    visibility: ({ controls }: ControlPanelsContainerProps) =>
+      Boolean(controls?.show_value?.value) && Boolean(controls?.stack?.value),
   },
 };
 
-export const showValueSection = [[showValueControl], [onlyTotalControl]];
+export const showValueSection = [[showValueControl], [stackControl], [onlyTotalControl]];

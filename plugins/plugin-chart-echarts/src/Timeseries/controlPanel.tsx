@@ -126,18 +126,6 @@ const config: ControlPanelConfig = {
         ...showValueSection,
         [
           {
-            name: 'stack',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Stack series'),
-              renderTrigger: true,
-              default: stack,
-              description: t('Stack series on top of each other'),
-            },
-          },
-        ],
-        [
-          {
             name: 'area',
             config: {
               type: 'CheckboxControl',
