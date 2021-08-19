@@ -71,7 +71,6 @@ const config: ControlPanelConfig = {
               label: t('Timestamp format'),
               renderTrigger: true,
               choices: D3_TIME_FORMAT_OPTIONS,
-              default: '%Y-%m-%d %H:%M:%S',
               description: D3_FORMAT_DOCS,
             },
           },
