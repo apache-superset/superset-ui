@@ -37,7 +37,6 @@ const {
   markerSize,
   minorSplitLine,
   rowLimit,
-  stack,
   tooltipTimeFormat,
   truncateYAxis,
   yAxisBounds,

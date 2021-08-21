@@ -43,7 +43,6 @@ const {
   minorSplitLine,
   opacity,
   rowLimit,
-  stack,
   tooltipTimeFormat,
   truncateYAxis,
   yAxisBounds,
