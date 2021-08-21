@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useCallback } from 'react';
-import { EventHandlers } from '../types';
+import React, { useCallback, useRef } from 'react';
+import { EchartsHandler, EventHandlers } from '../types';
 import Echart from '../components/Echart';
 import { TimeseriesChartTransformedProps } from './types';
 import { currentSeries } from '../utils/series';
@@ -32,7 +32,12 @@ export default function EchartsTimeseries({
   labelMap,
   selectedValues,
   setDataMask,
+  legendData = [],
 }: TimeseriesChartTransformedProps) {
+  const echartRef = useRef<EchartsHandler | null>(null);
+  const lastTimeRef = useRef(Date.now());
+  const lastSelectedLegend = useRef('');
+
   const handleChange = useCallback(
     (values: string[]) => {
       if (!formData.emitFilter) {
@@ -85,10 +90,41 @@ export default function EchartsTimeseries({
     mouseout: () => {
       currentSeries.name = '';
     },
+    legendselectchanged: payload => {
+      const currentTime = Date.now();
+      // 300 is the interval between two legendselectchanged event
+      if (currentTime - lastTimeRef.current < 300 && lastSelectedLegend.current === payload.name) {
+        // execute dbclick
+        legendData.forEach(datum => {
+          if (datum === payload.name) {
+            echartRef.current?.dispatchAction({
+              type: 'legendSelect',
+              name: datum,
+            });
+          } else {
+            echartRef.current?.dispatchAction({
+              type: 'legendUnSelect',
+              name: datum,
+            });
+          }
+        });
+      } else {
+        lastTimeRef.current = currentTime;
+        // remember last selected legend
+        lastSelectedLegend.current = payload.name;
+      }
+      // if all legend is unselected, we keep all selected
+      if (Object.values(payload.selected).every(i => !i)) {
+        echartRef.current?.dispatchAction({
+          type: 'legendAllSelect',
+        });
+      }
+    },
   };
 
   return (
     <Echart
+      ref={echartRef}
       height={height}
       width={width}
       echartOptions={echartOptions}

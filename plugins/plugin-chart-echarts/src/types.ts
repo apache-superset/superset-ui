@@ -17,8 +17,9 @@
  * under the License.
  */
 import { DataRecordValue, SetDataMaskHook } from '@superset-ui/core';
-import { EChartsCoreOption } from 'echarts';
+import { EChartsCoreOption, Payload } from 'echarts';
 import { TooltipMarker } from 'echarts/types/src/util/format';
+import { OptionName } from 'echarts/types/src/util/types';
 
 export type EchartsStylesProps = {
   height: number;
@@ -32,6 +33,10 @@ export interface EchartsProps {
   eventHandlers?: EventHandlers;
   selectedValues?: Record<number, string>;
   forceClear?: boolean;
+}
+
+export interface EchartsHandler {
+  dispatchAction: (paload: Payload) => void;
 }
 
 export enum ForecastSeriesEnum {
@@ -108,6 +113,7 @@ export interface EChartTransformedProps<F> {
   labelMap: Record<string, DataRecordValue[]>;
   groupby: string[];
   selectedValues: Record<number, string>;
+  legendData?: OptionName[];
 }
 
 export interface EchartsTitleFormData {

@@ -16,27 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { styled } from '@superset-ui/core';
-import { ECharts, init } from 'echarts';
-import { EchartsProps, EchartsStylesProps } from '../types';
+import { ECharts, init, Payload } from 'echarts';
+import { EchartsHandler, EchartsProps, EchartsStylesProps } from '../types';
 
 const Styles = styled.div<EchartsStylesProps>`
   height: ${({ height }) => height};
   width: ${({ width }) => width};
 `;
 
-export default function Echart({
-  width,
-  height,
-  echartOptions,
-  eventHandlers,
-  selectedValues = {},
-}: EchartsProps) {
+function Echart(
+  { width, height, echartOptions, eventHandlers, selectedValues = {} }: EchartsProps,
+  ref: React.Ref<EchartsHandler>,
+) {
   const divRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ECharts>();
   const currentSelection = Object.keys(selectedValues) || [];
   const previousSelection = useRef<string[]>([]);
+
+  useImperativeHandle(ref, () => ({
+    dispatchAction: (payload: Payload) => {
+      if (chartRef.current) {
+        chartRef.current.dispatchAction(payload);
+      }
+    },
+  }));
 
   useEffect(() => {
     if (!divRef.current) return;
@@ -72,3 +77,5 @@ export default function Echart({
 
   return <Styles ref={divRef} height={height} width={width} />;
 }
+
+export default forwardRef(Echart);
