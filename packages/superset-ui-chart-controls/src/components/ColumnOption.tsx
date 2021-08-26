@@ -17,9 +17,9 @@
  * under the License.
  */
 import React from 'react';
+import { styled } from '@superset-ui/core';
 import { Tooltip } from './Tooltip';
 import { ColumnTypeLabel } from './ColumnTypeLabel';
-import { styled } from '@superset-ui/core';
 import InfoTooltipWithTrigger from './InfoTooltipWithTrigger';
 import CertifiedIconWithTooltip from './CertifiedIconWithTooltip';
 import { ColumnMeta } from '../types';
