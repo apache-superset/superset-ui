@@ -16,14 +16,63 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useMemo, useState } from 'react';
 import { ViewRootGroup } from 'echarts/types/src/util/types';
 import GlobalModel from 'echarts/types/src/model/Global';
 import ComponentModel from 'echarts/types/src/model/Component';
+import { sharedControlComponents, RadioButtonOption } from '@superset-ui/chart-controls';
+import { HandlerFunction, JsonValue, styled } from '@superset-ui/core';
 import { EchartsHandler, EventHandlers } from '../types';
 import Echart from '../components/Echart';
-import { TimeseriesChartTransformedProps } from './types';
+import { EchartsTimeseriesFormData, TimeseriesChartTransformedProps } from './types';
 import { currentSeries } from '../utils/series';
+import { AreaChartExtraControlsOptions, TIMESERIES_CONSTANTS } from '../constants';
+
+const { RadioButtonControl } = sharedControlComponents;
+
+const ExtraControlsWrapper = styled.div`
+  text-align: center;
+`;
+
+function useExtraControl({
+  formData,
+  setControlValue,
+}: {
+  formData: EchartsTimeseriesFormData;
+  setControlValue: HandlerFunction | undefined;
+}) {
+  const { stack, area } = formData;
+  const [extraValue, setExtraValue] = useState<JsonValue | undefined>(stack ?? undefined);
+
+  useEffect(() => {
+    setExtraValue(stack ?? undefined);
+  }, [stack]);
+
+  const extraControlsOptions = useMemo(() => {
+    if (area) {
+      return AreaChartExtraControlsOptions;
+    }
+    return [];
+  }, [area]);
+
+  const extraControlsHandler = useCallback(
+    (value: RadioButtonOption[0]) => {
+      if (area) {
+        if (setControlValue) {
+          setControlValue('stack', value);
+          setExtraValue(value ?? undefined);
+        }
+      }
+    },
+    [area, setControlValue],
+  );
+
+  return {
+    extraControlsOptions,
+    extraControlsHandler,
+    extraValue,
+  };
+}
 
 const TIMER_DURATION = 300;
 // @ts-ignore
@@ -37,8 +86,9 @@ export default function EchartsTimeseries({
   selectedValues,
   setDataMask,
   legendData = [],
+  setControlValue
 }: TimeseriesChartTransformedProps) {
-  const { emitFilter, stack } = formData;
+  const { emitFilter, stack, extraControls } = formData;
   const echartRef = useRef<EchartsHandler | null>(null);
   const lastTimeRef = useRef(Date.now());
   const lastSelectedLegend = useRef('');
@@ -115,7 +165,7 @@ export default function EchartsTimeseries({
         },
       });
     },
-    [groupby, labelMap, setDataMask],
+    [groupby, labelMap, setDataMask, emitFilter],
   );
 
   const eventHandlers: EventHandlers = {
@@ -189,15 +239,29 @@ export default function EchartsTimeseries({
     },
   };
 
+  const { extraControlsOptions, extraControlsHandler, extraValue } = useExtraControl({
+    formData,
+    setControlValue,
+  });
+
   return (
-    <Echart
-      ref={echartRef}
-      height={height}
-      width={width}
-      echartOptions={echartOptions}
-      eventHandlers={eventHandlers}
-      zrEventHandlers={zrEventHandlers}
-      selectedValues={selectedValues}
-    />
+    <>
+      {extraControls && (
+        <ExtraControlsWrapper>
+          <RadioButtonControl
+            options={extraControlsOptions}
+            onChange={extraControlsHandler}
+            value={extraValue}
+          />
+        </ExtraControlsWrapper>
+      )}
+      <Echart
+        height={extraControls ? height - TIMESERIES_CONSTANTS.extraControlsOffset : height}
+        width={width}
+        echartOptions={echartOptions}
+        eventHandlers={eventHandlers}
+        selectedValues={selectedValues}
+      />
+    </>
   );
 }

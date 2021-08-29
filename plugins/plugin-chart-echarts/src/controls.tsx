@@ -94,7 +94,7 @@ export const legendSection = [
   [legendMarginControl],
 ];
 
-const showValueControl = {
+export const showValueControl = {
   name: 'show_value',
   config: {
     type: 'CheckboxControl',
@@ -105,7 +105,7 @@ const showValueControl = {
   },
 };
 
-const stackControl = {
+export const stackControl = {
   name: 'stack',
   config: {
     type: 'CheckboxControl',
@@ -116,7 +116,7 @@ const stackControl = {
   },
 };
 
-const onlyTotalControl = {
+export const onlyTotalControl = {
   name: 'only_total',
   config: {
     type: 'CheckboxControl',
@@ -129,4 +129,4 @@ const onlyTotalControl = {
   },
 };
 
-export const showValueSection = [[showValueControl], [stackControl], [onlyTotalControl]];
+export const showValueSection = [[stackControl], [showValueControl], [onlyTotalControl]];

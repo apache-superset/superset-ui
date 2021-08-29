@@ -27,6 +27,7 @@ import {
   isTimeseriesAnnotationLayer,
   TimeseriesChartDataResponseResult,
   DataRecordValue,
+  t,
 } from '@superset-ui/core';
 import { EChartsCoreOption, SeriesOption } from 'echarts';
 import {
@@ -42,6 +43,7 @@ import {
   extractTimeseriesSeries,
   getLegendProps,
   currentSeries,
+  extractTotalValues,
 } from '../utils/series';
 import { extractAnnotationLabels } from '../utils/annotation';
 import {
@@ -62,7 +64,7 @@ import {
   transformSeries,
   transformTimeseriesAnnotation,
 } from './transformers';
-import { TIMESERIES_CONSTANTS } from '../constants';
+import { AreaChartExtraControlsValue, TIMESERIES_CONSTANTS } from '../constants';
 
 export default function transformProps(
   chartProps: EchartsTimeseriesChartProps,
@@ -107,30 +109,22 @@ export default function transformProps(
     yAxisTitleMargin,
     yAxisTitlePosition,
   }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
+  const isExpended = stack === AreaChartExtraControlsValue.Expanded;
+
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
   const rebasedData = rebaseTimeseriesDatum(data, verboseMap);
+  const totalValues = extractTotalValues(rebasedData);
   const rawSeries = extractTimeseriesSeries(rebasedData, {
     fillNeighborValue: stack && !forecastEnabled ? 0 : undefined,
+    isExpended,
+    totalValues,
   });
   const seriesContexts = extractForecastSeriesContexts(
     Object.values(rawSeries).map(series => series.name as string),
   );
   const series: SeriesOption[] = [];
-  const formatter = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormat);
-
-  const totalStackedValues: number[] = [];
+  const formatter = getNumberFormatter(contributionMode || isExpended ? ',.0%' : yAxisFormat);
   const showValueIndexes: number[] = [];
-
-  rebasedData.forEach(data => {
-    const values = Object.keys(data).reduce((prev, curr) => {
-      if (curr === '__timestamp') {
-        return prev;
-      }
-      const value = data[curr] || 0;
-      return prev + (value as number);
-    }, 0);
-    totalStackedValues.push(values);
-  });
 
   if (stack) {
     rawSeries.forEach((entry, seriesIndex) => {
@@ -152,11 +146,11 @@ export default function transformProps(
       markerSize,
       areaOpacity: opacity,
       seriesType,
-      stack,
+      stack: Boolean(stack),
       formatter,
       showValue,
       onlyTotal,
-      totalStackedValues,
+      totalStackedValues: isExpended ? totalValues.fill(1) : totalValues,
       showValueIndexes,
       richTooltip,
     });
@@ -192,7 +186,7 @@ export default function transformProps(
   let [min, max] = (yAxisBounds || []).map(parseYAxisBound);
 
   // default to 0-100% range when doing row-level contribution chart
-  if (contributionMode === 'row' && stack) {
+  if ((contributionMode === 'row' || isExpended) && stack) {
     if (min === undefined) min = 0;
     if (max === undefined) max = 1;
   }
@@ -208,7 +202,7 @@ export default function transformProps(
     };
   }, {});
 
-  const { setDataMask = () => {} } = hooks;
+  const { setDataMask = () => {}, setControlValue = (...args: unknown[]) => {} } = hooks;
 
   const addYAxisLabelOffset = !!yAxisTitle;
   const addXAxisLabelOffset = !!xAxisTitle;
@@ -303,8 +297,8 @@ export default function transformProps(
         dataZoom: {
           yAxisIndex: false,
           title: {
-            zoom: 'zoom area',
-            back: 'restore zoom',
+            zoom: t('zoom area'),
+            back: t('restore zoom'),
           },
         },
       },
@@ -330,6 +324,7 @@ export default function transformProps(
     labelMap,
     selectedValues,
     setDataMask,
+    setControlValue,
     width,
     legendData,
   };

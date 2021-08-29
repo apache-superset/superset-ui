@@ -31,6 +31,7 @@ import {
   EchartsTitleFormData,
   DEFAULT_TITLE_FORM_DATA,
 } from '../types';
+import { AreaChartExtraControlsValue } from '../constants';
 
 export enum EchartsTimeseriesContributionType {
   Row = 'row',
@@ -66,7 +67,7 @@ export type EchartsTimeseriesFormData = QueryFormData & {
   orderDesc: boolean;
   rowLimit: number;
   seriesType: EchartsTimeseriesSeriesType;
-  stack: boolean;
+  stack: boolean | null | Partial<AreaChartExtraControlsValue>;
   tooltipTimeFormat?: string;
   truncateYAxis: boolean;
   yAxisFormat?: string;
@@ -82,6 +83,7 @@ export type EchartsTimeseriesFormData = QueryFormData & {
   groupby: string[];
   showValue: boolean;
   onlyTotal: boolean;
+  extraControls: boolean;
 } & EchartsLegendFormData &
   EchartsTitleFormData;
 
