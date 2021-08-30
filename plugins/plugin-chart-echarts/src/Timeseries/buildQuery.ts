@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { buildQueryContext, QueryFormData, normalizeOrderBy } from '@superset-ui/core';
+import { buildQueryContext, QueryFormData } from '@superset-ui/core';
 import {
   rollingWindowOperator,
   timeCompareOperator,
@@ -30,8 +30,6 @@ export default function buildQuery(formData: QueryFormData) {
     {
       ...baseQueryObject,
       is_timeseries: true,
-      // todo: move `normalizeOrderBy to extractQueryFields`
-      orderby: normalizeOrderBy(baseQueryObject).orderby,
       time_offsets: isValidTimeCompare(formData, baseQueryObject) ? formData.time_compare : [],
       post_processing: [
         timeCompareOperator(formData, baseQueryObject),

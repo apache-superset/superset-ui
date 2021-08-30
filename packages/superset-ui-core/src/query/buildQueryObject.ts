@@ -26,9 +26,7 @@ export default function buildQueryObject<T extends QueryFormData>(
     until,
     row_limit,
     row_offset,
-    order_desc,
     limit,
-    timeseries_limit_metric,
     granularity,
     url_params = {},
     custom_params = {},
@@ -77,8 +75,6 @@ export default function buildQueryObject<T extends QueryFormData>(
     row_limit: row_limit == null || Number.isNaN(numericRowLimit) ? undefined : numericRowLimit,
     row_offset: row_offset == null || Number.isNaN(numericRowOffset) ? undefined : numericRowOffset,
     timeseries_limit: limit ? Number(limit) : 0,
-    timeseries_limit_metric: timeseries_limit_metric || undefined,
-    order_desc: typeof order_desc === 'undefined' ? true : order_desc,
     url_params: url_params || undefined,
     custom_params,
   };

@@ -20,6 +20,7 @@ import { t } from '../translation';
 import { removeDuplicates } from '../utils';
 import { DTTM_ALIAS } from './constants';
 import getMetricLabel from './getMetricLabel';
+import normalizeOrderBy from './normalizeOrderBy';
 import {
   QueryFields,
   QueryFormColumn,
@@ -60,6 +61,8 @@ export default function extractQueryFields(
   let columns: QueryFormColumn[] = [];
   let metrics: QueryFormMetric[] = [];
   let orderby: QueryFormOrderBy[] = [];
+
+  orderby = orderby.concat(normalizeOrderBy(formData).orderby || []);
 
   Object.entries(restFormData).forEach(([key, value]) => {
     // ignore `null` or `undefined` value
