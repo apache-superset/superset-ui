@@ -131,14 +131,16 @@ describe('buildQueryObject', () => {
   });
 
   it('should build order_desc', () => {
-    const orderDesc = false;
+    const orderDesc = true;
     query = buildQueryObject({
       datasource: '5__table',
       granularity_sqla: 'ds',
       viz_type: 'table',
+      metrics: ['country'],
       order_desc: orderDesc,
     });
-    expect(query.order_desc).toEqual(orderDesc);
+    expect(query.orderby).toEqual([['country', false]]);
+    expect(query.order_desc).toEqual(undefined);
   });
 
   it('should build timeseries_limit_metric', () => {
@@ -149,7 +151,8 @@ describe('buildQueryObject', () => {
       viz_type: 'table',
       timeseries_limit_metric: metric,
     });
-    expect(query.timeseries_limit_metric).toEqual(metric);
+    expect(query.orderby).toEqual([[metric, true]]);
+    expect(query.timeseries_limit_metric).toEqual(undefined);
   });
 
   it('should handle null and non-numeric row_limit and row_offset', () => {
