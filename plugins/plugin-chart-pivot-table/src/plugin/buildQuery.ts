@@ -25,12 +25,10 @@ export default function buildQuery(formData: PivotTableQueryFormData) {
     ...ensureIsArray<string>(groupbyColumns),
     ...ensureIsArray<string>(groupbyRows),
   ]);
-  return buildQueryContext(formData, baseQueryObject => {
-    return [
-      {
-        ...baseQueryObject,
-        columns: [...groupbySet],
-      },
-    ];
-  });
+  return buildQueryContext(formData, baseQueryObject => [
+    {
+      ...baseQueryObject,
+      columns: [...groupbySet],
+    },
+  ]);
 }
