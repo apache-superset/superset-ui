@@ -19,46 +19,52 @@
 import isEmpty from 'lodash/isEmpty';
 import isBoolean from 'lodash/isBoolean';
 
-import { QueryObject } from './types';
+import { FormDataResidual, QueryFormOrderBy } from './types';
+import { t } from '../translation';
 
-export default function normalizeOrderBy(queryObject: QueryObject): QueryObject {
-  if (Array.isArray(queryObject.orderby) && queryObject.orderby.length > 0) {
+const defaultFilters = undefined;
+
+export default function normalizeOrderBy(
+  formData: FormDataResidual,
+): QueryFormOrderBy[] | typeof defaultFilters {
+  if (Array.isArray(formData.orderby) && formData.orderby.length > 0) {
+    const orderbyClauses = formData.orderby.map(item => {
+      // value can be in the format of `['["col1", true]', '["col2", false]']`,
+      // where the option strings come directly from `order_by_choices`.
+      if (typeof item === 'string') {
+        try {
+          return JSON.parse(item);
+        } catch (error) {
+          throw new Error(t('Found invalid orderby options'));
+        }
+      }
+      return item;
+    });
     // ensure a valid orderby clause
-    const orderbyClause = queryObject.orderby[0];
-    if (
-      Array.isArray(orderbyClause) &&
-      orderbyClause.length === 2 &&
-      !isEmpty(orderbyClause[0]) &&
-      isBoolean(orderbyClause[1])
-    ) {
-      return queryObject;
+    if (Array.isArray(orderbyClauses)) {
+      const validatedFilters = orderbyClauses.filter(
+        orderbyClause =>
+          Array.isArray(orderbyClause) &&
+          orderbyClause.length === 2 &&
+          !isEmpty(orderbyClause[0]) &&
+          isBoolean(orderbyClause[1]),
+      );
+      return isEmpty(validatedFilters) ? defaultFilters : validatedFilters;
     }
   }
 
-  // ensure that remove invalid orderby clause
-  const cloneQueryObject = { ...queryObject };
-  delete cloneQueryObject.timeseries_limit_metric;
-  delete cloneQueryObject.order_desc;
-  delete cloneQueryObject.orderby;
-
-  const isAsc = !queryObject.order_desc;
+  const isAsc = !formData.order_desc;
   if (
-    queryObject.timeseries_limit_metric !== undefined &&
-    queryObject.timeseries_limit_metric !== null &&
-    !isEmpty(queryObject.timeseries_limit_metric)
+    formData.timeseries_limit_metric !== undefined &&
+    formData.timeseries_limit_metric !== null &&
+    !isEmpty(formData.timeseries_limit_metric)
   ) {
-    return {
-      ...cloneQueryObject,
-      orderby: [[queryObject.timeseries_limit_metric, isAsc]],
-    };
+    return [[formData.timeseries_limit_metric, isAsc]];
   }
 
-  if (Array.isArray(queryObject.metrics) && queryObject.metrics.length > 0) {
-    return {
-      ...cloneQueryObject,
-      orderby: [[queryObject.metrics[0], isAsc]],
-    };
+  if (Array.isArray(formData.metrics) && formData.metrics.length > 0) {
+    return [[formData.metrics[0], isAsc]];
   }
 
-  return cloneQueryObject;
+  return defaultFilters;
 }

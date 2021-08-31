@@ -73,7 +73,7 @@ describe('extractQueryFields', () => {
     ).toEqual({
       columns: [],
       metrics: ['col_1', NUM_METRIC],
-      orderby: undefined,
+      orderby: [['col_1', true]],
     });
   });
 
@@ -83,7 +83,7 @@ describe('extractQueryFields', () => {
     ).toEqual({
       columns: ['col_1'],
       metrics: ['metric_1'],
-      orderby: undefined,
+      orderby: [['metric_1', true]],
     });
   });
 
@@ -96,7 +96,7 @@ describe('extractQueryFields', () => {
     ).toEqual({
       columns: ['col_1', 'col_2'],
       metrics: ['metric_1'],
-      orderby: undefined,
+      orderby: [['metric_1', true]],
     });
   });
 
@@ -140,7 +140,7 @@ describe('extractQueryFields', () => {
     ).toEqual({
       metrics: ['m'],
       columns: [],
-      orderby: undefined,
+      orderby: [['m', true]],
     });
     expect(
       extractQueryFields({
@@ -152,7 +152,7 @@ describe('extractQueryFields', () => {
     ).toEqual({
       metrics: ['m'],
       columns: ['b'],
-      orderby: undefined,
+      orderby: [['m', true]],
     });
   });
 
@@ -170,6 +170,45 @@ describe('extractQueryFields', () => {
         ['foo', false],
         ['bar', true],
         ['abc', true],
+      ],
+    });
+  });
+
+  it('should parse timeseries_limit_metric and order_desc', () => {
+    expect(
+      extractQueryFields({
+        columns: ['a'],
+        timeseries_limit_metric: NUM_METRIC,
+        order_desc: true,
+        metrics: ['m'],
+      }),
+    ).toEqual({
+      columns: ['a'],
+      metrics: ['m'],
+      orderby: [[NUM_METRIC, false]],
+    });
+  });
+
+  it('should ignore timeseries_limit_metric and order_desc when orderby set', () => {
+    expect(
+      extractQueryFields({
+        columns: ['a'],
+        timeseries_limit_metric: NUM_METRIC,
+        order_desc: true,
+        metrics: ['m'],
+        orderby: [
+          ['foo', false],
+          ['bar', true],
+          [NUM_METRIC, false],
+        ],
+      }),
+    ).toEqual({
+      columns: ['a'],
+      metrics: ['m'],
+      orderby: [
+        ['foo', false],
+        ['bar', true],
+        [NUM_METRIC, false],
       ],
     });
   });
