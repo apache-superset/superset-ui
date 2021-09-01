@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { getMetricLabel } from '@superset-ui/core';
+import { getMetricLabel } from '@superset-ui/core/src/query';
 
 describe('getMetricLabel', () => {
   it('should handle predefined metric name', () => {
