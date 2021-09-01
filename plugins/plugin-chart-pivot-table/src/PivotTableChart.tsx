@@ -44,8 +44,13 @@ const Styles = styled.div<PivotTableStylesProps>`
       margin: ${margin}px;
       height: ${height - margin * 2}px;
       width: ${width - margin * 2}px;
-      overflow-y: scroll;
  `}
+`;
+
+const PivotTableWrapper = styled.div`
+  height: 100%;
+  max-width: fit-content;
+  overflow: auto;
 `;
 
 const METRIC_KEY = 'metric';
@@ -54,7 +59,7 @@ const iconStyle = { stroke: 'black', strokeWidth: '16px' };
 const aggregatorsFactory = (formatter: NumberFormatter) => ({
   Count: aggregatorTemplates.count(formatter),
   'Count Unique Values': aggregatorTemplates.countUnique(formatter),
-  'List Unique Values': aggregatorTemplates.listUnique(', '),
+  'List Unique Values': aggregatorTemplates.listUnique(', ', formatter),
   Sum: aggregatorTemplates.sum(formatter),
   Average: aggregatorTemplates.average(formatter),
   Median: aggregatorTemplates.median(formatter),
@@ -62,7 +67,7 @@ const aggregatorsFactory = (formatter: NumberFormatter) => ({
   'Sample Standard Deviation': aggregatorTemplates.stdev(1, formatter),
   Minimum: aggregatorTemplates.min(formatter),
   Maximum: aggregatorTemplates.max(formatter),
-  First: aggregatorTemplates.first(),
+  First: aggregatorTemplates.first(formatter),
   Last: aggregatorTemplates.last(formatter),
   'Sum as Fraction of Total': aggregatorTemplates.fractionOf(
     aggregatorTemplates.sum(),
@@ -96,6 +101,10 @@ const aggregatorsFactory = (formatter: NumberFormatter) => ({
   ),
 });
 
+/* If you change this logic, please update the corresponding Python
+ * function (https://github.com/apache/superset/blob/master/superset/charts/post_processing.py),
+ * or reach out to @betodealmeida.
+ */
 export default function PivotTableChart(props: PivotTableProps) {
   const {
     data,
@@ -147,11 +156,13 @@ export default function PivotTableChart(props: PivotTableProps) {
       data.reduce(
         (acc: Record<string, any>[], record: Record<string, any>) => [
           ...acc,
-          ...metricNames.map((name: string) => ({
-            ...record,
-            [METRIC_KEY]: name,
-            value: record[name],
-          })),
+          ...metricNames
+            .map((name: string) => ({
+              ...record,
+              [METRIC_KEY]: name,
+              value: record[name],
+            }))
+            .filter(record => record.value !== null),
         ],
         [],
       ),
@@ -248,42 +259,44 @@ export default function PivotTableChart(props: PivotTableProps) {
 
   return (
     <Styles height={height} width={width} margin={theme.gridUnit * 4}>
-      <PivotTable
-        data={unpivotedData}
-        rows={rows}
-        cols={cols}
-        aggregatorsFactory={aggregatorsFactory}
-        defaultFormatter={defaultFormatter}
-        customFormatters={
-          hasCustomMetricFormatters ? { [METRIC_KEY]: metricFormatters } : undefined
-        }
-        aggregatorName={aggregateFunction}
-        vals={['value']}
-        rendererName="Table With Subtotal"
-        colOrder={colOrder}
-        rowOrder={rowOrder}
-        sorters={{
-          metric: sortAs(metricNames),
-        }}
-        tableOptions={{
-          clickRowHeaderCallback: toggleFilter,
-          clickColumnHeaderCallback: toggleFilter,
-          colTotals,
-          rowTotals,
-          highlightHeaderCellsOnHover: emitFilter,
-          highlightedHeaderCells: selectedFilters,
-          omittedHighlightHeaderGroups: [METRIC_KEY],
-          cellColorFormatters: { [METRIC_KEY]: metricColorFormatters },
-          dateFormatters,
-        }}
-        subtotalOptions={{
-          colSubtotalDisplay: { displayOnTop: colSubtotalPosition },
-          rowSubtotalDisplay: { displayOnTop: rowSubtotalPosition },
-          arrowCollapsed: <PlusSquareOutlined style={iconStyle} />,
-          arrowExpanded: <MinusSquareOutlined style={iconStyle} />,
-        }}
-        namesMapping={verboseMap}
-      />
+      <PivotTableWrapper>
+        <PivotTable
+          data={unpivotedData}
+          rows={rows}
+          cols={cols}
+          aggregatorsFactory={aggregatorsFactory}
+          defaultFormatter={defaultFormatter}
+          customFormatters={
+            hasCustomMetricFormatters ? { [METRIC_KEY]: metricFormatters } : undefined
+          }
+          aggregatorName={aggregateFunction}
+          vals={['value']}
+          rendererName="Table With Subtotal"
+          colOrder={colOrder}
+          rowOrder={rowOrder}
+          sorters={{
+            metric: sortAs(metricNames),
+          }}
+          tableOptions={{
+            clickRowHeaderCallback: toggleFilter,
+            clickColumnHeaderCallback: toggleFilter,
+            colTotals,
+            rowTotals,
+            highlightHeaderCellsOnHover: emitFilter,
+            highlightedHeaderCells: selectedFilters,
+            omittedHighlightHeaderGroups: [METRIC_KEY],
+            cellColorFormatters: { [METRIC_KEY]: metricColorFormatters },
+            dateFormatters,
+          }}
+          subtotalOptions={{
+            colSubtotalDisplay: { displayOnTop: colSubtotalPosition },
+            rowSubtotalDisplay: { displayOnTop: rowSubtotalPosition },
+            arrowCollapsed: <PlusSquareOutlined style={iconStyle} />,
+            arrowExpanded: <MinusSquareOutlined style={iconStyle} />,
+          }}
+          namesMapping={verboseMap}
+        />
+      </PivotTableWrapper>
     </Styles>
   );
 }

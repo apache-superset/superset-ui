@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { legacyValidateInteger, legacyValidateNumber, t } from '@superset-ui/core';
+import { t } from '@superset-ui/core';
 import {
   ControlPanelConfig,
   ControlPanelsContainerProps,
@@ -32,18 +32,11 @@ import {
   EchartsTimeseriesContributionType,
   EchartsTimeseriesSeriesType,
 } from './types';
-import { legendSection } from '../controls';
+import { legendSection, showValueSection } from '../controls';
 
 const {
   area,
-  annotationLayers,
   contributionMode,
-  forecastEnabled,
-  forecastInterval,
-  forecastPeriods,
-  forecastSeasonalityDaily,
-  forecastSeasonalityWeekly,
-  forecastSeasonalityYearly,
   logAxis,
   markerEnabled,
   markerSize,
@@ -51,7 +44,6 @@ const {
   opacity,
   rowLimit,
   seriesType,
-  stack,
   tooltipTimeFormat,
   truncateYAxis,
   yAxisBounds,
@@ -101,119 +93,9 @@ const config: ControlPanelConfig = {
         ['row_limit'],
       ],
     },
-    sections.advancedAnalytics,
-    {
-      label: t('Annotations and Layers'),
-      expanded: false,
-      controlSetRows: [
-        [
-          {
-            name: 'annotation_layers',
-            config: {
-              type: 'AnnotationLayerControl',
-              label: '',
-              default: annotationLayers,
-              description: t('Annotation Layers'),
-            },
-          },
-        ],
-      ],
-    },
-    {
-      label: t('Predictive Analytics'),
-      expanded: false,
-      controlSetRows: [
-        [
-          {
-            name: 'forecastEnabled',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Enable forecast'),
-              renderTrigger: false,
-              default: forecastEnabled,
-              description: t('Enable forecasting'),
-            },
-          },
-        ],
-        [
-          {
-            name: 'forecastPeriods',
-            config: {
-              type: 'TextControl',
-              label: t('Forecast periods'),
-              validators: [legacyValidateInteger],
-              default: forecastPeriods,
-              description: t('How many periods into the future do we want to predict'),
-            },
-          },
-        ],
-        [
-          {
-            name: 'forecastInterval',
-            config: {
-              type: 'TextControl',
-              label: t('Confidence interval'),
-              validators: [legacyValidateNumber],
-              default: forecastInterval,
-              description: t('Width of the confidence interval. Should be between 0 and 1'),
-            },
-          },
-          {
-            name: 'forecastSeasonalityYearly',
-            config: {
-              type: 'SelectControl',
-              freeForm: true,
-              label: 'Yearly seasonality',
-              choices: [
-                [null, 'default'],
-                [true, 'Yes'],
-                [false, 'No'],
-              ],
-              default: forecastSeasonalityYearly,
-              description: t(
-                'Should yearly seasonality be applied. An integer value will specify Fourier order of seasonality.',
-              ),
-            },
-          },
-        ],
-        [
-          {
-            name: 'forecastSeasonalityWeekly',
-            config: {
-              type: 'SelectControl',
-              freeForm: true,
-              label: 'Weekly seasonality',
-              choices: [
-                [null, 'default'],
-                [true, 'Yes'],
-                [false, 'No'],
-              ],
-              default: forecastSeasonalityWeekly,
-              description: t(
-                'Should weekly seasonality be applied. An integer value will specify Fourier order of seasonality.',
-              ),
-            },
-          },
-          {
-            name: 'forecastSeasonalityDaily',
-            config: {
-              type: 'SelectControl',
-              freeForm: true,
-              label: 'Daily seasonality',
-              choices: [
-                [null, 'default'],
-                [true, 'Yes'],
-                [false, 'No'],
-              ],
-              default: forecastSeasonalityDaily,
-              description: t(
-                'Should daily seasonality be applied. An integer value will specify Fourier order of seasonality.',
-              ),
-            },
-          },
-        ],
-      ],
-    },
+    sections.advancedAnalyticsControls,
+    sections.annotationsAndLayersControls,
+    sections.forecastIntervalControls,
     {
       label: t('Chart Options'),
       expanded: true,
@@ -240,18 +122,7 @@ const config: ControlPanelConfig = {
             },
           },
         ],
-        [
-          {
-            name: 'stack',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Stack series'),
-              renderTrigger: true,
-              default: stack,
-              description: t('Stack series on top of each other'),
-            },
-          },
-        ],
+        ...showValueSection,
         [
           {
             name: 'area',
@@ -301,7 +172,7 @@ const config: ControlPanelConfig = {
               label: t('Marker Size'),
               renderTrigger: true,
               min: 0,
-              max: 100,
+              max: 20,
               default: markerSize,
               description: t('Size of marker. Also applies to forecast observations.'),
               visibility: ({ controls }: ControlPanelsContainerProps) =>

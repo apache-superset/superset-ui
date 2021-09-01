@@ -19,3 +19,5 @@
 
 export * from './sections';
 export * from './advancedAnalytics';
+export * from './annotationsAndLayers';
+export * from './forecastInterval';

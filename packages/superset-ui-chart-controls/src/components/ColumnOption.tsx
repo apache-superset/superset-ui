@@ -17,32 +17,62 @@
  * under the License.
  */
 import React from 'react';
+import { styled } from '@superset-ui/core';
 import { Tooltip } from './Tooltip';
 import { ColumnTypeLabel } from './ColumnTypeLabel';
 import InfoTooltipWithTrigger from './InfoTooltipWithTrigger';
+import CertifiedIconWithTooltip from './CertifiedIconWithTooltip';
 import { ColumnMeta } from '../types';
 
 export type ColumnOptionProps = {
   column: ColumnMeta;
   showType?: boolean;
+  showTooltip?: boolean;
+  labelRef?: React.RefObject<any>;
 };
 
-export function ColumnOption({ column, showType = false }: ColumnOptionProps) {
+const StyleOverrides = styled.span`
+  svg {
+    margin-right: ${({ theme }) => theme.gridUnit}px;
+  }
+`;
+
+export function ColumnOption({
+  column,
+  labelRef,
+  showType = false,
+  showTooltip = true,
+}: ColumnOptionProps) {
   const { expression, column_name, type_generic } = column;
   const hasExpression = expression && expression !== column_name;
   const type = hasExpression ? 'expression' : type_generic;
 
   return (
-    <span>
+    <StyleOverrides>
       {showType && type !== undefined && <ColumnTypeLabel type={type} />}
-      <Tooltip
-        id="metric-name-tooltip"
-        title={column.verbose_name || column.column_name}
-        trigger={['hover']}
-        placement="top"
-      >
-        <span className="m-r-5 option-label">{column.verbose_name || column.column_name}</span>
-      </Tooltip>
+      {column.is_certified && (
+        <CertifiedIconWithTooltip
+          metricName={column.metric_name}
+          certifiedBy={column.certified_by}
+          details={column.certification_details}
+        />
+      )}
+      {showTooltip ? (
+        <Tooltip
+          id="metric-name-tooltip"
+          title={column.verbose_name || column.column_name}
+          trigger={['hover']}
+          placement="top"
+        >
+          <span className="m-r-5 option-label column-option-label" ref={labelRef}>
+            {column.verbose_name || column.column_name}
+          </span>
+        </Tooltip>
+      ) : (
+        <span className="m-r-5 option-label column-option-label" ref={labelRef}>
+          {column.verbose_name || column.column_name}
+        </span>
+      )}
       {column.description && (
         <InfoTooltipWithTrigger
           className="m-r-5 text-muted"
@@ -61,7 +91,7 @@ export function ColumnOption({ column, showType = false }: ColumnOptionProps) {
           placement="top"
         />
       )}
-    </span>
+    </StyleOverrides>
   );
 }
 

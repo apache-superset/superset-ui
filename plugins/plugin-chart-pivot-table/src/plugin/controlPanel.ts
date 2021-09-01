@@ -217,7 +217,6 @@ const config: ControlPanelConfig = {
               label: t('Date format'),
               default: smartDateFormatter.id,
               renderTrigger: true,
-              clearable: false,
               choices: D3_TIME_FORMAT_OPTIONS,
               description: t('D3 time format for datetime columns'),
             },
@@ -301,7 +300,7 @@ const config: ControlPanelConfig = {
             config: {
               type: 'ConditionalFormattingControl',
               renderTrigger: true,
-              label: t('Customize metrics'),
+              label: t('Conditional formatting'),
               description: t('Apply conditional color formatting to metrics'),
               mapStateToProps(explore) {
                 const values = (explore?.controls?.metrics?.value as QueryFormMetric[]) ?? [];
