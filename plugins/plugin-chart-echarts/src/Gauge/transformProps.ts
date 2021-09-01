@@ -24,6 +24,7 @@ import {
   getNumberFormatter,
   getMetricLabel,
   DataRecordValue,
+  getColumnLabel,
 } from '@superset-ui/core';
 import { EChartsOption, GaugeSeriesOption } from 'echarts';
 import { GaugeDataItemOption } from 'echarts/types/src/chart/gauge/GaugeSeries';
@@ -110,6 +111,7 @@ export default function transformProps(
   const axisLabelLength = Math.max(
     ...axisLabels.map(label => numberFormatter(label).length).concat([1]),
   );
+  const groupbyLabels = groupby.map(getColumnLabel);
   const formatValue = (value: number) => valueFormatter.replace('{value}', numberFormatter(value));
   const axisTickLength = FONT_SIZE_MULTIPLIERS.axisTickLength * fontSize;
   const splitLineLength = FONT_SIZE_MULTIPLIERS.splitLineLength * fontSize;
@@ -124,10 +126,10 @@ export default function transformProps(
   const columnsLabelMap = new Map<string, DataRecordValue[]>();
 
   const transformedData: GaugeDataItemOption[] = data.map((data_point, index) => {
-    const name = groupby.map(column => `${column}: ${data_point[column]}`).join(', ');
+    const name = groupbyLabels.map(column => `${column}: ${data_point[column]}`).join(', ');
     columnsLabelMap.set(
       name,
-      groupby.map(col => data_point[col]),
+      groupbyLabels.map(col => data_point[col]),
     );
     let item: GaugeDataItemOption = {
       value: data_point[getMetricLabel(metric as QueryFormMetric)] as number,

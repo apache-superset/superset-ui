@@ -17,7 +17,13 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-import { ComparisionType, PostProcessingPivot, NumpyFunction } from '@superset-ui/core';
+import {
+  ComparisionType,
+  PostProcessingPivot,
+  NumpyFunction,
+  ensureIsArray,
+  getColumnLabel,
+} from '@superset-ui/core';
 import { getMetricOffsetsMap, isValidTimeCompare, TIME_COMPARISON_SEPARATOR } from './utils';
 import { PostProcessingFactory } from './types';
 
@@ -47,7 +53,7 @@ export const timeComparePivotOperator: PostProcessingFactory<PostProcessingPivot
       operation: 'pivot',
       options: {
         index: ['__timestamp'],
-        columns: queryObject.columns || [],
+        columns: ensureIsArray(queryObject.columns).map(getColumnLabel),
         aggregates: comparisonType === ComparisionType.Values ? valuesAgg : changeAgg,
         drop_missing_columns: false,
       },

@@ -34,7 +34,7 @@ import {
 export type EchartsFunnelFormData = QueryFormData &
   EchartsLegendFormData & {
     colorScheme?: string;
-    groupby: string[];
+    groupby: QueryFormData[];
     labelLine: boolean;
     labelType: EchartsFunnelLabelTypeType;
     metric?: string;

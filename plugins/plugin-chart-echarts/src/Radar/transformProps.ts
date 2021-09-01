@@ -20,6 +20,7 @@ import {
   CategoricalColorNamespace,
   DataRecordValue,
   ensureIsInt,
+  getColumnLabel,
   getMetricLabel,
   getNumberFormatter,
   getTimeFormatter,
@@ -99,7 +100,8 @@ export default function transformProps(
       labelType,
     });
 
-  const metricsLabel = metrics.map(metric => getMetricLabel(metric));
+  const metricLabels = metrics.map(getMetricLabel);
+  const groupbyLabels = groupby.map(getColumnLabel);
 
   const metricLabelAndMaxValueMap = new Map<string, number>();
   const columnsLabelMap = new Map<string, DataRecordValue[]>();
@@ -107,14 +109,14 @@ export default function transformProps(
   data.forEach(datum => {
     const joinedName = extractGroupbyLabel({
       datum,
-      groupby,
+      groupby: groupbyLabels,
       coltypeMapping,
       timeFormatter: getTimeFormatter(dateFormat),
     });
     // map(joined_name: [columnLabel_1, columnLabel_2, ...])
     columnsLabelMap.set(
       joinedName,
-      groupby.map(col => datum[col]),
+      groupbyLabels.map(col => datum[col]),
     );
 
     // put max value of series into metricLabelAndMaxValueMap
@@ -138,7 +140,7 @@ export default function transformProps(
 
     // generate transformedData
     transformedData.push({
-      value: metricsLabel.map(metricLabel => datum[metricLabel]),
+      value: metricLabels.map(metricLabel => datum[metricLabel]),
       name: joinedName,
       itemStyle: {
         color: colorFn(joinedName),
@@ -166,7 +168,7 @@ export default function transformProps(
     {},
   );
 
-  const indicator = metricsLabel.map(metricLabel => {
+  const indicator = metricLabels.map(metricLabel => {
     const maxValueInControl = columnConfig?.[metricLabel]?.radarMetricMaxValue;
     // Ensure that 0 is at the center of the polar coordinates
     const metricValueAsMax =

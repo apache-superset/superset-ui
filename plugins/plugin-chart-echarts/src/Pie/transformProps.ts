@@ -19,6 +19,7 @@
 import {
   CategoricalColorNamespace,
   DataRecordValue,
+  getColumnLabel,
   getMetricLabel,
   getNumberFormatter,
   getTimeFormatter,
@@ -107,6 +108,7 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
     emitFilter,
   }: EchartsPieFormData = { ...DEFAULT_LEGEND_FORM_DATA, ...DEFAULT_PIE_FORM_DATA, ...formData };
   const metricLabel = getMetricLabel(metric);
+  const groupbyLabels = groupby.map(getColumnLabel);
   const minShowLabelAngle = (showLabelsThreshold || 0) * 3.6;
 
   const keys = data.map(datum =>
@@ -120,13 +122,13 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
   const labelMap = data.reduce((acc: Record<string, DataRecordValue[]>, datum) => {
     const label = extractGroupbyLabel({
       datum,
-      groupby,
+      groupby: groupbyLabels,
       coltypeMapping,
       timeFormatter: getTimeFormatter(dateFormat),
     });
     return {
       ...acc,
-      [label]: groupby.map(col => datum[col]),
+      [label]: groupbyLabels.map(col => datum[col]),
     };
   }, {});
 

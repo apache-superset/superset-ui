@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { buildQueryContext, getMetricLabel } from '@superset-ui/core';
+import { buildQueryContext, getColumnLabel, getMetricLabel } from '@superset-ui/core';
 import { BoxPlotQueryFormData, BoxPlotQueryObjectWhiskerType } from './types';
 
 const PERCENTILE_REGEX = /(\d+)\/(\d+) percentiles/;
@@ -49,7 +49,7 @@ export default function buildQuery(formData: BoxPlotQueryFormData) {
             options: {
               whisker_type: whiskerType,
               percentiles,
-              groupby: columns.filter(x => !distributionColumns.includes(x)),
+              groupby: columns.map(getColumnLabel).filter(x => !distributionColumns.includes(x)),
               metrics: metrics.map(getMetricLabel),
             },
           },

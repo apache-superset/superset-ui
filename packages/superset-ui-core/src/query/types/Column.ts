@@ -20,6 +20,18 @@
 
 import { GenericDataType } from './QueryResponse';
 
+export interface AdhocColumn {
+  hasCustomLabel?: boolean;
+  label?: string;
+  optionName?: string;
+  sqlExpression: string;
+}
+
+/**
+ * A column that is physically defined in datasource.
+ */
+export type PhysicalColumn = string;
+
 /**
  * Column information defined in datasource.
  */
@@ -39,3 +51,7 @@ export interface Column {
 }
 
 export default {};
+
+export function isPhysicalColumn(column: AdhocColumn | PhysicalColumn): column is PhysicalColumn {
+  return typeof column === 'string';
+}

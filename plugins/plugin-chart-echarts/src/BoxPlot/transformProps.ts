@@ -19,6 +19,7 @@
 import {
   CategoricalColorNamespace,
   DataRecordValue,
+  getColumnLabel,
   getMetricLabel,
   getNumberFormatter,
   getTimeFormatter,
@@ -43,8 +44,8 @@ export default function transformProps(
   const coltypeMapping = getColtypesMapping(queriesData[0]);
   const {
     colorScheme,
-    groupby = [],
-    metrics: formdataMetrics = [],
+    groupby: formDataGroupby = [],
+    metrics: formDataMetrics = [],
     numberFormat,
     dateFormat,
     xTicksLayout,
@@ -52,13 +53,14 @@ export default function transformProps(
   } = formData as BoxPlotQueryFormData;
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const numberFormatter = getNumberFormatter(numberFormat);
-  const metricLabels = formdataMetrics.map(getMetricLabel);
+  const metricLabels = formDataMetrics.map(getMetricLabel);
+  const groupbyLabels = formDataGroupby.map(getColumnLabel);
 
   const transformedData = data
     .map((datum: any) => {
       const groupbyLabel = extractGroupbyLabel({
         datum,
-        groupby,
+        groupby: groupbyLabels,
         coltypeMapping,
         timeFormatter: getTimeFormatter(dateFormat),
       });
@@ -91,7 +93,7 @@ export default function transformProps(
       metricLabels.map(metric => {
         const groupbyLabel = extractGroupbyLabel({
           datum,
-          groupby,
+          groupby: groupbyLabels,
           coltypeMapping,
           timeFormatter: getTimeFormatter(dateFormat),
         });
@@ -106,7 +108,7 @@ export default function transformProps(
           tooltip: {
             formatter: (param: { data: [string, number] }) => {
               const [outlierName, stats] = param.data;
-              const headline = groupby
+              const headline = groupbyLabels.length
                 ? `<p><strong>${sanitizeHtml(outlierName)}</strong></p>`
                 : '';
               return `${headline}${numberFormatter(stats)}`;
@@ -124,13 +126,13 @@ export default function transformProps(
   const labelMap = data.reduce((acc: Record<string, DataRecordValue[]>, datum) => {
     const label = extractGroupbyLabel({
       datum,
-      groupby,
+      groupby: groupbyLabels,
       coltypeMapping,
       timeFormatter: getTimeFormatter(dateFormat),
     });
     return {
       ...acc,
-      [label]: groupby.map(col => datum[col]),
+      [label]: groupbyLabels.map(col => datum[col]),
     };
   }, {});
 
@@ -224,7 +226,7 @@ export default function transformProps(
     setDataMask,
     emitFilter,
     labelMap,
-    groupby,
+    groupby: groupbyLabels,
     selectedValues,
   };
 }
