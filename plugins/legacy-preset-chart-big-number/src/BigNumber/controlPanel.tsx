@@ -17,7 +17,13 @@
  * under the License.
  */
 import { t } from '@superset-ui/core';
-import { ControlPanelConfig, formatSelectOptions, sections } from '@superset-ui/chart-controls';
+import {
+  ControlPanelConfig,
+  D3_FORMAT_DOCS,
+  D3_TIME_FORMAT_OPTIONS,
+  formatSelectOptions,
+  sections,
+} from '@superset-ui/chart-controls';
 import React from 'react';
 import { headerFontSize, subheaderFontSize } from '../sharedControls';
 
@@ -56,6 +62,31 @@ const config: ControlPanelConfig = {
           },
         ],
         ['y_axis_format'],
+        [
+          {
+            name: 'time_format',
+            config: {
+              type: 'SelectControl',
+              freeForm: true,
+              label: t('Timestamp format'),
+              renderTrigger: true,
+              choices: D3_TIME_FORMAT_OPTIONS,
+              description: D3_FORMAT_DOCS,
+            },
+          },
+        ],
+        [
+          {
+            name: 'show_timestamp',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Show Timestamp'),
+              renderTrigger: true,
+              default: false,
+              description: t('Whether to display the timestamp'),
+            },
+          },
+        ],
         [
           {
             name: 'show_trend_line',

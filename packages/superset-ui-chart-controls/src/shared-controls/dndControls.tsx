@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { t, validateNonEmpty } from '@superset-ui/core';
+import { FeatureFlag, isFeatureEnabled, t, validateNonEmpty } from '@superset-ui/core';
 import { ExtraControlProps, SharedControlConfig } from '../types';
 import { TIME_COLUMN_OPTION, TIME_FILTER_LABELS } from '../constants';
 
@@ -102,6 +102,12 @@ export const dnd_adhoc_metric: SharedControlConfig<'DndMetricSelect'> = {
   description: t('Metric'),
 };
 
+export const dnd_adhoc_metric_2: SharedControlConfig<'DndMetricSelect'> = {
+  ...dnd_adhoc_metric,
+  label: t('Right Axis Metric'),
+  description: t('Choose a metric for right axis'),
+};
+
 export const dnd_sort_by: SharedControlConfig<'DndMetricSelect'> = {
   type: 'DndMetricSelect',
   label: t('Sort by'),
@@ -150,7 +156,11 @@ export const dnd_granularity_sqla: typeof dndGroupByControl = {
       'expression',
   ),
   canDelete: false,
-  ghostButtonText: t('Drop temporal column'),
+  ghostButtonText: t(
+    isFeatureEnabled(FeatureFlag.ENABLE_DND_WITH_CLICK_UX)
+      ? 'Drop a temporal column here or click'
+      : 'Drop temporal column here',
+  ),
   mapStateToProps: ({ datasource }) => {
     const temporalColumns = datasource?.columns.filter(c => c.is_dttm) ?? [];
     const options = Object.fromEntries(temporalColumns.map(option => [option.column_name, option]));
