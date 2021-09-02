@@ -22,13 +22,13 @@ import { BinaryOperator, SetOperator, UnaryOperator } from './Operator';
 import { AppliedTimeExtras, TimeRange, TimeRangeEndpoints } from './Time';
 import { AnnotationLayer } from './AnnotationLayer';
 import { QueryFields, QueryFormMetric } from './QueryFormData';
-import { Maybe } from '../../types';
+import { Maybe, PhysicalColumn } from '../../types';
 import { PostProcessingRule } from './PostProcessing';
 import { JsonObject } from '../../connection';
 import { TimeGranularity } from '../../time-format';
 
 export type QueryObjectFilterClause = {
-  col: string;
+  col: PhysicalColumn;
   grain?: TimeGranularity;
   isExtra?: boolean;
 } & (
