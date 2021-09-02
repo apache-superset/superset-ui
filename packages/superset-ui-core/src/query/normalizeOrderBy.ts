@@ -21,14 +21,16 @@ import isBoolean from 'lodash/isBoolean';
 
 import { FormDataResidual, QueryFormOrderBy } from './types';
 import { t } from '../translation';
+import { ensureIsArray } from '../utils';
 
 const defaultOrderby = undefined;
 
 export default function normalizeOrderBy(
   formData: FormDataResidual,
 ): QueryFormOrderBy[] | typeof defaultOrderby {
-  if (Array.isArray(formData.orderby) && formData.orderby.length > 0) {
-    const orderbyClauses = formData.orderby.map(item => {
+  const orderby = ensureIsArray(formData.orderby);
+  if (orderby.length > 0) {
+    const orderbyClauses = orderby.map(item => {
       // value can be in the format of `['["col1", true]', '["col2", false]']`,
       // where the option strings come directly from `order_by_choices`.
       if (typeof item === 'string') {
@@ -60,8 +62,9 @@ export default function normalizeOrderBy(
     return [[formData.timeseries_limit_metric, isAsc]];
   }
 
-  if (Array.isArray(formData.metrics) && formData.metrics.length > 0) {
-    return [[formData.metrics[0], isAsc]];
+  const metrics = ensureIsArray(formData.metrics);
+  if (metrics.length > 0) {
+    return [[metrics[0], isAsc]];
   }
 
   return defaultOrderby;
