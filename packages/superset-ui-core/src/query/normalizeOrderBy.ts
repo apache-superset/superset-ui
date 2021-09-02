@@ -22,11 +22,11 @@ import isBoolean from 'lodash/isBoolean';
 import { FormDataResidual, QueryFormOrderBy } from './types';
 import { t } from '../translation';
 
-const defaultFilters = undefined;
+const defaultOrderby = undefined;
 
 export default function normalizeOrderBy(
   formData: FormDataResidual,
-): QueryFormOrderBy[] | typeof defaultFilters {
+): QueryFormOrderBy[] | typeof defaultOrderby {
   if (Array.isArray(formData.orderby) && formData.orderby.length > 0) {
     const orderbyClauses = formData.orderby.map(item => {
       // value can be in the format of `['["col1", true]', '["col2", false]']`,
@@ -41,16 +41,14 @@ export default function normalizeOrderBy(
       return item;
     });
     // ensure a valid orderby clause
-    if (Array.isArray(orderbyClauses)) {
-      const validatedFilters = orderbyClauses.filter(
-        orderbyClause =>
-          Array.isArray(orderbyClause) &&
-          orderbyClause.length === 2 &&
-          !isEmpty(orderbyClause[0]) &&
-          isBoolean(orderbyClause[1]),
-      );
-      return isEmpty(validatedFilters) ? defaultFilters : validatedFilters;
-    }
+    const validatedOrderbys = orderbyClauses.filter(
+      orderbyClause =>
+        Array.isArray(orderbyClause) &&
+        orderbyClause.length === 2 &&
+        !isEmpty(orderbyClause[0]) &&
+        isBoolean(orderbyClause[1]),
+    );
+    return isEmpty(validatedOrderbys) ? defaultOrderby : validatedOrderbys;
   }
 
   const isAsc = !formData.order_desc;
@@ -66,5 +64,5 @@ export default function normalizeOrderBy(
     return [[formData.metrics[0], isAsc]];
   }
 
-  return defaultFilters;
+  return defaultOrderby;
 }
