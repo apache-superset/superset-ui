@@ -28,29 +28,28 @@ const defaultOrderby = undefined;
 export default function normalizeOrderBy(
   formData: FormDataResidual,
 ): QueryFormOrderBy[] | typeof defaultOrderby {
-  const orderby = ensureIsArray(formData.orderby);
-  if (orderby.length > 0) {
-    const orderbyClauses = orderby.map(item => {
-      // value can be in the format of `['["col1", true]', '["col2", false]']`,
-      // where the option strings come directly from `order_by_choices`.
-      if (typeof item === 'string') {
-        try {
-          return JSON.parse(item);
-        } catch (error) {
-          throw new Error(t('Found invalid orderby options'));
-        }
+  const orderbyClauses = ensureIsArray(formData.orderby).map(item => {
+    // value can be in the format of `['["col1", true]', '["col2", false]']`,
+    // where the option strings come directly from `order_by_choices`.
+    if (typeof item === 'string') {
+      try {
+        return JSON.parse(item);
+      } catch (error) {
+        throw new Error(t('Found invalid orderby options'));
       }
-      return item;
-    });
-    // ensure a valid orderby clause
-    const validatedOrderbys = orderbyClauses.filter(
-      orderbyClause =>
-        Array.isArray(orderbyClause) &&
-        orderbyClause.length === 2 &&
-        !isEmpty(orderbyClause[0]) &&
-        isBoolean(orderbyClause[1]),
-    );
-    return isEmpty(validatedOrderbys) ? defaultOrderby : validatedOrderbys;
+    }
+    return item;
+  });
+  // ensure a valid orderby clause
+  const validatedOrderbys = orderbyClauses.filter(
+    orderbyClause =>
+      Array.isArray(orderbyClause) &&
+      orderbyClause.length === 2 &&
+      !isEmpty(orderbyClause[0]) &&
+      isBoolean(orderbyClause[1]),
+  );
+  if (validatedOrderbys.length > 0) {
+    return validatedOrderbys;
   }
 
   const isAsc = !formData.order_desc;
