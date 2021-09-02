@@ -21,6 +21,7 @@ import {
   DataRecord,
   extractTimegrain,
   GenericDataType,
+  getColumnLabel,
   getTimeFormatter,
   getTimeFormatterForGranularity,
   QueryFormData,

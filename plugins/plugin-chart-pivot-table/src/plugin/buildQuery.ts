@@ -31,10 +31,7 @@ export default function buildQuery(formData: PivotTableQueryFormData) {
     order_desc = true,
     timeseries_limit_metric,
   } = formData;
-  const groupbySet = new Set([
-    ...ensureIsArray<string>(groupbyColumns),
-    ...ensureIsArray<string>(groupbyRows),
-  ]);
+  const groupbySet = new Set([...ensureIsArray(groupbyColumns), ...ensureIsArray(groupbyRows)]);
   return buildQueryContext(formData, baseQueryObject => {
     const queryObject = normalizeOrderBy({ ...baseQueryObject, order_desc });
     const { metrics } = queryObject;
