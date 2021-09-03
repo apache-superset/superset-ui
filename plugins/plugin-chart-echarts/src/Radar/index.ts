@@ -18,7 +18,6 @@
  * under the License.
  */
 import { Behavior, ChartMetadata, ChartPlugin, t } from '@superset-ui/core';
-import buildQuery from './buildQuery';
 import controlPanel from './controlPanel';
 import transformProps from './transformProps';
 import thumbnail from './images/thumbnail.png';
@@ -40,7 +39,6 @@ export default class EchartsRadarChartPlugin extends ChartPlugin<
    */
   constructor() {
     super({
-      buildQuery,
       controlPanel,
       loadChart: () => import('./EchartsRadar'),
       metadata: new ChartMetadata({

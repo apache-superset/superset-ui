@@ -52,6 +52,7 @@ export default function normalizeOrderBy(
     return validatedOrderbys;
   }
 
+  // the `timeseries_limit_metric` and `order_desc` are used for orderby
   const isAsc = !formData.order_desc;
   if (
     formData.timeseries_limit_metric !== undefined &&
@@ -61,9 +62,11 @@ export default function normalizeOrderBy(
     return [[formData.timeseries_limit_metric, isAsc]];
   }
 
+  // the `first metric` and the `sort_by_metric` are used for orderby
   const metrics = ensureIsArray(formData.metrics);
   if (metrics.length > 0) {
-    return [[metrics[0], isAsc]];
+    const sortByMetric = !!formData.sort_by_metric ? !isAsc : isAsc;
+    return [[metrics[0], sortByMetric]];
   }
 
   return defaultOrderby;

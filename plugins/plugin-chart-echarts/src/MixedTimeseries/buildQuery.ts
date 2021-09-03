@@ -27,12 +27,8 @@ export default function buildQuery(formData: QueryFormData) {
     groupby_b,
     limit,
     limit_b,
-    timeseries_limit_metric,
-    timeseries_limit_metric_b,
     metrics,
     metrics_b,
-    order_desc,
-    order_desc_b,
     ...baseFormData
   } = formData;
   baseFormData.is_timeseries = true;
@@ -41,18 +37,14 @@ export default function buildQuery(formData: QueryFormData) {
     adhoc_filters,
     columns: groupby,
     limit,
-    timeseries_limit_metric,
     metrics,
-    order_desc,
   };
   const formData2 = {
     ...baseFormData,
     adhoc_filters: adhoc_filters_b,
     columns: groupby_b,
     limit: limit_b,
-    timeseries_limit_metric: timeseries_limit_metric_b,
     metrics: metrics_b,
-    order_desc: order_desc_b,
   };
 
   const queryContextA = buildQueryContext(formData1, baseQueryObject => {
