@@ -65,7 +65,7 @@ export default function normalizeOrderBy(
   // the `first metric` and the `sort_by_metric` are used for orderby
   const metrics = ensureIsArray(formData.metrics);
   if (metrics.length > 0) {
-    const sortByMetric = !!formData.sort_by_metric ? !isAsc : isAsc;
+    const sortByMetric = formData.sort_by_metric ? !isAsc : isAsc;
     return [[metrics[0], sortByMetric]];
   }
 
