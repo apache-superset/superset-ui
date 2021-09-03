@@ -62,16 +62,28 @@ describe('normalizeOrderBy', () => {
     ]);
   });
 
-  it('should parse metrics and order_desc', () => {
+  it('should parse first metric and sort_by_metric', () => {
     expect(
       normalizeOrderBy({
         datasource: '5__table',
         viz_type: 'table',
         time_range: '1 year ago : 2013',
         metrics: ['count(*)'],
-        order_desc: true,
+        sort_by_metric: true,
       }),
     ).toEqual([['count(*)', false]]);
+  });
+
+  it('should parse first metric and sort_by_metric is undefined', () => {
+    expect(
+      normalizeOrderBy({
+        datasource: '5__table',
+        viz_type: 'table',
+        time_range: '1 year ago : 2013',
+        metrics: ['count(*)'],
+        sort_by_metric: undefined,
+      }),
+    ).toEqual([['count(*)', true]]);
   });
 
   it('should return default orderby', () => {
