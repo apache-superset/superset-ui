@@ -31,6 +31,7 @@ export interface EchartsProps {
   width: number;
   echartOptions: EChartsCoreOption;
   eventHandlers?: EventHandlers;
+  zrEventHandlers?: EventHandlers;
   selectedValues?: Record<number, string>;
   forceClear?: boolean;
 }

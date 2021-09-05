@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, { useRef, useEffect, useMemo, forwardRef, useImperativeHandle } from 'react';
 import { styled } from '@superset-ui/core';
 import { ECharts, init } from 'echarts';
 import { EchartsHandler, EchartsProps, EchartsStylesProps } from '../types';
@@ -27,12 +27,19 @@ const Styles = styled.div<EchartsStylesProps>`
 `;
 
 function Echart(
-  { width, height, echartOptions, eventHandlers, selectedValues = {} }: EchartsProps,
+  {
+    width,
+    height,
+    echartOptions,
+    eventHandlers,
+    zrEventHandlers,
+    selectedValues = {},
+  }: EchartsProps,
   ref: React.Ref<EchartsHandler>,
 ) {
   const divRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ECharts>();
-  const currentSelection = Object.keys(selectedValues) || [];
+  const currentSelection = useMemo(() => Object.keys(selectedValues) || [], [selectedValues]);
   const previousSelection = useRef<string[]>([]);
 
   useImperativeHandle(ref, () => ({
@@ -50,8 +57,17 @@ function Echart(
       chartRef.current?.on(name, handler);
     });
 
-    chartRef.current.setOption(echartOptions, true);
+    Object.entries(zrEventHandlers || {}).forEach(([name, handler]) => {
+      chartRef.current?.getZr().off(name);
+      chartRef.current?.getZr().on(name, handler);
+    });
 
+    chartRef.current.setOption(echartOptions, true);
+  }, [echartOptions, eventHandlers, zrEventHandlers]);
+
+  // highlighting
+  useEffect(() => {
+    if (!chartRef.current) return;
     chartRef.current.dispatchAction({
       type: 'downplay',
       dataIndex: previousSelection.current.filter(value => !currentSelection.includes(value)),
@@ -63,7 +79,7 @@ function Echart(
       });
     }
     previousSelection.current = currentSelection;
-  }, [echartOptions, eventHandlers, selectedValues]);
+  }, [currentSelection]);
 
   useEffect(() => {
     if (chartRef.current) {
