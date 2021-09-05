@@ -17,7 +17,7 @@
  * under the License.
  */
 import { DataRecordValue, SetDataMaskHook } from '@superset-ui/core';
-import { EChartsCoreOption, Payload } from 'echarts';
+import { EChartsCoreOption, ECharts } from 'echarts';
 import { TooltipMarker } from 'echarts/types/src/util/format';
 import { OptionName } from 'echarts/types/src/util/types';
 
@@ -36,7 +36,7 @@ export interface EchartsProps {
 }
 
 export interface EchartsHandler {
-  dispatchAction: (paload: Payload) => void;
+  getEchartInstance: () => ECharts | undefined;
 }
 
 export enum ForecastSeriesEnum {

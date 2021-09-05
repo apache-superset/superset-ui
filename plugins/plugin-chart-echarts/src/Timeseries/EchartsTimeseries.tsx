@@ -92,17 +92,18 @@ export default function EchartsTimeseries({
     },
     legendselectchanged: payload => {
       const currentTime = Date.now();
+      const echartInstance = echartRef.current?.getEchartInstance();
       // 300 is the interval between two legendselectchanged event
       if (currentTime - lastTimeRef.current < 300 && lastSelectedLegend.current === payload.name) {
         // execute dbclick
         legendData.forEach(datum => {
           if (datum === payload.name) {
-            echartRef.current?.dispatchAction({
+            echartInstance?.dispatchAction({
               type: 'legendSelect',
               name: datum,
             });
           } else {
-            echartRef.current?.dispatchAction({
+            echartInstance?.dispatchAction({
               type: 'legendUnSelect',
               name: datum,
             });
@@ -115,7 +116,7 @@ export default function EchartsTimeseries({
       }
       // if all legend is unselected, we keep all selected
       if (Object.values(payload.selected).every(i => !i)) {
-        echartRef.current?.dispatchAction({
+        echartInstance?.dispatchAction({
           type: 'legendAllSelect',
         });
       }

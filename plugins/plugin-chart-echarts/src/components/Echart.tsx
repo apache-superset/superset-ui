@@ -18,7 +18,7 @@
  */
 import React, { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { styled } from '@superset-ui/core';
-import { ECharts, init, Payload } from 'echarts';
+import { ECharts, init } from 'echarts';
 import { EchartsHandler, EchartsProps, EchartsStylesProps } from '../types';
 
 const Styles = styled.div<EchartsStylesProps>`
@@ -36,11 +36,7 @@ function Echart(
   const previousSelection = useRef<string[]>([]);
 
   useImperativeHandle(ref, () => ({
-    dispatchAction: (payload: Payload) => {
-      if (chartRef.current) {
-        chartRef.current.dispatchAction(payload);
-      }
-    },
+    getEchartInstance: () => chartRef.current,
   }));
 
   useEffect(() => {
