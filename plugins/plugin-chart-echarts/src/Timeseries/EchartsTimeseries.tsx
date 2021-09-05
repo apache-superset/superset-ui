@@ -166,7 +166,6 @@ export default function EchartsTimeseries({
       if (clickTimer.current) {
         clearTimeout(clickTimer.current);
       }
-      // only for the stacked line/area/step/smooth chart
       const pointInPixel = [params.offsetX, params.offsetY];
       const echartInstance = echartRef.current?.getEchartInstance();
       if (echartInstance?.containPixel('grid', pointInPixel)) {
