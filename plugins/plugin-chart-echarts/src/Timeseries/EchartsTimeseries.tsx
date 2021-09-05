@@ -36,7 +36,7 @@ export default function EchartsTimeseries({
   setDataMask,
   legendData = [],
 }: TimeseriesChartTransformedProps) {
-  const { emitFilter, stack, area } = formData;
+  const { emitFilter, stack } = formData;
   const echartRef = useRef<EchartsHandler | null>(null);
   const lastTimeRef = useRef(Date.now());
   const lastSelectedLegend = useRef('');
