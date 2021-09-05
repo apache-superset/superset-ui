@@ -24,6 +24,7 @@ import Echart from '../components/Echart';
 import { TimeseriesChartTransformedProps } from './types';
 import { currentSeries } from '../utils/series';
 
+const TIMER_DURATION = 300;
 // @ts-ignore
 export default function EchartsTimeseries({
   formData,
@@ -40,23 +41,30 @@ export default function EchartsTimeseries({
   const echartRef = useRef<EchartsHandler | null>(null);
   const lastTimeRef = useRef(Date.now());
   const lastSelectedLegend = useRef('');
+  const clickTimer = useRef<ReturnType<typeof setTimeout>>();
 
-  const handleDoubleClickSeries = (name: string) => {
+  const handleDoubleClickChange = useCallback((name?: string) => {
     const echartInstance = echartRef.current?.getEchartInstance();
-    legendData.forEach(datum => {
-      if (datum === name) {
-        echartInstance?.dispatchAction({
-          type: 'legendSelect',
-          name: datum,
-        });
-      } else {
-        echartInstance?.dispatchAction({
-          type: 'legendUnSelect',
-          name: datum,
-        });
-      }
-    });
-  };
+    if (!name) {
+      echartInstance?.dispatchAction({
+        type: 'legendAllSelect',
+      });
+    } else {
+      legendData.forEach(datum => {
+        if (datum === name) {
+          echartInstance?.dispatchAction({
+            type: 'legendSelect',
+            name: datum,
+          });
+        } else {
+          echartInstance?.dispatchAction({
+            type: 'legendUnSelect',
+            name: datum,
+          });
+        }
+      });
+    }
+  }, []);
 
   const getModelInfo = (target: ViewRootGroup, globalModel: GlobalModel) => {
     let el = target;
@@ -111,13 +119,19 @@ export default function EchartsTimeseries({
 
   const eventHandlers: EventHandlers = {
     click: props => {
-      const { seriesName: name } = props;
-      const values = Object.values(selectedValues);
-      if (values.includes(name)) {
-        handleChange(values.filter(v => v !== name));
-      } else {
-        handleChange([name]);
+      if (clickTimer.current) {
+        clearTimeout(clickTimer.current);
       }
+      // Ensure that double-click events do not trigger single click event. So we put it in the timer.
+      clickTimer.current = setTimeout(() => {
+        const { seriesName: name } = props;
+        const values = Object.values(selectedValues);
+        if (values.includes(name)) {
+          handleChange(values.filter(v => v !== name));
+        } else {
+          handleChange([name]);
+        }
+      }, TIMER_DURATION);
     },
     mousemove: params => {
       currentSeries.name = params.seriesName;
@@ -127,11 +141,13 @@ export default function EchartsTimeseries({
     },
     legendselectchanged: payload => {
       const currentTime = Date.now();
-      const echartInstance = echartRef.current?.getEchartInstance();
-      // 300 is the interval between two legendselectchanged event
-      if (currentTime - lastTimeRef.current < 300 && lastSelectedLegend.current === payload.name) {
+      // TIMER_DURATION is the interval between two legendselectchanged event
+      if (
+        currentTime - lastTimeRef.current < TIMER_DURATION &&
+        lastSelectedLegend.current === payload.name
+      ) {
         // execute dbclick
-        handleDoubleClickSeries(payload.name);
+        handleDoubleClickChange(payload.name);
       } else {
         lastTimeRef.current = currentTime;
         // remember last selected legend
@@ -139,15 +155,18 @@ export default function EchartsTimeseries({
       }
       // if all legend is unselected, we keep all selected
       if (Object.values(payload.selected).every(i => !i)) {
-        echartInstance?.dispatchAction({
-          type: 'legendAllSelect',
-        });
+        handleDoubleClickChange();
       }
     },
   };
 
   const zrEventHandlers: EventHandlers = {
     dblclick: params => {
+      // clear single click timer
+      if (clickTimer.current) {
+        clearTimeout(clickTimer.current);
+      }
+      // only for the stacked line/area/step/smooth chart
       const pointInPixel = [params.offsetX, params.offsetY];
       const echartInstance = echartRef.current?.getEchartInstance();
       if (echartInstance?.containPixel('grid', pointInPixel)) {
@@ -161,11 +180,9 @@ export default function EchartsTimeseries({
         if (model) {
           const { name } = model;
           if (seriesCount !== currentSeriesIndices.length) {
-            echartInstance?.dispatchAction({
-              type: 'legendAllSelect',
-            });
+            handleDoubleClickChange();
           } else {
-            handleDoubleClickSeries(name);
+            handleDoubleClickChange(name);
           }
         }
       }
