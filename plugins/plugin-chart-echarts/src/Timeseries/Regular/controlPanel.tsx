@@ -147,7 +147,7 @@ const config: ControlPanelConfig = {
             name: 'x_axis_label',
             config: {
               type: 'TextControl',
-              label: t('X AXIS LABEL'),
+              label: t('X Axis Title'),
               renderTrigger: true,
               default: xAxisLabel,
               description: t('Changing this control takes effect instantly'),
@@ -240,7 +240,7 @@ const config: ControlPanelConfig = {
             name: 'y_axis_label',
             config: {
               type: 'TextControl',
-              label: t('Y Axis Label'),
+              label: t('Y Axis Title'),
               renderTrigger: true,
               default: yAxisLabel,
               description: t('Changing this control takes effect instantly'),
