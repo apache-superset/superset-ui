@@ -94,7 +94,6 @@ export default function transformProps(
     yAxisFormat,
     xAxisTimeFormat,
     yAxisBounds,
-    yAxisTitle,
     tooltipTimeFormat,
     zoomable,
     richTooltip,
@@ -103,6 +102,11 @@ export default function transformProps(
     groupby,
     showValue,
     onlyTotal,
+    xAxisLabel,
+    yAxisLabel,
+    xAxisLabelBottomMargin = 0,
+    yAxisLabelMargin = 0,
+    yAxisLabelPosition = 'Top',
   }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
@@ -205,9 +209,19 @@ export default function transformProps(
 
   const { setDataMask = () => {} } = hooks;
 
-  const addYAxisLabelOffset = !!yAxisTitle;
-  const padding = getPadding(showLegend, legendOrientation, addYAxisLabelOffset, zoomable);
-
+  const addYAxisLabelOffset = !!yAxisLabel;
+  const addXAxisLabelOffset = !!xAxisLabel;
+  const padding = getPadding(
+    showLegend,
+    legendOrientation,
+    addYAxisLabelOffset,
+    zoomable,
+    null,
+    addXAxisLabelOffset,
+    yAxisLabelPosition,
+    yAxisLabelMargin,
+    xAxisLabelBottomMargin,
+  );
   const echartOptions: EChartsOption = {
     useUTC: true,
     grid: {
@@ -216,6 +230,9 @@ export default function transformProps(
     },
     xAxis: {
       type: 'time',
+      name: xAxisLabel,
+      nameGap: xAxisLabelBottomMargin,
+      nameLocation: 'middle',
       axisLabel: {
         formatter: xAxisFormatter,
         rotate: xAxisLabelRotation,
@@ -230,7 +247,9 @@ export default function transformProps(
       minorSplitLine: { show: minorSplitLine },
       axisLabel: { formatter },
       scale: truncateYAxis,
-      name: yAxisTitle,
+      name: yAxisLabel,
+      nameGap: yAxisLabelMargin,
+      nameLocation: yAxisLabelPosition === 'Left' ? 'middle' : 'end',
     },
     tooltip: {
       ...defaultTooltip,

@@ -375,6 +375,10 @@ export function getPadding(
   addYAxisLabelOffset: boolean,
   zoomable: boolean,
   margin?: string | number | null,
+  addXAxisLabelOffset?: boolean,
+  yAxisLabelPosition?: string,
+  yAxisLabelMargin?: number,
+  xAxisLabelBottomMargin?: number,
 ): {
   bottom: number;
   left: number;
@@ -382,12 +386,19 @@ export function getPadding(
   top: number;
 } {
   const yAxisOffset = addYAxisLabelOffset ? TIMESERIES_CONSTANTS.yAxisLabelTopOffset : 0;
+  const xAxisOffset = addXAxisLabelOffset ? xAxisLabelBottomMargin || 0 : 0;
   return getChartPadding(showLegend, legendOrientation, margin, {
-    top: TIMESERIES_CONSTANTS.gridOffsetTop + yAxisOffset,
+    top:
+      yAxisLabelPosition && yAxisLabelPosition === 'Top'
+        ? TIMESERIES_CONSTANTS.gridOffsetTop + (yAxisLabelMargin || 0)
+        : TIMESERIES_CONSTANTS.gridOffsetTop + yAxisOffset,
     bottom: zoomable
-      ? TIMESERIES_CONSTANTS.gridOffsetBottomZoomable
-      : TIMESERIES_CONSTANTS.gridOffsetBottom,
-    left: TIMESERIES_CONSTANTS.gridOffsetLeft,
+      ? TIMESERIES_CONSTANTS.gridOffsetBottomZoomable + xAxisOffset
+      : TIMESERIES_CONSTANTS.gridOffsetBottom + xAxisOffset,
+    left:
+      yAxisLabelPosition === 'Left'
+        ? TIMESERIES_CONSTANTS.gridOffsetLeft + (yAxisLabelMargin || 0)
+        : TIMESERIES_CONSTANTS.gridOffsetLeft,
     right:
       showLegend && legendOrientation === LegendOrientation.Right
         ? 0
