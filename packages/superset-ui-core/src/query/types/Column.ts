@@ -18,7 +18,6 @@
  * under the License.
  */
 
-import { ColumnMeta } from '@superset-ui/chart-controls';
 import { GenericDataType } from './QueryResponse';
 
 export interface AdhocColumn {
@@ -55,16 +54,4 @@ export default {};
 
 export function isPhysicalColumn(column: AdhocColumn | PhysicalColumn): column is PhysicalColumn {
   return typeof column === 'string';
-}
-
-export function isColumnMeta(column: AdhocColumn | ColumnMeta): column is ColumnMeta {
-  return 'column_name' in column;
-}
-
-export function isSavedExpression(column: AdhocColumn | ColumnMeta): column is ColumnMeta {
-  return 'column_name' in column && 'expression' in column;
-}
-
-export function isAdhocColumn(column: AdhocColumn | ColumnMeta): column is AdhocColumn {
-  return 'label' in column && 'sqlExpression' in column;
 }
