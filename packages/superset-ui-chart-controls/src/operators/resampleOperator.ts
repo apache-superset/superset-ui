@@ -17,10 +17,25 @@
  * specific language governing permissions and limitationsxw
  * under the License.
  */
-export { rollingWindowOperator } from './rollingWindowOperator';
-export { timeCompareOperator } from './timeCompareOperator';
-export { timeComparePivotOperator } from './timeComparePivotOperator';
-export { sortOperator } from './sortOperator';
-export { pivotOperator } from './pivotOperator';
-export { resampleOperator } from './resampleOperator';
-export * from './utils';
+import { PostProcessingResample } from '@superset-ui/core';
+import { PostProcessingFactory } from './types';
+import { TIME_COLUMN } from './utils';
+
+export const resampleOperator: PostProcessingFactory<PostProcessingResample | undefined> = (
+  formData,
+  queryObject,
+) => {
+  const resampleMethod = formData.resample_method;
+  const resampleRule = formData.resample_rule;
+  if (resampleMethod && resampleRule) {
+    return {
+      operation: 'resample',
+      options: {
+        resample_method: resampleMethod,
+        resample_rule: resampleRule,
+        time_column: TIME_COLUMN,
+      },
+    };
+  }
+  return undefined;
+};

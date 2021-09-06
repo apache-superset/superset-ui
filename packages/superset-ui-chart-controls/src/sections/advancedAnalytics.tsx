@@ -126,5 +126,32 @@ export const advancedAnalyticsControls: ControlPanelSectionConfig = {
         },
       },
     ],
+    [<h1 className="section-header">{t('Resample')}</h1>],
+    [
+      {
+        name: 'resample_rule',
+        config: {
+          type: 'SelectControl',
+          freeForm: true,
+          label: t('Rule'),
+          default: null,
+          choices: formatSelectOptions(['1T', '1H', '1D', '7D', '1M', '1AS']),
+          description: t('Pandas resample rule'),
+        },
+      },
+    ],
+    [
+      {
+        name: 'resample_method',
+        config: {
+          type: 'SelectControl',
+          freeForm: true,
+          label: t('Method'),
+          default: null,
+          choices: formatSelectOptions(['asfreq', 'bfill', 'ffill', 'median', 'mean', 'sum']),
+          description: t('Pandas resample method'),
+        },
+      },
+    ],
   ],
 };

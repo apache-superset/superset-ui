@@ -23,6 +23,7 @@ import {
   isValidTimeCompare,
   sortOperator,
   pivotOperator,
+  resampleOperator,
 } from '@superset-ui/chart-controls';
 
 export default function buildQuery(formData: QueryFormData) {
@@ -37,6 +38,7 @@ export default function buildQuery(formData: QueryFormData) {
         timeCompareOperator(formData, baseQueryObject),
         sortOperator(formData, { ...baseQueryObject, is_timeseries: true }),
         rollingWindowOperator(formData, baseQueryObject),
+        resampleOperator(formData, { ...baseQueryObject, is_timeseries: true }),
         pivotOperator(formData, { ...baseQueryObject, is_timeseries: true }),
         formData.contributionMode
           ? {
