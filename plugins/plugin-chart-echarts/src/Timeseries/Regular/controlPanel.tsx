@@ -161,7 +161,7 @@ const config: ControlPanelConfig = {
               type: 'SelectControl',
               freeForm: true,
               clearable: false,
-              label: t('BOTTOM MARGIN'),
+              label: t('X Axis BOTTOM MARGIN'),
               choices: [
                 [15, 15],
                 [30, 30],
@@ -254,7 +254,7 @@ const config: ControlPanelConfig = {
               type: 'SelectControl',
               freeForm: true,
               clearable: false,
-              label: t('Left/TOP MARGIN'),
+              label: t('Y Axis Title Position'),
               choices: [
                 ['Left', 'Left'],
                 ['Top', 'Top'],
@@ -272,7 +272,7 @@ const config: ControlPanelConfig = {
               type: 'SelectControl',
               freeForm: true,
               clearable: false,
-              label: t('Left/TOP MARGIN'),
+              label: t('Y Axis Title MARGIN'),
               choices: [
                 [15, 15],
                 [30, 30],

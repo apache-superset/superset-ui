@@ -103,7 +103,6 @@ export default function transformProps(
     yAxisBounds,
     yAxisIndex,
     yAxisIndexB,
-    yAxisTitle,
     yAxisTitleSecondary,
     zoomable,
     richTooltip,
@@ -112,6 +111,11 @@ export default function transformProps(
     groupbyB,
     emitFilter,
     emitFilterB,
+    xAxisLabel,
+    yAxisLabel,
+    xAxisLabelBottomMargin = 0,
+    yAxisLabelMargin = 0,
+    yAxisLabelPosition = 'Top',
   }: EchartsMixedTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
@@ -191,9 +195,20 @@ export default function transformProps(
   const tooltipTimeFormatter = getTooltipTimeFormatter(tooltipTimeFormat);
   const xAxisFormatter = getXAxisFormatter(xAxisTimeFormat);
 
-  const addYAxisLabelOffset = !!(yAxisTitle || yAxisTitleSecondary);
-  const chartPadding = getPadding(showLegend, legendOrientation, addYAxisLabelOffset, zoomable);
+  const addYAxisLabelOffset = !!(yAxisLabel || yAxisTitleSecondary);
+  const addXAxisLabelOffset = !!xAxisLabel;
 
+  const chartPadding = getPadding(
+    showLegend,
+    legendOrientation,
+    addYAxisLabelOffset,
+    zoomable,
+    null,
+    addXAxisLabelOffset,
+    yAxisLabelPosition,
+    yAxisLabelMargin,
+    xAxisLabelBottomMargin,
+  );
   const labelMap = rawSeriesA.reduce((acc, datum) => {
     const label = datum.name as string;
     return {
@@ -220,6 +235,9 @@ export default function transformProps(
     },
     xAxis: {
       type: 'time',
+      name: xAxisLabel,
+      nameGap: xAxisLabelBottomMargin,
+      nameLocation: 'middle',
       axisLabel: {
         showMinLabel: xAxisShowMinLabel,
         showMaxLabel: xAxisShowMaxLabel,
@@ -237,7 +255,9 @@ export default function transformProps(
         minorSplitLine: { show: minorSplitLine },
         axisLabel: { formatter },
         scale: truncateYAxis,
-        name: yAxisTitle,
+        name: yAxisLabel,
+        nameGap: yAxisLabelMargin,
+        nameLocation: yAxisLabelPosition === 'Left' ? 'middle' : 'end',
       },
       {
         ...defaultYAxis,

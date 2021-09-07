@@ -66,6 +66,97 @@ export default {
         ['color_scheme'],
         [
           {
+            name: 'x_axis_label',
+            config: {
+              type: 'TextControl',
+              label: t('X Axis Title'),
+              renderTrigger: true,
+              default: '',
+              description: t('Changing this control takes effect instantly'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'xAxisLabelBottomMargin',
+            config: {
+              type: 'SelectControl',
+              freeForm: true,
+              clearable: false,
+              label: t('X AXIS BOTTOM MARGIN'),
+              choices: [
+                [15, 15],
+                [30, 30],
+                [50, 50],
+                [75, 75],
+                [100, 100],
+                [125, 125],
+                [150, 150],
+                [200, 200],
+              ],
+              default: '',
+              renderTrigger: true,
+              description: t('Changing this control takes effect instantly'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'y_axis_label',
+            config: {
+              type: 'TextControl',
+              label: t('Y Axis Title'),
+              renderTrigger: true,
+              default: '',
+              description: t('Changing this control takes effect instantly'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'yAxisLabelPosition',
+            config: {
+              type: 'SelectControl',
+              freeForm: true,
+              clearable: false,
+              label: t('Y Axis Title Position'),
+              choices: [
+                ['Left', 'Left'],
+                ['Top', 'Top'],
+              ],
+              default: '',
+              renderTrigger: true,
+              description: t('Changing this control takes effect instantly'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'yAxisLabelMargin',
+            config: {
+              type: 'SelectControl',
+              freeForm: true,
+              clearable: false,
+              label: t('Y Axis Title MARGIN'),
+              choices: [
+                [15, 15],
+                [30, 30],
+                [50, 50],
+                [75, 75],
+                [100, 100],
+                [125, 125],
+                [150, 150],
+                [200, 200],
+              ],
+              default: '',
+              renderTrigger: true,
+              description: t('Changing this control takes effect instantly'),
+            },
+          },
+        ],
+
+        [
+          {
             name: 'x_ticks_layout',
             config: {
               type: 'SelectControl',

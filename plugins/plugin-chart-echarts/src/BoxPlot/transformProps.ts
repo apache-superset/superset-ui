@@ -32,6 +32,7 @@ import {
 } from './types';
 import { extractGroupbyLabel, getColtypesMapping, sanitizeHtml } from '../utils/series';
 import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
+import { getPadding } from '../Timeseries/transformers';
 import { OpacityEnum } from '../constants';
 
 export default function transformProps(
@@ -49,6 +50,12 @@ export default function transformProps(
     dateFormat,
     xTicksLayout,
     emitFilter,
+    xAxisLabel,
+    yAxisLabel,
+    xAxisLabelBottomMargin = 0,
+    yAxisLabelMargin = 0,
+    yAxisLabelPosition = 'Top',
+    legendOrientation = 'top',
   } = formData as BoxPlotQueryFormData;
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const numberFormatter = getNumberFormatter(numberFormat);
@@ -187,24 +194,39 @@ export default function transformProps(
     // @ts-ignore
     ...outlierData,
   ];
-
+  const addYAxisLabelOffset = !!yAxisLabel;
+  const addXAxisLabelOffset = !!xAxisLabel;
+  const chartPadding = getPadding(
+    true,
+    legendOrientation,
+    addYAxisLabelOffset,
+    false,
+    null,
+    addXAxisLabelOffset,
+    yAxisLabelPosition,
+    yAxisLabelMargin,
+    xAxisLabelBottomMargin,
+  );
   const echartOptions: EChartsOption = {
     grid: {
       ...defaultGrid,
-      top: 30,
-      bottom: 30,
-      left: 20,
-      right: 20,
+      ...chartPadding,
     },
     xAxis: {
       type: 'category',
       data: transformedData.map(row => row.name),
       axisLabel,
+      name: xAxisLabel,
+      nameGap: xAxisLabelBottomMargin,
+      nameLocation: 'middle',
     },
     yAxis: {
       ...defaultYAxis,
       type: 'value',
       axisLabel: { formatter: numberFormatter },
+      name: yAxisLabel,
+      nameGap: yAxisLabelMargin,
+      nameLocation: yAxisLabelPosition === 'Left' ? 'middle' : 'end',
     },
     tooltip: {
       ...defaultTooltip,
