@@ -63,6 +63,7 @@ describe('resampleOperator', () => {
       options: {
         resample_method: 'ffill',
         resample_rule: '1D',
+        resample_fill_zero: false,
         time_column: '__timestamp',
       },
     });

@@ -35,10 +35,10 @@ export default function buildQuery(formData: QueryFormData) {
       orderby: normalizeOrderBy(baseQueryObject).orderby,
       time_offsets: isValidTimeCompare(formData, baseQueryObject) ? formData.time_compare : [],
       post_processing: [
+        resampleOperator(formData, baseQueryObject),
         timeCompareOperator(formData, baseQueryObject),
         sortOperator(formData, { ...baseQueryObject, is_timeseries: true }),
         rollingWindowOperator(formData, baseQueryObject),
-        resampleOperator(formData, { ...baseQueryObject, is_timeseries: true }),
         pivotOperator(formData, { ...baseQueryObject, is_timeseries: true }),
         formData.contributionMode
           ? {

@@ -27,12 +27,14 @@ export const resampleOperator: PostProcessingFactory<PostProcessingResample | un
 ) => {
   const resampleMethod = formData.resample_method;
   const resampleRule = formData.resample_rule;
+  const resampleFillZero = Boolean(formData.resample_fill_zero);
   if (resampleMethod && resampleRule) {
     return {
       operation: 'resample',
       options: {
         resample_method: resampleMethod,
         resample_rule: resampleRule,
+        resample_fill_zero: resampleFillZero,
         time_column: TIME_COLUMN,
       },
     };
