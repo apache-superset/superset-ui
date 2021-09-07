@@ -19,6 +19,7 @@
 import React, { useCallback, useRef } from 'react';
 import { ViewRootGroup } from 'echarts/types/src/util/types';
 import GlobalModel from 'echarts/types/src/model/Global';
+import ComponentModel from 'echarts/types/src/model/Component';
 import { EchartsHandler, EventHandlers } from '../types';
 import Echart from '../components/Echart';
 import { TimeseriesChartTransformedProps } from './types';
@@ -68,7 +69,7 @@ export default function EchartsTimeseries({
 
   const getModelInfo = (target: ViewRootGroup, globalModel: GlobalModel) => {
     let el = target;
-    let model = null;
+    let model: ComponentModel | null = null;
     while (el) {
       // eslint-disable-next-line no-underscore-dangle
       const modelInfo = el.__ecComponentInfo;
