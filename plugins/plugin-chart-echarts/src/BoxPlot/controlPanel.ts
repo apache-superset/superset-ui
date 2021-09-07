@@ -18,6 +18,8 @@
  */
 import { t } from '@superset-ui/core';
 import {
+  sharedControls,
+  ControlPanelConfig,
   D3_FORMAT_DOCS,
   D3_FORMAT_OPTIONS,
   D3_TIME_FORMAT_OPTIONS,
@@ -26,7 +28,7 @@ import {
   emitFilterControl,
 } from '@superset-ui/chart-controls';
 
-export default {
+const config: ControlPanelConfig = {
   controlPanelSections: [
     sections.legacyTimeseriesTime,
     {
@@ -66,91 +68,42 @@ export default {
         ['color_scheme'],
         [
           {
-            name: 'x_axis_label',
+            name: 'x_axis_title',
             config: {
-              type: 'TextControl',
-              label: t('X Axis Title'),
-              renderTrigger: true,
-              default: '',
-              description: t('Changing this control takes effect instantly'),
+              ...sharedControls.x_axis_title,
             },
           },
         ],
         [
           {
-            name: 'xAxisLabelBottomMargin',
+            name: 'x_axis_title_margin',
             config: {
-              type: 'SelectControl',
-              freeForm: true,
-              clearable: false,
-              label: t('X AXIS BOTTOM MARGIN'),
-              choices: [
-                [15, 15],
-                [30, 30],
-                [50, 50],
-                [75, 75],
-                [100, 100],
-                [125, 125],
-                [150, 150],
-                [200, 200],
-              ],
-              default: '',
-              renderTrigger: true,
-              description: t('Changing this control takes effect instantly'),
+              ...sharedControls.x_axis_title_margin,
+            },
+          },
+        ],
+
+        [
+          {
+            name: 'y_axis_title',
+            config: {
+              ...sharedControls.y_axis_title,
             },
           },
         ],
         [
           {
-            name: 'y_axis_label',
+            name: 'y_axis_title_position',
             config: {
-              type: 'TextControl',
-              label: t('Y Axis Title'),
-              renderTrigger: true,
-              default: '',
-              description: t('Changing this control takes effect instantly'),
+              ...sharedControls.y_axis_title_position,
             },
           },
         ],
         [
           {
-            name: 'yAxisLabelPosition',
+            name: 'y_axis_title_margin',
             config: {
-              type: 'SelectControl',
-              freeForm: true,
-              clearable: false,
-              label: t('Y Axis Title Position'),
-              choices: [
-                ['Left', 'Left'],
-                ['Top', 'Top'],
-              ],
-              default: '',
-              renderTrigger: true,
-              description: t('Changing this control takes effect instantly'),
-            },
-          },
-        ],
-        [
-          {
-            name: 'yAxisLabelMargin',
-            config: {
-              type: 'SelectControl',
-              freeForm: true,
-              clearable: false,
-              label: t('Y Axis Title MARGIN'),
-              choices: [
-                [15, 15],
-                [30, 30],
-                [50, 50],
-                [75, 75],
-                [100, 100],
-                [125, 125],
-                [150, 150],
-                [200, 200],
-              ],
-              default: '',
-              renderTrigger: true,
-              description: t('Changing this control takes effect instantly'),
+              ...sharedControls.y_axis_title_margin,
             },
           },
         ],
@@ -216,3 +169,5 @@ export default {
     },
   },
 };
+
+export default config;

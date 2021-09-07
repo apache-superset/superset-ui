@@ -144,37 +144,19 @@ const config: ControlPanelConfig = {
         [<h1 className="section-header">{t('X Axis')}</h1>],
         [
           {
-            name: 'x_axis_label',
+            name: 'x_axis_title',
             config: {
-              type: 'TextControl',
-              label: t('X Axis Title'),
-              renderTrigger: true,
+              ...sharedControls.x_axis_title,
               default: xAxisLabel,
-              description: t('Changing this control takes effect instantly'),
             },
           },
         ],
         [
           {
-            name: 'xAxisLabelBottomMargin',
+            name: 'x_axis_title_margin',
             config: {
-              type: 'SelectControl',
-              freeForm: true,
-              clearable: false,
-              label: t('X Axis BOTTOM MARGIN'),
-              choices: [
-                [15, 15],
-                [30, 30],
-                [50, 50],
-                [75, 75],
-                [100, 100],
-                [125, 125],
-                [150, 150],
-                [200, 200],
-              ],
+              ...sharedControls.x_axis_title_margin,
               default: xAxisLabelBottomMargin,
-              renderTrigger: true,
-              description: t('Changing this control takes effect instantly'),
             },
           },
         ],
@@ -237,55 +219,28 @@ const config: ControlPanelConfig = {
         [<h1 className="section-header">{t('Y Axis')}</h1>],
         [
           {
-            name: 'y_axis_label',
+            name: 'y_axis_title',
             config: {
-              type: 'TextControl',
-              label: t('Y Axis Title'),
-              renderTrigger: true,
+              ...sharedControls.y_axis_title,
               default: yAxisLabel,
-              description: t('Changing this control takes effect instantly'),
             },
           },
         ],
         [
           {
-            name: 'yAxisLabelPosition',
+            name: 'y_axis_title_position',
             config: {
-              type: 'SelectControl',
-              freeForm: true,
-              clearable: false,
-              label: t('Y Axis Title Position'),
-              choices: [
-                ['Left', 'Left'],
-                ['Top', 'Top'],
-              ],
+              ...sharedControls.y_axis_title_position,
               default: yAxisLabelPosition,
-              renderTrigger: true,
-              description: t('Changing this control takes effect instantly'),
             },
           },
         ],
         [
           {
-            name: 'yAxisLabelMargin',
+            name: 'y_axis_title_margin',
             config: {
-              type: 'SelectControl',
-              freeForm: true,
-              clearable: false,
-              label: t('Y Axis Title MARGIN'),
-              choices: [
-                [15, 15],
-                [30, 30],
-                [50, 50],
-                [75, 75],
-                [100, 100],
-                [125, 125],
-                [150, 150],
-                [200, 200],
-              ],
+              ...sharedControls.y_axis_title_margin,
               default: yAxisLabelMargin,
-              renderTrigger: true,
-              description: t('Changing this control takes effect instantly'),
             },
           },
         ],
