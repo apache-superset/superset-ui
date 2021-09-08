@@ -111,11 +111,11 @@ export default function transformProps(
     groupbyB,
     emitFilter,
     emitFilterB,
-    xAxisLabel,
-    yAxisLabel,
-    xAxisLabelBottomMargin = 0,
-    yAxisLabelMargin = 0,
-    yAxisLabelPosition = 'Top',
+    xAxisTitle,
+    yAxisTitle,
+    xAxisTitleMargin,
+    yAxisTitleMargin,
+    yAxisTitlePosition,
   }: EchartsMixedTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
@@ -195,8 +195,8 @@ export default function transformProps(
   const tooltipTimeFormatter = getTooltipTimeFormatter(tooltipTimeFormat);
   const xAxisFormatter = getXAxisFormatter(xAxisTimeFormat);
 
-  const addYAxisLabelOffset = !!(yAxisLabel || yAxisTitleSecondary);
-  const addXAxisLabelOffset = !!xAxisLabel;
+  const addYAxisLabelOffset = !!(yAxisTitle || yAxisTitleSecondary);
+  const addXAxisLabelOffset = !!xAxisTitle;
 
   const chartPadding = getPadding(
     showLegend,
@@ -205,9 +205,9 @@ export default function transformProps(
     zoomable,
     null,
     addXAxisLabelOffset,
-    yAxisLabelPosition,
-    yAxisLabelMargin,
-    xAxisLabelBottomMargin,
+    yAxisTitlePosition,
+    yAxisTitleMargin,
+    xAxisTitleMargin,
   );
   const labelMap = rawSeriesA.reduce((acc, datum) => {
     const label = datum.name as string;
@@ -235,8 +235,8 @@ export default function transformProps(
     },
     xAxis: {
       type: 'time',
-      name: xAxisLabel,
-      nameGap: xAxisLabelBottomMargin,
+      name: xAxisTitle,
+      nameGap: xAxisTitleMargin,
       nameLocation: 'middle',
       axisLabel: {
         showMinLabel: xAxisShowMinLabel,
@@ -255,9 +255,9 @@ export default function transformProps(
         minorSplitLine: { show: minorSplitLine },
         axisLabel: { formatter },
         scale: truncateYAxis,
-        name: yAxisLabel,
-        nameGap: yAxisLabelMargin,
-        nameLocation: yAxisLabelPosition === 'Left' ? 'middle' : 'end',
+        name: yAxisTitle,
+        nameGap: yAxisTitleMargin,
+        nameLocation: yAxisTitlePosition === 'Left' ? 'middle' : 'end',
       },
       {
         ...defaultYAxis,

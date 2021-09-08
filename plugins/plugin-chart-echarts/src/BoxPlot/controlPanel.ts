@@ -18,16 +18,14 @@
  */
 import { t } from '@superset-ui/core';
 import {
-  sharedControls,
-  ControlPanelConfig,
   D3_FORMAT_DOCS,
   D3_FORMAT_OPTIONS,
   D3_TIME_FORMAT_OPTIONS,
   formatSelectOptions,
   sections,
   emitFilterControl,
+  ControlPanelConfig,
 } from '@superset-ui/chart-controls';
-
 const config: ControlPanelConfig = {
   controlPanelSections: [
     sections.legacyTimeseriesTime,
@@ -61,53 +59,12 @@ const config: ControlPanelConfig = {
         ],
       ],
     },
+    { ...sections.titleControls, expanded: true },
     {
       label: t('Chart Options'),
       expanded: true,
       controlSetRows: [
         ['color_scheme'],
-        [
-          {
-            name: 'x_axis_title',
-            config: {
-              ...sharedControls.x_axis_title,
-            },
-          },
-        ],
-        [
-          {
-            name: 'x_axis_title_margin',
-            config: {
-              ...sharedControls.x_axis_title_margin,
-            },
-          },
-        ],
-
-        [
-          {
-            name: 'y_axis_title',
-            config: {
-              ...sharedControls.y_axis_title,
-            },
-          },
-        ],
-        [
-          {
-            name: 'y_axis_title_position',
-            config: {
-              ...sharedControls.y_axis_title_position,
-            },
-          },
-        ],
-        [
-          {
-            name: 'y_axis_title_margin',
-            config: {
-              ...sharedControls.y_axis_title_margin,
-            },
-          },
-        ],
-
         [
           {
             name: 'x_ticks_layout',
@@ -169,5 +126,4 @@ const config: ControlPanelConfig = {
     },
   },
 };
-
 export default config;

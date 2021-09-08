@@ -102,13 +102,12 @@ export default function transformProps(
     groupby,
     showValue,
     onlyTotal,
-    xAxisLabel,
-    yAxisLabel,
-    xAxisLabelBottomMargin = 0,
-    yAxisLabelMargin = 0,
-    yAxisLabelPosition = 'Top',
+    xAxisTitle,
+    yAxisTitle,
+    xAxisTitleMargin,
+    yAxisTitleMargin,
+    yAxisTitlePosition,
   }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
-
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
   const rebasedData = rebaseTimeseriesDatum(data, verboseMap);
   const rawSeries = extractTimeseriesSeries(rebasedData, {
@@ -209,8 +208,8 @@ export default function transformProps(
 
   const { setDataMask = () => {} } = hooks;
 
-  const addYAxisLabelOffset = !!yAxisLabel;
-  const addXAxisLabelOffset = !!xAxisLabel;
+  const addYAxisLabelOffset = !!yAxisTitle;
+  const addXAxisLabelOffset = !!xAxisTitle;
   const padding = getPadding(
     showLegend,
     legendOrientation,
@@ -218,9 +217,9 @@ export default function transformProps(
     zoomable,
     null,
     addXAxisLabelOffset,
-    yAxisLabelPosition,
-    yAxisLabelMargin,
-    xAxisLabelBottomMargin,
+    yAxisTitlePosition,
+    yAxisTitleMargin,
+    xAxisTitleMargin,
   );
   const echartOptions: EChartsOption = {
     useUTC: true,
@@ -230,8 +229,8 @@ export default function transformProps(
     },
     xAxis: {
       type: 'time',
-      name: xAxisLabel,
-      nameGap: xAxisLabelBottomMargin,
+      name: xAxisTitle,
+      nameGap: xAxisTitleMargin,
       nameLocation: 'middle',
       axisLabel: {
         formatter: xAxisFormatter,
@@ -247,9 +246,9 @@ export default function transformProps(
       minorSplitLine: { show: minorSplitLine },
       axisLabel: { formatter },
       scale: truncateYAxis,
-      name: yAxisLabel,
-      nameGap: yAxisLabelMargin,
-      nameLocation: yAxisLabelPosition === 'Left' ? 'middle' : 'end',
+      name: yAxisTitle,
+      nameGap: yAxisTitleMargin,
+      nameLocation: yAxisTitlePosition === 'Left' ? 'middle' : 'end',
     },
     tooltip: {
       ...defaultTooltip,

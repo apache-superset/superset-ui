@@ -44,6 +44,11 @@ export type BoxPlotFormXTickLayout = '45°' | '90°' | 'auto' | 'flat' | 'stagge
 // @ts-ignore
 export const DEFAULT_FORM_DATA: BoxPlotQueryFormData = {
   emitFilter: false,
+  yAxisTitle: '',
+  xAxisTitle: '',
+  xAxisTitleMargin: 0,
+  yAxisTitleMargin: 0,
+  yAxisTitlePosition: 'Top',
 };
 
 export interface EchartsBoxPlotChartProps extends ChartProps {

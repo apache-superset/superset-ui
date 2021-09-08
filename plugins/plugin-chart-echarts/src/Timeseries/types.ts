@@ -77,6 +77,10 @@ export type EchartsTimeseriesFormData = QueryFormData & {
   groupby: string[];
   showValue: boolean;
   onlyTotal: boolean;
+  xAxisTitle: string;
+  xAxisTitleMargin: number;
+  yAxisTitleMargin: number;
+  yAxisTitlePosition: string;
 } & EchartsLegendFormData;
 
 // @ts-ignore
@@ -110,6 +114,10 @@ export const DEFAULT_FORM_DATA: EchartsTimeseriesFormData = {
   yAxisTitle: '',
   showValue: false,
   onlyTotal: false,
+  xAxisTitle: '',
+  xAxisTitleMargin: 0,
+  yAxisTitleMargin: 0,
+  yAxisTitlePosition: 'Top',
 };
 
 export interface EchartsTimeseriesChartProps extends ChartProps {

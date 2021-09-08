@@ -80,6 +80,10 @@ export type EchartsMixedTimeseriesFormData = QueryFormData & {
   groupby: string[];
   groupbyB: string[];
   emitFilter: boolean;
+  xAxisTitle: string;
+  xAxisTitleMargin: number;
+  yAxisTitleMargin: number;
+  yAxisTitlePosition: string;
 } & EchartsLegendFormData;
 
 // @ts-ignore
@@ -124,6 +128,10 @@ export const DEFAULT_FORM_DATA: EchartsMixedTimeseriesFormData = {
   zoomable: TIMESERIES_DEFAULTS.zoomable,
   richTooltip: TIMESERIES_DEFAULTS.richTooltip,
   xAxisLabelRotation: TIMESERIES_DEFAULTS.xAxisLabelRotation,
+  xAxisTitle: '',
+  xAxisTitleMargin: 0,
+  yAxisTitleMargin: 0,
+  yAxisTitlePosition: 'Top',
 };
 
 export interface EchartsMixedTimeseriesProps extends ChartProps {

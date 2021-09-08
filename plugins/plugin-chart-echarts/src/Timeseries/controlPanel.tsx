@@ -49,11 +49,6 @@ const {
   yAxisBounds,
   zoomable,
   xAxisLabelRotation,
-  xAxisLabel,
-  yAxisLabel,
-  xAxisLabelBottomMargin,
-  yAxisLabelMargin,
-  yAxisLabelPosition,
 } = DEFAULT_FORM_DATA;
 const config: ControlPanelConfig = {
   controlPanelSections: [
@@ -101,6 +96,7 @@ const config: ControlPanelConfig = {
     sections.advancedAnalyticsControls,
     sections.annotationsAndLayersControls,
     sections.forecastIntervalControls,
+    { ...sections.titleControls, expanded: true },
     {
       label: t('Chart Options'),
       expanded: true,
@@ -201,24 +197,6 @@ const config: ControlPanelConfig = {
         [<h1 className="section-header">{t('X Axis')}</h1>],
         [
           {
-            name: 'x_axis_title',
-            config: {
-              ...sharedControls.x_axis_title,
-              default: xAxisLabel,
-            },
-          },
-        ],
-        [
-          {
-            name: 'x_axis_title_margin',
-            config: {
-              ...sharedControls.x_axis_title_margin,
-              default: xAxisLabelBottomMargin,
-            },
-          },
-        ],
-        [
-          {
             name: 'x_axis_time_format',
             config: {
               ...sharedControls.x_axis_time_format,
@@ -274,33 +252,6 @@ const config: ControlPanelConfig = {
         ],
         // eslint-disable-next-line react/jsx-key
         [<h1 className="section-header">{t('Y Axis')}</h1>],
-        [
-          {
-            name: 'y_axis_title',
-            config: {
-              ...sharedControls.y_axis_title,
-              default: yAxisLabel,
-            },
-          },
-        ],
-        [
-          {
-            name: 'y_axis_title_position',
-            config: {
-              ...sharedControls.y_axis_title_position,
-              default: yAxisLabelPosition,
-            },
-          },
-        ],
-        [
-          {
-            name: 'y_axis_title_margin',
-            config: {
-              ...sharedControls.y_axis_title_margin,
-              default: yAxisLabelMargin,
-            },
-          },
-        ],
         ['y_axis_format'],
         [
           {

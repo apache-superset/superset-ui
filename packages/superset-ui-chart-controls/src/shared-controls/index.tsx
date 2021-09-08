@@ -53,8 +53,6 @@ import {
   D3_TIME_FORMAT_DOCS,
   DEFAULT_TIME_FORMAT,
   DEFAULT_NUMBER_FORMAT,
-  TITLE_MARGIN_OPTIONS,
-  TITLE_POSITION_OPTIONS,
 } from '../utils';
 import { TIME_FILTER_LABELS, TIME_COLUMN_OPTION } from '../constants';
 import {
@@ -464,50 +462,6 @@ const label_colors: SharedControlConfig<'ColorMapControl'> = {
     colorScheme,
   }),
 };
-const x_axis_title: SharedControlConfig<'TextControl'> = {
-  type: 'TextControl',
-  label: t('X Axis Title'),
-  renderTrigger: true,
-  default: '',
-  description: t('Changing this control takes effect instantly'),
-};
-const y_axis_title: SharedControlConfig<'TextControl'> = {
-  type: 'TextControl',
-  label: t('Y Axis Title'),
-  renderTrigger: true,
-  default: '',
-  description: t('Changing this control takes effect instantly'),
-};
-const x_axis_title_margin: SharedControlConfig<'SelectControl'> = {
-  type: 'SelectControl',
-  freeForm: true,
-  clearable: false,
-  label: t('X AXIS TITLE BOTTOM MARGIN'),
-  renderTrigger: true,
-  default: TITLE_MARGIN_OPTIONS[0][0],
-  choices: TITLE_MARGIN_OPTIONS,
-  description: t('Changing this control takes effect instantly'),
-};
-const y_axis_title_margin: SharedControlConfig<'SelectControl'> = {
-  type: 'SelectControl',
-  freeForm: true,
-  clearable: false,
-  label: t('Y AXIS TITLE MARGIN'),
-  renderTrigger: true,
-  default: TITLE_MARGIN_OPTIONS[0][0],
-  choices: TITLE_MARGIN_OPTIONS,
-  description: t('Changing this control takes effect instantly'),
-};
-const y_axis_title_position: SharedControlConfig<'SelectControl'> = {
-  type: 'SelectControl',
-  freeForm: true,
-  clearable: false,
-  label: t('Y AXIS TITLE POSITION'),
-  renderTrigger: true,
-  default: TITLE_POSITION_OPTIONS[0][0],
-  choices: TITLE_POSITION_OPTIONS,
-  description: t('Changing this control takes effect instantly'),
-};
 const enableExploreDnd = isFeatureEnabled(FeatureFlag.ENABLE_EXPLORE_DRAG_AND_DROP);
 
 const sharedControls = {
@@ -540,11 +494,6 @@ const sharedControls = {
   adhoc_filters: enableExploreDnd ? dnd_adhoc_filters : adhoc_filters,
   color_scheme,
   label_colors,
-  x_axis_title,
-  y_axis_title,
-  x_axis_title_margin,
-  y_axis_title_margin,
-  y_axis_title_position,
 };
 
 export default sharedControls;

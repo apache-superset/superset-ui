@@ -50,17 +50,16 @@ export default function transformProps(
     dateFormat,
     xTicksLayout,
     emitFilter,
-    xAxisLabel,
-    yAxisLabel,
-    xAxisLabelBottomMargin = 0,
-    yAxisLabelMargin = 0,
-    yAxisLabelPosition = 'Top',
     legendOrientation = 'top',
+    xAxisTitle,
+    yAxisTitle,
+    xAxisTitleMargin,
+    yAxisTitleMargin,
+    yAxisTitlePosition,
   } = formData as BoxPlotQueryFormData;
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const numberFormatter = getNumberFormatter(numberFormat);
   const metricLabels = formdataMetrics.map(getMetricLabel);
-
   const transformedData = data
     .map((datum: any) => {
       const groupbyLabel = extractGroupbyLabel({
@@ -194,8 +193,8 @@ export default function transformProps(
     // @ts-ignore
     ...outlierData,
   ];
-  const addYAxisLabelOffset = !!yAxisLabel;
-  const addXAxisLabelOffset = !!xAxisLabel;
+  const addYAxisLabelOffset = !!yAxisTitle;
+  const addXAxisLabelOffset = !!xAxisTitle;
   const chartPadding = getPadding(
     true,
     legendOrientation,
@@ -203,9 +202,9 @@ export default function transformProps(
     false,
     null,
     addXAxisLabelOffset,
-    yAxisLabelPosition,
-    yAxisLabelMargin,
-    xAxisLabelBottomMargin,
+    yAxisTitlePosition,
+    yAxisTitleMargin,
+    xAxisTitleMargin,
   );
   const echartOptions: EChartsOption = {
     grid: {
@@ -216,17 +215,17 @@ export default function transformProps(
       type: 'category',
       data: transformedData.map(row => row.name),
       axisLabel,
-      name: xAxisLabel,
-      nameGap: xAxisLabelBottomMargin,
+      name: xAxisTitle,
+      nameGap: xAxisTitleMargin,
       nameLocation: 'middle',
     },
     yAxis: {
       ...defaultYAxis,
       type: 'value',
       axisLabel: { formatter: numberFormatter },
-      name: yAxisLabel,
-      nameGap: yAxisLabelMargin,
-      nameLocation: yAxisLabelPosition === 'Left' ? 'middle' : 'end',
+      name: yAxisTitle,
+      nameGap: yAxisTitleMargin,
+      nameLocation: yAxisTitlePosition === 'Left' ? 'middle' : 'end',
     },
     tooltip: {
       ...defaultTooltip,
