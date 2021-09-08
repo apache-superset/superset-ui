@@ -195,16 +195,16 @@ export default function transformProps(
   const tooltipTimeFormatter = getTooltipTimeFormatter(tooltipTimeFormat);
   const xAxisFormatter = getXAxisFormatter(xAxisTimeFormat);
 
-  const addYAxisLabelOffset = !!(yAxisTitle || yAxisTitleSecondary);
-  const addXAxisLabelOffset = !!xAxisTitle;
+  const addYAxisTitleOffset = !!(yAxisTitle || yAxisTitleSecondary);
+  const addXAxisTitleOffset = !!xAxisTitle;
 
   const chartPadding = getPadding(
     showLegend,
     legendOrientation,
-    addYAxisLabelOffset,
+    addYAxisTitleOffset,
     zoomable,
     null,
-    addXAxisLabelOffset,
+    addXAxisTitleOffset,
     yAxisTitlePosition,
     yAxisTitleMargin,
     xAxisTitleMargin,
