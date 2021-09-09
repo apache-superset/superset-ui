@@ -26,6 +26,7 @@ import {
   emitFilterControl,
   ControlPanelConfig,
 } from '@superset-ui/chart-controls';
+
 const config: ControlPanelConfig = {
   controlPanelSections: [
     sections.legacyTimeseriesTime,
