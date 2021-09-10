@@ -37,7 +37,7 @@ export default {
         ['adhoc_filters'],
         emitFilterControl,
         ['groupby'],
-        ['columns'], // this should be migrated to `series_columns`
+        ['columns'], // TODO: this should be migrated to `series_columns`
         ['series_limit'],
         ['series_limit_metric'],
         [
