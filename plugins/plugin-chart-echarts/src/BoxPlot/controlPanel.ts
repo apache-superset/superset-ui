@@ -37,8 +37,9 @@ export default {
         ['adhoc_filters'],
         emitFilterControl,
         ['groupby'],
-        ['columns'],
-        ['limit'],
+        ['columns'], // this should be migrated to `series_columns`
+        ['series_limit'],
+        ['series_limit_metric'],
         [
           {
             name: 'whiskerOptions',
