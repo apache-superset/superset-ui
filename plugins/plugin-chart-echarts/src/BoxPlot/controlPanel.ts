@@ -44,6 +44,7 @@ export default {
           {
             name: 'whiskerOptions',
             config: {
+              clearable: false,
               type: 'SelectControl',
               freeForm: true,
               label: t('Whisker/outlier options'),

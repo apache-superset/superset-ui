@@ -29,7 +29,7 @@ export default function buildQuery(formData: BoxPlotQueryFormData) {
     const { metrics = [] } = baseQueryObject;
     const percentileMatch = PERCENTILE_REGEX.exec(whiskerOptions as string);
 
-    if (whiskerOptions === 'Tukey' || whiskerOptions === undefined) {
+    if (whiskerOptions === 'Tukey' || !whiskerOptions) {
       whiskerType = 'tukey';
     } else if (whiskerOptions === 'Min/max (no outliers)') {
       whiskerType = 'min/max';
