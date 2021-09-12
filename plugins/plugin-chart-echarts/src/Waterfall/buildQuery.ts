@@ -20,11 +20,11 @@ import { buildQueryContext } from '@superset-ui/core';
 import { EchartsWaterfallFormData } from './types';
 
 export default function buildQuery(formData: EchartsWaterfallFormData) {
-  const { category, breakdown } = formData;
+  const { series, columns } = formData;
   return buildQueryContext(formData, baseQueryObject => [
     {
       ...baseQueryObject,
-      groupby: breakdown ? [category, breakdown] : [category],
+      groupby: columns?.length ? [series, columns] : [series],
     },
   ]);
 }

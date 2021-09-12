@@ -94,7 +94,7 @@ export const legendSection = [
   [legendMarginControl],
 ];
 
-const showValueControl = {
+export const showValueControl = {
   name: 'show_value',
   config: {
     type: 'CheckboxControl',

@@ -45,9 +45,12 @@ export default class EchartsWaterfallChartPlugin extends ChartPlugin<
       loadChart: () => import('./EchartsWaterfall'),
       metadata: new ChartMetadata({
         credits: ['https://echarts.apache.org'],
-        description: 'Waterfall (Apache ECharts)',
-        name: t('Waterfall'),
+        category: t('Evolution'),
+        description: '',
+        exampleGallery: [],
+        name: t('Waterfall Chart'),
         thumbnail,
+        tags: [],
       }),
       transformProps,
     });

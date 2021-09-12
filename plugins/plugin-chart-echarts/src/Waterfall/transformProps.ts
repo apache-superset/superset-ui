@@ -32,7 +32,7 @@ import { defaultGrid, defaultTooltip, defaultYAxis } from '../defaults';
 import { EchartsProps } from '../types';
 
 const TOTAL_MARK = t('Total');
-const STACK_MARK = 'stack';
+const ASSIST_MARK = t('assist');
 
 const LEGEND = {
   INCREASE: t('Increase'),
@@ -43,14 +43,12 @@ const LEGEND = {
 function formatTooltip({
   params,
   numberFormatter,
+  richTooltip,
 }: {
   params: any;
   numberFormatter: NumberFormatter;
+  richTooltip: boolean;
 }) {
-  const increaseParams = params[1];
-  const decreaseParams = params[2];
-  const totalParams = params[3];
-
   const htmlMaker = (params: any) =>
     `
     <div>${params.name}</div>
@@ -60,37 +58,42 @@ function formatTooltip({
         params.seriesName
       }: </span>
       <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${numberFormatter(
-        params.value,
+        params.data,
       )}</span>
     </div>
   `;
 
-  if (increaseParams.value !== '-') {
-    return htmlMaker(increaseParams);
-  }
-  if (decreaseParams.value !== '-') {
-    return htmlMaker(decreaseParams);
-  }
-  if (totalParams.value !== '-') {
-    return htmlMaker(totalParams);
+  if (richTooltip) {
+    const [, increaseParams, decreaseParams, totalParams] = params;
+    if (increaseParams.data !== '-' || increaseParams.data === null) {
+      return htmlMaker(increaseParams);
+    }
+    if (decreaseParams.data !== '-') {
+      return htmlMaker(decreaseParams);
+    }
+    if (totalParams.data !== '-') {
+      return htmlMaker(totalParams);
+    }
+  } else if (params.seriesName !== ASSIST_MARK) {
+    return htmlMaker(params);
   }
   return '';
 }
 
 function transformer({
   data,
-  breakdown,
-  category,
+  columns,
+  series,
   metric,
 }: {
   data: DataRecord[];
-  breakdown: string;
-  category: string;
+  columns: string;
+  series: string;
   metric: string;
 }) {
-  // Group by category (temporary map)
+  // Group by series (temporary map)
   const groupedData = data.reduce((acc, cur) => {
-    const categoryLabel = cur[category] as string;
+    const categoryLabel = cur[series] as string;
     const categoryData = acc.get(categoryLabel) || [];
     categoryData.push(cur);
     acc.set(categoryLabel, categoryData);
@@ -99,38 +102,31 @@ function transformer({
 
   const transformedData: DataRecord[] = [];
 
-  if (breakdown) {
-    let isFirst = true;
+  if (columns?.length) {
     groupedData.forEach((value, key) => {
-      let tempValue = value;
+      const tempValue = value;
       // Calc total per period
-      const sum = tempValue.reduce((acc, cur) => acc + (cur[metric] as number), 0);
+      const sum = tempValue.reduce((acc, cur) => acc + ((cur[metric] as number) ?? 0), 0);
       // Push total per period to the end of period values array
       tempValue.push({
-        [category]: key,
-        [breakdown]: TOTAL_MARK,
+        [series]: key,
+        [columns]: TOTAL_MARK,
         [metric]: sum,
       });
-      // Remove first period and leave only last one
-      if (isFirst) {
-        const lastItem = tempValue[tempValue.length - 1];
-        tempValue = [lastItem];
-        isFirst = false;
-      }
       transformedData.push(...tempValue);
     });
   } else {
     let total = 0;
     groupedData.forEach((value, key) => {
-      const sum = value.reduce((acc, cur) => acc + (cur[metric] as number), 0);
+      const sum = value.reduce((acc, cur) => acc + ((cur[metric] as number) ?? 0), 0);
       transformedData.push({
-        [category]: key,
+        [series]: key,
         [metric]: sum,
       });
       total += sum;
     });
     transformedData.push({
-      [category]: TOTAL_MARK,
+      [series]: TOTAL_MARK,
       [metric]: total,
     });
   }
@@ -144,13 +140,15 @@ export default function transformProps(chartProps: EchartsWaterfallChartProps): 
   const {
     colorScheme,
     metric = '',
-    breakdown = '',
-    category,
+    columns = '',
+    series,
     xTicksLayout,
     showLegend,
     yAxisLabel,
     xAxisLabel,
     yAxisFormat,
+    richTooltip,
+    showValue,
   } = formData as EchartsWaterfallFormData;
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const numberFormatter = getNumberFormatter(yAxisFormat);
@@ -167,8 +165,8 @@ export default function transformProps(chartProps: EchartsWaterfallChartProps): 
 
   const transformedData = transformer({
     data,
-    breakdown,
-    category,
+    columns,
+    series,
     metric: metricLabel,
   });
 
@@ -179,19 +177,19 @@ export default function transformProps(chartProps: EchartsWaterfallChartProps): 
 
   transformedData.forEach((data, index, self) => {
     const totalSum = self.slice(0, index + 1).reduce((prev, cur, i) => {
-      if (breakdown) {
-        if (cur[breakdown] !== TOTAL_MARK || i === 0) {
-          return prev + (cur[metricLabel] as number);
+      if (columns?.length) {
+        if (cur[columns] !== TOTAL_MARK || i === 0) {
+          return prev + ((cur[metricLabel] as number) ?? 0);
         }
-      } else if (cur[category] !== TOTAL_MARK) {
-        return prev + (cur[metricLabel] as number);
+      } else if (cur[series] !== TOTAL_MARK) {
+        return prev + ((cur[metricLabel] as number) ?? 0);
       }
       return prev;
     }, 0);
 
     const value = data[metricLabel] as number;
     const isNegative = value < 0;
-    if (data[breakdown] === TOTAL_MARK || data[category] === TOTAL_MARK) {
+    if (data[columns] === TOTAL_MARK || data[series] === TOTAL_MARK) {
       increaseData.push('-');
       decreaseData.push('-');
       assistData.push('-');
@@ -217,22 +215,22 @@ export default function transformProps(chartProps: EchartsWaterfallChartProps): 
   else axisLabel = { show: true };
 
   let xAxisData: string[] = [];
-  if (breakdown) {
+  if (columns?.length) {
     xAxisData = transformedData.map(row => {
-      if (row[breakdown] === TOTAL_MARK) {
-        return row[category] as string;
+      if (row[columns] === TOTAL_MARK) {
+        return row[series] as string;
       }
-      return row[breakdown] as string;
+      return row[columns] as string;
     });
   } else {
-    xAxisData = transformedData.map(row => row[category] as string);
+    xAxisData = transformedData.map(row => row[series] as string);
   }
 
-  const series: BarSeriesOption[] = [
+  const barSeries: BarSeriesOption[] = [
     {
-      name: 'assist',
+      name: ASSIST_MARK,
       type: 'bar',
-      stack: STACK_MARK,
+      stack: 'stack',
       itemStyle: {
         borderColor: 'rgba(0,0,0,0)',
         color: 'rgba(0,0,0,0)',
@@ -248,9 +246,9 @@ export default function transformProps(chartProps: EchartsWaterfallChartProps): 
     {
       name: LEGEND.INCREASE,
       type: 'bar',
-      stack: STACK_MARK,
+      stack: 'stack',
       label: {
-        show: true,
+        show: showValue,
         position: 'top',
         formatter,
       },
@@ -262,9 +260,9 @@ export default function transformProps(chartProps: EchartsWaterfallChartProps): 
     {
       name: LEGEND.DECREASE,
       type: 'bar',
-      stack: STACK_MARK,
+      stack: 'stack',
       label: {
-        show: true,
+        show: showValue,
         position: 'bottom',
         formatter,
       },
@@ -276,9 +274,9 @@ export default function transformProps(chartProps: EchartsWaterfallChartProps): 
     {
       name: LEGEND.TOTAL,
       type: 'bar',
-      stack: STACK_MARK,
+      stack: 'stack',
       label: {
-        show: true,
+        show: showValue,
         position: 'top',
         formatter,
       },
@@ -324,17 +322,16 @@ export default function transformProps(chartProps: EchartsWaterfallChartProps): 
     },
     tooltip: {
       ...defaultTooltip,
-      trigger: 'axis',
-      axisPointer: {
-        type: 'shadow',
-      },
+      appendToBody: true,
+      trigger: richTooltip ? 'axis' : 'item',
       formatter: (params: any) =>
         formatTooltip({
           params,
           numberFormatter,
+          richTooltip,
         }),
     },
-    series,
+    series: barSeries,
   };
 
   return {

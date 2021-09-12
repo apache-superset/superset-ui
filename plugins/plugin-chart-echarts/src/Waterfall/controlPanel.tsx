@@ -17,73 +17,24 @@
  * under the License.
  */
 import React from 'react';
-import { t, validateNonEmpty } from '@superset-ui/core';
-import {
-  ColumnOption,
-  formatSelectOptions,
-  sections,
-  sharedControls,
-} from '@superset-ui/chart-controls';
-import { DEFAULT_FORM_DATA } from '../Pie/types';
+import { t } from '@superset-ui/core';
+import { ControlPanelConfig, formatSelectOptions, sections } from '@superset-ui/chart-controls';
+import { legendSection, showValueControl } from '../controls';
 
-const { showLegend } = DEFAULT_FORM_DATA;
-
-const Category: typeof sharedControls.groupby = {
-  type: 'SelectControl',
-  label: t('Category'),
-  description: t('Choose table column that will be displayed on XAxis in chart'),
-  multi: false,
-  optionRenderer: c => <ColumnOption showType column={c} />,
-  valueRenderer: c => <ColumnOption column={c} />,
-  valueKey: 'column_name',
-  mapStateToProps: ({ datasource }) => ({
-    options: datasource?.columns || [],
-  }),
-  validators: [validateNonEmpty],
-};
-
-const Breakdown: typeof sharedControls.groupby = {
-  type: 'SelectControl',
-  label: t('Breakdown'),
-  description: t('Add additional data for each category'),
-  multi: false,
-  optionRenderer: c => <ColumnOption showType column={c} />,
-  valueRenderer: c => <ColumnOption column={c} />,
-  valueKey: 'column_name',
-  mapStateToProps: ({ datasource }) => ({
-    options: datasource?.columns || [],
-  }),
-};
-
-export default {
+const config: ControlPanelConfig = {
   controlPanelSections: [
     sections.legacyTimeseriesTime,
     {
       label: t('Query'),
       expanded: true,
-      controlSetRows: [
-        ['metric'],
-        ['adhoc_filters'],
-        [
-          {
-            name: 'category',
-            config: Category,
-          },
-        ],
-        [
-          {
-            name: 'breakdown',
-            config: Breakdown,
-          },
-        ],
-        ['row_limit'],
-      ],
+      controlSetRows: [['metric'], ['adhoc_filters'], ['series'], ['columns'], ['row_limit']],
     },
     {
       label: t('Chart Options'),
       expanded: true,
       controlSetRows: [
-        ['color_scheme'],
+        ['color_scheme', 'label_colors'],
+        [showValueControl],
         [
           {
             name: 'show_legend',
@@ -91,26 +42,23 @@ export default {
               type: 'CheckboxControl',
               label: t('Show legend'),
               renderTrigger: true,
-              default: showLegend,
+              default: false,
               description: t('Whether to display a legend for the chart'),
             },
           },
         ],
-        // eslint-disable-next-line react/jsx-key
-        [<h1 className="section-header">{t('Y Axis')}</h1>],
         [
           {
-            name: 'y_axis_label',
+            name: 'rich_tooltip',
             config: {
-              type: 'TextControl',
-              label: t('Y Axis Label'),
+              type: 'CheckboxControl',
+              label: t('Rich tooltip'),
               renderTrigger: true,
-              default: '',
+              default: true,
+              description: t('Shows a list of all series available at that point in time'),
             },
           },
         ],
-        ['y_axis_format'],
-        // eslint-disable-next-line react/jsx-key
         [<h1 className="section-header">{t('X Axis')}</h1>],
         [
           {
@@ -137,7 +85,29 @@ export default {
             },
           },
         ],
+        [<h1 className="section-header">{t('Y Axis')}</h1>],
+        [
+          {
+            name: 'y_axis_label',
+            config: {
+              type: 'TextControl',
+              label: t('Y Axis Label'),
+              renderTrigger: true,
+              default: '',
+            },
+          },
+        ],
+        ['y_axis_format'],
       ],
     },
   ],
+  controlOverrides: {
+    columns: {
+      label: t('Breakdowns'),
+      description: t('Defines how each series is broken down'),
+      multi: false,
+    },
+  },
 };
+
+export default config;
