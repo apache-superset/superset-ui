@@ -23,8 +23,8 @@ describe('Waterfall buildQuery', () => {
     datasource: '5__table',
     granularity_sqla: 'ds',
     metric: 'foo',
-    category: 'bar',
-    breakdown: 'baz',
+    series: 'bar',
+    columns: 'baz',
     viz_type: 'my_chart',
   };
 

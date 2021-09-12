@@ -33,7 +33,7 @@ describe('Waterfall tranformProps', () => {
       datasource: '3__table',
       granularity_sqla: 'ds',
       metric: 'sum',
-      category: 'bar',
+      series: 'bar',
     };
     const chartProps = new ChartProps({
       formData: formData1,
@@ -75,8 +75,8 @@ describe('Waterfall tranformProps', () => {
       datasource: '3__table',
       granularity_sqla: 'ds',
       metric: 'sum',
-      category: 'bar',
-      breakdown: 'foo',
+      series: 'bar',
+      columns: 'foo',
     };
     const chartProps = new ChartProps({
       formData: formData1,
@@ -95,16 +95,16 @@ describe('Waterfall tranformProps', () => {
         echartOptions: expect.objectContaining({
           series: [
             expect.objectContaining({
-              data: ['-', 3, 3, '-'],
+              data: [0, 10, '-', 3, 3, '-'],
             }),
             expect.objectContaining({
-              data: ['-', '-', 5, '-'],
+              data: [10, 3, '-', '-', 5, '-'],
             }),
             expect.objectContaining({
-              data: ['-', 10, '-', '-'],
+              data: ['-', '-', '-', 10, '-', '-'],
             }),
             expect.objectContaining({
-              data: [13, '-', '-', 8],
+              data: ['-', '-', 13, '-', '-', 8],
             }),
           ],
         }),

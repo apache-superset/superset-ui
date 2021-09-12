@@ -24,8 +24,8 @@ export const Waterfall = ({ width, height }) => {
       queriesData={[{ data }]}
       formData={{
         metric: `SUM(decomp_volume)`,
-        breakdown: 'due_to_group',
-        category: 'period',
+        columns: 'due_to_group',
+        series: 'period',
         x_ticks_layout: '45°',
         adhocFilters: [
           {
