@@ -20,7 +20,7 @@ import React from 'react';
 import { t } from '@superset-ui/core';
 import { ControlPanelSectionConfig } from '../types';
 import { formatSelectOptions } from '../utils';
-const TITLE_MARGIN_OPTIONS: number[] = [0, 15, 30, 50, 75, 100, 125, 150, 200];
+const TITLE_MARGIN_OPTIONS: number[] = [15, 30, 50, 75, 100, 125, 150, 200];
 const TITLE_POSITION_OPTIONS: string[] = ['Left', 'Top'];
 export const titleControls: ControlPanelSectionConfig = {
   label: t('Chart Title'),
@@ -89,7 +89,7 @@ export const titleControls: ControlPanelSectionConfig = {
         config: {
           type: 'SelectControl',
           freeForm: true,
-          clearable: true,
+          clearable: false,
           label: t('Y AXIS TITLE POSITION'),
           renderTrigger: true,
           default: TITLE_POSITION_OPTIONS[0],
