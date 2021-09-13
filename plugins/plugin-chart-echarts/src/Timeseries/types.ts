@@ -24,7 +24,13 @@ import {
   TimeGranularity,
 } from '@superset-ui/core';
 import { sections } from '@superset-ui/chart-controls';
-import { DEFAULT_LEGEND_FORM_DATA, EchartsLegendFormData, EChartTransformedProps, EchartsTitleFormData, DEFAULT_TITLE_FORM_DATA } from '../types';
+import {
+  DEFAULT_LEGEND_FORM_DATA,
+  EchartsLegendFormData,
+  EChartTransformedProps,
+  EchartsTitleFormData,
+  DEFAULT_TITLE_FORM_DATA,
+} from '../types';
 
 export enum EchartsTimeseriesContributionType {
   Row = 'row',
@@ -76,7 +82,8 @@ export type EchartsTimeseriesFormData = QueryFormData & {
   groupby: string[];
   showValue: boolean;
   onlyTotal: boolean;
-} & EchartsLegendFormData & EchartsTitleFormData;
+} & EchartsLegendFormData &
+  EchartsTitleFormData;
 
 // @ts-ignore
 export const DEFAULT_FORM_DATA: EchartsTimeseriesFormData = {

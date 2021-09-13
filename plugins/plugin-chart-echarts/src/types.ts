@@ -111,11 +111,11 @@ export interface EChartTransformedProps<F> {
 }
 
 export interface EchartsTitleFormData {
-  xAxisTitle: string,
-  xAxisTitleMargin: number,
-  yAxisTitle: string,
-  yAxisTitleMargin: number,
-  yAxisTitlePosition: string,
+  xAxisTitle: string;
+  xAxisTitleMargin: number;
+  yAxisTitle: string;
+  yAxisTitleMargin: number;
+  yAxisTitlePosition: string;
 }
 
 export const DEFAULT_TITLE_FORM_DATA: EchartsTitleFormData = {

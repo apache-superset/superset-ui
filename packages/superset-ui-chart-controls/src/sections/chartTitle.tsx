@@ -20,21 +20,8 @@ import React from 'react';
 import { t } from '@superset-ui/core';
 import { ControlPanelSectionConfig } from '../types';
 import { formatSelectOptions } from '../utils';
-const TITLE_MARGIN_OPTIONS: number[] = [
-  0,
-  15,
-  30,
-  50,
-  75,
-  100,
-  125,
-  150,
-  200,
-];
-const TITLE_POSITION_OPTIONS: string[] = [
-  'Left',
-  'Top',
-];
+const TITLE_MARGIN_OPTIONS: number[] = [0, 15, 30, 50, 75, 100, 125, 150, 200];
+const TITLE_POSITION_OPTIONS: string[] = ['Left', 'Top'];
 export const titleControls: ControlPanelSectionConfig = {
   label: t('Chart Title'),
   tabOverride: 'customize',

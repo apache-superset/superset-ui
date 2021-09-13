@@ -26,7 +26,12 @@ import {
   ChartProps,
   ChartDataResponseResult,
 } from '@superset-ui/core';
-import { DEFAULT_LEGEND_FORM_DATA, EchartsLegendFormData, EchartsTitleFormData, DEFAULT_TITLE_FORM_DATA } from '../types';
+import {
+  DEFAULT_LEGEND_FORM_DATA,
+  EchartsLegendFormData,
+  EchartsTitleFormData,
+  DEFAULT_TITLE_FORM_DATA,
+} from '../types';
 import {
   DEFAULT_FORM_DATA as TIMESERIES_DEFAULTS,
   EchartsTimeseriesContributionType,
@@ -79,7 +84,8 @@ export type EchartsMixedTimeseriesFormData = QueryFormData & {
   groupby: string[];
   groupbyB: string[];
   emitFilter: boolean;
-} & EchartsLegendFormData & EchartsTitleFormData ;
+} & EchartsLegendFormData &
+  EchartsTitleFormData;
 
 // @ts-ignore
 export const DEFAULT_FORM_DATA: EchartsMixedTimeseriesFormData = {
