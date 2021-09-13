@@ -21,6 +21,7 @@ import {
   ChartDataResponseResult,
   DataRecord,
   DataRecordValue,
+  DTTM_ALIAS,
   GenericDataType,
   NumberFormatter,
   TimeFormatter,
@@ -37,30 +38,32 @@ function isDefined<T>(value: T | undefined | null): boolean {
 
 export function extractTimeseriesSeries(
   data: TimeseriesDataRecord[],
-  opts: { fillNeighborValue?: number } = {},
+  opts: { fillNeighborValue?: number; xAxis?: string; removeNulls?: boolean } = {},
 ): SeriesOption[] {
-  const { fillNeighborValue } = opts;
+  const { fillNeighborValue, xAxis = DTTM_ALIAS, removeNulls = false } = opts;
   if (data.length === 0) return [];
   const rows: TimeseriesDataRecord[] = data.map(datum => ({
     ...datum,
-    __timestamp: datum.__timestamp || datum.__timestamp === 0 ? new Date(datum.__timestamp) : null,
+    [xAxis]: datum[xAxis],
   }));
 
   return Object.keys(rows[0])
-    .filter(key => key !== '__timestamp')
+    .filter(key => key !== xAxis && key !== DTTM_ALIAS)
     .map(key => ({
       id: key,
       name: key,
-      data: rows.map((row, idx) => {
-        const isNextToDefinedValue =
-          isDefined(rows[idx - 1]?.[key]) || isDefined(rows[idx + 1]?.[key]);
-        return [
-          row.__timestamp,
-          !isDefined(row[key]) && isNextToDefinedValue && fillNeighborValue !== undefined
-            ? fillNeighborValue
-            : row[key],
-        ];
-      }),
+      data: rows
+        .map((row, idx) => {
+          const isNextToDefinedValue =
+            isDefined(rows[idx - 1]?.[key]) || isDefined(rows[idx + 1]?.[key]);
+          return [
+            row[xAxis],
+            !isDefined(row[key]) && isNextToDefinedValue && fillNeighborValue !== undefined
+              ? fillNeighborValue
+              : row[key],
+          ];
+        })
+        .filter(row => !removeNulls || row[1] !== null),
     }));
 }
 
@@ -96,7 +99,7 @@ export function formatSeriesName(
 export const getColtypesMapping = ({
   coltypes = [],
   colnames = [],
-}: ChartDataResponseResult): Record<string, GenericDataType> =>
+}: Pick<ChartDataResponseResult, 'coltypes' | 'colnames'>): Record<string, GenericDataType> =>
   colnames.reduce((accumulator, item, index) => ({ ...accumulator, [item]: coltypes[index] }), {});
 
 export function extractGroupbyLabel({

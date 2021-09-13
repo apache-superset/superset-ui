@@ -18,6 +18,8 @@
  */
 import {
   buildQueryContext,
+  ensureIsArray,
+  DTTM_ALIAS,
   QueryFormData,
   normalizeOrderBy,
   RollingType,
@@ -35,10 +37,12 @@ import {
 } from '@superset-ui/chart-controls';
 
 export default function buildQuery(formData: QueryFormData) {
+  const { x_axis, groupby } = formData;
+  const is_timeseries = x_axis === DTTM_ALIAS || !x_axis;
   return buildQueryContext(formData, baseQueryObject => {
     const pivotOperatorInRuntime: PostProcessingPivot | undefined = pivotOperator(formData, {
       ...baseQueryObject,
-      is_timeseries: true,
+      index: x_axis,
     });
     if (pivotOperatorInRuntime && Object.values(RollingType).includes(formData.rolling_type)) {
       pivotOperatorInRuntime.options = {
@@ -53,7 +57,9 @@ export default function buildQuery(formData: QueryFormData) {
     return [
       {
         ...baseQueryObject,
-        is_timeseries: true,
+        columns: [...ensureIsArray(x_axis), ...ensureIsArray(groupby)],
+        series_columns: groupby,
+        is_timeseries,
         // todo: move `normalizeOrderBy to extractQueryFields`
         orderby: normalizeOrderBy(baseQueryObject).orderby,
         time_offsets: isValidTimeCompare(formData, baseQueryObject) ? formData.time_compare : [],

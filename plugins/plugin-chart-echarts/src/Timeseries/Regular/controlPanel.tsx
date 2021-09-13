@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { t } from '@superset-ui/core';
+import { FeatureFlag, isFeatureEnabled, t } from '@superset-ui/core';
 import {
   ControlPanelConfig,
   ControlPanelsContainerProps,
@@ -28,7 +28,7 @@ import {
 } from '@superset-ui/chart-controls';
 
 import { DEFAULT_FORM_DATA, EchartsTimeseriesContributionType } from '../types';
-import { legendSection, showValueSection } from '../../controls';
+import { legendSection, showValueSection, xAxisControl } from '../../controls';
 
 const {
   contributionMode,
@@ -50,6 +50,10 @@ const config: ControlPanelConfig = {
       label: t('Query'),
       expanded: true,
       controlSetRows: [
+        // @ts-ignore
+        isFeatureEnabled(FeatureFlag.GENERIC_CHART_AXES || 'GENERIC_CHART_AXES')
+          ? [xAxisControl]
+          : [],
         ['metrics'],
         ['groupby'],
         [

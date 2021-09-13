@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { t } from '@superset-ui/core';
+import { FeatureFlag, isFeatureEnabled, t } from '@superset-ui/core';
 import {
   ControlPanelConfig,
   ControlPanelsContainerProps,
@@ -28,11 +28,10 @@ import {
 } from '@superset-ui/chart-controls';
 
 import { DEFAULT_FORM_DATA } from '../../types';
-import { legendSection, showValueSection } from '../../../controls';
+import { legendSection, showValueSectionWithoutStack, xAxisControl } from '../../../controls';
 
 const {
   logAxis,
-  markerEnabled,
   markerSize,
   minorSplitLine,
   rowLimit,
@@ -49,6 +48,10 @@ const config: ControlPanelConfig = {
       label: t('Query'),
       expanded: true,
       controlSetRows: [
+        // @ts-ignore
+        isFeatureEnabled(FeatureFlag.GENERIC_CHART_AXES || 'GENERIC_CHART_AXES')
+          ? [xAxisControl]
+          : [],
         ['metrics'],
         ['groupby'],
         ['adhoc_filters'],
@@ -78,19 +81,7 @@ const config: ControlPanelConfig = {
       expanded: true,
       controlSetRows: [
         ['color_scheme', 'label_colors'],
-        ...showValueSection,
-        [
-          {
-            name: 'markerEnabled',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Marker'),
-              renderTrigger: true,
-              default: markerEnabled,
-              description: t('Draw a marker on data points. Only applicable for line types.'),
-            },
-          },
-        ],
+        ...showValueSectionWithoutStack,
         [
           {
             name: 'markerSize',

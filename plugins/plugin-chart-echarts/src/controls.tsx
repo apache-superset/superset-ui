@@ -1,6 +1,6 @@
 import React from 'react';
 import { t } from '@superset-ui/core';
-import { ControlPanelsContainerProps } from '@superset-ui/chart-controls';
+import { ControlPanelsContainerProps, sharedControls } from '@superset-ui/chart-controls';
 import { DEFAULT_LEGEND_FORM_DATA } from './types';
 
 /**
@@ -129,4 +129,17 @@ const onlyTotalControl = {
   },
 };
 
+export const xAxisControl = {
+  name: 'x_axis',
+  config: {
+    ...sharedControls.groupby,
+    label: t('X-axis'),
+    default: null,
+    multi: false,
+    description: t('Dimension to use on x-axis. Leave blank to default to temporal column.'),
+  },
+};
+
 export const showValueSection = [[showValueControl], [stackControl], [onlyTotalControl]];
+
+export const showValueSectionWithoutStack = [[showValueControl], [onlyTotalControl]];
