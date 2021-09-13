@@ -19,7 +19,7 @@
 import React from 'react';
 import { t } from '@superset-ui/core';
 import { ControlPanelConfig, formatSelectOptions, sections } from '@superset-ui/chart-controls';
-import { legendSection, showValueControl } from '../controls';
+import { showValueControl } from '../controls';
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
