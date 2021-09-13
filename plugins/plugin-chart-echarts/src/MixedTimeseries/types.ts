@@ -26,7 +26,7 @@ import {
   ChartProps,
   ChartDataResponseResult,
 } from '@superset-ui/core';
-import { DEFAULT_LEGEND_FORM_DATA, EchartsLegendFormData } from '../types';
+import { DEFAULT_LEGEND_FORM_DATA, EchartsLegendFormData, EchartsTitleFormData, DEFAULT_TITLE_FORM_DATA } from '../types';
 import {
   DEFAULT_FORM_DATA as TIMESERIES_DEFAULTS,
   EchartsTimeseriesContributionType,
@@ -41,7 +41,6 @@ export type EchartsMixedTimeseriesFormData = QueryFormData & {
   logAxisSecondary: boolean;
   yAxisFormat?: string;
   yAxisFormatSecondary?: string;
-  yAxisTitle: string;
   yAxisTitleSecondary: string;
   yAxisBounds: [number | undefined | null, number | undefined | null];
   yAxisBoundsSecondary: [number | undefined | null, number | undefined | null];
@@ -80,11 +79,7 @@ export type EchartsMixedTimeseriesFormData = QueryFormData & {
   groupby: string[];
   groupbyB: string[];
   emitFilter: boolean;
-  xAxisTitle: string;
-  xAxisTitleMargin: number;
-  yAxisTitleMargin: number;
-  yAxisTitlePosition: string;
-} & EchartsLegendFormData;
+} & EchartsLegendFormData & EchartsTitleFormData ;
 
 // @ts-ignore
 export const DEFAULT_FORM_DATA: EchartsMixedTimeseriesFormData = {
@@ -99,8 +94,7 @@ export const DEFAULT_FORM_DATA: EchartsMixedTimeseriesFormData = {
   yAxisBoundsSecondary: TIMESERIES_DEFAULTS.yAxisBounds,
   yAxisFormat: TIMESERIES_DEFAULTS.yAxisFormat,
   yAxisFormatSecondary: TIMESERIES_DEFAULTS.yAxisFormat,
-  yAxisTitle: TIMESERIES_DEFAULTS.yAxisTitle,
-  yAxisTitleSecondary: TIMESERIES_DEFAULTS.yAxisTitle,
+  yAxisTitleSecondary: DEFAULT_TITLE_FORM_DATA.yAxisTitle,
   tooltipTimeFormat: TIMESERIES_DEFAULTS.tooltipTimeFormat,
   xAxisTimeFormat: TIMESERIES_DEFAULTS.xAxisTimeFormat,
   area: TIMESERIES_DEFAULTS.area,
@@ -128,10 +122,7 @@ export const DEFAULT_FORM_DATA: EchartsMixedTimeseriesFormData = {
   zoomable: TIMESERIES_DEFAULTS.zoomable,
   richTooltip: TIMESERIES_DEFAULTS.richTooltip,
   xAxisLabelRotation: TIMESERIES_DEFAULTS.xAxisLabelRotation,
-  xAxisTitle: '',
-  xAxisTitleMargin: 0,
-  yAxisTitleMargin: 0,
-  yAxisTitlePosition: 'Top',
+  ...DEFAULT_TITLE_FORM_DATA,
 };
 
 export interface EchartsMixedTimeseriesProps extends ChartProps {

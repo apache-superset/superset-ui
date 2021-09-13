@@ -96,7 +96,7 @@ const config: ControlPanelConfig = {
     sections.advancedAnalyticsControls,
     sections.annotationsAndLayersControls,
     sections.forecastIntervalControls,
-    { ...sections.titleControls, expanded: true },
+    sections.titleControls,
     {
       label: t('Chart Options'),
       expanded: true,

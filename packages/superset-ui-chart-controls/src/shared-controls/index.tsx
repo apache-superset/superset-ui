@@ -462,6 +462,7 @@ const label_colors: SharedControlConfig<'ColorMapControl'> = {
     colorScheme,
   }),
 };
+
 const enableExploreDnd = isFeatureEnabled(FeatureFlag.ENABLE_EXPLORE_DRAG_AND_DROP);
 
 const sharedControls = {
