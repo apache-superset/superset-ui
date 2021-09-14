@@ -48,7 +48,7 @@ export default function normalizeOrderBy(
       !isEmpty(orderbyClause[0]) &&
       isBoolean(orderbyClause[1]),
   );
-  if (validatedOrderbys.length > 0) {
+  if (validatedOrderbys.length) {
     return validatedOrderbys;
   }
 
