@@ -47,23 +47,21 @@ export default function buildQuery(formData: QueryFormData) {
     metrics: metrics_b,
   };
 
-  const queryContextA = buildQueryContext(formData1, baseQueryObject => {
-    const queryObjectA = {
+  const queryContextA = buildQueryContext(formData1, baseQueryObject => [
+    {
       ...baseQueryObject,
       is_timeseries: true,
       post_processing: [pivotOperator(formData1, { ...baseQueryObject, is_timeseries: true })],
-    } as QueryObject;
-    return [normalizeOrderBy(queryObjectA)];
-  });
+    },
+  ]);
 
-  const queryContextB = buildQueryContext(formData2, baseQueryObject => {
-    const queryObjectB = {
+  const queryContextB = buildQueryContext(formData2, baseQueryObject => [
+    {
       ...baseQueryObject,
       is_timeseries: true,
       post_processing: [pivotOperator(formData2, { ...baseQueryObject, is_timeseries: true })],
-    } as QueryObject;
-    return [normalizeOrderBy(queryObjectB)];
-  });
+    },
+  ]);
 
   return {
     ...queryContextA,
