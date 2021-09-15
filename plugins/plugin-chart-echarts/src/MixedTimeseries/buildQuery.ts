@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { buildQueryContext, QueryFormData, QueryObject, normalizeOrderBy } from '@superset-ui/core';
+import { buildQueryContext, QueryFormData } from '@superset-ui/core';
 import { pivotOperator } from '@superset-ui/chart-controls';
 
 export default function buildQuery(formData: QueryFormData) {
