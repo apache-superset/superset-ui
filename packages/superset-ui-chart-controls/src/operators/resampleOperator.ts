@@ -27,7 +27,7 @@ export const resampleOperator: PostProcessingFactory<PostProcessingResample | un
 ) => {
   const resampleMethod = formData.resample_method;
   const resampleRule = formData.resample_rule;
-  const resampleFillZero = Boolean(formData.resample_fill_zero);
+  const resampleFillZero = Boolean(formData.resample_method === 'zerofill');
   if (resampleMethod && resampleRule) {
     return {
       operation: 'resample',
