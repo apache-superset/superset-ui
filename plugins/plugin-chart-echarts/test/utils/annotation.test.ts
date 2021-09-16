@@ -145,7 +145,7 @@ describe('evalFormula', () => {
     ]);
   });
 
-  it('Should evaluate a formula starting with redundant characters', () => {
+  it('Should evaluate a formula containing redundant characters', () => {
     const data: TimeseriesDataRecord[] = [{ __timestamp: 0 }, { __timestamp: 10 }];
 
     expect(evalFormula({ ...layer, value: 'y  = x* 2   -1' }, data)).toEqual([

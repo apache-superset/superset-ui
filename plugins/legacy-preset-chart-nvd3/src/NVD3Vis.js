@@ -995,7 +995,6 @@ function nvd3Vis(element, props) {
               classed: `${fo.opacity} ${fo.style}`,
             };
           });
-          console.log(formulaData);
           data.push(...formulaData);
         }
         const xAxis = chart.xAxis1 ? chart.xAxis1 : chart.xAxis;

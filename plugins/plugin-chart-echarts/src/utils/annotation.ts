@@ -45,7 +45,7 @@ export function evalFormula(
 
   return data.map(row => [
     new Date(Number(row.__timestamp)),
-    mexp.eval(subExpressions[1] ?? subExpressions[0], [token], { x: row.__timestamp }),
+    Number(mexp.eval(subExpressions[1] ?? subExpressions[0], [token], { x: row.__timestamp })),
   ]);
 }
 
