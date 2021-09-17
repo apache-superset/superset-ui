@@ -38,6 +38,7 @@ export default function normalizeOrderBy(queryObject: QueryObject): QueryObject 
   // ensure that remove invalid orderby clause
   const cloneQueryObject = { ...queryObject };
   delete cloneQueryObject.timeseries_limit_metric;
+  delete cloneQueryObject.legacy_order_by;
   delete cloneQueryObject.order_desc;
   delete cloneQueryObject.orderby;
 
