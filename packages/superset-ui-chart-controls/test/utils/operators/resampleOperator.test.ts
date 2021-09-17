@@ -55,7 +55,7 @@ describe('resampleOperator', () => {
     expect(resampleOperator({ ...formData, resample_rule: '1D' }, queryObject)).toEqual(undefined);
   });
 
-  it('should make resample', () => {
+  it('should do resample', () => {
     expect(
       resampleOperator({ ...formData, resample_method: 'ffill', resample_rule: '1D' }, queryObject),
     ).toEqual({
@@ -64,6 +64,23 @@ describe('resampleOperator', () => {
         resample_method: 'ffill',
         resample_rule: '1D',
         resample_fill_zero: false,
+        time_column: '__timestamp',
+      },
+    });
+  });
+
+  it('should do zerofill resample', () => {
+    expect(
+      resampleOperator(
+        { ...formData, resample_method: 'zerofill', resample_rule: '1D' },
+        queryObject,
+      ),
+    ).toEqual({
+      operation: 'resample',
+      options: {
+        resample_method: 'asfreq',
+        resample_rule: '1D',
+        resample_fill_zero: true,
         time_column: '__timestamp',
       },
     });
