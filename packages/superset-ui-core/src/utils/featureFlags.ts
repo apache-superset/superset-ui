@@ -50,6 +50,7 @@ export enum FeatureFlag {
   ALERTS_ATTACH_REPORTS = 'ALERTS_ATTACH_REPORTS',
   ALLOW_FULL_CSV_EXPORT = 'ALLOW_FULL_CSV_EXPORT',
   UX_BETA = 'UX_BETA',
+  DATASET_RBAC = 'DATASET_RBAC',
 }
 export type ScheduleQueriesProps = {
   JSONSCHEMA: {
