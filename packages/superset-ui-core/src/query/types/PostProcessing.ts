@@ -161,7 +161,7 @@ export interface PostProcessingResample {
   options: {
     method: string;
     rule: string;
-    fill_value?: number;
+    fill_value?: number | null;
     time_column: string;
   };
 }
