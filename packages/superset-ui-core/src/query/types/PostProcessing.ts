@@ -159,8 +159,9 @@ export interface PostProcessingSort {
 export interface PostProcessingResample {
   operation: 'resample';
   options: {
-    resample_method: string;
-    resample_rule: string;
+    method: string;
+    rule: string;
+    fill_value?: number;
     time_column: string;
   };
 }

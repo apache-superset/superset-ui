@@ -61,9 +61,9 @@ describe('resampleOperator', () => {
     ).toEqual({
       operation: 'resample',
       options: {
-        resample_method: 'ffill',
-        resample_rule: '1D',
-        resample_fill_zero: false,
+        method: 'ffill',
+        rule: '1D',
+        fill_value: null,
         time_column: '__timestamp',
       },
     });
@@ -78,9 +78,9 @@ describe('resampleOperator', () => {
     ).toEqual({
       operation: 'resample',
       options: {
-        resample_method: 'asfreq',
-        resample_rule: '1D',
-        resample_fill_zero: true,
+        method: 'asfreq',
+        rule: '1D',
+        fill_value: 0,
         time_column: '__timestamp',
       },
     });

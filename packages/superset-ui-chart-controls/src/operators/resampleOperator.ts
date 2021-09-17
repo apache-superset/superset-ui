@@ -25,16 +25,16 @@ export const resampleOperator: PostProcessingFactory<PostProcessingResample | un
   formData,
   queryObject,
 ) => {
-  const resampleFillZero = formData.resample_method === 'zerofill';
-  const resampleMethod = resampleFillZero ? 'asfreq' : formData.resample_method;
+  const resampleZeroFill = formData.resample_method === 'zerofill';
+  const resampleMethod = resampleZeroFill ? 'asfreq' : formData.resample_method;
   const resampleRule = formData.resample_rule;
   if (resampleMethod && resampleRule) {
     return {
       operation: 'resample',
       options: {
-        resample_method: resampleMethod,
-        resample_rule: resampleRule,
-        resample_fill_zero: resampleFillZero,
+        method: resampleMethod,
+        rule: resampleRule,
+        fill_value: resampleZeroFill ? 0 : null,
         time_column: TIME_COLUMN,
       },
     };
