@@ -53,6 +53,19 @@ export default function normalizeOrderBy(queryObject: QueryObject): QueryObject 
     };
   }
 
+  // todo: Removed `legacy_ordery_by` after refactoring
+  if (
+    queryObject.legacy_order_by !== undefined &&
+    queryObject.legacy_order_by !== null &&
+    !isEmpty(queryObject.legacy_order_by)
+  ) {
+    return {
+      ...cloneQueryObject,
+      // @ts-ignore
+      orderby: [[queryObject.legacy_order_by, isAsc]],
+    };
+  }
+
   if (Array.isArray(queryObject.metrics) && queryObject.metrics.length > 0) {
     return {
       ...cloneQueryObject,
