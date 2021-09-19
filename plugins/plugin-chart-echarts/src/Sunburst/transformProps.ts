@@ -37,29 +37,21 @@ import { EchartsProps } from '../types';
 import { getChartPadding, getLegendProps, sanitizeHtml } from '../utils/series';
 import { EChartsOption } from 'echarts';
 
-function buildHierarchy(
-  rows: DataRecord[],
-  groupby: string[],
-  primaryMetric: string,
-  secondaryMetric: string,
-) {
+function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMetric: string) {
   const root = {
     name: 'root',
     children: [],
   };
   rows.forEach(row => {
     //rows.forEach((row: any) => {
-    const m1 = row[primaryMetric];
-    const m2 = row[secondaryMetric];
     const levels = groupby;
+    const nodeValue = row[primaryMetric];
 
     let currentNode = root;
     for (let level = 0; level < levels.length; level += 1) {
       const children: any = currentNode.children || [];
       const nodeName = row[levels[level]].toString();
-      const nodeValue = row[primaryMetric];
-      console.log(nodeName, m1);
-      // If the next node has the name '0', it will
+
       const isLeafNode = level >= levels.length - 1;
       let childNode: any;
 
@@ -91,9 +83,7 @@ function buildHierarchy(
   return root.children;
 }
 
-export default function transformProps(chartProps: ChartProps): any {
-  console.log('chart got  ', chartProps);
-
+export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
   const data: DataRecord[] = queriesData[0].data || [];
   const primaryMetric = formData.metric.label || formData.metric;
