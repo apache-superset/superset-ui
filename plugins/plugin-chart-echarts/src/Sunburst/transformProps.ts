@@ -38,6 +38,7 @@ import { getChartPadding, getLegendProps, sanitizeHtml } from '../utils/series';
 import { EChartsOption } from 'echarts';
 
 function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMetric: string) {
+  // Modified from legacy pllugin code.
   const root = {
     name: 'root',
     children: [],
@@ -62,14 +63,12 @@ function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMetric: st
           childNode = {
             name: nodeName,
             children: [],
-            //value: ,
             level,
           };
           children.push(childNode);
         }
         currentNode = childNode;
       } else {
-        // Reached the end of the sequence; create a leaf node.
         childNode = {
           name: nodeName,
           value: nodeValue,
@@ -89,7 +88,7 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const primaryMetric = formData.metric.label || formData.metric;
   const secondaryMetric = formData.secondaryMetric;
 
-  const sunburstData = buildHierarchy(data, formData.groupby, primaryMetric, secondaryMetric);
+  const sunburstData = buildHierarchy(data, formData.groupby, primaryMetric);
 
   const series: SunburstSeriesOption = {
     data: sunburstData,
