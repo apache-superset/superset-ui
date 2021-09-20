@@ -32,17 +32,15 @@ const queryObject: QueryObject = {
   granularity: 'month',
 };
 
-describe('contributionOperator', () => {
-  it('should skip contributionOperator', () => {
-    expect(contributionOperator(formData, queryObject)).toEqual(undefined);
-  });
+test('should skip contributionOperator', () => {
+  expect(contributionOperator(formData, queryObject)).toEqual(undefined);
+});
 
-  it('should do contributionOperator', () => {
-    expect(contributionOperator({ ...formData, contributionMode: 'row' }, queryObject)).toEqual({
-      operation: 'contribution',
-      options: {
-        orientation: 'row',
-      },
-    });
+test('should do contributionOperator', () => {
+  expect(contributionOperator({ ...formData, contributionMode: 'row' }, queryObject)).toEqual({
+    operation: 'contribution',
+    options: {
+      orientation: 'row',
+    },
   });
 });

@@ -32,80 +32,78 @@ const queryObject: QueryObject = {
   granularity: 'P1Y',
 };
 
-describe('boxplotOperator', () => {
-  it('should skip boxplotOperator', () => {
-    expect(boxplotOperator(formData, queryObject)).toEqual(undefined);
-  });
+test('should skip boxplotOperator', () => {
+  expect(boxplotOperator(formData, queryObject)).toEqual(undefined);
+});
 
-  it('should do tukey boxplot', () => {
-    expect(
-      boxplotOperator(
-        {
-          ...formData,
-          whiskerOptions: 'Tukey',
-        },
-        queryObject,
-      ),
-    ).toEqual({
-      operation: 'boxplot',
-      options: {
-        whisker_type: 'tukey',
-        percentiles: undefined,
-        groupby: [],
-        metrics: ['count(*)', 'sum(val)'],
+test('should do tukey boxplot', () => {
+  expect(
+    boxplotOperator(
+      {
+        ...formData,
+        whiskerOptions: 'Tukey',
       },
-    });
+      queryObject,
+    ),
+  ).toEqual({
+    operation: 'boxplot',
+    options: {
+      whisker_type: 'tukey',
+      percentiles: undefined,
+      groupby: [],
+      metrics: ['count(*)', 'sum(val)'],
+    },
   });
+});
 
-  it('should do min/max boxplot', () => {
-    expect(
-      boxplotOperator(
-        {
-          ...formData,
-          whiskerOptions: 'Min/max (no outliers)',
-        },
-        queryObject,
-      ),
-    ).toEqual({
-      operation: 'boxplot',
-      options: {
-        whisker_type: 'min/max',
-        percentiles: undefined,
-        groupby: [],
-        metrics: ['count(*)', 'sum(val)'],
+test('should do min/max boxplot', () => {
+  expect(
+    boxplotOperator(
+      {
+        ...formData,
+        whiskerOptions: 'Min/max (no outliers)',
       },
-    });
+      queryObject,
+    ),
+  ).toEqual({
+    operation: 'boxplot',
+    options: {
+      whisker_type: 'min/max',
+      percentiles: undefined,
+      groupby: [],
+      metrics: ['count(*)', 'sum(val)'],
+    },
   });
+});
 
-  it('should do percentile boxplot', () => {
-    expect(
-      boxplotOperator(
-        {
-          ...formData,
-          whiskerOptions: '1/4 percentiles',
-        },
-        queryObject,
-      ),
-    ).toEqual({
-      operation: 'boxplot',
-      options: {
-        whisker_type: 'percentile',
-        percentiles: [1, 4],
-        groupby: [],
-        metrics: ['count(*)', 'sum(val)'],
+test('should do percentile boxplot', () => {
+  expect(
+    boxplotOperator(
+      {
+        ...formData,
+        whiskerOptions: '1/4 percentiles',
       },
-    });
+      queryObject,
+    ),
+  ).toEqual({
+    operation: 'boxplot',
+    options: {
+      whisker_type: 'percentile',
+      percentiles: [1, 4],
+      groupby: [],
+      metrics: ['count(*)', 'sum(val)'],
+    },
   });
+});
 
-  it('should throw an error', () => {
-    expect(() =>
-      boxplotOperator(
-        {
-          ...formData,
-          whiskerOptions: 'foobar',
-        },
-        queryObject,
-      ),
-    ).toThrow('Unsupported whisker type: foobar');
-  });
+test('should throw an error', () => {
+  expect(() =>
+    boxplotOperator(
+      {
+        ...formData,
+        whiskerOptions: 'foobar',
+      },
+      queryObject,
+    ),
+  ).toThrow('Unsupported whisker type: foobar');
 });

@@ -46,43 +46,41 @@ const queryObject: QueryObject = {
   ],
 };
 
-describe('resampleOperator', () => {
-  it('should skip resampleOperator', () => {
-    expect(resampleOperator(formData, queryObject)).toEqual(undefined);
-    expect(resampleOperator({ ...formData, resample_method: 'ffill' }, queryObject)).toEqual(
-      undefined,
-    );
-    expect(resampleOperator({ ...formData, resample_rule: '1D' }, queryObject)).toEqual(undefined);
-  });
+test('should skip resampleOperator', () => {
+  expect(resampleOperator(formData, queryObject)).toEqual(undefined);
+  expect(resampleOperator({ ...formData, resample_method: 'ffill' }, queryObject)).toEqual(
+    undefined,
+  );
+  expect(resampleOperator({ ...formData, resample_rule: '1D' }, queryObject)).toEqual(undefined);
+});
 
-  it('should do resample', () => {
-    expect(
-      resampleOperator({ ...formData, resample_method: 'ffill', resample_rule: '1D' }, queryObject),
-    ).toEqual({
-      operation: 'resample',
-      options: {
-        method: 'ffill',
-        rule: '1D',
-        fill_value: null,
-        time_column: '__timestamp',
-      },
-    });
+test('should do resample', () => {
+  expect(
+    resampleOperator({ ...formData, resample_method: 'ffill', resample_rule: '1D' }, queryObject),
+  ).toEqual({
+    operation: 'resample',
+    options: {
+      method: 'ffill',
+      rule: '1D',
+      fill_value: null,
+      time_column: '__timestamp',
+    },
   });
+});
 
-  it('should do zerofill resample', () => {
-    expect(
-      resampleOperator(
-        { ...formData, resample_method: 'zerofill', resample_rule: '1D' },
-        queryObject,
-      ),
-    ).toEqual({
-      operation: 'resample',
-      options: {
-        method: 'asfreq',
-        rule: '1D',
-        fill_value: 0,
-        time_column: '__timestamp',
-      },
-    });
+test('should do zerofill resample', () => {
+  expect(
+    resampleOperator(
+      { ...formData, resample_method: 'zerofill', resample_rule: '1D' },
+      queryObject,
+    ),
+  ).toEqual({
+    operation: 'resample',
+    options: {
+      method: 'asfreq',
+      rule: '1D',
+      fill_value: 0,
+      time_column: '__timestamp',
+    },
   });
 });

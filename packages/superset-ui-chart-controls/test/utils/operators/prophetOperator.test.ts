@@ -32,35 +32,33 @@ const queryObject: QueryObject = {
   granularity: 'P1Y',
 };
 
-describe('prophetOperator', () => {
-  it('should skip prophetOperator', () => {
-    expect(prophetOperator(formData, queryObject)).toEqual(undefined);
-  });
+test('should skip prophetOperator', () => {
+  expect(prophetOperator(formData, queryObject)).toEqual(undefined);
+});
 
-  it('should do prophetOperator', () => {
-    expect(
-      prophetOperator(
-        {
-          ...formData,
-          forecastEnabled: true,
-          forecastPeriods: '3',
-          forecastInterval: '5',
-          forecastSeasonalityYearly: true,
-          forecastSeasonalityWeekly: false,
-          forecastSeasonalityDaily: false,
-        },
-        queryObject,
-      ),
-    ).toEqual({
-      operation: 'prophet',
-      options: {
-        time_grain: 'P1Y',
-        periods: 3.0,
-        confidence_interval: 5.0,
-        yearly_seasonality: true,
-        weekly_seasonality: false,
-        daily_seasonality: false,
+test('should do prophetOperator', () => {
+  expect(
+    prophetOperator(
+      {
+        ...formData,
+        forecastEnabled: true,
+        forecastPeriods: '3',
+        forecastInterval: '5',
+        forecastSeasonalityYearly: true,
+        forecastSeasonalityWeekly: false,
+        forecastSeasonalityDaily: false,
       },
-    });
+      queryObject,
+    ),
+  ).toEqual({
+    operation: 'prophet',
+    options: {
+      time_grain: 'P1Y',
+      periods: 3.0,
+      confidence_interval: 5.0,
+      yearly_seasonality: true,
+      weekly_seasonality: false,
+      daily_seasonality: false,
+    },
   });
 });
