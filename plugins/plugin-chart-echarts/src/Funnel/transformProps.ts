@@ -26,7 +26,7 @@ import {
   NumberFormatter,
 } from '@superset-ui/core';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
-import { EChartsOption, FunnelSeriesOption } from 'echarts';
+import { EChartsCoreOption, FunnelSeriesOption } from 'echarts';
 import {
   DEFAULT_FORM_DATA as DEFAULT_FUNNEL_FORM_DATA,
   EchartsFunnelChartProps,
@@ -185,7 +185,7 @@ export default function transformProps(
     },
   ];
 
-  const echartOptions: EChartsOption = {
+  const echartOptions: EChartsCoreOption = {
     grid: {
       ...defaultGrid,
     },
