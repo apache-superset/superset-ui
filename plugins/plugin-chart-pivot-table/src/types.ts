@@ -53,6 +53,7 @@ interface PivotTableCustomizeProps {
   rowOrder: string;
   aggregateFunction: string;
   transposePivot: boolean;
+  multiSelect: boolean;
   combineMetric: boolean;
   rowSubtotalPosition: boolean;
   colSubtotalPosition: boolean;

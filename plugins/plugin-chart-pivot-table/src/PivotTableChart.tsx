@@ -117,6 +117,7 @@ export default function PivotTableChart(props: PivotTableProps) {
     rowOrder,
     aggregateFunction,
     transposePivot,
+    multiSelect,
     combineMetric,
     rowSubtotalPosition,
     colSubtotalPosition,
@@ -236,18 +237,21 @@ export default function PivotTableChart(props: PivotTableProps) {
 
       let updatedFilters = { ...(selectedFilters || {}) };
       // multi select
-      // if (selectedFilters && isActiveFilterValue(key, val)) {
-      //   updatedFilters[key] = selectedFilters[key].filter((x: DataRecordValue) => x !== val);
-      // } else {
-      //   updatedFilters[key] = [...(selectedFilters?.[key] || []), val];
-      // }
-      // single select
-      if (selectedFilters && isActiveFilterValue(key, val)) {
-        updatedFilters = {};
+      if (multiSelect) {
+        if (selectedFilters && isActiveFilterValue(key, val)) {
+          updatedFilters[key] = selectedFilters[key].filter((x: DataRecordValue) => x !== val);
+        } else {
+          updatedFilters[key] = [...(selectedFilters?.[key] || []), val];
+        }
       } else {
-        updatedFilters = {
-          [key]: [val],
-        };
+        // single select
+        if (selectedFilters && isActiveFilterValue(key, val)) {
+          updatedFilters = {};
+        } else {
+          updatedFilters = {
+            [key]: [val],
+          };
+        }
       }
       if (Array.isArray(updatedFilters[key]) && updatedFilters[key].length === 0) {
         delete updatedFilters[key];

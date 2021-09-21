@@ -83,6 +83,18 @@ const config: ControlPanelConfig = {
         emitFilterControl,
         [
           {
+            name: 'multiSelect',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Multiple selection'),
+              default: false,
+              description: t('Enable selection of multiple rows and columns'),
+              renderTrigger: true,
+            },
+          },
+        ],
+        [
+          {
             name: 'row_limit',
             config: {
               ...sharedControls.row_limit,
