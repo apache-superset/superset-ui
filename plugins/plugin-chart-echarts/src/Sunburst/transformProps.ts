@@ -27,7 +27,7 @@ import { EchartsProps } from '../types';
 import { sanitizeHtml } from '../utils/series';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
 
-function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMetric: string) {
+export function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMetric: string) {
   // Modified from legacy plugin code.
   const root = {
     name: 'root',
