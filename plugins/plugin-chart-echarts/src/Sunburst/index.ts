@@ -33,7 +33,7 @@ export default class EchartsGraphChartPlugin extends ChartPlugin {
         credits: ['https://echarts.apache.org'],
         description: t('Displays Sunburst chart'),
         name: t('Sunburst Chart'),
-        tags: [t('Aesthetic'), t('Directional'), t('ECharts'), t('Relational'), t('Structural')],
+        tags: [t('Aesthetic'), t('Radial'), t('ECharts'), t('Structural')],
         thumbnail,
       }),
       transformProps,

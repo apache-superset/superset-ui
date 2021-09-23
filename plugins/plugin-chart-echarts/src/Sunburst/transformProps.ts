@@ -16,29 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { CategoricalColorNamespace, ChartProps, DataRecord } from '@superset-ui/core';
+import { EChartsOption, SunburstSeriesOption } from 'echarts';
 import {
-  CategoricalColorNamespace,
-  ChartProps,
-  getMetricLabel,
-  DataRecord,
-  DataRecordValue,
-} from '@superset-ui/core';
-import { EChartsOption, GraphSeriesOption, SunburstSeriesOption } from 'echarts';
-import { extent as d3Extent } from 'd3-array';
-import { GraphEdgeItemOption } from 'echarts/types/src/chart/graph/GraphSeries';
-import {
-  EchartsGraphFormData,
-  EChartGraphNode,
-  DEFAULT_FORM_DATA as DEFAULT_GRAPH_FORM_DATA,
-  EdgeSymbol,
+  EchartsSunburstFormData,
+  DEFAULT_FORM_DATA as DEFAULT_SUNBURST_FORM_DATA,
+  EchartsSunburstLabelType,
 } from './types';
-import { DEFAULT_GRAPH_SERIES_OPTION } from './constants';
 import { EchartsProps } from '../types';
-import { getChartPadding, getLegendProps, sanitizeHtml } from '../utils/series';
-import { EChartsOption } from 'echarts';
+import { sanitizeHtml } from '../utils/series';
+import { CallbackDataParams } from 'echarts/types/src/util/types';
 
 function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMetric: string) {
-  // Modified from legacy pllugin code.
+  // Modified from legacy plugin code.
   const root = {
     name: 'root',
     children: [],
@@ -51,7 +41,7 @@ function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMetric: st
     let currentNode = root;
     for (let level = 0; level < levels.length; level += 1) {
       const children: any = currentNode.children || [];
-      const nodeName = row[levels[level]].toString();
+      const nodeName = row[levels[level]] ? row[levels[level]]!.toString() : '';
 
       const isLeafNode = level >= levels.length - 1;
       let childNode: any;
@@ -82,17 +72,65 @@ function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMetric: st
   return root.children;
 }
 
+export function formatLabel({
+  params,
+  labelType,
+  sanitizeName = false,
+}: {
+  params: Pick<CallbackDataParams, 'name' | 'value'>;
+  labelType: EchartsSunburstLabelType;
+  sanitizeName: boolean;
+}): string {
+  const { name: rowName = '', value } = params;
+  const name = sanitizeName ? sanitizeHtml(rowName) : rowName;
+
+  switch (labelType) {
+    case EchartsSunburstLabelType.Key:
+      return name;
+    case EchartsSunburstLabelType.Value:
+      return value.toString();
+    case EchartsSunburstLabelType.KeyValue:
+      return `${name} - ${value}`;
+    default:
+      return name;
+  }
+}
+
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
-  const data: DataRecord[] = queriesData[0].data || [];
-  const primaryMetric = formData.metric.label || formData.metric;
-  const secondaryMetric = formData.secondaryMetric;
+  const {
+    colorScheme,
+    innerRadius,
+    outerRadius,
+    rotateLabel,
+    labelMinAngle,
+    showLabel,
+    labelPosition,
+    labelDistance,
+    labelType,
+    metric,
+  }: EchartsSunburstFormData = { ...DEFAULT_SUNBURST_FORM_DATA, ...formData };
 
+  const data: DataRecord[] = queriesData[0].data || [];
+  const primaryMetric = metric.label || metric;
   const sunburstData = buildHierarchy(data, formData.groupby, primaryMetric);
+  const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
 
   const series: SunburstSeriesOption = {
     data: sunburstData,
     type: 'sunburst',
+    radius: [innerRadius, outerRadius],
+    itemStyle: {
+      //color: colorFn(name) // applies to whole chart
+    },
+    label: {
+      rotate: rotateLabel,
+      minAngle: labelMinAngle,
+      show: showLabel,
+      position: labelPosition,
+      distance: labelDistance, // TODO: doesn't work,might be echart bug
+      formatter: (params: any) => formatLabel({ params, labelType, sanitizeName: true }),
+    },
   };
 
   const echartOptions: EChartsOption = {

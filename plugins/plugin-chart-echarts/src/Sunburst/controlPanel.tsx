@@ -18,6 +18,7 @@
  */
 import { t } from '@superset-ui/core';
 import { ControlPanelConfig, sections } from '@superset-ui/chart-controls';
+import { DEFAULT_FORM_DATA } from './types';
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
@@ -28,7 +29,6 @@ const config: ControlPanelConfig = {
       controlSetRows: [
         ['groupby'],
         ['metric'],
-        ['secondary_metric'],
         ['adhoc_filters'],
         ['row_limit'],
         [
@@ -46,34 +46,140 @@ const config: ControlPanelConfig = {
     {
       label: t('Chart Options'),
       expanded: true,
-      controlSetRows: [['color_scheme'], ['linear_color_scheme']],
+      controlSetRows: [
+        ['color_scheme'],
+        [
+          {
+            name: 'innerRadius',
+            config: {
+              type: 'SliderControl',
+              label: t('Inner Radius'),
+              renderTrigger: true,
+              min: 0,
+              max: 500,
+              default: DEFAULT_FORM_DATA.innerRadius,
+              description: t('Inner radius of Sunburst chart'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'outerRadius',
+            config: {
+              type: 'SliderControl',
+              label: t('Outer Radius'),
+              renderTrigger: true,
+              min: 0,
+              max: 500,
+              default: DEFAULT_FORM_DATA.outerRadius,
+              description: t('Outer radius of Sunburst chart'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'rotateLabel',
+            config: {
+              type: 'RadioButtonControl',
+              label: t('Rotate Label'),
+              renderTrigger: true,
+              options: [
+                ['radial', t('Radial')],
+                ['tangential', t('Tangential')],
+              ],
+              default: DEFAULT_FORM_DATA.rotateLabel,
+              description: t('Outer radius of Sunburst chart'),
+            },
+          },
+        ],
+
+        [
+          {
+            name: 'labelMinAngle',
+            config: {
+              type: 'TextControl',
+              label: t('Label Mininum Angle'),
+              renderTrigger: true,
+              isInt: true,
+              default: DEFAULT_FORM_DATA.labelMinAngle,
+              description: t('Minimum value for label to be displayed on graph.'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'showLabel',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Show labels on chart'),
+              renderTrigger: true,
+              default: DEFAULT_FORM_DATA.showLabel,
+              description: t('Whether to show labels on the chart.'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'labelPosition',
+            config: {
+              type: 'SelectControl',
+              renderTrigger: true,
+              label: t('Label Position'),
+              description: t('Label position on the chart'),
+              default: DEFAULT_FORM_DATA.labelPosition,
+              choices: [
+                ['inside', t('Inside')],
+                ['outside', t('Outside')],
+                ['left', t('Left')],
+                ['right', t('Right')],
+                ['bottom', t('Bottom')],
+                ['insideLeft', t('Inside Left')],
+                ['insideRight', t('Inside Right')],
+                ['insideTop', t('Inside Top')],
+                ['insideBottom', t('Inside Bottom')],
+                ['insideTopLeft', t('Inside Top Left')],
+                ['insideBottomLeft', t('Inside Bottom Left')],
+                ['insideTopRight', t('Inside Top Right')],
+                ['insideBottomLeft', t('Inside Bottom Left')],
+                ['insideTopRight', t('Inside Top Right')],
+                ['insideBottomRight', t('Inside Bottom Right')],
+              ],
+            },
+          },
+        ],
+        [
+          {
+            name: 'labelDistance',
+            config: {
+              type: 'TextControl',
+              label: t('Label Distance'),
+              renderTrigger: true,
+              isInt: true,
+              default: DEFAULT_FORM_DATA.labelDistance,
+              description: t('Distance from the chart.'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'labelType',
+            config: {
+              type: 'SelectControl',
+              label: t('Label Type'),
+              default: DEFAULT_FORM_DATA.labelType,
+              renderTrigger: true,
+              choices: [
+                ['key', 'Category Name'],
+                ['value', 'Value'],
+                ['key_value', 'Category and Value'],
+              ],
+              description: t('What should be shown on the label?'),
+            },
+          },
+        ],
+      ],
     },
   ],
-  controlOverrides: {
-    metric: {
-      label: t('Primary Metric'),
-      description: t('The primary metric is used to define the arc segment sizes'),
-    },
-    secondary_metric: {
-      label: t('Secondary Metric'),
-      default: null,
-      description: t(
-        '[optional] this secondary metric is used to ' +
-          'define the color as a ratio against the primary metric. ' +
-          'When omitted, the color is categorical and based on labels',
-      ),
-    },
-    color_scheme: {
-      description: t('When only a primary metric is provided, a categorical color scale is used.'),
-    },
-    linear_color_scheme: {
-      description: t('When a secondary metric is provided, a linear color scale is used.'),
-    },
-    groupby: {
-      label: t('Hierarchy'),
-      description: t('This defines the level of the hierarchy'),
-    },
-  },
 };
 
 export default config;
