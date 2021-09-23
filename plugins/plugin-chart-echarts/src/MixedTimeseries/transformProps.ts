@@ -28,7 +28,7 @@ import {
   isIntervalAnnotationLayer,
   isTimeseriesAnnotationLayer,
 } from '@superset-ui/core';
-import { EChartsOption, SeriesOption } from 'echarts';
+import { EChartsCoreOption, SeriesOption } from 'echarts';
 import {
   DEFAULT_FORM_DATA,
   EchartsMixedTimeseriesFormData,
@@ -103,7 +103,6 @@ export default function transformProps(
     yAxisBounds,
     yAxisIndex,
     yAxisIndexB,
-    yAxisTitle,
     yAxisTitleSecondary,
     zoomable,
     richTooltip,
@@ -112,6 +111,11 @@ export default function transformProps(
     groupbyB,
     emitFilter,
     emitFilterB,
+    xAxisTitle,
+    yAxisTitle,
+    xAxisTitleMargin,
+    yAxisTitleMargin,
+    yAxisTitlePosition,
   }: EchartsMixedTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
@@ -191,9 +195,20 @@ export default function transformProps(
   const tooltipTimeFormatter = getTooltipTimeFormatter(tooltipTimeFormat);
   const xAxisFormatter = getXAxisFormatter(xAxisTimeFormat);
 
-  const addYAxisLabelOffset = !!(yAxisTitle || yAxisTitleSecondary);
-  const chartPadding = getPadding(showLegend, legendOrientation, addYAxisLabelOffset, zoomable);
+  const addYAxisTitleOffset = !!(yAxisTitle || yAxisTitleSecondary);
+  const addXAxisTitleOffset = !!xAxisTitle;
 
+  const chartPadding = getPadding(
+    showLegend,
+    legendOrientation,
+    addYAxisTitleOffset,
+    zoomable,
+    null,
+    addXAxisTitleOffset,
+    yAxisTitlePosition,
+    yAxisTitleMargin,
+    xAxisTitleMargin,
+  );
   const labelMap = rawSeriesA.reduce((acc, datum) => {
     const label = datum.name as string;
     return {
@@ -212,7 +227,7 @@ export default function transformProps(
 
   const { setDataMask = () => {} } = hooks;
 
-  const echartOptions: EChartsOption = {
+  const echartOptions: EChartsCoreOption = {
     useUTC: true,
     grid: {
       ...defaultGrid,
@@ -220,6 +235,9 @@ export default function transformProps(
     },
     xAxis: {
       type: 'time',
+      name: xAxisTitle,
+      nameGap: xAxisTitleMargin,
+      nameLocation: 'middle',
       axisLabel: {
         showMinLabel: xAxisShowMinLabel,
         showMaxLabel: xAxisShowMaxLabel,
@@ -238,6 +256,8 @@ export default function transformProps(
         axisLabel: { formatter },
         scale: truncateYAxis,
         name: yAxisTitle,
+        nameGap: yAxisTitleMargin,
+        nameLocation: yAxisTitlePosition === 'Left' ? 'middle' : 'end',
       },
       {
         ...defaultYAxis,

@@ -28,7 +28,7 @@ import {
   TimeseriesChartDataResponseResult,
   DataRecordValue,
 } from '@superset-ui/core';
-import { EChartsOption, SeriesOption } from 'echarts';
+import { EChartsCoreOption, SeriesOption } from 'echarts';
 import {
   DEFAULT_FORM_DATA,
   EchartsTimeseriesChartProps,
@@ -94,7 +94,6 @@ export default function transformProps(
     yAxisFormat,
     xAxisTimeFormat,
     yAxisBounds,
-    yAxisTitle,
     tooltipTimeFormat,
     zoomable,
     richTooltip,
@@ -103,8 +102,12 @@ export default function transformProps(
     groupby,
     showValue,
     onlyTotal,
+    xAxisTitle,
+    yAxisTitle,
+    xAxisTitleMargin,
+    yAxisTitleMargin,
+    yAxisTitlePosition,
   }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
-
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
   const rebasedData = rebaseTimeseriesDatum(data, verboseMap);
   const rawSeries = extractTimeseriesSeries(rebasedData, {
@@ -206,9 +209,19 @@ export default function transformProps(
   const { setDataMask = () => {} } = hooks;
 
   const addYAxisLabelOffset = !!yAxisTitle;
-  const padding = getPadding(showLegend, legendOrientation, addYAxisLabelOffset, zoomable);
-
-  const echartOptions: EChartsOption = {
+  const addXAxisLabelOffset = !!xAxisTitle;
+  const padding = getPadding(
+    showLegend,
+    legendOrientation,
+    addYAxisLabelOffset,
+    zoomable,
+    null,
+    addXAxisLabelOffset,
+    yAxisTitlePosition,
+    yAxisTitleMargin,
+    xAxisTitleMargin,
+  );
+  const echartOptions: EChartsCoreOption = {
     useUTC: true,
     grid: {
       ...defaultGrid,
@@ -216,7 +229,11 @@ export default function transformProps(
     },
     xAxis: {
       type: 'time',
+      name: xAxisTitle,
+      nameGap: xAxisTitleMargin,
+      nameLocation: 'middle',
       axisLabel: {
+        hideOverlap: true,
         formatter: xAxisFormatter,
         rotate: xAxisLabelRotation,
       },
@@ -231,6 +248,8 @@ export default function transformProps(
       axisLabel: { formatter },
       scale: truncateYAxis,
       name: yAxisTitle,
+      nameGap: yAxisTitleMargin,
+      nameLocation: yAxisTitlePosition === 'Left' ? 'middle' : 'end',
     },
     tooltip: {
       ...defaultTooltip,

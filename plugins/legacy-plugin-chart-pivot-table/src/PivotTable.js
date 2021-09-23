@@ -19,7 +19,6 @@
 /* eslint-disable react/sort-prop-types */
 import dt from 'datatables.net-bs';
 import PropTypes from 'prop-types';
-import $ from 'jquery';
 import {
   getTimeFormatter,
   getTimeFormatterForGranularity,
@@ -29,7 +28,10 @@ import { formatCellValue, formatDateCellValue } from './utils/formatCells';
 import fixTableHeight from './utils/fixTableHeight';
 import 'datatables.net-bs/css/dataTables.bootstrap.css';
 
-dt(window, $);
+if (window.$) {
+  dt(window, window.$);
+}
+const $ = window.$ || dt.$;
 
 const propTypes = {
   data: PropTypes.shape({
@@ -106,6 +108,10 @@ function PivotTable(element, props) {
           $(this).attr('data-sort', sortAttributeValue);
         }
       });
+  });
+
+  $container.find('table').each(function fullWidth() {
+    this.style = 'width: 100%';
   });
 
   if (numGroups === 1) {

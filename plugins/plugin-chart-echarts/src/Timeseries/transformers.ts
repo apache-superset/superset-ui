@@ -18,11 +18,11 @@
  */
 import {
   AnnotationData,
-  AnnotationLayer,
   AnnotationOpacity,
   CategoricalColorScale,
   EventAnnotationLayer,
   FilterState,
+  FormulaAnnotationLayer,
   getTimeFormatter,
   IntervalAnnotationLayer,
   isTimeseriesAnnotationResult,
@@ -36,7 +36,7 @@ import {
 import { SeriesOption } from 'echarts';
 import {
   CallbackDataParams,
-  DefaultExtraStateOpts,
+  DefaultStatesMixin,
   ItemStyleOption,
   LineStyleOption,
   OptionName,
@@ -204,7 +204,7 @@ export function transformSeries(
 }
 
 export function transformFormulaAnnotation(
-  layer: AnnotationLayer,
+  layer: FormulaAnnotationLayer,
   data: TimeseriesDataRecord[],
   colorScale: CategoricalColorScale,
 ): SeriesOption {
@@ -224,7 +224,6 @@ export function transformFormulaAnnotation(
     smooth: true,
     data: evalFormula(layer, data),
     symbolSize: 0,
-    z: 0,
   };
 }
 
@@ -302,7 +301,7 @@ export function transformEventAnnotation(
       },
     ];
 
-    const lineStyle: LineStyleOption & DefaultExtraStateOpts['emphasis'] = {
+    const lineStyle: LineStyleOption & DefaultStatesMixin['emphasis'] = {
       width,
       type: style as ZRLineType,
       color: color || colorScale(name),
@@ -372,22 +371,33 @@ export function transformTimeseriesAnnotation(
 export function getPadding(
   showLegend: boolean,
   legendOrientation: LegendOrientation,
-  addYAxisLabelOffset: boolean,
+  addYAxisTitleOffset: boolean,
   zoomable: boolean,
   margin?: string | number | null,
+  addXAxisTitleOffset?: boolean,
+  yAxisTitlePosition?: string,
+  yAxisTitleMargin?: number,
+  xAxisTitleMargin?: number,
 ): {
   bottom: number;
   left: number;
   right: number;
   top: number;
 } {
-  const yAxisOffset = addYAxisLabelOffset ? TIMESERIES_CONSTANTS.yAxisLabelTopOffset : 0;
+  const yAxisOffset = addYAxisTitleOffset ? TIMESERIES_CONSTANTS.yAxisLabelTopOffset : 0;
+  const xAxisOffset = addXAxisTitleOffset ? xAxisTitleMargin || 0 : 0;
   return getChartPadding(showLegend, legendOrientation, margin, {
-    top: TIMESERIES_CONSTANTS.gridOffsetTop + yAxisOffset,
+    top:
+      yAxisTitlePosition && yAxisTitlePosition === 'Top'
+        ? TIMESERIES_CONSTANTS.gridOffsetTop + (yAxisTitleMargin || 0)
+        : TIMESERIES_CONSTANTS.gridOffsetTop + yAxisOffset,
     bottom: zoomable
-      ? TIMESERIES_CONSTANTS.gridOffsetBottomZoomable
-      : TIMESERIES_CONSTANTS.gridOffsetBottom,
-    left: TIMESERIES_CONSTANTS.gridOffsetLeft,
+      ? TIMESERIES_CONSTANTS.gridOffsetBottomZoomable + xAxisOffset
+      : TIMESERIES_CONSTANTS.gridOffsetBottom + xAxisOffset,
+    left:
+      yAxisTitlePosition === 'Left'
+        ? TIMESERIES_CONSTANTS.gridOffsetLeft + (yAxisTitleMargin || 0)
+        : TIMESERIES_CONSTANTS.gridOffsetLeft,
     right:
       showLegend && legendOrientation === LegendOrientation.Right
         ? 0

@@ -23,15 +23,15 @@ import {
   QueryFormData,
   SetDataMaskHook,
 } from '@superset-ui/core';
-import { PostProcessingBoxplot } from '@superset-ui/core/lib/query/types/PostProcessing';
-import { EChartsOption } from 'echarts';
+import { EChartsCoreOption } from 'echarts';
+import { EchartsTitleFormData, DEFAULT_TITLE_FORM_DATA } from '../types';
 
 export type BoxPlotQueryFormData = QueryFormData & {
   numberFormat?: string;
   whiskerOptions?: BoxPlotFormDataWhiskerOptions;
   xTickLayout?: BoxPlotFormXTickLayout;
   emitFilter: boolean;
-};
+} & EchartsTitleFormData;
 
 export type BoxPlotFormDataWhiskerOptions =
   | 'Tukey'
@@ -44,6 +44,7 @@ export type BoxPlotFormXTickLayout = '45°' | '90°' | 'auto' | 'flat' | 'stagge
 // @ts-ignore
 export const DEFAULT_FORM_DATA: BoxPlotQueryFormData = {
   emitFilter: false,
+  ...DEFAULT_TITLE_FORM_DATA,
 };
 
 export interface EchartsBoxPlotChartProps extends ChartProps {
@@ -51,13 +52,11 @@ export interface EchartsBoxPlotChartProps extends ChartProps {
   queriesData: ChartDataResponseResult[];
 }
 
-export type BoxPlotQueryObjectWhiskerType = PostProcessingBoxplot['options']['whisker_type'];
-
 export interface BoxPlotChartTransformedProps {
   formData: BoxPlotQueryFormData;
   height: number;
   width: number;
-  echartOptions: EChartsOption;
+  echartOptions: EChartsCoreOption;
   emitFilter: boolean;
   setDataMask: SetDataMaskHook;
   labelMap: Record<string, DataRecordValue[]>;

@@ -23,6 +23,9 @@ import {
   isValidTimeCompare,
   sortOperator,
   pivotOperator,
+  resampleOperator,
+  contributionOperator,
+  prophetOperator,
 } from '@superset-ui/chart-controls';
 
 export default function buildQuery(formData: QueryFormData) {
@@ -34,31 +37,13 @@ export default function buildQuery(formData: QueryFormData) {
       orderby: normalizeOrderBy(baseQueryObject).orderby,
       time_offsets: isValidTimeCompare(formData, baseQueryObject) ? formData.time_compare : [],
       post_processing: [
+        resampleOperator(formData, baseQueryObject),
         timeCompareOperator(formData, baseQueryObject),
         sortOperator(formData, { ...baseQueryObject, is_timeseries: true }),
         rollingWindowOperator(formData, baseQueryObject),
         pivotOperator(formData, { ...baseQueryObject, is_timeseries: true }),
-        formData.contributionMode
-          ? {
-              operation: 'contribution',
-              options: {
-                orientation: formData.contributionMode,
-              },
-            }
-          : undefined,
-        formData.forecastEnabled
-          ? {
-              operation: 'prophet',
-              options: {
-                time_grain: formData.time_grain_sqla,
-                periods: parseInt(formData.forecastPeriods, 10),
-                confidence_interval: parseFloat(formData.forecastInterval),
-                yearly_seasonality: formData.forecastSeasonalityYearly,
-                weekly_seasonality: formData.forecastSeasonalityWeekly,
-                daily_seasonality: formData.forecastSeasonalityDaily,
-              },
-            }
-          : undefined,
+        contributionOperator(formData, baseQueryObject),
+        prophetOperator(formData, baseQueryObject),
       ],
     },
   ]);
