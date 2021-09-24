@@ -24,6 +24,7 @@ import {
   EchartsSunburstFormData,
   DEFAULT_FORM_DATA as DEFAULT_SUNBURST_FORM_DATA,
   EchartsSunburstLabelType,
+  Node,
 } from './types';
 import { sanitizeHtml } from '../utils/series';
 
@@ -37,13 +38,13 @@ export function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMet
     const levels = groupby;
     const nodeValue = row[primaryMetric];
 
-    let currentNode = root;
+    let currentNode: Node = root;
     for (let level = 0; level < levels.length; level += 1) {
-      const children: any = currentNode.children || [];
+      const children: Node[] = currentNode.children || [];
       const nodeName = row[levels[level]] ? row[levels[level]]!.toString() : '';
 
       const isLeafNode = level >= levels.length - 1;
-      let childNode: any;
+      let childNode: Node | undefined;
 
       if (!isLeafNode) {
         childNode = children.find((child: any) => child.name === nodeName && child.level === level);
@@ -60,7 +61,7 @@ export function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMet
       } else {
         childNode = {
           name: nodeName,
-          value: nodeValue,
+          value: nodeValue as number,
           children: [],
         };
         children.push(childNode);

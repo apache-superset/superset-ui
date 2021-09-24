@@ -6,6 +6,13 @@ export enum EchartsSunburstLabelType {
   KeyValue = 'key_value',
 }
 
+export type Node = {
+  name: string;
+  children: Node[];
+  value?: number;
+  level?: number;
+};
+
 export type EchartsSunburstFormData = QueryFormData & {
   colorScheme?: string;
   innerRadius: number;
