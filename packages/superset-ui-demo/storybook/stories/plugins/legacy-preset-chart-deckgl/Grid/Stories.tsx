@@ -3,7 +3,7 @@
 import React from 'react';
 import { SuperChart } from '@superset-ui/core';
 import payload from './payload';
-import dummyDatasource from '../../../shared/dummyDatasource';
+import dummyDatasource from '../../../../shared/dummyDatasource';
 
 export default [
   {

@@ -4,7 +4,7 @@ import React from 'react';
 import { SuperChart } from '@superset-ui/core';
 import payload from './payload';
 import geojsonPayload from './geojsonPayload';
-import dummyDatasource from '../../../shared/dummyDatasource';
+import dummyDatasource from '../../../../shared/dummyDatasource';
 
 export default [
   {
