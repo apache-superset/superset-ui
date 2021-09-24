@@ -17,6 +17,7 @@
  * under the License.
  */
 // A safe alternative to JS's eval
+// eslint-disable-next-line import/no-extraneous-dependencies
 import vm from 'vm';
 import _ from 'underscore';
 import * as d3array from 'd3-array';

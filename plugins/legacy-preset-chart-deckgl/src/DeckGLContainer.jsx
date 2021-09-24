@@ -71,6 +71,10 @@ class DeckGLContainer extends React.Component {
     this.setState({ viewState, lastUpdate: Date.now() });
   }
 
+  setTooltip = tooltip => {
+    this.setState({ tooltip });
+  };
+
   tick() {
     // Rate limiting updating viewport controls as it triggers lotsa renders
     const { lastUpdate } = this.state;
@@ -91,10 +95,6 @@ class DeckGLContainer extends React.Component {
 
     return this.props.layers;
   }
-
-  setTooltip = tooltip => {
-    this.setState({ tooltip });
-  };
 
   render() {
     const { children, bottomMargin, height, width } = this.props;

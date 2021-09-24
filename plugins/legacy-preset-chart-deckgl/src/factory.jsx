@@ -81,18 +81,18 @@ export function createDeckGLComponent(getLayer, getPoints) {
       this.setState({ viewport });
     }
 
-    computeLayer(props) {
-      const { formData, payload, onAddFilter } = props;
-
-      return getLayer(formData, payload, onAddFilter, this.setTooltip);
-    }
-
     setTooltip = tooltip => {
       const { current } = this.containerRef;
       if (current) {
         current.setTooltip(tooltip);
       }
     };
+
+    computeLayer(props) {
+      const { formData, payload, onAddFilter } = props;
+
+      return getLayer(formData, payload, onAddFilter, this.setTooltip);
+    }
 
     render() {
       const { formData, payload, setControlValue, height, width } = this.props;

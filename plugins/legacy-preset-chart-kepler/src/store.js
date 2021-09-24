@@ -62,7 +62,6 @@ const rateLimitedUpdateConfigControl = RateLimit(updateConfigControl, 1000);
 export default function getKeplerStore(setControlValue) {
   // Using react-palm middleware to intercept changes and
   // save the state into the config control as text
-  // eslint-disable-next-line unicorn/consistent-function-scoping
   const stateChangeMiddleware = store => next => action => {
     const returnValue = next(action);
     rateLimitedUpdateConfigControl(store, setControlValue);

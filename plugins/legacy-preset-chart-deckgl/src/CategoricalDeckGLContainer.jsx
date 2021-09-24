@@ -183,6 +183,13 @@ export default class CategoricalDeckGLContainer extends React.PureComponent {
     return [getLayer(fd, filteredPayload, onAddFilter, this.setTooltip, this.props.datasource)];
   }
 
+  setTooltip = tooltip => {
+    const { current } = this.containerRef;
+    if (current) {
+      current.setTooltip(tooltip);
+    }
+  };
+
   // eslint-disable-next-line class-methods-use-this
   addColor(data, fd) {
     const c = fd.color_picker || { r: 0, g: 0, b: 0, a: 1 };
@@ -229,13 +236,6 @@ export default class CategoricalDeckGLContainer extends React.PureComponent {
     categories[category].enabled = true;
     this.setState({ categories });
   }
-
-  setTooltip = tooltip => {
-    const { current } = this.containerRef;
-    if (current) {
-      current.setTooltip(tooltip);
-    }
-  };
 
   render() {
     return (

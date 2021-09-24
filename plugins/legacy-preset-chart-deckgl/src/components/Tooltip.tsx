@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useMemo, CSSProperties } from 'react';
 import { filterXSS } from 'xss';
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { fitBounds } from '@math.gl/web-mercator';
 import computeBoundsFromPoints from './computeBoundsFromPoints';
 import { Point } from './types';

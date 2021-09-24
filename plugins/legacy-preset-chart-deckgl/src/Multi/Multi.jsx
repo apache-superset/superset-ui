@@ -67,6 +67,13 @@ class DeckMulti extends React.PureComponent {
     this.setState({ viewport });
   }
 
+  setTooltip = tooltip => {
+    const { current } = this.containerRef;
+    if (current) {
+      current.setTooltip(tooltip);
+    }
+  };
+
   loadLayers(formData, payload, viewport) {
     this.setState({ subSlicesLayers: {}, viewport });
     payload.data.slices.forEach(subslice => {
@@ -108,13 +115,6 @@ class DeckMulti extends React.PureComponent {
         .catch(() => {});
     });
   }
-
-  setTooltip = tooltip => {
-    const { current } = this.containerRef;
-    if (current) {
-      current.setTooltip(tooltip);
-    }
-  };
 
   render() {
     const { payload, formData, setControlValue } = this.props;
