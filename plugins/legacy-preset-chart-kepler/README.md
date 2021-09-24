@@ -15,17 +15,17 @@ import { DeckGLChartPreset } from '@superset-ui/legacy-preset-chart-deckgl';
 new DeckGLChartPreset().register();
 ```
 
-or register charts one by one. Configure `key`, which can be any `string`, and register the plugin. This `key` will be used to lookup this chart throughout the app.
+or register charts one by one. Configure `key`, which can be any `string`, and register the plugin.
+This `key` will be used to lookup this chart throughout the app.
 
 ```js
 import { ArcChartPlugin } from '@superset-ui/legacy-preset-chart-deckgl';
 
-new ArcChartPlugin()
-  .configure({ key: 'deck_arc' })
-  .register();
+new ArcChartPlugin().configure({ key: 'deck_arc' }).register();
 ```
 
-Then use it via `SuperChart`. See [storybook](https://apache-superset.github.io/superset-ui-plugins-deckgl) for more details.
+Then use it via `SuperChart`. See
+[storybook](https://apache-superset.github.io/superset-ui-plugins-deckgl) for more details.
 
 ```js
 <SuperChart

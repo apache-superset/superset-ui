@@ -66,12 +66,7 @@ function getStepSeconds(step, start) {
    * seconds, which is why we need to know the start time.
    */
   const startMillliseconds = parseInt(moment(start).format('x'), 10);
-  const endMilliseconds = parseInt(
-    moment(start)
-      .add(step)
-      .format('x'),
-    10,
-  );
+  const endMilliseconds = parseInt(moment(start).add(step).format('x'), 10);
 
   return endMilliseconds - startMillliseconds;
 }

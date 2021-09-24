@@ -94,9 +94,7 @@ export function getBreakPointColorScaler(
     bucketedColors.push(last);
 
     const points = breakPoints.map(p => parseFloat(p));
-    scaler = scaleThreshold()
-      .domain(points)
-      .range(bucketedColors);
+    scaler = scaleThreshold().domain(points).range(bucketedColors);
     maskPoint = value => value > breakPoints[n] || value < breakPoints[0];
   } else {
     // interpolate colors linearly
