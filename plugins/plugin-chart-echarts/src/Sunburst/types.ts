@@ -1,17 +1,24 @@
 import { QueryFormData } from '@superset-ui/core';
 
+export enum EchartsSunburstLabelType {
+  Key = 'key',
+  Value = 'value',
+  KeyValue = 'key_value',
+}
+
 export type EchartsSunburstFormData = QueryFormData & {
   colorScheme?: string;
   innerRadius: number;
   outerRadius: number;
-  rotateLabel: string;
+  rotateLabel: 'radial' | 'tangential';
   labelMinAngle: number;
   showLabel: boolean;
-  labelPosition: string;
+  labelPosition: 'top' | 'left' | 'right' | 'bottom' | 'inside' | 'outside';
   labelDistance: number;
-  labelType: string;
+  labelType: EchartsSunburstLabelType;
 };
 
+// @ts-ignore
 export const DEFAULT_FORM_DATA: EchartsSunburstFormData = {
   innerRadius: 30,
   outerRadius: 70,
@@ -20,11 +27,5 @@ export const DEFAULT_FORM_DATA: EchartsSunburstFormData = {
   showLabel: true,
   labelPosition: 'inside',
   labelDistance: 5,
-  labelType: 'key',
+  labelType: EchartsSunburstLabelType.Key,
 };
-
-export enum EchartsSunburstLabelType {
-  Key = 'key',
-  Value = 'value',
-  KeyValue = 'key_value',
-}

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { CategoricalColorNamespace, ChartProps, DataRecord } from '@superset-ui/core';
+import { ChartProps, DataRecord } from '@superset-ui/core';
 import { EChartsOption, SunburstSeriesOption } from 'echarts';
 import {
   EchartsSunburstFormData,
@@ -99,7 +99,7 @@ export function formatLabel({
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
   const {
-    colorScheme,
+    //colorScheme,
     innerRadius,
     outerRadius,
     rotateLabel,
@@ -114,14 +114,14 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const data: DataRecord[] = queriesData[0].data || [];
   const primaryMetric = metric.label || metric;
   const sunburstData = buildHierarchy(data, formData.groupby, primaryMetric);
-  const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
+  //const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
 
   const series: SunburstSeriesOption = {
     data: sunburstData,
     type: 'sunburst',
     radius: [innerRadius, outerRadius],
     itemStyle: {
-      //color: colorFn(name) // applies to whole chart
+      //color: colorFn(name) // TODO: applies to whole chart
     },
     label: {
       rotate: rotateLabel,
