@@ -147,19 +147,20 @@ const config: ControlPanelConfig = {
             },
           },
         ],
-        [
-          {
-            name: 'labelDistance',
-            config: {
-              type: 'TextControl',
-              label: t('Label Distance'),
-              renderTrigger: true,
-              isInt: true,
-              default: DEFAULT_FORM_DATA.labelDistance,
-              description: t('Distance from the chart.'),
-            },
-          },
-        ],
+        // TODO: doesn't work, might be echart bug
+        // [
+        //   {
+        //     name: 'labelDistance',
+        //     config: {
+        //       type: 'TextControl',
+        //       label: t('Label Distance'),
+        //       renderTrigger: true,
+        //       isInt: true,
+        //       default: DEFAULT_FORM_DATA.labelDistance,
+        //       description: t('Distance from the chart.'),
+        //     },
+        //   },
+        // ],
         [
           {
             name: 'labelType',

@@ -18,12 +18,12 @@
  */
 import { ChartProps, DataRecord } from '@superset-ui/core';
 import { EChartsOption, SunburstSeriesOption } from 'echarts';
+import { EchartsProps } from '../types';
 import {
   EchartsSunburstFormData,
   DEFAULT_FORM_DATA as DEFAULT_SUNBURST_FORM_DATA,
   EchartsSunburstLabelType,
 } from './types';
-import { EchartsProps } from '../types';
 import { sanitizeHtml } from '../utils/series';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
 
@@ -34,7 +34,6 @@ export function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMet
     children: [],
   };
   rows.forEach(row => {
-    //rows.forEach((row: any) => {
     const levels = groupby;
     const nodeValue = row[primaryMetric];
 
@@ -99,14 +98,13 @@ export function formatLabel({
 export default function transformProps(chartProps: ChartProps): EchartsProps {
   const { width, height, formData, queriesData } = chartProps;
   const {
-    //colorScheme,
     innerRadius,
     outerRadius,
     rotateLabel,
     labelMinAngle,
     showLabel,
     labelPosition,
-    labelDistance,
+    // labelDistance,
     labelType,
     metric,
   }: EchartsSunburstFormData = { ...DEFAULT_SUNBURST_FORM_DATA, ...formData };
@@ -114,21 +112,18 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
   const data: DataRecord[] = queriesData[0].data || [];
   const primaryMetric = metric.label || metric;
   const sunburstData = buildHierarchy(data, formData.groupby, primaryMetric);
-  //const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
 
   const series: SunburstSeriesOption = {
     data: sunburstData,
     type: 'sunburst',
     radius: [innerRadius, outerRadius],
-    itemStyle: {
-      //color: colorFn(name) // TODO: applies to whole chart
-    },
+    itemStyle: {},
     label: {
       rotate: rotateLabel,
       minAngle: labelMinAngle,
       show: showLabel,
       position: labelPosition,
-      distance: labelDistance, // TODO: doesn't work,might be echart bug
+      // distance: labelDistance,
       formatter: (params: any) => formatLabel({ params, labelType, sanitizeName: true }),
     },
   };
