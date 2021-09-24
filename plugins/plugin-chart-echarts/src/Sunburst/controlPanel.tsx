@@ -17,7 +17,7 @@
  * under the License.
  */
 import { t } from '@superset-ui/core';
-import { ControlPanelConfig, sections } from '@superset-ui/chart-controls';
+import { ControlPanelConfig, sections, emitFilterControl } from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from './types';
 
 const config: ControlPanelConfig = {
@@ -30,6 +30,7 @@ const config: ControlPanelConfig = {
         ['groupby'],
         ['metric'],
         ['adhoc_filters'],
+        emitFilterControl,
         ['row_limit'],
         [
           {
@@ -47,7 +48,6 @@ const config: ControlPanelConfig = {
       label: t('Chart Options'),
       expanded: true,
       controlSetRows: [
-        ['color_scheme'],
         [
           {
             name: 'innerRadius',
