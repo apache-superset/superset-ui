@@ -18,6 +18,7 @@
  */
 import { ChartProps, DataRecord } from '@superset-ui/core';
 import { EChartsOption, SunburstSeriesOption } from 'echarts';
+import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { EchartsProps } from '../types';
 import {
   EchartsSunburstFormData,
@@ -25,7 +26,6 @@ import {
   EchartsSunburstLabelType,
 } from './types';
 import { sanitizeHtml } from '../utils/series';
-import { CallbackDataParams } from 'echarts/types/src/util/types';
 
 export function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMetric: string) {
   // Modified from legacy plugin code.

@@ -70,8 +70,6 @@ function buildHierarchy(rows) {
 
   // each record [groupby1val, groupby2val, (<string> or 0)n, m1, m2]
   rows.forEach(row => {
-    console.log('row ', row);
-
     const m1 = Number(row[row.length - 2]);
     const m2 = Number(row[row.length - 1]);
     const levels = row.slice(0, -2);
@@ -80,12 +78,7 @@ function buildHierarchy(rows) {
       return;
     }
     let currentNode = root;
-    console.log('currentNonde ', JSON.stringify(currentNode));
-
     for (let level = 0; level < levels.length; level += 1) {
-      console.log('level ', level);
-      console.log('root ', JSON.stringify(root));
-
       const children = currentNode.children || [];
       const nodeName = levels[level].toString();
       // If the next node has the name '0', it will
@@ -93,9 +86,7 @@ function buildHierarchy(rows) {
       let childNode;
 
       if (!isLeafNode) {
-        console.log('not leaf');
         childNode = children.find(child => child.name === nodeName && child.level === level);
-        console.log('childNode ', JSON.stringify(childNode));
 
         if (!childNode) {
           childNode = {
@@ -104,11 +95,9 @@ function buildHierarchy(rows) {
             level,
           };
           children.push(childNode);
-          console.log('pushed to childre ', JSON.stringify(childNode));
         }
         currentNode = childNode;
       } else if (nodeName !== 0) {
-        console.log('leaf node');
         // Reached the end of the sequence; create a leaf node.
         childNode = {
           name: nodeName,
@@ -118,10 +107,7 @@ function buildHierarchy(rows) {
         children.push(childNode);
       }
     }
-    console.log('currentNode after ', JSON.stringify(currentNode));
   });
-
-  console.log('pre recurse ', JSON.stringify(root));
 
   function recurse(node) {
     if (node.children) {
@@ -140,9 +126,7 @@ function buildHierarchy(rows) {
     return [node.m1, node.m2];
   }
 
-  //recurse(root);
-
-  console.log('final ', root);
+  recurse(root);
 
   return root;
 }
