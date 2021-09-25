@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartProps, DataRecord } from '@superset-ui/core';
+import { ChartProps, DataRecord, CategoricalColorNamespace } from '@superset-ui/core';
 import { EChartsOption, SunburstSeriesOption } from 'echarts';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { EchartsProps } from '../types';
@@ -28,7 +28,14 @@ import {
 } from './types';
 import { sanitizeHtml } from '../utils/series';
 
-export function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMetric: string) {
+export function buildHierarchy(
+  rows: DataRecord[],
+  groupby: string[],
+  primaryMetric: string,
+  colorScheme: string,
+) {
+  const colorFn = CategoricalColorNamespace.getScale(colorScheme);
+
   // Modified from legacy plugin code.
   const root = {
     name: 'root',
@@ -37,11 +44,12 @@ export function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMet
   rows.forEach(row => {
     const levels = groupby;
     const nodeValue = row[primaryMetric];
-
     let currentNode: Node = root;
+
     for (let level = 0; level < levels.length; level += 1) {
       const children: Node[] = currentNode.children || [];
       const nodeName = row[levels[level]] ? row[levels[level]]!.toString() : '';
+      const nodeStyle = currentNode.itemStyle;
 
       const isLeafNode = level >= levels.length - 1;
       let childNode: Node | undefined;
@@ -55,6 +63,8 @@ export function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMet
             children: [],
             level,
           };
+          if (level === 0) childNode.itemStyle = { color: colorFn(nodeName) };
+          else childNode.itemStyle = nodeStyle;
           children.push(childNode);
         }
         currentNode = childNode;
@@ -63,12 +73,12 @@ export function buildHierarchy(rows: DataRecord[], groupby: string[], primaryMet
           name: nodeName,
           value: nodeValue as number,
           children: [],
+          itemStyle: nodeStyle,
         };
         children.push(childNode);
       }
     }
   });
-
   return root.children;
 }
 
@@ -108,11 +118,12 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     // labelDistance,
     labelType,
     metric,
+    colorScheme,
   }: EchartsSunburstFormData = { ...DEFAULT_SUNBURST_FORM_DATA, ...formData };
 
   const data: DataRecord[] = queriesData[0].data || [];
   const primaryMetric = metric.label || metric;
-  const sunburstData = buildHierarchy(data, formData.groupby, primaryMetric);
+  const sunburstData = buildHierarchy(data, formData.groupby, primaryMetric, colorScheme as string);
 
   const series: SunburstSeriesOption = {
     data: sunburstData,

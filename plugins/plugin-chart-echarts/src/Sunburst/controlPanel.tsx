@@ -48,6 +48,7 @@ const config: ControlPanelConfig = {
       label: t('Chart Options'),
       expanded: true,
       controlSetRows: [
+        ['color_scheme'],
         [
           {
             name: 'innerRadius',
@@ -130,19 +131,6 @@ const config: ControlPanelConfig = {
               choices: [
                 ['inside', t('Inside')],
                 ['outside', t('Outside')],
-                ['left', t('Left')],
-                ['right', t('Right')],
-                ['bottom', t('Bottom')],
-                ['insideLeft', t('Inside Left')],
-                ['insideRight', t('Inside Right')],
-                ['insideTop', t('Inside Top')],
-                ['insideBottom', t('Inside Bottom')],
-                ['insideTopLeft', t('Inside Top Left')],
-                ['insideBottomLeft', t('Inside Bottom Left')],
-                ['insideTopRight', t('Inside Top Right')],
-                ['insideBottomLeft', t('Inside Bottom Left')],
-                ['insideTopRight', t('Inside Top Right')],
-                ['insideBottomRight', t('Inside Bottom Right')],
               ],
             },
           },

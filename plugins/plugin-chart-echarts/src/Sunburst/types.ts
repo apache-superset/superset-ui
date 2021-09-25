@@ -11,6 +11,7 @@ export type Node = {
   children: Node[];
   value?: number;
   level?: number;
+  itemStyle?: any;
 };
 
 export type EchartsSunburstFormData = QueryFormData & {
