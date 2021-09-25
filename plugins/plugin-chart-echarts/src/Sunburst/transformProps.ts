@@ -49,7 +49,7 @@ export function buildHierarchy(
     for (let level = 0; level < levels.length; level += 1) {
       const children: Node[] = currentNode.children || [];
       const nodeName = row[levels[level]] ? row[levels[level]]!.toString() : '';
-      const nodeStyle = currentNode.itemStyle;
+      const nodeStyle = currentNode.itemStyle || { color: colorFn(nodeName) };
 
       const isLeafNode = level >= levels.length - 1;
       let childNode: Node | undefined;
