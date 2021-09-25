@@ -129,7 +129,6 @@ export default function transformProps(chartProps: ChartProps): EchartsProps {
     data: sunburstData,
     type: 'sunburst',
     radius: [innerRadius, outerRadius],
-    itemStyle: {},
     label: {
       rotate: rotateLabel,
       minAngle: labelMinAngle,
