@@ -21,7 +21,7 @@ export type EchartsSunburstFormData = QueryFormData & {
   rotateLabel: 'radial' | 'tangential';
   labelMinAngle: number;
   showLabel: boolean;
-  labelPosition: 'top' | 'left' | 'right' | 'bottom' | 'inside' | 'outside';
+  labelPosition: 'inside' | 'outside';
   labelDistance: number;
   labelType: EchartsSunburstLabelType;
 };

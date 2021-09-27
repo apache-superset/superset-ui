@@ -28,7 +28,7 @@ export const VaccineSunburst = ({ width, height }) => {
         innerRadius: number('Inner Radius', 0),
         outerRadius: number('Outer Radius', 400),
         showLabel: boolean('Show labels', true),
-        labelType: select('Pie label type', ['key', 'value', 'key_value'], 'key'),
+        labelType: select('Sunburst label type', ['key', 'value', 'key_value'], 'key'),
         rotateLabel: select('Rotate label', ['radial', 'tangential'], 'radial'),
         labelPosition: select('Label position', ['inside', 'outside'], 'inside'),
       }}

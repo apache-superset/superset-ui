@@ -183,7 +183,7 @@ describe('Build hierarchay', () => {
   });
 });
 
-describe('formatPieLabel', () => {
+describe('formatSunburstLabel', () => {
   it('should generate a valid sunburst chart label', () => {
     expect(
       formatLabel({
