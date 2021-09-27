@@ -24,6 +24,7 @@ import {
   D3_TIME_FORMAT_DOCS,
   emitFilterControl,
   sections,
+  legacySortBy,
   sharedControls,
 } from '@superset-ui/chart-controls';
 
@@ -54,6 +55,7 @@ const config: ControlPanelConfig = {
         ['adhoc_filters'],
         emitFilterControl,
         ['limit'],
+        ...legacySortBy,
         ['timeseries_limit_metric'],
         [
           {

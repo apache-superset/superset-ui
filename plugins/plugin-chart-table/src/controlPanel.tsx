@@ -241,7 +241,7 @@ const config: ControlPanelConfig = {
         ],
         [
           {
-            name: 'timeseries_limit_metric',
+            name: 'legacy_order_by',
             override: {
               visibility: isAggMode,
             },

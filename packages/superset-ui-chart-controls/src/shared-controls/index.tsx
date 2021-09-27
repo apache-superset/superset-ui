@@ -511,7 +511,9 @@ const sharedControls = {
   label_colors,
   series_columns: enableExploreDnd ? dndColumnsControl : columnsControl,
   series_limit,
+  // for inner query orderby
   series_limit_metric: enableExploreDnd ? dnd_sort_by : sort_by,
+  // for outer query orderby
   legacy_order_by: enableExploreDnd ? dnd_sort_by : sort_by,
 };
 

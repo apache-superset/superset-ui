@@ -31,6 +31,7 @@ import {
   D3_TIME_FORMAT_OPTIONS,
   sections,
   sharedControls,
+  legacySortBy,
   emitFilterControl,
 } from '@superset-ui/chart-controls';
 import { ControlFormItemSpec } from '@superset-ui/chart-controls/lib/components/ControlForm';
@@ -62,7 +63,7 @@ const config: ControlPanelConfig = {
       controlSetRows: [
         ['groupby'],
         ['metrics'],
-        ['timeseries_limit_metric'],
+        ...legacySortBy,
         ['adhoc_filters'],
         emitFilterControl,
         [

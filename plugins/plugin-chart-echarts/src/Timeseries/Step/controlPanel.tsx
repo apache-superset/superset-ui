@@ -24,6 +24,7 @@ import {
   D3_TIME_FORMAT_DOCS,
   sections,
   sharedControls,
+  legacySortBy,
   emitFilterControl,
 } from '@superset-ui/chart-controls';
 
@@ -77,18 +78,7 @@ const config: ControlPanelConfig = {
         ['adhoc_filters'],
         emitFilterControl,
         ['limit'],
-        ['timeseries_limit_metric'],
-        [
-          {
-            name: 'order_desc',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Sort Descending'),
-              default: true,
-              description: t('Whether to sort descending or ascending'),
-            },
-          },
-        ],
+        ...legacySortBy,
         ['row_limit'],
       ],
     },

@@ -19,8 +19,8 @@
 import { buildQueryContext, QueryFormData, ensureIsArray } from '@superset-ui/core';
 
 export default function buildQuery(formData: QueryFormData) {
-  const { timeseries_limit_metric } = formData;
-  const sortByMetric = ensureIsArray(timeseries_limit_metric)[0];
+  const { legacy_order_by } = formData;
+  const sortByMetric = ensureIsArray(legacy_order_by)[0];
 
   return buildQueryContext(formData, baseQueryObject => {
     let { metrics, orderby = [] } = baseQueryObject;

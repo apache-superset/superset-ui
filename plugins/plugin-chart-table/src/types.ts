@@ -62,7 +62,7 @@ export type TableChartFormData = QueryFormData & {
   page_length?: string | number | null; // null means auto-paginate
   metrics?: QueryFormMetric[] | null;
   percent_metrics?: QueryFormMetric[] | null;
-  timeseries_limit_metric?: QueryFormMetric[] | QueryFormMetric | null;
+  legacy_order_by?: QueryFormMetric[] | QueryFormMetric | null;
   groupby?: QueryFormMetric[] | null;
   all_columns?: QueryFormMetric[] | null;
   order_desc?: boolean;

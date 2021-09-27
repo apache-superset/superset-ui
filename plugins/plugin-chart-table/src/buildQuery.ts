@@ -48,7 +48,7 @@ export function getQueryMode(formData: TableChartFormData) {
 const buildQuery: BuildQuery<TableChartFormData> = (formData: TableChartFormData, options) => {
   const { percent_metrics: percentMetrics, order_desc: orderDesc = false } = formData;
   const queryMode = getQueryMode(formData);
-  const sortByMetric = ensureIsArray(formData.timeseries_limit_metric)[0];
+  const sortByMetric = ensureIsArray(formData.legacy_order_by)[0];
   let formDataCopy = formData;
   // never include time in raw records mode
   if (queryMode === QueryMode.raw) {
