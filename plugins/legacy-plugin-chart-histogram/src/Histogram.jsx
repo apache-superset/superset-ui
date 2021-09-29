@@ -38,6 +38,7 @@ const propTypes = {
   height: PropTypes.number.isRequired,
   colorScheme: PropTypes.string,
   normalized: PropTypes.bool,
+  cumulative: PropTypes.bool,
   binCount: PropTypes.number,
   opacity: PropTypes.number,
   xAxisLabel: PropTypes.string,
@@ -49,6 +50,7 @@ const defaultProps = {
   className: '',
   colorScheme: '',
   normalized: false,
+  cumulative: false,
   opacity: 1,
   xAxisLabel: '',
   yAxisLabel: '',
@@ -64,6 +66,7 @@ class CustomHistogram extends React.PureComponent {
       binCount,
       colorScheme,
       normalized,
+      cumulative,
       opacity,
       xAxisLabel,
       yAxisLabel,
@@ -100,6 +103,7 @@ class CustomHistogram extends React.PureComponent {
             height={parent.height}
             ariaLabel="Histogram"
             normalized={normalized}
+            cumulative={cumulative}
             binCount={binCount}
             binType="numeric"
             margin={{ top: 20, right: 20 }}
