@@ -26,6 +26,7 @@ import {
   yAxisShowMinmax,
   yAxis2Bounds,
   yAxis2ShowMinmax,
+  showMarkers,
 } from '../NVD3Controls';
 
 const config: ControlPanelConfig = {
@@ -34,7 +35,7 @@ const config: ControlPanelConfig = {
     {
       label: t('Chart Options'),
       expanded: true,
-      controlSetRows: [['color_scheme', 'label_colors'], [showLegend], [xAxisFormat]],
+      controlSetRows: [['color_scheme', 'label_colors'], [showLegend], [xAxisFormat], [showMarkers]],
     },
     {
       label: t('Y Axis 1'),
