@@ -139,9 +139,9 @@ const config: ControlPanelConfig = {
               label: t('Cumulative'),
               renderTrigger: true,
               description: t('Whether to make the histogram cumulative'),
-              default: false
-            }
-          }
+              default: false,
+            },
+          },
         ],
       ],
     },
