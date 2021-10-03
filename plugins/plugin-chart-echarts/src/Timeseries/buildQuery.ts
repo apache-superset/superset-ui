@@ -36,13 +36,13 @@ import {
 
 export default function buildQuery(formData: QueryFormData) {
   return buildQueryContext(formData, baseQueryObject => {
-    let pivotOperatorInRuntime: PostProcessingPivot | undefined = pivotOperator(formData, {
+    const pivotOperatorInRuntime: PostProcessingPivot | undefined = pivotOperator(formData, {
       ...baseQueryObject,
       is_timeseries: true,
     });
     if (pivotOperatorInRuntime && Object.values(RollingType).includes(formData.rolling_type)) {
-      pivotOperatorInRuntime['options'] = {
-        ...pivotOperatorInRuntime['options'],
+      pivotOperatorInRuntime.options = {
+        ...pivotOperatorInRuntime.options,
         ...{
           flatten_columns: false,
           reset_index: false,
