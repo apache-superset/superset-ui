@@ -59,7 +59,7 @@ export const advancedAnalyticsControls: ControlPanelSectionConfig = {
           ),
           visibility: ({ controls }) =>
             Boolean(controls?.rolling_type?.value) &&
-            controls?.rolling_type?.value !== RollingType.Cumsum,
+            controls.rolling_type.value !== RollingType.Cumsum,
         },
       },
     ],
