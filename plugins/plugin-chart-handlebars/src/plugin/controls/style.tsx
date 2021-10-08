@@ -37,12 +37,9 @@ const StyleControl = (props: CustomControlConfig<StyleCustomControlProps>) => {
 const styleControlConfig: ControlConfig<any> = {
   ...sharedControls.entity,
   type: StyleControl,
-  valueKey: 'style',
   label: t('CSS Styles'),
   description: t('CSS applied to the chart'),
-  default: `p {
-  font-family: Roboto
-}`,
+  default: '',
   isInt: false,
 
   validators: [validateNonEmpty],
@@ -52,6 +49,6 @@ const styleControlConfig: ControlConfig<any> = {
 };
 
 export const StyleControlSetItem: ControlSetItem = {
-  name: 'style-control',
+  name: 'styleTemplate',
   config: styleControlConfig,
 };

@@ -54,7 +54,13 @@ export default function Handlebars(props: HandlebarsProps) {
   // height and width are the height and width of the DOM element as it exists in the dashboard.
   // There is also a `data` prop, which is, of course, your DATA 🎉
   const { data, height, width, formData } = props;
-  const templateSource = formData.handlebarsTemplate ? formData.handlebarsTemplate : '{{data}}';
+  const styleTemplateSource = formData.styleTemplate
+    ? `<style>${formData.styleTemplate}</style>`
+    : '';
+  const handlebarTemplateSource = formData.handlebarsTemplate
+    ? formData.handlebarsTemplate
+    : '{{data}}';
+  const templateSource = `${handlebarTemplateSource}\n${styleTemplateSource} `;
 
   const rootElem = createRef<HTMLDivElement>();
 

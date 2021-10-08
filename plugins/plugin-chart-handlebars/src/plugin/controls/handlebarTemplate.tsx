@@ -17,7 +17,6 @@ const HandlbarsTemplateControl = (props: CustomControlConfig<HandlebarsCustomCon
   const val = String(props?.value ? props?.value : props?.default ? props?.default : '');
 
   const updateConfig = (source: string) => {
-    console.log('calling onChange handler', source);
     props.onChange(source);
   };
   return (
@@ -27,7 +26,6 @@ const HandlbarsTemplateControl = (props: CustomControlConfig<HandlebarsCustomCon
         theme="dark"
         value={val}
         onChange={(source, action) => {
-          console.log('onChange', source, action);
           updateConfig(source || '');
         }}
       />
@@ -37,7 +35,6 @@ const HandlbarsTemplateControl = (props: CustomControlConfig<HandlebarsCustomCon
 const handlebarsTemplateControlConfig: ControlConfig<any> = {
   ...sharedControls.entity,
   type: HandlbarsTemplateControl,
-  valueKey: 'handlebars_template',
   label: t('Handlebars Template'),
   description: t('A handlebars template that is applied to the data'),
   default: `<ul class="data_list">
@@ -54,6 +51,6 @@ const handlebarsTemplateControlConfig: ControlConfig<any> = {
 };
 
 export const HandlbarsTemplateControlSetItem: ControlSetItem = {
-  name: 'handlebars-template',
+  name: 'handlebarsTemplate',
   config: handlebarsTemplateControlConfig,
 };
