@@ -3,10 +3,11 @@ import AceEditor, { IAceEditorProps } from 'react-ace';
 
 // must go after AceEditor import
 import 'ace-builds/src-min-noconflict/mode-handlebars';
+import 'ace-builds/src-min-noconflict/mode-css';
 import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-noconflict/theme-monokai';
 
-export type CodeEditorMode = 'html' | 'javascript' | 'handlebars' | 'json';
+export type CodeEditorMode = 'handlebars' | 'css';
 export type CodeEditorTheme = 'light' | 'dark';
 
 export interface CodeEditorProps extends IAceEditorProps {
@@ -31,7 +32,7 @@ export const CodeEditor: FC<CodeEditorProps> = ({
   const _width = width || '100%';
 
   return (
-    <div className={'code-editor'} style={{ minHeight: height }}>
+    <div className={'code-editor'} style={{ minHeight: height, width: _width }}>
       <AceEditor
         mode={_mode}
         theme={_theme}
