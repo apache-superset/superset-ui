@@ -42,7 +42,7 @@ const styleControlConfig: ControlConfig<any> = {
   default: '',
   isInt: false,
 
-  validators: [validateNonEmpty],
+  validators: [],
   mapStateToProps: ({ controls }) => ({
     value: controls?.handlebars_template?.value,
   }),
