@@ -12,22 +12,25 @@ export default class CategoricalColorNamespace {
     [key: string]: CategoricalColorScale;
   };
 
+  schemeColors: {
+    [key: string]: {
+      [key: string]: string;
+    };
+  };
+
   constructor(name: string) {
     this.name = name;
     this.scales = {};
     this.forcedItems = {};
+    this.schemeColors = {};
   }
 
   getScale(schemeId?: string) {
     const id = schemeId ?? getCategoricalSchemeRegistry().getDefaultKey() ?? '';
-    const scale = this.scales[id];
-    if (scale) {
-      return scale;
-    }
     const scheme = getCategoricalSchemeRegistry().get(id);
-
-    const newScale = new CategoricalColorScale(scheme?.colors ?? [], this.forcedItems);
-    this.scales[id] = newScale;
+    const forcedColors = { ...this.forcedItems, ...(this.schemeColors?.[id] || {}) };
+    console.log('forcedColors', forcedColors);
+    const newScale = new CategoricalColorScale(scheme?.colors ?? [], forcedColors);
 
     return newScale;
   }
@@ -43,6 +46,18 @@ export default class CategoricalColorNamespace {
     this.forcedItems[stringifyAndTrim(value)] = forcedColor;
 
     return this;
+  }
+
+  /*
+    Statically map specific colors to specific values for a color scheme. 
+    Especially useful for custom label colors
+  */
+  setSchemeColor(scheme: string, name: string, color: string) {
+    if (!this.schemeColors[scheme]) {
+      this.schemeColors[scheme] = {};
+    }
+
+    this.schemeColors[scheme][name] = color;
   }
 }
 
@@ -69,4 +84,8 @@ export function getColor(value?: string, schemeId?: string, namespace?: string) 
 
 export function getScale(scheme?: string, namespace?: string) {
   return getNamespace(namespace).getScale(scheme);
+}
+
+export function setSchemeColor(scheme: string, namespace: string, name: string, color: string) {
+  return getNamespace(namespace).setSchemeColor(scheme, name, color);
 }
