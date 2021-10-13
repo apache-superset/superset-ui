@@ -1,5 +1,6 @@
 import CategoricalColorNamespace, {
   getNamespace,
+  getExistingScale,
   getScale,
   getColor,
   DEFAULT_NAMESPACE,
@@ -63,11 +64,10 @@ describe('CategoricalColorNamespace', () => {
       getCategoricalSchemeRegistry().setDefaultKey('testColors');
     });
     it('returns same scale if the scale with that name already exists in this namespace', () => {
-      const namespace = getNamespace('test-get-scale2');
-      const scale1 = namespace.getScale('testColors');
-      const scale2 = namespace.getScale('testColors2');
-      const scale3 = namespace.getScale('testColors2');
-      const scale4 = namespace.getScale('testColors');
+      const scale1 = getExistingScale('testColors', 'test-get-scale2');
+      const scale2 = getExistingScale('testColors2', 'test-get-scale2');
+      const scale3 = getExistingScale('testColors2', 'test-get-scale2');
+      const scale4 = getExistingScale('testColors', 'test-get-scale2');
       expect(scale1).toBe(scale4);
       expect(scale2).toBe(scale3);
     });
@@ -107,19 +107,19 @@ describe('CategoricalColorNamespace', () => {
     it('getScale() returns a CategoricalColorScale with default scheme in default namespace', () => {
       const scale = getScale();
       expect(scale).toBeDefined();
-      const scale2 = getNamespace().getScale();
+      const scale2 = getExistingScale();
       expect(scale).toBe(scale2);
     });
     it('getScale(scheme) returns a CategoricalColorScale with specified scheme in default namespace', () => {
       const scale = getScale('testColors');
       expect(scale).toBeDefined();
-      const scale2 = getNamespace().getScale('testColors');
+      const scale2 = getExistingScale('testColors');
       expect(scale).toBe(scale2);
     });
     it('getScale(scheme, namespace) returns a CategoricalColorScale with specified scheme in specified namespace', () => {
       const scale = getScale('testColors', 'test-getScale');
       expect(scale).toBeDefined();
-      const scale2 = getNamespace('test-getScale').getScale('testColors');
+      const scale2 = getExistingScale('testColors', 'test-getScale');
       expect(scale).toBe(scale2);
     });
   });

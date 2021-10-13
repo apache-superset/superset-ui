@@ -84,9 +84,9 @@ export function getColor(value?: string, schemeId?: string, namespace?: string) 
 }
 
 /*
-  Returns a new scale instance.
-  Especially useful when a chart is booting or when an existing 
-  color scale instance is not necessary
+  Returns a new scale instance even within the same namespace.
+  Especially useful when a chart is booting for the first time or when an existing 
+  color scale instance should not be used even within the same namespace
 */
 export function getScale(scheme?: string, namespace?: string) {
   return getNamespace(namespace).getScale(scheme);
