@@ -84,9 +84,8 @@ export function getColor(value?: string, schemeId?: string, namespace?: string) 
 }
 
 /*
-  Returns a new scale instance even within the same namespace.
-  Especially useful when a chart is booting for the first time or when an existing 
-  color scale instance should not be used even within the same namespace
+  Returns a new scale instance within the same namespace.
+  Especially useful when a chart is booting for the first time
 */
 export function getScale(scheme?: string, namespace?: string) {
   return getNamespace(namespace).getScale(scheme);
@@ -102,7 +101,7 @@ export function getExistingScale(scheme?: string, namespace?: string) {
 }
 
 /*
-  Statically map specific colors to specific values for a color scheme. 
+  Map specific colors to specific values for a color scheme within a namespace. 
   Especially useful for custom label colors
 */
 export function setSchemeColor(scheme: string, namespace: string, name: string, color: string) {
