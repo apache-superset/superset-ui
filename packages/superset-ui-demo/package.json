@@ -41,7 +41,7 @@
     "@storybook/addon-links": "^5.3.18",
     "@storybook/addons": "^5.3.18",
     "@storybook/preset-typescript": "^3.0.0",
-    "@storybook/react": "^5.3.18",
+    "@storybook/react": "^6.3.12",
     "@superset-ui/core": "file:../superset-ui-core/src",
     "@superset-ui/legacy-plugin-chart-calendar": "0.18.13",
     "@superset-ui/legacy-plugin-chart-chord": "0.18.13",
