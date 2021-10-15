@@ -15,11 +15,10 @@ const PLUGIN_PACKAGES_PATH_REGEXP = new RegExp(
 
 module.exports = {
   addons: [
-    '@storybook/preset-typescript',
-    '@storybook/addon-knobs/register',
-    'storybook-addon-jsx/register',
-    '@storybook/addon-actions/register',
-    '@storybook/addon-links/register',
+    '@storybook/addon-knobs',
+    'storybook-addon-jsx',
+    '@storybook/addon-actions',
+    '@storybook/addon-links',
   ],
   stories: ['../storybook/stories/**/*Stories.[tj]sx'],
   webpackFinal: config => {
