@@ -12,30 +12,17 @@ export default class CategoricalColorNamespace {
     [key: string]: CategoricalColorScale;
   };
 
-  schemeColors: {
-    [key: string]: {
-      [key: string]: string;
-    };
-  };
-
   constructor(name: string) {
     this.name = name;
     this.scales = {};
     this.forcedItems = {};
-    this.schemeColors = {};
   }
 
-  getScale(schemeId?: string, existingScale?: boolean) {
+  getScale(schemeId?: string) {
     const id = schemeId ?? getCategoricalSchemeRegistry().getDefaultKey() ?? '';
     const scheme = getCategoricalSchemeRegistry().get(id);
-    const forcedColors = { ...this.forcedItems, ...(this.schemeColors?.[id] || {}) };
-
-    if (existingScale && this.scales[id]) {
-      return this.scales[id];
-    }
-
+    const forcedColors = this.forcedItems;
     const newScale = new CategoricalColorScale(scheme?.colors ?? [], forcedColors);
-    this.scales[id] = newScale;
 
     return newScale;
   }
@@ -53,12 +40,8 @@ export default class CategoricalColorNamespace {
     return this;
   }
 
-  setSchemeColor(scheme: string, name: string, color: string) {
-    if (!this.schemeColors[scheme]) {
-      this.schemeColors[scheme] = {};
-    }
-
-    this.schemeColors[scheme][name] = color;
+  resetColors() {
+    this.forcedItems = {};
   }
 }
 
@@ -89,21 +72,4 @@ export function getColor(value?: string, schemeId?: string, namespace?: string) 
 */
 export function getScale(scheme?: string, namespace?: string) {
   return getNamespace(namespace).getScale(scheme);
-}
-
-/*
-  Returns an existing color scale instance.
-  Especially useful when a chart has booted already and the existing
-  color scale instance should be used
-*/
-export function getExistingScale(scheme?: string, namespace?: string) {
-  return getNamespace(namespace).getScale(scheme, true);
-}
-
-/*
-  Map specific colors to specific values for a color scheme within a namespace. 
-  Especially useful for custom label colors
-*/
-export function setSchemeColor(scheme: string, namespace: string, name: string, color: string) {
-  return getNamespace(namespace).setSchemeColor(scheme, name, color);
 }
