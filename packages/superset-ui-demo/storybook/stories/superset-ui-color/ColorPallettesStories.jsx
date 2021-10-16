@@ -13,7 +13,7 @@ import {
 import RenderPalettes from './RenderPalettes';
 
 export default {
-  title: 'Core Packages|@superset-ui/color',
+  title: 'Core Packages/@superset-ui-color',
 };
 
 export const categoricalPalettes = () =>

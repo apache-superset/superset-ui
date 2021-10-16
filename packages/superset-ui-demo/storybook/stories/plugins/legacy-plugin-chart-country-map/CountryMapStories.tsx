@@ -26,7 +26,7 @@ import { withResizableChartDemo } from '../../../shared/components/ResizableChar
 new CountryMapChartPlugin().configure({ key: 'country-map' }).register();
 
 export default {
-  title: 'Legacy Chart Plugins|legacy-plugin-chart-country-map',
+  title: 'Legacy Chart Plugins/legacy-plugin-chart-country-map',
   decorators: [withKnobs, withResizableChartDemo],
 };
 
