@@ -74,7 +74,7 @@ export default class SupersetClientClass {
     this.baseUrl = url.href.replace(/\/+$/, ''); // always strip trailing slash
     this.host = url.host;
     this.protocol = url.protocol as Protocol;
-    this.headers = { ...headers };
+    this.headers = { ...headers, 'Content-Type': 'application/json' };
     this.mode = mode;
     this.timeout = timeout;
     this.credentials = credentials;
