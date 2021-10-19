@@ -36,7 +36,6 @@
     "@emotion/styled": "^11.3.0",
     "@react-icons/all-files": "^4.1.0",
     "@storybook/addon-actions": "^6.3.12",
-    "@storybook/addon-info": "^5.3.21",
     "@storybook/addon-knobs": "^6.3.1",
     "@storybook/addon-links": "^6.3.12",
     "@storybook/addons": "^6.3.12",
@@ -61,7 +60,6 @@
     "@superset-ui/legacy-plugin-chart-sunburst": "0.18.14",
     "@superset-ui/legacy-plugin-chart-time-table": "0.18.14",
     "@superset-ui/legacy-plugin-chart-treemap": "0.18.14",
-    "@superset-ui/legacy-plugin-chart-word-cloud": "^0.11.15",
     "@superset-ui/legacy-plugin-chart-world-map": "0.18.14",
     "@superset-ui/legacy-preset-chart-big-number": "0.18.14",
     "@superset-ui/plugin-chart-echarts": "0.18.14",
@@ -69,7 +67,6 @@
     "@superset-ui/plugin-chart-word-cloud": "0.18.14",
     "@types/react-loadable": "^5.5.3",
     "@types/react-resizable": "^1.7.2",
-    "@types/storybook__react": "5.2.1",
     "antd": "^4.9.4",
     "bootstrap": "^3.4.1",
     "core-js": "3.8.3",
@@ -90,5 +87,8 @@
     "fork-ts-checker-webpack-plugin": "^5.0.7",
     "ts-loader": "^7.0.4",
     "typescript": "^3.8.3"
+  },
+  "peerDependencies": {
+    "@encodable/color": "=1.1.1"
   }
 }

@@ -58,13 +58,12 @@ jobs:
         run: npm run lint --quiet
       - name: Run unit tests
         run: npm run test
-#        reenable Storybook when upgrade to storybook6
-#      - name: Build Storybook
-#        run: npm run build-storybook
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: storybookBuild
-#          path: ./packages/superset-ui-demo/storybook-static/
+      - name: Build Storybook
+        run: npm run build-storybook
+      - uses: actions/upload-artifact@v2
+        with:
+          name: storybookBuild
+          path: ./packages/superset-ui-demo/storybook-static/
 
       - name: Report code coverage
         run: .github/workflows/codecov.sh
