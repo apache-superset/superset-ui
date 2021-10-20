@@ -87,5 +87,8 @@
     "fork-ts-checker-webpack-plugin": "^5.0.7",
     "ts-loader": "^7.0.4",
     "typescript": "^3.8.3"
+  },
+  "peerDependencies": {
+    "@encodable/color": "=1.1.1"
   }
 }
