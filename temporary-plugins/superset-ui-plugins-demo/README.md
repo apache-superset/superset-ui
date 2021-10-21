@@ -12,7 +12,7 @@ Storybook of `@superset-ui-plugins` packages. See it live at
 To view the storybook locally, you should:
 
 1. Clone [superset-ui-plugins](https://github.com/apache-superset/superset-ui-plugins) repo.
-2. Run `npm install && npm build` in the `superset-ui-plugins` root directory.
+2. Run `npm ci && npm build` in the `superset-ui-plugins` root directory.
 3. Change to the demo directory `cd packages/superset-ui-plugins-demo`.
 4. Run `npm run storybook`. This will open up a dev server at http://localhost:9001.
 

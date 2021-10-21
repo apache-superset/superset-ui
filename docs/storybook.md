@@ -3,7 +3,7 @@
 You can demo your changes by running the storybook demo locally with the following commands:
 
 ```sh
-npm install
+npm ci
 npm run build
 npm run storybook
 ```

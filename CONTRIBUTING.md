@@ -7,7 +7,7 @@
 
 ```sh
 git clone ...superset-ui && cd superset-ui
-npm install
+npm ci
 npm build
 ```
 

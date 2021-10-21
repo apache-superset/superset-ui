@@ -10,7 +10,7 @@ Storybook of `@superset-ui` packages. See it live at
 
 #### Run storybook
 
-To view the storybook locally, you should first run `npm install && npm run bootstrap` in the
+To view the storybook locally, you should first run `npm ci && npm run bootstrap` in the
 `@superset-ui` monorepo root directory, which will install all dependencies for this package and
 sym-link any `@superset-ui` packages to your local system.
 
