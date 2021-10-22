@@ -9,17 +9,18 @@ const packages = readdirSync(basePath).filter(name => {
   return stat.isSymbolicLink();
 });
 
+const rootPath = path.resolve(__dirname, '../../../');
+
 const PLUGIN_PACKAGES_PATH_REGEXP = new RegExp(
   `${path.resolve(__dirname, '../../../plugins/(legacy-)*(plugin|preset)-')}.+/src`,
 );
 
 module.exports = {
   addons: [
-    '@storybook/preset-typescript',
-    '@storybook/addon-knobs/register',
-    'storybook-addon-jsx/register',
-    '@storybook/addon-actions/register',
-    '@storybook/addon-links/register',
+    '@storybook/addon-knobs',
+    'storybook-addon-jsx',
+    '@storybook/addon-actions',
+    '@storybook/addon-links',
   ],
   stories: ['../storybook/stories/**/*Stories.[tj]sx'],
   webpackFinal: config => {
@@ -59,6 +60,16 @@ module.exports = {
         {},
       ),
     });
+
+    // todo: remove hard code after move storybook to superset repo.
+    config.resolve.alias['@emotion/styled'] = path.resolve(
+        rootPath,
+      './node_modules/@emotion/styled',
+    );
+    config.resolve.alias['@emotion/core'] = path.resolve(
+        rootPath,
+        './node_modules/@emotion/core',
+    );
 
     config.devtool = 'eval-cheap-module-source-map';
     config.devServer = {

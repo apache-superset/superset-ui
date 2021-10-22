@@ -175,7 +175,7 @@ export type TabOverride = 'data' | 'customize' | boolean;
 export interface BaseControlConfig<
   T extends ControlType = ControlType,
   O extends SelectOption = SelectOption,
-  V = JsonValue
+  V = JsonValue,
 > extends AnyDict {
   type: T;
   label?: ReactNode;
@@ -200,7 +200,7 @@ export interface BaseControlConfig<
 export interface ControlValueValidator<
   T = ControlType,
   O extends SelectOption = SelectOption,
-  V = unknown
+  V = unknown,
 > {
   (value: V, state?: ControlState<T, O>): boolean | string;
 }
@@ -228,7 +228,7 @@ interface FilterOption<T extends SelectOption> {
 // Ref: superset-frontend/src/components/Select/SupersetStyledSelect.tsx
 export interface SelectControlConfig<
   O extends SelectOption = SelectOption,
-  T extends SelectControlType = SelectControlType
+  T extends SelectControlType = SelectControlType,
 > extends BaseControlConfig<T, O> {
   clearable?: boolean;
   freeForm?: boolean;
@@ -243,7 +243,7 @@ export interface SelectControlConfig<
 
 export type SharedControlConfig<
   T extends InternalControlType = InternalControlType,
-  O extends SelectOption = SelectOption
+  O extends SelectOption = SelectOption,
 > = T extends SelectControlType ? SelectControlConfig<O, T> : BaseControlConfig<T>;
 
 /** --------------------------------------------
@@ -259,7 +259,7 @@ export type CustomControlConfig<P = {}> = BaseControlConfig<React.ComponentType<
 //  - otherwise assume it's a custom component control
 export type ControlConfig<
   T = AnyDict,
-  O extends SelectOption = SelectOption
+  O extends SelectOption = SelectOption,
 > = T extends InternalControlType
   ? SharedControlConfig<T, O>
   : T extends object
