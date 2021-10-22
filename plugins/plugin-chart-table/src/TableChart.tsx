@@ -176,6 +176,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     filters,
     sticky = true, // whether to use sticky header
     columnColorFormatters,
+    rearrangeColumns,
   } = props;
   const timestampFormatter = useCallback(
     value => getTimeFormatterForGranularity(timeGrain)(value),
@@ -378,7 +379,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
           // render `Cell`. This saves some time for large tables.
           return <td {...cellProps}>{text}</td>;
         },
-        Header: ({ column: col, onClick, style }) => (
+        Header: ({ column: col, onClick, style, onDragStart, onDrop }) => (
           <th
             title="Shift + Click to sort by multiple columns"
             className={[className, col.isSorted ? 'is-sorted' : ''].join(' ')}
@@ -387,6 +388,14 @@ export default function TableChart<D extends DataRecord = DataRecord>(
               ...style,
             }}
             onClick={onClick}
+            data-column-name={col.id}
+            {...(rearrangeColumns && {
+              draggable: 'true',
+              onDragStart: onDragStart,
+              onDragOver: e => e.preventDefault(),
+              onDragEnter: e => e.preventDefault(),
+              onDrop: onDrop,
+            })}
           >
             {/* can't use `columnWidth &&` because it may also be zero */}
             {config.columnWidth ? (

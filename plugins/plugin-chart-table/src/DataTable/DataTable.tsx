@@ -29,6 +29,7 @@ import {
   usePagination,
   useSortBy,
   useGlobalFilter,
+  useColumnOrder,
   PluginHook,
   TableOptions,
   FilterType,
@@ -92,6 +93,7 @@ export default function DataTable<D extends object>({
     useGlobalFilter,
     useSortBy,
     usePagination,
+    useColumnOrder,
     doSticky ? useSticky : [],
     hooks || [],
   ].flat();
@@ -162,6 +164,8 @@ export default function DataTable<D extends object>({
     setGlobalFilter,
     setPageSize: setPageSize_,
     wrapStickyTable,
+    setColumnOrder,
+    allColumns,
     state: { pageIndex, pageSize, globalFilter: filterValue, sticky = {} },
   } = useTable<D>(
     {
@@ -196,6 +200,27 @@ export default function DataTable<D extends object>({
 
   const shouldRenderFooter = columns.some(x => !!x.Footer);
 
+  let columnBeingDragged: number = -1;
+
+  const onDragStart = (e: React.DragEvent) => {
+    const el = e.target as HTMLTableCellElement;
+    columnBeingDragged = allColumns.findIndex(col => col.id === el.dataset.columnName);
+    e.dataTransfer.setData('text/plain', `${columnBeingDragged}`);
+  };
+
+  const onDrop = (e: React.DragEvent) => {
+    const el = e.target as HTMLTableCellElement;
+    const newPosition = allColumns.findIndex(col => col.id === el.dataset.columnName);
+
+    if (newPosition !== -1) {
+      const currentCols = allColumns.map(c => c.id);
+      const colToBeMoved = currentCols.splice(columnBeingDragged, 1);
+      currentCols.splice(newPosition, 0, colToBeMoved[0]);
+      setColumnOrder(currentCols);
+    }
+    e.preventDefault();
+  };
+
   const renderTable = () => (
     <table {...getTableProps({ className: tableClassName })}>
       <thead>
@@ -207,6 +232,8 @@ export default function DataTable<D extends object>({
                 column.render('Header', {
                   key: column.id,
                   ...column.getSortByToggleProps(),
+                  onDragStart: onDragStart,
+                  onDrop: onDrop,
                 }),
               )}
             </tr>

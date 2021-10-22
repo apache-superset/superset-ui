@@ -17,6 +17,8 @@ import {
   UseSortByState,
   UseTableHooks,
   UseSortByHooks,
+  UseColumnOrderState,
+  UseColumnOrderInstanceProps,
   Renderer,
   HeaderProps,
   TableFooterProps,
@@ -41,6 +43,7 @@ declare module 'react-table' {
       UseRowSelectInstanceProps<D>,
       UseRowStateInstanceProps<D>,
       UseSortByInstanceProps<D>,
+      UseColumnOrderInstanceProps<D>,
       UseStickyInstanceProps {}
 
   export interface TableState<D extends object>
@@ -50,6 +53,7 @@ declare module 'react-table' {
       UsePaginationState<D>,
       UseRowSelectState<D>,
       UseSortByState<D>,
+      UseColumnOrderState<D>,
       UseStickyState {}
 
   // Typing from @types/react-table is incomplete
