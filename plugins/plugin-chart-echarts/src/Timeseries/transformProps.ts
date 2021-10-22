@@ -46,6 +46,7 @@ import {
 import { extractAnnotationLabels } from '../utils/annotation';
 import {
   extractForecastSeriesContext,
+  extractForecastSeriesContexts,
   extractProphetValuesFromTooltipParams,
   formatProphetTooltipSeries,
   rebaseTimeseriesDatum,
@@ -68,10 +69,8 @@ export default function transformProps(
 ): TimeseriesChartTransformedProps {
   const { width, height, filterState, formData, hooks, queriesData, datasource } = chartProps;
   const { verboseMap = {} } = datasource;
-  const {
-    annotation_data: annotationData_,
-    data = [],
-  } = queriesData[0] as TimeseriesChartDataResponseResult;
+  const { annotation_data: annotationData_, data = [] } =
+    queriesData[0] as TimeseriesChartDataResponseResult;
   const annotationData = annotationData_ || {};
 
   const {
@@ -113,6 +112,9 @@ export default function transformProps(
   const rawSeries = extractTimeseriesSeries(rebasedData, {
     fillNeighborValue: stack && !forecastEnabled ? 0 : undefined,
   });
+  const seriesContexts = extractForecastSeriesContexts(
+    Object.values(rawSeries).map(series => series.name as string),
+  );
   const series: SeriesOption[] = [];
   const formatter = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormat);
 
@@ -145,7 +147,7 @@ export default function transformProps(
     const transformedSeries = transformSeries(entry, colorScale, {
       area,
       filterState,
-      forecastEnabled,
+      seriesContexts,
       markerEnabled,
       markerSize,
       areaOpacity: opacity,
@@ -269,9 +271,8 @@ export default function transformProps(
         const prophetValue = !richTooltip ? [params] : params;
 
         const rows: Array<string> = [`${tooltipFormatter(value)}`];
-        const prophetValues: Record<string, ProphetValue> = extractProphetValuesFromTooltipParams(
-          prophetValue,
-        );
+        const prophetValues: Record<string, ProphetValue> =
+          extractProphetValuesFromTooltipParams(prophetValue);
 
         Object.keys(prophetValues).forEach(key => {
           const value = prophetValues[key];
