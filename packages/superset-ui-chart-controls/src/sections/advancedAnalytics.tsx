@@ -57,6 +57,9 @@ export const advancedAnalyticsControls: ControlPanelSectionConfig = {
             'Defines the size of the rolling window function, ' +
               'relative to the time granularity selected',
           ),
+          visibility: ({ controls }) =>
+            Boolean(controls?.rolling_type?.value) &&
+            controls.rolling_type.value !== RollingType.Cumsum,
         },
       },
     ],
@@ -74,6 +77,9 @@ export const advancedAnalyticsControls: ControlPanelSectionConfig = {
               'shown are the total of 7 periods. This will hide the "ramp up" ' +
               'taking place over the first 7 periods',
           ),
+          visibility: ({ controls }) =>
+            Boolean(controls?.rolling_type?.value) &&
+            controls.rolling_type.value !== RollingType.Cumsum,
         },
       },
     ],
@@ -114,13 +120,13 @@ export const advancedAnalyticsControls: ControlPanelSectionConfig = {
           default: 'values',
           choices: [
             [ComparisionType.Values, 'Actual values'],
-            [ComparisionType.Absolute, 'Absolute difference'],
+            [ComparisionType.Difference, 'Difference'],
             [ComparisionType.Percentage, 'Percentage change'],
             [ComparisionType.Ratio, 'Ratio'],
           ],
           description: t(
             'How to display time shifts: as individual lines; as the ' +
-              'absolute difference between the main time series and each time shift; ' +
+              'difference between the main time series and each time shift; ' +
               'as the percentage change; or as the ratio between series and time shifts.',
           ),
         },
