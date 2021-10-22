@@ -200,7 +200,7 @@ export default function DataTable<D extends object>({
 
   const shouldRenderFooter = columns.some(x => !!x.Footer);
 
-  let columnBeingDragged: number = -1;
+  let columnBeingDragged = -1;
 
   const onDragStart = (e: React.DragEvent) => {
     const el = e.target as HTMLTableCellElement;
@@ -232,8 +232,8 @@ export default function DataTable<D extends object>({
                 column.render('Header', {
                   key: column.id,
                   ...column.getSortByToggleProps(),
-                  onDragStart: onDragStart,
-                  onDrop: onDrop,
+                  onDragStart,
+                  onDrop,
                 }),
               )}
             </tr>

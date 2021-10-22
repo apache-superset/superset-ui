@@ -391,10 +391,10 @@ export default function TableChart<D extends DataRecord = DataRecord>(
             data-column-name={col.id}
             {...(rearrangeColumns && {
               draggable: 'true',
-              onDragStart: onDragStart,
+              onDragStart,
               onDragOver: e => e.preventDefault(),
               onDragEnter: e => e.preventDefault(),
-              onDrop: onDrop,
+              onDrop,
             })}
           >
             {/* can't use `columnWidth &&` because it may also be zero */}
