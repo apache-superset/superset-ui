@@ -358,7 +358,10 @@ const sort_by: SharedControlConfig<'MetricsControl'> = {
   type: 'MetricsControl',
   label: t('Sort By'),
   default: null,
-  description: t('Metric used to define the top series'),
+  description: t(
+    'Metric used to define the top series. ' + 
+      'If undefined defaults to the first selected metric.' 
+  ),
   mapStateToProps: ({ datasource }) => ({
     columns: datasource?.columns || [],
     savedMetrics: datasource?.metrics || [],
