@@ -136,6 +136,7 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+        [showValueControl],
         [
           {
             name: 'stack',
@@ -152,7 +153,6 @@ const config: ControlPanelConfig = {
             },
           },
         ],
-        [showValueControl],
         [onlyTotalControl],
         [
           {

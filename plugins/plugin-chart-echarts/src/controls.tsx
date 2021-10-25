@@ -129,4 +129,4 @@ export const onlyTotalControl = {
   },
 };
 
-export const showValueSection = [[stackControl], [showValueControl], [onlyTotalControl]];
+export const showValueSection = [[showValueControl], [stackControl], [onlyTotalControl]];
