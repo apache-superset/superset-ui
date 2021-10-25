@@ -112,7 +112,10 @@ export const dnd_sort_by: SharedControlConfig<'DndMetricSelect'> = {
   type: 'DndMetricSelect',
   label: t('Sort by'),
   default: null,
-  description: t('Metric used to define the top series'),
+  description: t(
+    'Metric used to define the top series. ' + 
+      'If undefined defaults to the first selected metric.' 
+  ),
   mapStateToProps: ({ datasource }) => ({
     columns: datasource?.columns || [],
     savedMetrics: datasource?.metrics || [],
