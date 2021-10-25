@@ -197,7 +197,7 @@ export function transformSeries(
         } = params;
         if (!formatter) return numericValue;
         if (!stack || !onlyTotal) {
-          return formatter(numericValue);
+          return numericValue ? formatter(numericValue) : '';
         }
         if (seriesIndex === showValueIndexes[dataIndex]) {
           return formatter(totalStackedValues[dataIndex]);

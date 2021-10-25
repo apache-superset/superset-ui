@@ -26,7 +26,7 @@ import { EchartsHandler, EventHandlers } from '../types';
 import Echart from '../components/Echart';
 import { EchartsTimeseriesFormData, TimeseriesChartTransformedProps } from './types';
 import { currentSeries } from '../utils/series';
-import { AreaChartExtraControlsOptions, TIMESERIES_CONSTANTS } from '../constants';
+import { AreaChartExtraControlsOptions } from '../constants';
 
 const { RadioButtonControl } = sharedControlComponents;
 
@@ -86,7 +86,7 @@ export default function EchartsTimeseries({
   selectedValues,
   setDataMask,
   legendData = [],
-  setControlValue
+  setControlValue,
 }: TimeseriesChartTransformedProps) {
   const { emitFilter, stack, extraControls } = formData;
   const echartRef = useRef<EchartsHandler | null>(null);
@@ -256,10 +256,12 @@ export default function EchartsTimeseries({
         </ExtraControlsWrapper>
       )}
       <Echart
-        height={extraControls ? height - TIMESERIES_CONSTANTS.extraControlsOffset : height}
+        ref={echartRef}
+        height={height}
         width={width}
         echartOptions={echartOptions}
         eventHandlers={eventHandlers}
+        zrEventHandlers={zrEventHandlers}
         selectedValues={selectedValues}
       />
     </>
