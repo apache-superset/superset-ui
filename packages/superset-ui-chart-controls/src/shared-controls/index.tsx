@@ -330,7 +330,7 @@ const limit: SharedControlConfig<'SelectControl'> = {
   freeForm: true,
   label: t('Series limit'),
   validators: [legacyValidateInteger],
-  default: 100,
+  default: 0,
   choices: formatSelectOptions(SERIES_LIMITS),
   description: t(
     'Limits the number of time series that get displayed. A sub query ' +
