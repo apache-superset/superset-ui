@@ -16,12 +16,13 @@ fi
 
 # Get the current tag version
 tag=v$(node -e "process.stdout.write(require('./lerna.json').version)");
+message="chore: publish $tag"
 
 # Update the lock file here
 npm i --package-lock-only
 
 # Auto-tag and auto-commit like usual
-git commit --all -m ${tag}
+git commit --all -m ${message}
 git tag -a ${tag} -m ${tag}
 git push origin ${tag}
 git push
