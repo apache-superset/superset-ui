@@ -1,12 +1,12 @@
 {
   "lerna": "3.2.1",
-  "npmClient": "yarn",
+  "npmClient": "npm",
   "packages": [
     "packages/*",
     "plugins/*"
   ],
   "useWorkspaces": true,
-  "version": "0.18.14",
+  "version": "0.18.15",
   "ignoreChanges": [
     "**/*.md",
     "**/*.spec.tsx?",
