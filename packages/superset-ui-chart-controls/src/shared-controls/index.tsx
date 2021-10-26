@@ -331,6 +331,7 @@ const limit: SharedControlConfig<'SelectControl'> = {
   label: t('Series limit'),
   validators: [legacyValidateInteger],
   choices: formatSelectOptions(SERIES_LIMITS),
+  clearable: true,
   description: t(
     'Limits the number of time series that get displayed. A sub query ' +
       '(or an extra phase where sub queries are not supported) is applied to limit ' +
