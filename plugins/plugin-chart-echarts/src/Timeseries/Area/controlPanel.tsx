@@ -43,7 +43,6 @@ const {
   opacity,
   rowLimit,
   seriesType,
-  tooltipTimeFormat,
   truncateYAxis,
   yAxisBounds,
   zoomable,
