@@ -85,6 +85,7 @@ export interface RequestBase {
 }
 
 export interface CallApi extends RequestBase {
+  unauthorizedUrl?: Url;
   url: Url;
   cache?: Cache;
   redirect?: Redirect;
