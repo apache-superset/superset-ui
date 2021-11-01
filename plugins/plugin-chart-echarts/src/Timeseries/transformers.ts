@@ -181,9 +181,7 @@ export function transformSeries(
     areaStyle: area
       ? {
           opacity:
-            forecastSeries.type === ForecastSeriesEnum.ForecastUpper || area
-              ? opacity * areaOpacity
-              : 0,
+            forecastSeries.type === ForecastSeriesEnum.ForecastUpper ? opacity * areaOpacity : 0,
         }
       : undefined,
     emphasis,
