@@ -21,7 +21,6 @@ import { boxplotOperator } from '@superset-ui/chart-controls';
 import { BoxPlotQueryFormData } from './types';
 
 export default function buildQuery(formData: BoxPlotQueryFormData) {
-  console.log(formData);
   const { columns = [], granularity_sqla, groupby = [] } = formData;
   return buildQueryContext(formData, baseQueryObject => {
     const distributionColumns: string[] = [];

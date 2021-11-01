@@ -18,7 +18,7 @@
  */
 import buildQuery from '../../src/BoxPlot/buildQuery';
 import { BoxPlotQueryFormData } from '../../src/BoxPlot/types';
-import { PostProcessingBoxplot } from '@superset-ui/core';
+import { isPostProcessingBoxplot } from '@superset-ui/core';
 
 describe('BoxPlot buildQuery', () => {
   const formData: BoxPlotQueryFormData = {
@@ -40,9 +40,10 @@ describe('BoxPlot buildQuery', () => {
     expect(query.metrics).toEqual(['foo']);
     expect(query.columns).toEqual(['ds', 'bar']);
     expect(query.series_columns).toEqual(['bar']);
-    const postProcessing = query.post_processing;
-    expect(postProcessing.operation).toEqual(['boxplot']);
-    expect(postProcessing.operation).toEqual(['boxplot']);
+    const [rule] = query.post_processing || [];
+    expect(isPostProcessingBoxplot(rule)).toEqual(true);
+    expect(rule.operation).toEqual(['boxplot']);
+    expect(rule.groupby).toEqual(['bar']);
   });
 
   it('should build non-timeseries query object when columns is defined', () => {
@@ -51,5 +52,9 @@ describe('BoxPlot buildQuery', () => {
     expect(query.metrics).toEqual(['foo']);
     expect(query.columns).toEqual(['qwerty', 'bar']);
     expect(query.series_columns).toEqual(['bar']);
+    const [rule] = query.post_processing || [];
+    expect(isPostProcessingBoxplot(rule)).toEqual(true);
+    expect(rule.operation).toEqual(['boxplot']);
+    expect(rule.groupby).toEqual(['bar']);
   });
 });
