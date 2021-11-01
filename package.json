@@ -116,7 +116,7 @@
     "jest-enzyme": "^7.1.2",
     "jest-mock-console": "^1.0.0",
     "jsdom": "^16.4.0",
-    "lerna": "^3.15.0",
+    "lerna": "^4.0.0",
     "lint-staged": "^10.0.3",
     "prettier": "^2.4.1",
     "react": "^16.13.1",
