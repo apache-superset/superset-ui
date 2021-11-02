@@ -1652,6 +1652,20 @@ CalHeatMap.prototype = {
       }
     }
 
+    function formatTextFill(value) {
+      if (!value) return 'black';
+      const rgb = parent.legendScale(Math.min(value, options.legend[options.legend.length - 1]));
+      // rgb(2,2,2) => [2,2,2]
+      const rgbRegex = /^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/;
+      const rgbArrs = rgb.match(rgbRegex);
+      if (!rgbArrs) return 'black';
+      const r = rgbArrs[1];
+      const g = rgbArrs[2];
+      const b = rgbArrs[3];
+      const gray = r * 0.299 + g * 0.587 + b * 0.114;
+      return gray > 135 ? 'black' : 'white';
+    }
+
     /**
      * Change the subDomainText class if necessary
      * Also change the text, e.g when text is representing the value
@@ -1664,7 +1678,8 @@ CalHeatMap.prototype = {
       .attr('class', function (d) {
         return 'subdomain-text' + parent.getHighlightClassName(d.t);
       })
-      .call(formatSubDomainText);
+      .call(formatSubDomainText)
+      .attr('fill', d => formatTextFill(d.v));
   },
 
   /**
