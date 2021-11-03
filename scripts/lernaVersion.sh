@@ -23,15 +23,23 @@ if [[ -z $lernaVersionArg ]]; then
   exit 1
 fi
 
+currentNpm=$(npm --version)
 npmVersion=$(node -e "process.stdout.write(require('./package.json').engines.npm)");
-isSatisfiedNpm=$(node -e "process.stdout.write(require('semver').satisfies('$(npm --version)', '${npmVersion}').toString())");
+isSatisfiedNpm=$(node -e "process.stdout.write(require('semver').satisfies('$currentNpm', '$npmVersion').toString())");
 
+currentNode=$(node --version)
 nodeVersion=$(node -e "process.stdout.write(require('./package.json').engines.node)");
-isSatisfiedNode=$(node -e "process.stdout.write(require('semver').satisfies('$(node --version)', '${nodeVersion}').toString())");
+isSatisfiedNode=$(node -e "process.stdout.write(require('semver').satisfies('$currentNode', '$nodeVersion').toString())");
 
-# Check node and npm version compatible with package.json
-if [[ $isSatisfiedNpm != 'true' || $isSatisfiedNode != 'true' ]]; then
-  echo '[ERROR] node version or npm version is not compatible with package.json'
+# Check node version compatible with package.json
+if [[ $isSatisfiedNode != 'true' ]]; then
+  echo "[ERROR] Your node version($currentNode) is not compatible with package.json($nodeVersion)"
+  exit 1
+fi
+
+# Check npm version compatible with package.json
+if [[ $isSatisfiedNpm != 'true' ]]; then
+  echo "[ERROR] Your npm version($currentNpm) is not compatible with package.json($npmVersion)"
   exit 1
 fi
 
