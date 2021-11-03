@@ -19,7 +19,19 @@ rootDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
 lernaVersionArg="$1"
 if [[ -z $lernaVersionArg ]]; then
-  echo 'Please provide argument for "lerna version".'
+  echo '[ERROR]Please provide argument for "lerna version".'
+  exit 1
+fi
+
+npmVersion=$(node -e "process.stdout.write(require('./package.json').engines.npm)");
+isSatisfiedNpm=$(node -e "process.stdout.write(require('semver').satisfies('$(npm --version)', '${npmVersion}').toString())");
+
+nodeVersion=$(node -e "process.stdout.write(require('./package.json').engines.node)");
+isSatisfiedNode=$(node -e "process.stdout.write(require('semver').satisfies('$(node --version)', '${nodeVersion}').toString())");
+
+# Check node and npm version compatible with package.json
+if [[ $isSatisfiedNpm != 'true' || $isSatisfiedNode != 'true' ]]; then
+  echo '[ERROR]node version or npm version is not compatible with package.json'
   exit 1
 fi
 
@@ -27,7 +39,7 @@ fi
 lerna version $1 --no-push --no-git-tag-version --yes
 
 if [[ -z $(git diff --stat) ]]; then
-  echo 'No changed packages to version.'
+  echo '[ERROR]No changed packages to version.'
   exit 1
 fi
 
@@ -40,7 +52,7 @@ rm "$rootDir/package-lock.json"
 npm i --package-lock-only
 
 if [[ $? -ne 0 ]]; then
-  echo 'Can not update package-lock.json'
+  echo '[ERROR]Can not update package-lock.json'
   exit 1
 fi
 
