@@ -9,6 +9,7 @@
 /* eslint-disable */
 
 import d3tip from 'd3-tip';
+import { getContrastingColor } from '@superset-ui/core';
 import './d3tip.css';
 
 var d3 = typeof require === 'function' ? require('d3') : window.d3;
@@ -1652,20 +1653,6 @@ CalHeatMap.prototype = {
       }
     }
 
-    function formatTextFill(value) {
-      if (!value) return 'black';
-      const rgb = parent.legendScale(Math.min(value, options.legend[options.legend.length - 1]));
-      // rgb(2,2,2) => [2,2,2]
-      const rgbRegex = /^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/;
-      const rgbArrs = rgb.match(rgbRegex);
-      if (!rgbArrs) return 'black';
-      const r = rgbArrs[1];
-      const g = rgbArrs[2];
-      const b = rgbArrs[3];
-      const gray = r * 0.299 + g * 0.587 + b * 0.114;
-      return gray > 135 ? 'black' : 'white';
-    }
-
     /**
      * Change the subDomainText class if necessary
      * Also change the text, e.g when text is representing the value
@@ -1679,7 +1666,11 @@ CalHeatMap.prototype = {
         return 'subdomain-text' + parent.getHighlightClassName(d.t);
       })
       .call(formatSubDomainText)
-      .attr('fill', d => formatTextFill(d.v));
+      .attr('fill', d => {
+        if (!d.v) return '#000';
+        const rgb = parent.legendScale(Math.min(d.v, options.legend[options.legend.length - 1]));
+        return getContrastingColor(rgb, 135);
+      });
   },
 
   /**
