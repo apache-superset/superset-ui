@@ -49,9 +49,5 @@ export function getContrastingColor(color: string, thresholds = 186) {
     b = parseInt(hex.slice(4, 6), 16);
   }
 
-  if ([r, g, b].some(x => Number.isNaN(x))) {
-    throw new Error(`Invalid color: ${color}`);
-  }
-
   return r * 0.299 + g * 0.587 + b * 0.114 > thresholds ? '#000' : '#FFF';
 }

@@ -31,6 +31,11 @@ describe('color utils', () => {
       expect(color).toBe('#FFF');
     });
 
+    it('when called with no # prefix hex color', () => {
+      const color = getContrastingColor('000000');
+      expect(color).toBe('#FFF');
+    });
+
     it('when called with rgb color', () => {
       const color = getContrastingColor('rgb(0, 0, 0)');
       expect(color).toBe('#FFF');
