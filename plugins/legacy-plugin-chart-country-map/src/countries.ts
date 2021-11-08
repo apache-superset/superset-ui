@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 /* eslint-disable import/no-webpack-loader-syntax, import/no-unresolved */
 import austria from 'file-loader!./countries/austria.geojson';
 import australia from 'file-loader!./countries/australia.geojson';
@@ -17,6 +36,7 @@ import india from 'file-loader!./countries/india.geojson';
 import indonesia from 'file-loader!./countries/indonesia.geojson';
 import iran from 'file-loader!./countries/iran.geojson';
 import italy from 'file-loader!./countries/italy.geojson';
+import italy_regions from 'file-loader!./countries/italy_regions.geojson';
 import japan from 'file-loader!./countries/japan.geojson';
 import korea from 'file-loader!./countries/korea.geojson';
 import liechtenstein from 'file-loader!./countries/liechtenstein.geojson';
@@ -25,9 +45,11 @@ import malaysia from 'file-loader!./countries/malaysia.geojson';
 import morocco from 'file-loader!./countries/morocco.geojson';
 import myanmar from 'file-loader!./countries/myanmar.geojson';
 import netherlands from 'file-loader!./countries/netherlands.geojson';
+import peru from 'file-loader!./countries/peru.geojson';
 import poland from 'file-loader!./countries/poland.geojson';
 import portugal from 'file-loader!./countries/portugal.geojson';
 import russia from 'file-loader!./countries/russia.geojson';
+import saudi_arabia from 'file-loader!./countries/saudi_arabia.geojson';
 import singapore from 'file-loader!./countries/singapore.geojson';
 import slovenia from 'file-loader!./countries/slovenia.geojson';
 import sweden from 'file-loader!./countries/sweden.geojson';
@@ -62,6 +84,7 @@ export const countries = {
   indonesia,
   iran,
   italy,
+  italy_regions,
   japan,
   korea,
   liechtenstein,
@@ -70,9 +93,11 @@ export const countries = {
   myanmar,
   netherlands,
   norway,
+  peru,
   poland,
   portugal,
   russia,
+  saudi_arabia,
   singapore,
   slovenia,
   spain,
@@ -92,6 +117,9 @@ export const countries = {
 export const countryOptions = Object.keys(countries).map(x => {
   if (x === 'uk' || x === 'usa') {
     return [x, x.toUpperCase()];
+  }
+  if (x === 'italy_regions') {
+    return [x, 'Italy (regions)'];
   }
   return [x, x[0].toUpperCase() + x.slice(1)];
 });

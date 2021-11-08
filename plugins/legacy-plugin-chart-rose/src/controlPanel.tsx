@@ -65,7 +65,7 @@ const config: ControlPanelConfig = {
       label: t('Chart Options'),
       expanded: true,
       controlSetRows: [
-        ['color_scheme', 'label_colors'],
+        ['color_scheme'],
         [
           {
             name: 'number_format',
@@ -210,13 +210,13 @@ const config: ControlPanelConfig = {
               default: 'values',
               choices: [
                 ['values', 'Actual Values'],
-                ['absolute', 'Absolute difference'],
+                ['absolute', 'Difference'],
                 ['percentage', 'Percentage change'],
                 ['ratio', 'Ratio'],
               ],
               description: t(
                 'How to display time shifts: as individual lines; as the ' +
-                  'absolute difference between the main time series and each time shift; ' +
+                  'difference between the main time series and each time shift; ' +
                   'as the percentage change; or as the ratio between series and time shifts.',
               ),
             },

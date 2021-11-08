@@ -23,23 +23,23 @@ import {
   AnnotationLayer,
   AnnotationOpacity,
   AnnotationType,
+  evalExpression,
+  FormulaAnnotationLayer,
   isRecordAnnotationResult,
   isTableAnnotationLayer,
   isTimeseriesAnnotationResult,
   TimeseriesDataRecord,
 } from '@superset-ui/core';
-import { parse as mathjsParse } from 'mathjs';
 
 export function evalFormula(
-  formula: AnnotationLayer,
+  formula: FormulaAnnotationLayer,
   data: TimeseriesDataRecord[],
 ): [Date, number][] {
-  const { value } = formula;
-  const node = mathjsParse(value as string);
-  const func = node.compile();
+  const { value: expression } = formula;
+
   return data.map(row => [
     new Date(Number(row.__timestamp)),
-    func.evaluate({ x: row.__timestamp }) as number,
+    evalExpression(expression, row.__timestamp as number),
   ]);
 }
 

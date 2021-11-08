@@ -87,7 +87,7 @@ const sequentialSchemeRegistry = getSequentialSchemeRegistry();
 export const PRIMARY_COLOR = { r: 0, g: 122, b: 135, a: 1 };
 
 const ROW_LIMIT_OPTIONS = [10, 50, 100, 250, 500, 1000, 5000, 10000, 50000];
-const SERIES_LIMITS = [0, 5, 10, 25, 50, 100, 500];
+const SERIES_LIMITS = [5, 10, 25, 50, 100, 500];
 
 type Control = {
   savedMetrics?: Metric[] | null;
@@ -102,7 +102,10 @@ const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
   clearable: true,
   default: [],
   includeTime: false,
-  description: t('One or many columns to group by'),
+  description: t(
+    'One or many columns to group by. High cardinality groupings should include a sort by metric ' +
+      'and series limit to limit the number of fetched and rendered series.',
+  ),
   optionRenderer: c => <ColumnOption showType column={c} />,
   valueRenderer: c => <ColumnOption column={c} />,
   valueKey: 'column_name',
@@ -134,6 +137,7 @@ const metrics: SharedControlConfig<'MetricsControl'> = {
   mapStateToProps: ({ datasource }) => ({
     columns: datasource ? datasource.columns : [],
     savedMetrics: datasource ? datasource.metrics : [],
+    datasource,
     datasourceType: datasource?.type,
   }),
   description: t('One or many metrics to display'),
@@ -323,6 +327,10 @@ const row_limit: SharedControlConfig<'SelectControl'> = {
   validators: [legacyValidateInteger],
   default: 10000,
   choices: formatSelectOptions(ROW_LIMIT_OPTIONS),
+  description: t(
+    'Limits the number of rows that get displayed. Should be used in conjunction with a sort ' +
+      'by metric.',
+  ),
 };
 
 const limit: SharedControlConfig<'SelectControl'> = {
@@ -330,24 +338,44 @@ const limit: SharedControlConfig<'SelectControl'> = {
   freeForm: true,
   label: t('Series limit'),
   validators: [legacyValidateInteger],
-  default: 100,
+  choices: formatSelectOptions(SERIES_LIMITS),
+  clearable: true,
+  description: t(
+    'Limits the number of series that get displayed. Should be used in conjunction with a sort ' +
+      'by metric. A joined subquery (or an extra phase where subqueries are not supported) is ' +
+      'applied to limit the number of series that get fetched and rendered. This feature is ' +
+      'useful when grouping by high cardinality column(s) though does increase the query ' +
+      'complexity and cost.',
+  ),
+};
+
+const series_limit: SharedControlConfig<'SelectControl'> = {
+  type: 'SelectControl',
+  freeForm: true,
+  label: t('Series limit'),
+  validators: [legacyValidateInteger],
   choices: formatSelectOptions(SERIES_LIMITS),
   description: t(
-    'Limits the number of time series that get displayed. A sub query ' +
-      '(or an extra phase where sub queries are not supported) is applied to limit ' +
-      'the number of time series that get fetched and displayed. This feature is useful ' +
-      'when grouping by high cardinality dimension(s).',
+    'Limits the number of series that get displayed. Should be used in conjunction with a sort ' +
+      'by metric. A joined subquery (or an extra phase where subqueries are not supported) is ' +
+      'applied to limit the number of series that get fetched and rendered. This feature is ' +
+      'useful when grouping by high cardinality column(s) though does increase the query ' +
+      'complexity and cost.',
   ),
 };
 
 const sort_by: SharedControlConfig<'MetricsControl'> = {
   type: 'MetricsControl',
-  label: t('Sort By'),
+  label: t('Sort by'),
   default: null,
-  description: t('Metric used to define the top series'),
+  description: t(
+    'Metric used to define the top series. Should be used in conjunction with the series or row ' +
+      'limit',
+  ),
   mapStateToProps: ({ datasource }) => ({
     columns: datasource?.columns || [],
     savedMetrics: datasource?.metrics || [],
+    datasource,
     datasourceType: datasource?.type,
   }),
 };
@@ -450,19 +478,6 @@ const color_scheme: SharedControlConfig<'ColorSchemeControl'> = {
   schemes: () => categoricalSchemeRegistry.getMap(),
 };
 
-const label_colors: SharedControlConfig<'ColorMapControl'> = {
-  type: 'ColorMapControl',
-  label: t('Color Map'),
-  default: {},
-  renderTrigger: true,
-  mapStateToProps: ({
-    form_data: { color_namespace: colorNamespace, color_scheme: colorScheme },
-  }) => ({
-    colorNamespace,
-    colorScheme,
-  }),
-};
-
 const enableExploreDnd = isFeatureEnabled(FeatureFlag.ENABLE_EXPLORE_DRAG_AND_DROP);
 
 const sharedControls = {
@@ -494,7 +509,10 @@ const sharedControls = {
   x_axis_time_format,
   adhoc_filters: enableExploreDnd ? dnd_adhoc_filters : adhoc_filters,
   color_scheme,
-  label_colors,
+  series_columns: enableExploreDnd ? dndColumnsControl : columnsControl,
+  series_limit,
+  series_limit_metric: enableExploreDnd ? dnd_sort_by : sort_by,
+  legacy_order_by: enableExploreDnd ? dnd_sort_by : sort_by,
 };
 
-export default sharedControls;
+export { sharedControls, dndEntity, dndColumnsControl };

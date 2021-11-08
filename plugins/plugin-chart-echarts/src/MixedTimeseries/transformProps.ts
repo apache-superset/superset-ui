@@ -28,13 +28,13 @@ import {
   isIntervalAnnotationLayer,
   isTimeseriesAnnotationLayer,
 } from '@superset-ui/core';
-import { EChartsOption, SeriesOption } from 'echarts';
+import { EChartsCoreOption, SeriesOption } from 'echarts';
 import {
   DEFAULT_FORM_DATA,
   EchartsMixedTimeseriesFormData,
   EchartsMixedTimeseriesChartTransformedProps,
 } from './types';
-import { ForecastSeriesEnum, ProphetValue } from '../types';
+import { ForecastSeriesEnum } from '../types';
 import { parseYAxisBound } from '../utils/controls';
 import {
   currentSeries,
@@ -91,27 +91,32 @@ export default function transformProps(
     seriesType,
     seriesTypeB,
     showLegend,
+    showValue,
+    showValueB,
     stack,
     stackB,
     truncateYAxis,
     tooltipTimeFormat,
     yAxisFormat,
     yAxisFormatSecondary,
-    xAxisShowMinLabel,
-    xAxisShowMaxLabel,
     xAxisTimeFormat,
     yAxisBounds,
     yAxisIndex,
     yAxisIndexB,
-    yAxisTitle,
     yAxisTitleSecondary,
     zoomable,
     richTooltip,
+    tooltipSortByMetric,
     xAxisLabelRotation,
     groupby,
     groupbyB,
     emitFilter,
     emitFilterB,
+    xAxisTitle,
+    yAxisTitle,
+    xAxisTitleMargin,
+    yAxisTitleMargin,
+    yAxisTitlePosition,
   }: EchartsMixedTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
@@ -145,6 +150,7 @@ export default function transformProps(
       markerSize,
       areaOpacity: opacity,
       seriesType,
+      showValue,
       stack,
       yAxisIndex,
       filterState,
@@ -158,6 +164,7 @@ export default function transformProps(
       markerSize: markerSizeB,
       areaOpacity: opacityB,
       seriesType: seriesTypeB,
+      showValue: showValueB,
       stack: stackB,
       yAxisIndex: yAxisIndexB,
       filterState,
@@ -191,9 +198,20 @@ export default function transformProps(
   const tooltipTimeFormatter = getTooltipTimeFormatter(tooltipTimeFormat);
   const xAxisFormatter = getXAxisFormatter(xAxisTimeFormat);
 
-  const addYAxisLabelOffset = !!(yAxisTitle || yAxisTitleSecondary);
-  const chartPadding = getPadding(showLegend, legendOrientation, addYAxisLabelOffset, zoomable);
+  const addYAxisTitleOffset = !!(yAxisTitle || yAxisTitleSecondary);
+  const addXAxisTitleOffset = !!xAxisTitle;
 
+  const chartPadding = getPadding(
+    showLegend,
+    legendOrientation,
+    addYAxisTitleOffset,
+    zoomable,
+    null,
+    addXAxisTitleOffset,
+    yAxisTitlePosition,
+    yAxisTitleMargin,
+    xAxisTitleMargin,
+  );
   const labelMap = rawSeriesA.reduce((acc, datum) => {
     const label = datum.name as string;
     return {
@@ -212,7 +230,7 @@ export default function transformProps(
 
   const { setDataMask = () => {} } = hooks;
 
-  const echartOptions: EChartsOption = {
+  const echartOptions: EChartsCoreOption = {
     useUTC: true,
     grid: {
       ...defaultGrid,
@@ -220,9 +238,10 @@ export default function transformProps(
     },
     xAxis: {
       type: 'time',
+      name: xAxisTitle,
+      nameGap: xAxisTitleMargin,
+      nameLocation: 'middle',
       axisLabel: {
-        showMinLabel: xAxisShowMinLabel,
-        showMaxLabel: xAxisShowMaxLabel,
         formatter: xAxisFormatter,
         rotate: xAxisLabelRotation,
       },
@@ -238,6 +257,8 @@ export default function transformProps(
         axisLabel: { formatter },
         scale: truncateYAxis,
         name: yAxisTitle,
+        nameGap: yAxisTitleMargin,
+        nameLocation: yAxisTitlePosition === 'Left' ? 'middle' : 'end',
       },
       {
         ...defaultYAxis,
@@ -257,13 +278,15 @@ export default function transformProps(
       appendToBody: true,
       trigger: richTooltip ? 'axis' : 'item',
       formatter: (params: any) => {
-        const value: number = !richTooltip ? params.value : params[0].value[0];
-        const prophetValue = !richTooltip ? [params] : params;
+        const xValue: number = richTooltip ? params[0].value[0] : params.value[0];
+        const prophetValue: any[] = richTooltip ? params : [params];
 
-        const rows: Array<string> = [`${tooltipTimeFormatter(value)}`];
-        const prophetValues: Record<string, ProphetValue> = extractProphetValuesFromTooltipParams(
-          prophetValue,
-        );
+        if (richTooltip && tooltipSortByMetric) {
+          prophetValue.sort((a, b) => b.data[1] - a.data[1]);
+        }
+
+        const rows: Array<string> = [`${tooltipTimeFormatter(xValue)}`];
+        const prophetValues = extractProphetValuesFromTooltipParams(prophetValue);
 
         Object.keys(prophetValues).forEach(key => {
           const value = prophetValues[key];

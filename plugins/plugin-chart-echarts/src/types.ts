@@ -17,8 +17,9 @@
  * under the License.
  */
 import { DataRecordValue, SetDataMaskHook } from '@superset-ui/core';
-import { EChartsOption } from 'echarts';
+import { EChartsCoreOption, ECharts } from 'echarts';
 import { TooltipMarker } from 'echarts/types/src/util/format';
+import { OptionName } from 'echarts/types/src/util/types';
 
 export type EchartsStylesProps = {
   height: number;
@@ -28,10 +29,15 @@ export type EchartsStylesProps = {
 export interface EchartsProps {
   height: number;
   width: number;
-  echartOptions: EChartsOption;
+  echartOptions: EChartsCoreOption;
   eventHandlers?: EventHandlers;
+  zrEventHandlers?: EventHandlers;
   selectedValues?: Record<number, string>;
   forceClear?: boolean;
+}
+
+export interface EchartsHandler {
+  getEchartInstance: () => ECharts | undefined;
 }
 
 export enum ForecastSeriesEnum {
@@ -102,10 +108,27 @@ export interface EChartTransformedProps<F> {
   formData: F;
   height: number;
   width: number;
-  echartOptions: EChartsOption;
+  echartOptions: EChartsCoreOption;
   emitFilter: boolean;
   setDataMask: SetDataMaskHook;
   labelMap: Record<string, DataRecordValue[]>;
   groupby: string[];
   selectedValues: Record<number, string>;
+  legendData?: OptionName[];
 }
+
+export interface EchartsTitleFormData {
+  xAxisTitle: string;
+  xAxisTitleMargin: number;
+  yAxisTitle: string;
+  yAxisTitleMargin: number;
+  yAxisTitlePosition: string;
+}
+
+export const DEFAULT_TITLE_FORM_DATA: EchartsTitleFormData = {
+  xAxisTitle: '',
+  xAxisTitleMargin: 0,
+  yAxisTitle: '',
+  yAxisTitleMargin: 0,
+  yAxisTitlePosition: 'Top',
+};

@@ -1,8 +1,3 @@
-import React from 'react';
-import { t } from '@superset-ui/core';
-import { ControlPanelsContainerProps } from '@superset-ui/chart-controls';
-import { DEFAULT_LEGEND_FORM_DATA } from './types';
-
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,6 +16,15 @@ import { DEFAULT_LEGEND_FORM_DATA } from './types';
  * specific language governing permissions and limitations
  * under the License.
  */
+import React from 'react';
+import { t } from '@superset-ui/core';
+import {
+  ControlPanelsContainerProps,
+  ControlSetRow,
+  sharedControls,
+} from '@superset-ui/chart-controls';
+import { DEFAULT_LEGEND_FORM_DATA } from './types';
+
 const { legendMargin, legendOrientation, legendType, showLegend } = DEFAULT_LEGEND_FORM_DATA;
 
 const showLegendControl = {
@@ -123,10 +127,53 @@ const onlyTotalControl = {
     label: t('Only Total'),
     default: true,
     renderTrigger: true,
-    description: t('Only show the total value on the stacked chart'),
+    description: t(
+      'Only show the total value on the stacked chart, and not show on the selected category',
+    ),
     visibility: ({ controls }: ControlPanelsContainerProps) =>
       Boolean(controls?.show_value?.value) && Boolean(controls?.stack?.value),
   },
 };
 
 export const showValueSection = [[showValueControl], [stackControl], [onlyTotalControl]];
+
+const richTooltipControl = {
+  name: 'rich_tooltip',
+  config: {
+    type: 'CheckboxControl',
+    label: t('Rich tooltip'),
+    renderTrigger: true,
+    default: true,
+    description: t('Shows a list of all series available at that point in time'),
+  },
+};
+
+const tooltipTimeFormatControl = {
+  name: 'tooltipTimeFormat',
+  config: {
+    ...sharedControls.x_axis_time_format,
+    label: t('Tooltip time format'),
+    default: 'smart_date',
+    clearable: false,
+  },
+};
+
+const tooltipSortByMetricControl = {
+  name: 'tooltipSortByMetric',
+  config: {
+    type: 'CheckboxControl',
+    label: t('Tooltip sort by metric'),
+    renderTrigger: true,
+    default: false,
+    description: t('Whether to sort tooltip by the selected metric in descending order.'),
+    visibility: ({ controls }: ControlPanelsContainerProps) =>
+      Boolean(controls?.rich_tooltip?.value),
+  },
+};
+
+export const richTooltipSection: ControlSetRow[] = [
+  [<h1 className="section-header">{t('Tooltip')}</h1>],
+  [richTooltipControl],
+  [tooltipSortByMetricControl],
+  [tooltipTimeFormatControl],
+];

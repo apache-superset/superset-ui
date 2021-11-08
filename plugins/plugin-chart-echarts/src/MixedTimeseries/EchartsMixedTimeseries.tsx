@@ -35,9 +35,10 @@ export default function EchartsMixedTimeseries({
   formData,
   seriesBreakdown,
 }: EchartsMixedTimeseriesChartTransformedProps) {
-  const isFirstQuery = useCallback((seriesIndex: number) => seriesIndex < seriesBreakdown, [
-    seriesBreakdown,
-  ]);
+  const isFirstQuery = useCallback(
+    (seriesIndex: number) => seriesIndex < seriesBreakdown,
+    [seriesBreakdown],
+  );
 
   const handleChange = useCallback(
     (values: string[], seriesIndex: number) => {
@@ -94,11 +95,11 @@ export default function EchartsMixedTimeseries({
         handleChange([seriesName], seriesIndex);
       }
     },
-    mousemove: params => {
-      currentSeries.name = params.seriesName;
-    },
     mouseout: () => {
       currentSeries.name = '';
+    },
+    mouseover: params => {
+      currentSeries.name = params.seriesName;
     },
   };
 

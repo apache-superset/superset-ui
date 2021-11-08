@@ -31,7 +31,7 @@ import { ColorFormatters } from '@superset-ui/chart-controls';
 
 export interface PivotTableStylesProps {
   height: number;
-  width: number;
+  width: number | string;
   margin: number;
 }
 
@@ -67,7 +67,7 @@ interface PivotTableCustomizeProps {
   metricsLayout?: MetricsLayoutEnum;
   metricColorFormatters: ColorFormatters;
   dateFormatters: Record<string, DateFormatter | undefined>;
-  timeseries_limit_metric: QueryFormMetric[] | QueryFormMetric | null;
+  legacy_order_by: QueryFormMetric[] | QueryFormMetric | null;
   order_desc: boolean;
 }
 

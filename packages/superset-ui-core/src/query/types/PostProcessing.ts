@@ -50,7 +50,7 @@ export enum PandasAxis {
   Column = 1,
 }
 
-interface Aggregates {
+export interface Aggregates {
   /**
    * The name of the generated aggregate column.
    */
@@ -97,6 +97,8 @@ export interface PostProcessingPivot {
     index: string[];
     columns: string[];
     aggregates: Aggregates;
+    flatten_columns?: boolean;
+    reset_index?: boolean;
   };
 }
 
@@ -128,6 +130,7 @@ export interface PostProcessingRolling {
     window: number;
     min_periods: number;
     columns: string[];
+    is_pivot_df?: boolean;
   };
 }
 
@@ -136,6 +139,7 @@ export interface PostProcessingCum {
   options: {
     columns: string[];
     operator: NumpyFunction;
+    is_pivot_df?: boolean;
   };
 }
 
@@ -156,6 +160,16 @@ export interface PostProcessingSort {
   };
 }
 
+export interface PostProcessingResample {
+  operation: 'resample';
+  options: {
+    method: string;
+    rule: string;
+    fill_value?: number | null;
+    time_column: string;
+  };
+}
+
 /**
  * Parameters for chart data postprocessing.
  * See superset/utils/pandas_processing.py.
@@ -170,4 +184,55 @@ export type PostProcessingRule =
   | PostProcessingRolling
   | PostProcessingCum
   | PostProcessingCompare
-  | PostProcessingSort;
+  | PostProcessingSort
+  | PostProcessingResample;
+
+export function isPostProcessingAggregation(
+  rule?: PostProcessingRule,
+): rule is PostProcessingAggregation {
+  return rule?.operation === 'aggregation';
+}
+
+export function isPostProcessingBoxplot(rule?: PostProcessingRule): rule is PostProcessingBoxplot {
+  return rule?.operation === 'boxplot';
+}
+
+export function isPostProcessingContribution(
+  rule?: PostProcessingRule,
+): rule is PostProcessingContribution {
+  return rule?.operation === 'contribution';
+}
+
+export function isPostProcessingPivot(rule?: PostProcessingRule): rule is PostProcessingPivot {
+  return rule?.operation === 'pivot';
+}
+
+export function isPostProcessingProphet(rule?: PostProcessingRule): rule is PostProcessingProphet {
+  return rule?.operation === 'prophet';
+}
+
+export function isPostProcessingDiff(rule?: PostProcessingRule): rule is PostProcessingDiff {
+  return rule?.operation === 'diff';
+}
+
+export function isPostProcessingRolling(rule?: PostProcessingRule): rule is PostProcessingRolling {
+  return rule?.operation === 'rolling';
+}
+
+export function isPostProcessingCum(rule?: PostProcessingRule): rule is PostProcessingCum {
+  return rule?.operation === 'cum';
+}
+
+export function isPostProcessingCompare(rule?: PostProcessingRule): rule is PostProcessingCompare {
+  return rule?.operation === 'compare';
+}
+
+export function isPostProcessingSort(rule?: PostProcessingRule): rule is PostProcessingSort {
+  return rule?.operation === 'sort';
+}
+
+export function isPostProcessingResample(
+  rule?: PostProcessingRule,
+): rule is PostProcessingResample {
+  return rule?.operation === 'resample';
+}

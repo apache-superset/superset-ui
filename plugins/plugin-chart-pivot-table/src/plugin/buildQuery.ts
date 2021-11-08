@@ -25,17 +25,13 @@ import {
 import { PivotTableQueryFormData } from '../types';
 
 export default function buildQuery(formData: PivotTableQueryFormData) {
-  const {
-    groupbyColumns = [],
-    groupbyRows = [],
-    order_desc = true,
-    timeseries_limit_metric,
-  } = formData;
+  const { groupbyColumns = [], groupbyRows = [], order_desc = true, legacy_order_by } = formData;
+  // TODO: add deduping of AdhocColumns
   const groupbySet = new Set([...ensureIsArray(groupbyColumns), ...ensureIsArray(groupbyRows)]);
   return buildQueryContext(formData, baseQueryObject => {
-    const queryObject = normalizeOrderBy({ ...baseQueryObject, order_desc });
+    const queryObject = normalizeOrderBy({ ...baseQueryObject, order_desc, legacy_order_by });
     const { metrics } = queryObject;
-    const orderBy = ensureIsArray(timeseries_limit_metric);
+    const orderBy = ensureIsArray(legacy_order_by);
     if (
       orderBy.length &&
       !metrics?.find(metric => getMetricLabel(metric) === getMetricLabel(orderBy[0]))

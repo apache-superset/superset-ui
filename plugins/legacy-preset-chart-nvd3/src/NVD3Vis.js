@@ -19,18 +19,18 @@
  */
 import { kebabCase, throttle } from 'lodash';
 import d3 from 'd3';
-import nv from 'nvd3-fork';
-import { parse as mathjsParse } from 'mathjs';
 import moment from 'moment';
+import nv from 'nvd3-fork';
 import PropTypes from 'prop-types';
 import {
-  t,
-  isDefined,
-  getTimeFormatter,
-  smartDateVerboseFormatter,
-  getNumberFormatter,
-  NumberFormats,
   CategoricalColorNamespace,
+  evalExpression,
+  getNumberFormatter,
+  getTimeFormatter,
+  isDefined,
+  NumberFormats,
+  smartDateVerboseFormatter,
+  t,
 } from '@superset-ui/core';
 
 import 'nvd3-fork/build/nv.d3.css';
@@ -919,9 +919,9 @@ function nvd3Vis(element, props) {
       // The below code should be run AFTER rendering because chart is updated in call()
       if (isTimeSeries && activeAnnotationLayers.length > 0) {
         // Formula annotations
-        const formulas = activeAnnotationLayers
-          .filter(a => a.annotationType === ANNOTATION_TYPES.FORMULA)
-          .map(a => ({ ...a, formula: mathjsParse(a.value) }));
+        const formulas = activeAnnotationLayers.filter(
+          a => a.annotationType === ANNOTATION_TYPES.FORMULA,
+        );
 
         let xMax;
         let xMin;
@@ -973,13 +973,19 @@ function nvd3Vis(element, props) {
             }
             xValues.push(xMax);
           }
-          const formulaData = formulas.map(fo => ({
-            key: fo.name,
-            values: xValues.map(x => ({ y: fo.formula.evaluate({ x }), x })),
-            color: fo.color,
-            strokeWidth: fo.width,
-            classed: `${fo.opacity} ${fo.style}`,
-          }));
+          const formulaData = formulas.map(fo => {
+            const { value: expression } = fo;
+            return {
+              key: fo.name,
+              values: xValues.map(x => ({
+                x,
+                y: evalExpression(expression, x),
+              })),
+              color: fo.color,
+              strokeWidth: fo.width,
+              classed: `${fo.opacity} ${fo.style}`,
+            };
+          });
           data.push(...formulaData);
         }
         const xAxis = chart.xAxis1 ? chart.xAxis1 : chart.xAxis;

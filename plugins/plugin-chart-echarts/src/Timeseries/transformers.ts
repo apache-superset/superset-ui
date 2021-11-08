@@ -18,11 +18,11 @@
  */
 import {
   AnnotationData,
-  AnnotationLayer,
   AnnotationOpacity,
   CategoricalColorScale,
   EventAnnotationLayer,
   FilterState,
+  FormulaAnnotationLayer,
   getTimeFormatter,
   IntervalAnnotationLayer,
   isTimeseriesAnnotationResult,
@@ -36,10 +36,12 @@ import {
 import { SeriesOption } from 'echarts';
 import {
   CallbackDataParams,
-  DefaultExtraStateOpts,
+  DefaultStatesMixin,
   ItemStyleOption,
   LineStyleOption,
   OptionName,
+  SeriesLabelOption,
+  SeriesLineLabelOption,
   ZRLineType,
 } from 'echarts/types/src/util/types';
 import {
@@ -58,7 +60,7 @@ import {
   formatAnnotationLabel,
   parseAnnotationOpacity,
 } from '../utils/annotation';
-import { getChartPadding } from '../utils/series';
+import { currentSeries, getChartPadding } from '../utils/series';
 import { OpacityEnum, TIMESERIES_CONSTANTS } from '../constants';
 
 export function transformSeries(
@@ -67,7 +69,7 @@ export function transformSeries(
   opts: {
     area?: boolean;
     filterState?: FilterState;
-    forecastEnabled?: boolean;
+    seriesContexts?: { [key: string]: ForecastSeriesEnum[] };
     markerEnabled?: boolean;
     markerSize?: number;
     areaOpacity?: number;
@@ -86,7 +88,7 @@ export function transformSeries(
   const {
     area,
     filterState,
-    forecastEnabled,
+    seriesContexts = {},
     markerEnabled,
     markerSize,
     areaOpacity = 1,
@@ -100,6 +102,11 @@ export function transformSeries(
     showValueIndexes = [],
     richTooltip,
   } = opts;
+  const contexts = seriesContexts[name || ''] || [];
+  const hasForecast =
+    contexts.includes(ForecastSeriesEnum.ForecastTrend) ||
+    contexts.includes(ForecastSeriesEnum.ForecastLower) ||
+    contexts.includes(ForecastSeriesEnum.ForecastUpper);
 
   const forecastSeries = extractForecastSeriesContext(name || '');
   const isConfidenceBand =
@@ -125,7 +132,7 @@ export function transformSeries(
     stackId = forecastSeries.type;
   }
   let plotType;
-  if (!isConfidenceBand && (seriesType === 'scatter' || (forecastEnabled && isObservation))) {
+  if (!isConfidenceBand && (seriesType === 'scatter' || (hasForecast && isObservation))) {
     plotType = 'scatter';
   } else if (isConfidenceBand) {
     plotType = 'line';
@@ -141,7 +148,7 @@ export function transformSeries(
   if (!isConfidenceBand) {
     if (plotType === 'scatter') {
       showSymbol = true;
-    } else if (forecastEnabled && isObservation) {
+    } else if (hasForecast && isObservation) {
       showSymbol = true;
     } else if (plotType === 'line' && showValue) {
       showSymbol = true;
@@ -168,16 +175,17 @@ export function transformSeries(
     // @ts-ignore
     type: plotType,
     smooth: seriesType === 'smooth',
+    triggerLineEvent: true,
     // @ts-ignore
     step: ['start', 'middle', 'end'].includes(seriesType as string) ? seriesType : undefined,
     stack: stackId,
     lineStyle,
-    areaStyle: {
-      opacity:
-        forecastSeries.type === ForecastSeriesEnum.ForecastUpper || area
-          ? opacity * areaOpacity
-          : 0,
-    },
+    areaStyle: area
+      ? {
+          opacity:
+            forecastSeries.type === ForecastSeriesEnum.ForecastUpper ? opacity * areaOpacity : 0,
+        }
+      : undefined,
     emphasis,
     showSymbol,
     symbolSize: markerSize,
@@ -189,9 +197,11 @@ export function transformSeries(
           value: [, numericValue],
           dataIndex,
           seriesIndex,
+          seriesName,
         } = params;
+        const isSelectedLegend = currentSeries.legend === seriesName;
         if (!formatter) return numericValue;
-        if (!stack || !onlyTotal) {
+        if (!stack || !onlyTotal || isSelectedLegend) {
           return formatter(numericValue);
         }
         if (seriesIndex === showValueIndexes[dataIndex]) {
@@ -204,7 +214,7 @@ export function transformSeries(
 }
 
 export function transformFormulaAnnotation(
-  layer: AnnotationLayer,
+  layer: FormulaAnnotationLayer,
   data: TimeseriesDataRecord[],
   colorScale: CategoricalColorScale,
 ): SeriesOption {
@@ -224,7 +234,6 @@ export function transformFormulaAnnotation(
     smooth: true,
     data: evalFormula(layer, data),
     symbolSize: 0,
-    z: 0,
   };
 }
 
@@ -237,7 +246,7 @@ export function transformIntervalAnnotation(
   const series: SeriesOption[] = [];
   const annotations = extractRecordAnnotations(layer, annotationData);
   annotations.forEach(annotation => {
-    const { name, color, opacity } = layer;
+    const { name, color, opacity, showLabel } = layer;
     const { descriptions, intervalEnd, time, title } = annotation;
     const label = formatAnnotationLabel(name, title, descriptions);
     const intervalData: (MarkArea1DDataItemOption | MarkArea2DDataItemOption)[] = [
@@ -251,6 +260,32 @@ export function transformIntervalAnnotation(
         },
       ],
     ];
+    const intervalLabel: SeriesLabelOption = showLabel
+      ? {
+          show: true,
+          color: '#000000',
+          position: 'insideTop',
+          verticalAlign: 'top',
+          fontWeight: 'bold',
+          // @ts-ignore
+          emphasis: {
+            position: 'insideTop',
+            verticalAlign: 'top',
+            backgroundColor: '#ffffff',
+          },
+        }
+      : {
+          show: false,
+          color: '#000000',
+          // @ts-ignore
+          emphasis: {
+            fontWeight: 'bold',
+            show: true,
+            position: 'insideTop',
+            verticalAlign: 'top',
+            backgroundColor: '#ffffff',
+          },
+        };
     series.push({
       id: `Interval - ${label}`,
       type: 'line',
@@ -264,18 +299,7 @@ export function transformIntervalAnnotation(
             opacity: 0.8,
           },
         } as ItemStyleOption,
-        label: {
-          show: false,
-          color: '#000000',
-          // @ts-ignore
-          emphasis: {
-            fontWeight: 'bold',
-            show: true,
-            position: 'insideTop',
-            verticalAlign: 'top',
-            backgroundColor: '#ffffff',
-          },
-        },
+        label: intervalLabel,
         data: intervalData,
       },
     });
@@ -292,17 +316,17 @@ export function transformEventAnnotation(
   const series: SeriesOption[] = [];
   const annotations = extractRecordAnnotations(layer, annotationData);
   annotations.forEach(annotation => {
-    const { name, color, opacity, style, width } = layer;
+    const { name, color, opacity, style, width, showLabel } = layer;
     const { descriptions, time, title } = annotation;
     const label = formatAnnotationLabel(name, title, descriptions);
     const eventData: MarkLine1DDataItemOption[] = [
       {
         name: label,
-        xAxis: (time as unknown) as number,
+        xAxis: time as unknown as number,
       },
     ];
 
-    const lineStyle: LineStyleOption & DefaultExtraStateOpts['emphasis'] = {
+    const lineStyle: LineStyleOption & DefaultStatesMixin['emphasis'] = {
       width,
       type: style as ZRLineType,
       color: color || colorScale(name),
@@ -313,15 +337,19 @@ export function transformEventAnnotation(
       },
     };
 
-    series.push({
-      id: `Event - ${label}`,
-      type: 'line',
-      animation: false,
-      markLine: {
-        silent: false,
-        symbol: 'none',
-        lineStyle,
-        label: {
+    const eventLabel: SeriesLineLabelOption = showLabel
+      ? {
+          show: true,
+          color: '#000000',
+          position: 'insideEndTop',
+          fontWeight: 'bold',
+          formatter: (params: CallbackDataParams) => params.name,
+          // @ts-ignore
+          emphasis: {
+            backgroundColor: '#ffffff',
+          },
+        }
+      : {
           show: false,
           color: '#000000',
           position: 'insideEndTop',
@@ -332,7 +360,17 @@ export function transformEventAnnotation(
             show: true,
             backgroundColor: '#ffffff',
           },
-        },
+        };
+
+    series.push({
+      id: `Event - ${label}`,
+      type: 'line',
+      animation: false,
+      markLine: {
+        silent: false,
+        symbol: 'none',
+        lineStyle,
+        label: eventLabel,
         data: eventData,
       },
     });
@@ -372,22 +410,33 @@ export function transformTimeseriesAnnotation(
 export function getPadding(
   showLegend: boolean,
   legendOrientation: LegendOrientation,
-  addYAxisLabelOffset: boolean,
+  addYAxisTitleOffset: boolean,
   zoomable: boolean,
   margin?: string | number | null,
+  addXAxisTitleOffset?: boolean,
+  yAxisTitlePosition?: string,
+  yAxisTitleMargin?: number,
+  xAxisTitleMargin?: number,
 ): {
   bottom: number;
   left: number;
   right: number;
   top: number;
 } {
-  const yAxisOffset = addYAxisLabelOffset ? TIMESERIES_CONSTANTS.yAxisLabelTopOffset : 0;
+  const yAxisOffset = addYAxisTitleOffset ? TIMESERIES_CONSTANTS.yAxisLabelTopOffset : 0;
+  const xAxisOffset = addXAxisTitleOffset ? xAxisTitleMargin || 0 : 0;
   return getChartPadding(showLegend, legendOrientation, margin, {
-    top: TIMESERIES_CONSTANTS.gridOffsetTop + yAxisOffset,
+    top:
+      yAxisTitlePosition && yAxisTitlePosition === 'Top'
+        ? TIMESERIES_CONSTANTS.gridOffsetTop + (yAxisTitleMargin || 0)
+        : TIMESERIES_CONSTANTS.gridOffsetTop + yAxisOffset,
     bottom: zoomable
-      ? TIMESERIES_CONSTANTS.gridOffsetBottomZoomable
-      : TIMESERIES_CONSTANTS.gridOffsetBottom,
-    left: TIMESERIES_CONSTANTS.gridOffsetLeft,
+      ? TIMESERIES_CONSTANTS.gridOffsetBottomZoomable + xAxisOffset
+      : TIMESERIES_CONSTANTS.gridOffsetBottom + xAxisOffset,
+    left:
+      yAxisTitlePosition === 'Left'
+        ? TIMESERIES_CONSTANTS.gridOffsetLeft + (yAxisTitleMargin || 0)
+        : TIMESERIES_CONSTANTS.gridOffsetLeft,
     right:
       showLegend && legendOrientation === LegendOrientation.Right
         ? 0

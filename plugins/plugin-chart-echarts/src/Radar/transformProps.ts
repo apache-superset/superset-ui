@@ -28,7 +28,7 @@ import {
 } from '@superset-ui/core';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { RadarSeriesDataItemOption } from 'echarts/types/src/chart/radar/RadarSeries';
-import { EChartsOption, RadarSeriesOption } from 'echarts';
+import { EChartsCoreOption, RadarSeriesOption } from 'echarts';
 import {
   DEFAULT_FORM_DATA as DEFAULT_RADAR_FORM_DATA,
   EchartsRadarChartProps,
@@ -197,7 +197,7 @@ export default function transformProps(
     },
   ];
 
-  const echartOptions: EChartsOption = {
+  const echartOptions: EChartsCoreOption = {
     grid: {
       ...defaultGrid,
     },

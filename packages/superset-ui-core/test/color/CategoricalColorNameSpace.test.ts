@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import CategoricalColorNamespace, {
   getNamespace,
   getScale,
@@ -62,15 +81,6 @@ describe('CategoricalColorNamespace', () => {
       expect(scale).toBeDefined();
       getCategoricalSchemeRegistry().setDefaultKey('testColors');
     });
-    it('returns same scale if the scale with that name already exists in this namespace', () => {
-      const namespace = getNamespace('test-get-scale2');
-      const scale1 = namespace.getScale('testColors');
-      const scale2 = namespace.getScale('testColors2');
-      const scale3 = namespace.getScale('testColors2');
-      const scale4 = namespace.getScale('testColors');
-      expect(scale1).toBe(scale4);
-      expect(scale2).toBe(scale3);
-    });
   });
   describe('.setColor()', () => {
     it('overwrites color for all CategoricalColorScales in this namespace', () => {
@@ -102,25 +112,27 @@ describe('CategoricalColorNamespace', () => {
       const ns2 = ns1.setColor('dog', 'black');
       expect(ns1).toBe(ns2);
     });
+    it('should reset colors', () => {
+      const ns1 = getNamespace('test-set-scale3.1');
+      ns1.setColor('dog', 'black');
+      ns1.resetColors();
+      expect(ns1.forcedItems).toMatchObject({});
+    });
   });
   describe('static getScale()', () => {
     it('getScale() returns a CategoricalColorScale with default scheme in default namespace', () => {
       const scale = getScale();
       expect(scale).toBeDefined();
       const scale2 = getNamespace().getScale();
-      expect(scale).toBe(scale2);
+      expect(scale2).toBeDefined();
     });
     it('getScale(scheme) returns a CategoricalColorScale with specified scheme in default namespace', () => {
-      const scale = getScale('testColors');
+      const scale = getNamespace().getScale('testColors');
       expect(scale).toBeDefined();
-      const scale2 = getNamespace().getScale('testColors');
-      expect(scale).toBe(scale2);
     });
     it('getScale(scheme, namespace) returns a CategoricalColorScale with specified scheme in specified namespace', () => {
-      const scale = getScale('testColors', 'test-getScale');
+      const scale = getNamespace('test-getScale').getScale('testColors');
       expect(scale).toBeDefined();
-      const scale2 = getNamespace('test-getScale').getScale('testColors');
-      expect(scale).toBe(scale2);
     });
   });
   describe('static getColor()', () => {

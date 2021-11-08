@@ -23,8 +23,8 @@ import {
   ControlPanelState,
   formatSelectOptions,
   sections,
+  dndColumnsControl,
 } from '@superset-ui/chart-controls';
-import { dndColumnsControl } from '@superset-ui/chart-controls/lib/shared-controls/dndControls';
 
 const allColumns = {
   type: 'SelectControl',
@@ -70,7 +70,7 @@ const config: ControlPanelConfig = {
       label: t('Chart Options'),
       expanded: true,
       controlSetRows: [
-        ['color_scheme', 'label_colors'],
+        ['color_scheme'],
         [
           {
             name: 'link_length',
@@ -127,6 +127,18 @@ const config: ControlPanelConfig = {
               label: t('Normalized'),
               renderTrigger: true,
               description: t('Whether to normalize the histogram'),
+              default: false,
+            },
+          },
+        ],
+        [
+          {
+            name: 'cumulative',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Cumulative'),
+              renderTrigger: true,
+              description: t('Whether to make the histogram cumulative'),
               default: false,
             },
           },

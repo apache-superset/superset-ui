@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { EChartsOption } from 'echarts';
+import { EChartsCoreOption } from 'echarts';
 import {
   AnnotationLayer,
   TimeGranularity,
@@ -26,7 +26,12 @@ import {
   ChartProps,
   ChartDataResponseResult,
 } from '@superset-ui/core';
-import { DEFAULT_LEGEND_FORM_DATA, EchartsLegendFormData } from '../types';
+import {
+  DEFAULT_LEGEND_FORM_DATA,
+  EchartsLegendFormData,
+  EchartsTitleFormData,
+  DEFAULT_TITLE_FORM_DATA,
+} from '../types';
 import {
   DEFAULT_FORM_DATA as TIMESERIES_DEFAULTS,
   EchartsTimeseriesContributionType,
@@ -41,7 +46,6 @@ export type EchartsMixedTimeseriesFormData = QueryFormData & {
   logAxisSecondary: boolean;
   yAxisFormat?: string;
   yAxisFormatSecondary?: string;
-  yAxisTitle: string;
   yAxisTitleSecondary: string;
   yAxisBounds: [number | undefined | null, number | undefined | null];
   yAxisBoundsSecondary: [number | undefined | null, number | undefined | null];
@@ -53,8 +57,6 @@ export type EchartsMixedTimeseriesFormData = QueryFormData & {
   zoomable: boolean;
   richTooltip: boolean;
   xAxisLabelRotation: number;
-  xAxisShowMinLabel?: boolean;
-  xAxisShowMaxLabel?: boolean;
   colorScheme?: string;
   // types specific to Query A and Query B
   area: boolean;
@@ -73,6 +75,8 @@ export type EchartsMixedTimeseriesFormData = QueryFormData & {
   rowLimitB: number;
   seriesType: EchartsTimeseriesSeriesType;
   seriesTypeB: EchartsTimeseriesSeriesType;
+  showValue: boolean;
+  showValueB: boolean;
   stack: boolean;
   stackB: boolean;
   yAxisIndex?: number;
@@ -80,7 +84,8 @@ export type EchartsMixedTimeseriesFormData = QueryFormData & {
   groupby: string[];
   groupbyB: string[];
   emitFilter: boolean;
-} & EchartsLegendFormData;
+} & EchartsLegendFormData &
+  EchartsTitleFormData;
 
 // @ts-ignore
 export const DEFAULT_FORM_DATA: EchartsMixedTimeseriesFormData = {
@@ -95,8 +100,7 @@ export const DEFAULT_FORM_DATA: EchartsMixedTimeseriesFormData = {
   yAxisBoundsSecondary: TIMESERIES_DEFAULTS.yAxisBounds,
   yAxisFormat: TIMESERIES_DEFAULTS.yAxisFormat,
   yAxisFormatSecondary: TIMESERIES_DEFAULTS.yAxisFormat,
-  yAxisTitle: TIMESERIES_DEFAULTS.yAxisTitle,
-  yAxisTitleSecondary: TIMESERIES_DEFAULTS.yAxisTitle,
+  yAxisTitleSecondary: DEFAULT_TITLE_FORM_DATA.yAxisTitle,
   tooltipTimeFormat: TIMESERIES_DEFAULTS.tooltipTimeFormat,
   xAxisTimeFormat: TIMESERIES_DEFAULTS.xAxisTimeFormat,
   area: TIMESERIES_DEFAULTS.area,
@@ -113,17 +117,18 @@ export const DEFAULT_FORM_DATA: EchartsMixedTimeseriesFormData = {
   rowLimitB: TIMESERIES_DEFAULTS.rowLimit,
   seriesType: TIMESERIES_DEFAULTS.seriesType,
   seriesTypeB: TIMESERIES_DEFAULTS.seriesType,
+  showValue: TIMESERIES_DEFAULTS.showValue,
+  showValueB: TIMESERIES_DEFAULTS.showValue,
   stack: TIMESERIES_DEFAULTS.stack,
   stackB: TIMESERIES_DEFAULTS.stack,
   yAxisIndex: 0,
   yAxisIndexB: 0,
   groupby: [],
   groupbyB: [],
-  xAxisShowMinLabel: TIMESERIES_DEFAULTS.xAxisShowMinLabel,
-  xAxisShowMaxLabel: TIMESERIES_DEFAULTS.xAxisShowMaxLabel,
   zoomable: TIMESERIES_DEFAULTS.zoomable,
   richTooltip: TIMESERIES_DEFAULTS.richTooltip,
   xAxisLabelRotation: TIMESERIES_DEFAULTS.xAxisLabelRotation,
+  ...DEFAULT_TITLE_FORM_DATA,
 };
 
 export interface EchartsMixedTimeseriesProps extends ChartProps {
@@ -135,7 +140,7 @@ export type EchartsMixedTimeseriesChartTransformedProps = {
   formData: EchartsMixedTimeseriesFormData;
   height: number;
   width: number;
-  echartOptions: EChartsOption;
+  echartOptions: EChartsCoreOption;
   emitFilter: boolean;
   emitFilterB: boolean;
   setDataMask: SetDataMaskHook;

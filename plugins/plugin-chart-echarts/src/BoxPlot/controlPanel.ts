@@ -24,9 +24,10 @@ import {
   formatSelectOptions,
   sections,
   emitFilterControl,
+  ControlPanelConfig,
 } from '@superset-ui/chart-controls';
 
-export default {
+const config: ControlPanelConfig = {
   controlPanelSections: [
     sections.legacyTimeseriesTime,
     {
@@ -37,12 +38,14 @@ export default {
         ['adhoc_filters'],
         emitFilterControl,
         ['groupby'],
-        ['columns'],
-        ['limit'],
+        ['columns'], // TODO: this should be migrated to `series_columns`
+        ['series_limit'],
+        ['series_limit_metric'],
         [
           {
             name: 'whiskerOptions',
             config: {
+              clearable: false,
               type: 'SelectControl',
               freeForm: true,
               label: t('Whisker/outlier options'),
@@ -59,6 +62,7 @@ export default {
         ],
       ],
     },
+    sections.titleControls,
     {
       label: t('Chart Options'),
       expanded: true,
@@ -125,3 +129,4 @@ export default {
     },
   },
 };
+export default config;

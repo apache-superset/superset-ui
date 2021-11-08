@@ -34,6 +34,7 @@ import {
   xAxisShowMinmax,
   yAxisShowMinmax,
   leftMargin,
+  yAxisBounds,
 } from '../NVD3Controls';
 
 const config: ControlPanelConfig = {
@@ -68,10 +69,7 @@ const config: ControlPanelConfig = {
       label: t('Chart Options'),
       expanded: true,
       tabOverride: 'customize',
-      controlSetRows: [
-        ['color_scheme', 'label_colors'],
-        [showLegend, null],
-      ],
+      controlSetRows: [['color_scheme'], [showLegend, null]],
     },
     {
       label: t('X Axis'),
@@ -113,6 +111,7 @@ const config: ControlPanelConfig = {
         [yAxisLabel, bottomMargin],
         ['y_axis_format', null],
         [yLogScale, yAxisShowMinmax],
+        [yAxisBounds],
       ],
     },
   ],

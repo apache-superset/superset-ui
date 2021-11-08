@@ -28,7 +28,7 @@ import {
   TimeseriesChartDataResponseResult,
   DataRecordValue,
 } from '@superset-ui/core';
-import { EChartsOption, SeriesOption } from 'echarts';
+import { EChartsCoreOption, SeriesOption } from 'echarts';
 import {
   DEFAULT_FORM_DATA,
   EchartsTimeseriesChartProps,
@@ -46,6 +46,7 @@ import {
 import { extractAnnotationLabels } from '../utils/annotation';
 import {
   extractForecastSeriesContext,
+  extractForecastSeriesContexts,
   extractProphetValuesFromTooltipParams,
   formatProphetTooltipSeries,
   rebaseTimeseriesDatum,
@@ -68,10 +69,8 @@ export default function transformProps(
 ): TimeseriesChartTransformedProps {
   const { width, height, filterState, formData, hooks, queriesData, datasource } = chartProps;
   const { verboseMap = {} } = datasource;
-  const {
-    annotation_data: annotationData_,
-    data = [],
-  } = queriesData[0] as TimeseriesChartDataResponseResult;
+  const { annotation_data: annotationData_, data = [] } =
+    queriesData[0] as TimeseriesChartDataResponseResult;
   const annotationData = annotationData_ || {};
 
   const {
@@ -94,8 +93,8 @@ export default function transformProps(
     yAxisFormat,
     xAxisTimeFormat,
     yAxisBounds,
-    yAxisTitle,
     tooltipTimeFormat,
+    tooltipSortByMetric,
     zoomable,
     richTooltip,
     xAxisLabelRotation,
@@ -103,13 +102,20 @@ export default function transformProps(
     groupby,
     showValue,
     onlyTotal,
+    xAxisTitle,
+    yAxisTitle,
+    xAxisTitleMargin,
+    yAxisTitleMargin,
+    yAxisTitlePosition,
   }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
-
   const colorScale = CategoricalColorNamespace.getScale(colorScheme as string);
   const rebasedData = rebaseTimeseriesDatum(data, verboseMap);
   const rawSeries = extractTimeseriesSeries(rebasedData, {
     fillNeighborValue: stack && !forecastEnabled ? 0 : undefined,
   });
+  const seriesContexts = extractForecastSeriesContexts(
+    Object.values(rawSeries).map(series => series.name as string),
+  );
   const series: SeriesOption[] = [];
   const formatter = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormat);
 
@@ -142,7 +148,7 @@ export default function transformProps(
     const transformedSeries = transformSeries(entry, colorScale, {
       area,
       filterState,
-      forecastEnabled,
+      seriesContexts,
       markerEnabled,
       markerSize,
       areaOpacity: opacity,
@@ -206,9 +212,28 @@ export default function transformProps(
   const { setDataMask = () => {} } = hooks;
 
   const addYAxisLabelOffset = !!yAxisTitle;
-  const padding = getPadding(showLegend, legendOrientation, addYAxisLabelOffset, zoomable);
+  const addXAxisLabelOffset = !!xAxisTitle;
+  const padding = getPadding(
+    showLegend,
+    legendOrientation,
+    addYAxisLabelOffset,
+    zoomable,
+    null,
+    addXAxisLabelOffset,
+    yAxisTitlePosition,
+    yAxisTitleMargin,
+    xAxisTitleMargin,
+  );
 
-  const echartOptions: EChartsOption = {
+  const legendData = rawSeries
+    .filter(
+      entry =>
+        extractForecastSeriesContext(entry.name || '').type === ForecastSeriesEnum.Observation,
+    )
+    .map(entry => entry.name || '')
+    .concat(extractAnnotationLabels(annotationLayers, annotationData));
+
+  const echartOptions: EChartsCoreOption = {
     useUTC: true,
     grid: {
       ...defaultGrid,
@@ -216,7 +241,11 @@ export default function transformProps(
     },
     xAxis: {
       type: 'time',
+      name: xAxisTitle,
+      nameGap: xAxisTitleMargin,
+      nameLocation: 'middle',
       axisLabel: {
+        hideOverlap: true,
         formatter: xAxisFormatter,
         rotate: xAxisLabelRotation,
       },
@@ -231,19 +260,24 @@ export default function transformProps(
       axisLabel: { formatter },
       scale: truncateYAxis,
       name: yAxisTitle,
+      nameGap: yAxisTitleMargin,
+      nameLocation: yAxisTitlePosition === 'Left' ? 'middle' : 'end',
     },
     tooltip: {
       ...defaultTooltip,
       appendToBody: true,
       trigger: richTooltip ? 'axis' : 'item',
       formatter: (params: any) => {
-        const value: number = !richTooltip ? params.value : params[0].value[0];
-        const prophetValue = !richTooltip ? [params] : params;
+        const xValue: number = richTooltip ? params[0].value[0] : params.value[0];
+        const prophetValue: any[] = richTooltip ? params : [params];
 
-        const rows: Array<string> = [`${tooltipFormatter(value)}`];
-        const prophetValues: Record<string, ProphetValue> = extractProphetValuesFromTooltipParams(
-          prophetValue,
-        );
+        if (richTooltip && tooltipSortByMetric) {
+          prophetValue.sort((a, b) => b.data[1] - a.data[1]);
+        }
+
+        const rows: Array<string> = [`${tooltipFormatter(xValue)}`];
+        const prophetValues: Record<string, ProphetValue> =
+          extractProphetValuesFromTooltipParams(prophetValue);
 
         Object.keys(prophetValues).forEach(key => {
           const value = prophetValues[key];
@@ -263,14 +297,7 @@ export default function transformProps(
     },
     legend: {
       ...getLegendProps(legendType, legendOrientation, showLegend, zoomable),
-      // @ts-ignore
-      data: rawSeries
-        .filter(
-          entry =>
-            extractForecastSeriesContext(entry.name || '').type === ForecastSeriesEnum.Observation,
-        )
-        .map(entry => entry.name || '')
-        .concat(extractAnnotationLabels(annotationLayers, annotationData)),
+      data: legendData as string[],
     },
     series: dedupSeries(series),
     toolbox: {
@@ -309,5 +336,6 @@ export default function transformProps(
     selectedValues,
     setDataMask,
     width,
+    legendData,
   };
 }
