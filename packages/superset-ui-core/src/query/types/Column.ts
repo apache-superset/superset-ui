@@ -25,6 +25,7 @@ export interface AdhocColumn {
   label?: string;
   optionName?: string;
   sqlExpression: string;
+  expressionType: 'SQL';
 }
 
 /**
