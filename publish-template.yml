@@ -1,0 +1,13 @@
+parameters:
+  workingDirs: []
+
+steps:
+- ${{ each dir in parameters.workingDirs }}:
+  - task: Npm@1
+    inputs:
+      command: publish
+      publishRegistry: useFeed
+      publishFeed: Analytical Platform/analytical-platform
+      workingDir: ${{ dir }}
+    continueOnError: true
+    displayName: "Publish package ${{ dir }}"

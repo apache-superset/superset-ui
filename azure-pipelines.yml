@@ -1,0 +1,67 @@
+trigger:
+  branches:
+    include:
+      - cccs-*
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  tag: $(Build.BuildId)
+
+stages:
+- stage: Build_and_Publish_Npm_Artifacts
+  displayName: Build, package and publish npm artifacts.
+  jobs:
+  - job: BuildNpmArtifacts
+    displayName: Build, package and publish npm artifacts.
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: 14.x
+    - script: |
+        yarn install --frozen-lockfile
+      displayName: Install dependencies
+    - script: |
+        yarn build
+      displayName: Build packages
+    - script: |
+        yarn test
+      displayName: Run unit tests
+  - job: PublishArtifactsToFeed
+    dependsOn: BuildNpmArtifacts
+    steps:
+    - template : publish-template.yml
+      parameters:
+        workingDirs:
+          - packages/generator-superset
+          - packages/superset-ui-chart-controls
+          - packages/superset-ui-core
+          - packages/superset-ui-demo
+          - plugins/legacy-plugin-chart-calendar
+          - plugins/legacy-plugin-chart-chord
+          - plugins/legacy-plugin-chart-country-map
+          - plugins/legacy-plugin-chart-event-flow
+          - plugins/legacy-plugin-chart-force-directed
+          - plugins/legacy-plugin-chart-heatmap
+          - plugins/legacy-plugin-chart-histogram
+          - plugins/legacy-plugin-chart-horizon
+          - plugins/legacy-plugin-chart-map-box
+          - plugins/legacy-plugin-chart-paired-t-test
+          - plugins/legacy-plugin-chart-parallel-coordinates
+          - plugins/legacy-plugin-chart-partition
+          - plugins/legacy-plugin-chart-pivot-table
+          - plugins/legacy-plugin-chart-rose
+          - plugins/legacy-plugin-chart-sankey
+          - plugins/legacy-plugin-chart-sankey-loop
+          - plugins/legacy-plugin-chart-sunburst
+          - plugins/legacy-plugin-chart-time-table
+          - plugins/legacy-plugin-chart-treemap
+          - plugins/legacy-plugin-chart-world-map
+          - plugins/legacy-preset-chart-big-number
+          - plugins/legacy-preset-chart-nvd3
+          - plugins/plugin-chart-echarts
+          - plugins/plugin-chart-pivot-table
+          - plugins/plugin-chart-table
+          - plugins/plugin-chart-word-cloud
+          - plugins/preset-chart-xy
