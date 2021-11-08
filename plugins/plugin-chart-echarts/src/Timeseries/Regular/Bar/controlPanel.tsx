@@ -37,6 +37,7 @@ const {
   markerSize,
   minorSplitLine,
   rowLimit,
+  truncateYAxis,
   yAxisBounds,
   zoomable,
   xAxisLabelRotation,
@@ -202,7 +203,7 @@ const config: ControlPanelConfig = {
             config: {
               type: 'CheckboxControl',
               label: t('Truncate Y Axis'),
-              default: false,
+              default: truncateYAxis,
               renderTrigger: true,
               description: t('It’s not recommended to truncate y-axis in Bar chart.'),
             },
