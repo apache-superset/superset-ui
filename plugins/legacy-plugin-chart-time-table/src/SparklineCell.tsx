@@ -79,8 +79,7 @@ function getSparklineTextWidth(text: string) {
   );
 }
 
-function isValidBoundValue(value?: number) {
-  // @ts-ignore
+function isValidBoundValue(value?: number | string) {
   return (
     value !== null &&
     value !== undefined &&

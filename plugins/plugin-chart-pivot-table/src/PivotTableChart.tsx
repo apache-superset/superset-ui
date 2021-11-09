@@ -28,10 +28,10 @@ import {
 } from '@superset-ui/core';
 // @ts-ignore
 import PivotTable from '@superset-ui/react-pivottable/PivotTable';
-// @ts-ignore
 import {
   sortAs,
   aggregatorTemplates,
+  // @ts-ignore
 } from '@superset-ui/react-pivottable/Utilities';
 import '@superset-ui/react-pivottable/pivottable.css';
 import {

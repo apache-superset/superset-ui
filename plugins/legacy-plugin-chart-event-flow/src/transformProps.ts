@@ -51,7 +51,8 @@ export default function transformProps(chartProps: ChartProps) {
       [TS]: (datum: TimeseriesDataRecord): Date | null =>
         // eslint-disable-next-line no-underscore-dangle
         datum.__timestamp || datum.__timestamp === 0
-          ? new Date(datum.__timestamp)
+          ? // eslint-disable-next-line no-underscore-dangle
+            new Date(datum.__timestamp)
           : null,
     };
 
