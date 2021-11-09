@@ -25,30 +25,37 @@ import transformProps from '@superset-ui/plugin-chart-echarts/lib/Treemap/transf
 import data from './data';
 import { withResizableChartDemo } from '../../../../shared/components/ResizableChartDemo';
 
-new EchartsTreemapChartPlugin().configure({ key: 'echarts-treemap' }).register();
+new EchartsTreemapChartPlugin()
+  .configure({ key: 'echarts-treemap' })
+  .register();
 
-getChartTransformPropsRegistry().registerValue('echarts-treemap', transformProps);
+getChartTransformPropsRegistry().registerValue(
+  'echarts-treemap',
+  transformProps,
+);
 
 export default {
   title: 'Chart Plugins/plugin-chart-echarts/Treemap',
   decorators: [withKnobs, withResizableChartDemo],
 };
 
-export const Treemap = ({ width, height }) => {
-  return (
-    <SuperChart
-      chartType="echarts-treemap"
-      width={width}
-      height={height}
-      queriesData={[{ data }]}
-      formData={{
-        colorScheme: 'supersetColors',
-        groupby: ['genre'],
-        metric: 'count',
-        showLabels: boolean('Show labels', true),
-        showUpperLabels: boolean('Show upperLabels', true),
-        labelType: select('Treemap label type', ['key', 'value', 'key_value'], 'key_value'),
-      }}
-    />
-  );
-};
+export const Treemap = ({ width, height }) => (
+  <SuperChart
+    chartType="echarts-treemap"
+    width={width}
+    height={height}
+    queriesData={[{ data }]}
+    formData={{
+      colorScheme: 'supersetColors',
+      groupby: ['genre'],
+      metric: 'count',
+      showLabels: boolean('Show labels', true),
+      showUpperLabels: boolean('Show upperLabels', true),
+      labelType: select(
+        'Treemap label type',
+        ['key', 'value', 'key_value'],
+        'key_value',
+      ),
+    }}
+  />
+);

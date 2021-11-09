@@ -56,7 +56,11 @@ export default function extractQueryFields(
     order_by_cols: 'orderby',
     ...aliases,
   };
-  const { query_mode: queryMode, include_time: includeTime, ...restFormData } = formData;
+  const {
+    query_mode: queryMode,
+    include_time: includeTime,
+    ...restFormData
+  } = formData;
 
   let columns: QueryFormColumn[] = [];
   let metrics: QueryFormMetric[] = [];
@@ -110,7 +114,10 @@ export default function extractQueryFields(
       columns.filter(col => col !== ''),
       getColumnLabel,
     ),
-    metrics: queryMode === QueryMode.raw ? undefined : removeDuplicates(metrics, getMetricLabel),
+    metrics:
+      queryMode === QueryMode.raw
+        ? undefined
+        : removeDuplicates(metrics, getMetricLabel),
     orderby:
       orderby.length > 0
         ? orderby.map(item => {

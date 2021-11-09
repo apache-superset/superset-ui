@@ -77,7 +77,10 @@ export interface ControlPanelState {
  * The action dispather will call Redux `dispatch` internally and return what's
  * returned from `dispatch`, which by default is the original or another action.
  */
-export interface ActionDispatcher<ARGS extends unknown[], A extends Action = AnyAction> {
+export interface ActionDispatcher<
+  ARGS extends unknown[],
+  A extends Action = AnyAction,
+> {
   (...args: ARGS): A;
 }
 
@@ -96,11 +99,10 @@ export type ExtraControlProps = {
 } & AnyDict;
 
 // Ref:superset-frontend/src/explore/store.js
-export type ControlState<T = ControlType, O extends SelectOption = SelectOption> = ControlConfig<
-  T,
-  O
-> &
-  ExtraControlProps;
+export type ControlState<
+  T = ControlType,
+  O extends SelectOption = SelectOption,
+> = ControlConfig<T, O> & ExtraControlProps;
 
 export interface ControlStateMapping {
   [key: string]: ControlState;
@@ -246,18 +248,24 @@ export interface SelectControlConfig<
   options?: O[];
   optionRenderer?: (option: O) => ReactNode;
   valueRenderer?: (option: O) => ReactNode;
-  filterOption?: ((option: FilterOption<O>, rawInput: string) => Boolean) | null;
+  filterOption?:
+    | ((option: FilterOption<O>, rawInput: string) => Boolean)
+    | null;
 }
 
 export type SharedControlConfig<
   T extends InternalControlType = InternalControlType,
   O extends SelectOption = SelectOption,
-> = T extends SelectControlType ? SelectControlConfig<O, T> : BaseControlConfig<T>;
+> = T extends SelectControlType
+  ? SelectControlConfig<O, T>
+  : BaseControlConfig<T>;
 
 /** --------------------------------------------
  * Custom controls
  * --------------------------------------------- */
-export type CustomControlConfig<P = {}> = BaseControlConfig<React.ComponentType<P>> &
+export type CustomControlConfig<P = {}> = BaseControlConfig<
+  React.ComponentType<P>
+> &
   // two run-time properties from superset-frontend/src/explore/components/Control.jsx
   Omit<P, 'onChange' | 'hovered'>;
 
@@ -285,7 +293,9 @@ export type SharedSectionAlias =
   | 'sqlaTimeSeries'
   | 'NVD3TimeSeries';
 
-export interface OverrideSharedControlItem<A extends SharedControlAlias = SharedControlAlias> {
+export interface OverrideSharedControlItem<
+  A extends SharedControlAlias = SharedControlAlias,
+> {
   name: A;
   override: Partial<SharedControls[A]>;
 }
@@ -300,7 +310,10 @@ export type CustomControlItem = {
 // interfere with other ControlSetItem types
 export type ExpandedControlItem = CustomControlItem | ReactElement | null;
 
-export type ControlSetItem = SharedControlAlias | OverrideSharedControlItem | ExpandedControlItem;
+export type ControlSetItem =
+  | SharedControlAlias
+  | OverrideSharedControlItem
+  | ExpandedControlItem;
 
 export type ControlSetRow = ControlSetItem[];
 
@@ -369,14 +382,22 @@ export type ColorFormatters = {
 
 export default {};
 
-export function isColumnMeta(column: AdhocColumn | ColumnMeta): column is ColumnMeta {
+export function isColumnMeta(
+  column: AdhocColumn | ColumnMeta,
+): column is ColumnMeta {
   return 'column_name' in column;
 }
 
-export function isSavedExpression(column: AdhocColumn | ColumnMeta): column is ColumnMeta {
-  return 'column_name' in column && 'expression' in column && !!column.expression;
+export function isSavedExpression(
+  column: AdhocColumn | ColumnMeta,
+): column is ColumnMeta {
+  return (
+    'column_name' in column && 'expression' in column && !!column.expression
+  );
 }
 
-export function isAdhocColumn(column: AdhocColumn | ColumnMeta): column is AdhocColumn {
+export function isAdhocColumn(
+  column: AdhocColumn | ColumnMeta,
+): column is AdhocColumn {
   return 'label' in column && 'sqlExpression' in column;
 }

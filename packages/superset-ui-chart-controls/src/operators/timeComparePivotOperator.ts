@@ -24,13 +24,16 @@ import {
   ensureIsArray,
   getColumnLabel,
 } from '@superset-ui/core';
-import { getMetricOffsetsMap, isValidTimeCompare, TIME_COMPARISON_SEPARATOR } from './utils';
+import {
+  getMetricOffsetsMap,
+  isValidTimeCompare,
+  TIME_COMPARISON_SEPARATOR,
+} from './utils';
 import { PostProcessingFactory } from './types';
 
-export const timeComparePivotOperator: PostProcessingFactory<PostProcessingPivot | undefined> = (
-  formData,
-  queryObject,
-) => {
+export const timeComparePivotOperator: PostProcessingFactory<
+  PostProcessingPivot | undefined
+> = (formData, queryObject) => {
   const comparisonType = formData.comparison_type;
   const metricOffsetMap = getMetricOffsetsMap(formData, queryObject);
 
@@ -44,7 +47,9 @@ export const timeComparePivotOperator: PostProcessingFactory<PostProcessingPivot
     );
     const changeAgg = Object.fromEntries(
       [...metricOffsetMap.entries()]
-        .map(([offset, metric]) => [comparisonType, metric, offset].join(TIME_COMPARISON_SEPARATOR))
+        .map(([offset, metric]) =>
+          [comparisonType, metric, offset].join(TIME_COMPARISON_SEPARATOR),
+        )
         // use the 'mean' aggregates to avoid drop NaN
         .map(metric => [metric, { operator: 'mean' as NumpyFunction }]),
     );
@@ -54,7 +59,8 @@ export const timeComparePivotOperator: PostProcessingFactory<PostProcessingPivot
       options: {
         index: ['__timestamp'],
         columns: ensureIsArray(queryObject.columns).map(getColumnLabel),
-        aggregates: comparisonType === ComparisionType.Values ? valuesAgg : changeAgg,
+        aggregates:
+          comparisonType === ComparisionType.Values ? valuesAgg : changeAgg,
         drop_missing_columns: false,
       },
     };
