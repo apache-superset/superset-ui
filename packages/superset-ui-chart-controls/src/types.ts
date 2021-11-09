@@ -374,7 +374,7 @@ export function isColumnMeta(column: AdhocColumn | ColumnMeta): column is Column
 }
 
 export function isSavedExpression(column: AdhocColumn | ColumnMeta): column is ColumnMeta {
-  return 'column_name' in column && 'expression' in column;
+  return 'column_name' in column && 'expression' in column && !!column.expression;
 }
 
 export function isAdhocColumn(column: AdhocColumn | ColumnMeta): column is AdhocColumn {

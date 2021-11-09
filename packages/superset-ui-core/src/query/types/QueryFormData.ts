@@ -38,7 +38,7 @@ export type QueryFormMetric = SavedMetric | AdhocMetric;
 
 /**
  * Column selects in query object (used as dimensions in both groupby or raw
- * query mode). Can be either reference to physical column or expresion.
+ * query mode). Can be either reference to physical column or expression.
  */
 export type QueryFormColumn = PhysicalColumn | AdhocColumn;
 
