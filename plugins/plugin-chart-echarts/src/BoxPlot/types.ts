@@ -66,6 +66,6 @@ export interface BoxPlotChartTransformedProps {
   emitFilter: boolean;
   setDataMask: SetDataMaskHook;
   labelMap: Record<string, DataRecordValue[]>;
-  groupby: QueryFormColumn[];
+  groupby: string[];
   selectedValues: Record<number, string>;
 }
