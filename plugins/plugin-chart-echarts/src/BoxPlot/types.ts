@@ -20,7 +20,6 @@ import {
   ChartDataResponseResult,
   ChartProps,
   DataRecordValue,
-  QueryFormColumn,
   QueryFormData,
   SetDataMaskHook,
 } from '@superset-ui/core';
