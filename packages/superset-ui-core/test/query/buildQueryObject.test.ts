@@ -25,7 +25,7 @@ import {
   buildQueryObject,
   QueryObject,
 } from '../../src/query';
-import { JsonObject } from '../../lib';
+import { JsonObject } from '@superset-ui/core';
 
 describe('buildQueryObject', () => {
   let query: QueryObject;
