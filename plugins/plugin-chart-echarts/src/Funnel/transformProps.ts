@@ -232,7 +232,7 @@ export default function transformProps(
     setDataMask,
     emitFilter,
     labelMap,
-    groupby: groupbyLabels,
+    groupby,
     selectedValues,
   };
 }

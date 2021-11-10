@@ -50,8 +50,8 @@ export default function transformProps(
   const coltypeMapping = getColtypesMapping(queriesData[0]);
   const {
     colorScheme,
-    groupby: formDataGroupby = [],
-    metrics: formDataMetrics = [],
+    groupby = [],
+    metrics = [],
     numberFormat,
     dateFormat,
     xTicksLayout,
@@ -65,8 +65,8 @@ export default function transformProps(
   } = formData as BoxPlotQueryFormData;
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
   const numberFormatter = getNumberFormatter(numberFormat);
-  const metricLabels = formDataMetrics.map(getMetricLabel);
-  const groupbyLabels = formDataGroupby.map(getColumnLabel);
+  const metricLabels = metrics.map(getMetricLabel);
+  const groupbyLabels = groupby.map(getColumnLabel);
 
   const transformedData = data
     .map((datum: any) => {
@@ -282,7 +282,7 @@ export default function transformProps(
     setDataMask,
     emitFilter,
     labelMap,
-    groupby: groupbyLabels,
+    groupby,
     selectedValues,
   };
 }

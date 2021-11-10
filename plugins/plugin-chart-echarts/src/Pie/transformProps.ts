@@ -121,7 +121,7 @@ export default function transformProps(
   const keys = data.map(datum =>
     extractGroupbyLabel({
       datum,
-      groupby,
+      groupby: groupbyLabels,
       coltypeMapping,
       timeFormatter: getTimeFormatter(dateFormat),
     }),
@@ -150,7 +150,7 @@ export default function transformProps(
   const transformedData: PieSeriesOption[] = data.map(datum => {
     const name = extractGroupbyLabel({
       datum,
-      groupby,
+      groupby: groupbyLabels,
       coltypeMapping,
       timeFormatter: getTimeFormatter(dateFormat),
     });
