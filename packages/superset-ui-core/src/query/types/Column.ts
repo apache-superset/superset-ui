@@ -53,6 +53,8 @@ export interface Column {
 
 export default {};
 
-export function isPhysicalColumn(column: AdhocColumn | PhysicalColumn): column is PhysicalColumn {
+export function isPhysicalColumn(
+  column: AdhocColumn | PhysicalColumn,
+): column is PhysicalColumn {
   return typeof column === 'string';
 }
