@@ -7,7 +7,7 @@ import {
 import { FeatureFlag, isFeatureEnabled, t } from '@superset-ui/core';
 import { getQueryMode, isAggMode, validateAggControlValues } from './shared';
 
-export const percent_metrics: typeof sharedControls.metrics = {
+const percent_metrics: typeof sharedControls.metrics = {
   type: 'MetricsControl',
   label: t('Percentage metrics'),
   description: t(
@@ -18,6 +18,7 @@ export const percent_metrics: typeof sharedControls.metrics = {
   mapStateToProps: ({ datasource, controls }, controlState) => ({
     columns: datasource?.columns || [],
     savedMetrics: datasource?.metrics || [],
+    datasource,
     datasourceType: datasource?.type,
     queryMode: getQueryMode(controls),
     externalValidationErrors: validateAggControlValues(controls, [
@@ -31,7 +32,7 @@ export const percent_metrics: typeof sharedControls.metrics = {
   validators: [],
 };
 
-export const dnd_percent_metrics = {
+const dnd_percent_metrics = {
   ...percent_metrics,
   type: 'DndMetricSelect',
 };
@@ -57,7 +58,8 @@ export const MetricsControlSetItem: ControlSetItem = {
       columns: datasource?.columns.filter(c => c.filterable) || [],
       savedMetrics: datasource?.metrics || [],
       // current active adhoc metrics
-      selectedMetrics: form_data.metrics || (form_data.metric ? [form_data.metric] : []),
+      selectedMetrics:
+        form_data.metrics || (form_data.metric ? [form_data.metric] : []),
       datasource,
       externalValidationErrors: validateAggControlValues(controls, [
         controls.groupby?.value,
