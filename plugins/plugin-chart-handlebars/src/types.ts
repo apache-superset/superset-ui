@@ -21,20 +21,13 @@ import {
   QueryFormData,
   QueryFormMetric,
   QueryMode,
-  supersetTheme,
   TimeGranularity,
   TimeseriesDataRecord,
 } from '@superset-ui/core';
 
-export interface HandlebarsStylesProps {
-  height: number;
-  width: number;
-  headerFontSize: keyof typeof supersetTheme.typography.sizes;
-  boldText: boolean;
-}
+export interface HandlebarsStylesProps {}
 
 interface HandlebarsCustomizeProps {
-  headerText: string;
   handlebarsTemplate?: string;
   styleTemplate?: string;
 }
@@ -54,9 +47,9 @@ export type HandlebarsQueryFormData = QueryFormData &
     groupby?: QueryFormMetric[] | null;
     all_columns?: QueryFormMetric[] | null;
     order_desc?: boolean;
-    show_cell_bars?: boolean;
     table_timestamp_format?: string;
     emit_filter?: boolean;
+    granularity_sqla?: string;
     time_grain_sqla?: TimeGranularity;
     column_config?: Record<string, ColumnConfig>;
   };
