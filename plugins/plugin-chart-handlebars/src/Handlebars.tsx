@@ -34,12 +34,6 @@ const Styles = styled.div<HandlebarsStylesProps>`
   height: ${({ height }) => height};
   width: ${({ width }) => width};
   overflow-y: scroll;
-
-  h3 {
-    /* You can use your props to control CSS! */
-    font-size: ${({ theme, headerFontSize }) => theme.typography.sizes[headerFontSize]};
-    font-weight: ${({ theme, boldText }) => theme.typography.weights[boldText ? 'bold' : 'normal']};
-  }
 `;
 
 /**
@@ -74,13 +68,7 @@ export default function Handlebars(props: HandlebarsProps) {
   console.log('Plugin props', props);
 
   return (
-    <Styles
-      ref={rootElem}
-      boldText={props.boldText}
-      headerFontSize={props.headerFontSize}
-      height={height}
-      width={width}
-    >
+    <Styles ref={rootElem} height={height} width={width}>
       <h3>{props.headerText}</h3>
       <HandlebarsViewer data={{ data }} templateSource={templateSource} />
     </Styles>

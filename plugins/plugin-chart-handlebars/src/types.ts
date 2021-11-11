@@ -25,9 +25,13 @@ import {
   TimeseriesDataRecord,
 } from '@superset-ui/core';
 
-export interface HandlebarsStylesProps {}
+export interface HandlebarsStylesProps {
+  height: number;
+  width: number;
+}
 
 interface HandlebarsCustomizeProps {
+  headerText: string;
   handlebarsTemplate?: string;
   styleTemplate?: string;
 }
