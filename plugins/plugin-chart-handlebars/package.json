@@ -26,8 +26,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@superset-ui/chart-controls": "^0.17.41",
-    "@superset-ui/core": "^0.17.40",
+    "@superset-ui/chart-controls": "0.18.22",
+    "@superset-ui/core": "0.18.22",
     "ace-builds": "^1.4.13",
     "emotion": "^11.0.0",
     "handlebars": "^4.7.7",
