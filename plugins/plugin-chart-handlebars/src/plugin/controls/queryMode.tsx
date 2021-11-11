@@ -1,4 +1,8 @@
-import { ControlConfig, ControlSetItem, QueryModeLabel } from '@superset-ui/chart-controls';
+import {
+  ControlConfig,
+  ControlSetItem,
+  QueryModeLabel,
+} from '@superset-ui/chart-controls';
 import { QueryMode, t } from '@superset-ui/core';
 import { getQueryMode } from './shared';
 

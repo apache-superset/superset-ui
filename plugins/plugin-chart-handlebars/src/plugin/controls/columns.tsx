@@ -4,7 +4,12 @@ import {
   ExtraControlProps,
   sharedControls,
 } from '@superset-ui/chart-controls';
-import { ensureIsArray, FeatureFlag, isFeatureEnabled, t } from '@superset-ui/core';
+import {
+  ensureIsArray,
+  FeatureFlag,
+  isFeatureEnabled,
+  t,
+} from '@superset-ui/core';
 import React from 'react';
 import { getQueryMode, isRawMode } from './shared';
 
@@ -40,7 +45,9 @@ export const dnd_all_columns: typeof sharedControls.groupby = {
     const newState: ExtraControlProps = {};
     if (datasource) {
       const options = datasource.columns;
-      newState.options = Object.fromEntries(options.map(option => [option.column_name, option]));
+      newState.options = Object.fromEntries(
+        options.map(option => [option.column_name, option]),
+      );
     }
     newState.queryMode = getQueryMode(controls);
     newState.externalValidationErrors =

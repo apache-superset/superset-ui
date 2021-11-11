@@ -30,7 +30,9 @@ describe('Handlebars tranformProps', () => {
       boldText: true,
       headerFontSize: 'xs',
       headerText: 'my text',
-      data: [{ name: 'Hulk', sum__num: 1, __timestamp: new Date(599616000000) }],
+      data: [
+        { name: 'Hulk', sum__num: 1, __timestamp: new Date(599616000000) },
+      ],
     });
   });
 });

@@ -16,20 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ControlPanelConfig, emitFilterControl, sections } from '@superset-ui/chart-controls';
+import {
+  ControlPanelConfig,
+  emitFilterControl,
+  sections,
+} from '@superset-ui/chart-controls';
 import { addLocaleData, t } from '@superset-ui/core';
 import i18n from '../i18n';
 import { AllColumnsControlSetItem } from './controls/columns';
 import { GroupByControlSetItem } from './controls/groupBy';
 import { HandlbarsTemplateControlSetItem } from './controls/handlebarTemplate';
 import { IncludeTimeControlSetItem } from './controls/includeTime';
-import { RowLimitControlSetItem, TimeSeriesLimitMetricControlSetItem } from './controls/limits';
+import {
+  RowLimitControlSetItem,
+  TimeSeriesLimitMetricControlSetItem,
+} from './controls/limits';
 import {
   MetricsControlSetItem,
   PercentMetricsControlSetItem,
   ShowTotalsControlSetItem,
 } from './controls/metrics';
-import { OrderByControlSetItem, OrderDescendingControlSetItem } from './controls/orderBy';
+import {
+  OrderByControlSetItem,
+  OrderDescendingControlSetItem,
+} from './controls/orderBy';
 import {
   ServerPageLengthControlSetItem,
   ServerPaginationControlSetRow,
@@ -137,7 +147,10 @@ const config: ControlPanelConfig = {
     {
       label: t('Options'),
       expanded: true,
-      controlSetRows: [[HandlbarsTemplateControlSetItem], [StyleControlSetItem]],
+      controlSetRows: [
+        [HandlbarsTemplateControlSetItem],
+        [StyleControlSetItem],
+      ],
     },
   ],
 };

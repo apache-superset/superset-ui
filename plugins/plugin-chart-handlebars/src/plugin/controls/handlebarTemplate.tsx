@@ -13,8 +13,12 @@ interface HandlebarsCustomControlProps {
   value: string;
 }
 
-const HandlbarsTemplateControl = (props: CustomControlConfig<HandlebarsCustomControlProps>) => {
-  const val = String(props?.value ? props?.value : props?.default ? props?.default : '');
+const HandlbarsTemplateControl = (
+  props: CustomControlConfig<HandlebarsCustomControlProps>,
+) => {
+  const val = String(
+    props?.value ? props?.value : props?.default ? props?.default : '',
+  );
 
   const updateConfig = (source: string) => {
     props.onChange(source);
