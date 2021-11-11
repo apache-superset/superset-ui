@@ -34,7 +34,8 @@
     "react-ace": "^9.4.4"
   },
   "peerDependencies": {
-    "react": "^16.13.1"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
     "@types/jest": "^26.0.0",
