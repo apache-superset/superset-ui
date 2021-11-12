@@ -39,8 +39,8 @@ module.exports = {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
     },
-    // Allow only core/src, avoid import modules from lib
-    'import/internal-regex': /^@superset-ui\/core\/src/,
+    // Allow core/src and core/test, not import modules from lib
+    'import/internal-regex': /^@superset-ui\/core\/(src|test)/,
     'import/core-modules': [
       '@superset-ui/core',
       '@superset-ui/chart-controls',
