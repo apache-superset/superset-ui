@@ -25,26 +25,26 @@ export const CodeEditor: FC<CodeEditorProps> = ({
   value,
   ...rest
 }: CodeEditorProps) => {
-  const _name = name || Math.random().toString(36).substring(7);
-  const _theme = theme === 'light' ? 'github' : 'monokai';
-  const _mode = mode || 'handlebars';
-  const _height = height || '300px';
-  const _width = width || '100%';
+  const m_name = name || Math.random().toString(36).substring(7);
+  const m_theme = theme === 'light' ? 'github' : 'monokai';
+  const m_mode = mode || 'handlebars';
+  const m_height = height || '300px';
+  const m_width = width || '100%';
 
   return (
-    <div className={'code-editor'} style={{ minHeight: height, width: _width }}>
+    <div className="code-editor" style={{ minHeight: height, width: m_width }}>
       <AceEditor
-        mode={_mode}
-        theme={_theme}
-        name={_name}
-        height={_height}
-        width={_width}
+        mode={m_mode}
+        theme={m_theme}
+        name={m_name}
+        height={m_height}
+        width={m_width}
         fontSize={14}
-        showPrintMargin={true}
-        focus={true}
+        showPrintMargin
+        focus
         editorProps={{ $blockScrolling: true }}
-        wrapEnabled={true}
-        highlightActiveLine={true}
+        wrapEnabled
+        highlightActiveLine
         value={value}
         setOptions={{
           enableBasicAutocompletion: true,

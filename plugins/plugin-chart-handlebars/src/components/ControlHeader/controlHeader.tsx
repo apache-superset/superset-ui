@@ -6,14 +6,10 @@ interface ControlHeaderProps {
 
 export const ControlHeader = ({
   children,
-}: ControlHeaderProps): JSX.Element => {
-  return (
-    <div className="ControlHeader">
-      <div className="pull-left">
-        <label>
-          <span role={'button'}>{children}</span>
-        </label>
-      </div>
+}: ControlHeaderProps): JSX.Element => (
+  <div className="ControlHeader">
+    <div className="pull-left">
+      <span role="button">{children}</span>
     </div>
-  );
-};
+  </div>
+);

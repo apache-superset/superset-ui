@@ -14,7 +14,9 @@ interface StyleCustomControlProps {
 }
 
 const StyleControl = (props: CustomControlConfig<StyleCustomControlProps>) => {
-  const val = String(props?.value ? props?.value : props?.default ? props?.default : '');
+  const val = String(
+    props?.value ? props?.value : props?.default ? props?.default : '',
+  );
 
   const updateConfig = (source: string) => {
     props.onChange(source);
@@ -26,8 +28,7 @@ const StyleControl = (props: CustomControlConfig<StyleCustomControlProps>) => {
         theme="dark"
         mode="css"
         value={val}
-        onChange={(source, action) => {
-          console.log('onChange', source, action);
+        onChange={source => {
           updateConfig(source || '');
         }}
       />

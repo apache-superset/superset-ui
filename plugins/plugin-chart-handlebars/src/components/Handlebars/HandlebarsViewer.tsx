@@ -7,7 +7,10 @@ export interface HandlebarsViewerProps {
   data: any;
 }
 
-export const HandlebarsViewer = ({ templateSource, data }: HandlebarsViewerProps) => {
+export const HandlebarsViewer = ({
+  templateSource,
+  data,
+}: HandlebarsViewerProps) => {
   const [renderedTemplate, setRenderedTemplate] = useState('');
 
   useMemo(() => {
@@ -18,7 +21,6 @@ export const HandlebarsViewer = ({ templateSource, data }: HandlebarsViewerProps
 
   if (renderedTemplate) {
     return <SafeMarkdown source={renderedTemplate} />;
-  } else {
-    return <p>Loading...</p>;
   }
+  return <p>Loading...</p>;
 };

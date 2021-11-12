@@ -29,7 +29,7 @@ const HandlbarsTemplateControl = (
       <CodeEditor
         theme="dark"
         value={val}
-        onChange={(source, action) => {
+        onChange={source => {
           updateConfig(source || '');
         }}
       />

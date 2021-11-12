@@ -61,11 +61,9 @@ export default function Handlebars(props: HandlebarsProps) {
   // Often, you just want to get a hold of the DOM and go nuts.
   // Here, you can do that with createRef, and the useEffect hook.
   useEffect(() => {
-    const root = rootElem.current as HTMLElement;
-    console.log('Plugin element', root);
+    // const root = rootElem.current as HTMLElement;
+    // console.log('Plugin element', root);
   });
-
-  console.log('Plugin props', props);
 
   return (
     <Styles ref={rootElem} height={height} width={width}>
