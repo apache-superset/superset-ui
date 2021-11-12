@@ -16,7 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { CSSProperties, useCallback, useMemo } from 'react';
+import React, {
+  CSSProperties,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import { ColumnInstance, ColumnWithLooseAccessor, DefaultSortTypes } from 'react-table';
 import { extent as d3Extent, max as d3Max } from 'd3-array';
 import { FaSort } from '@react-icons/all-files/fa/FaSort';
@@ -176,12 +181,15 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     filters,
     sticky = true, // whether to use sticky header
     columnColorFormatters,
-    rearrangeColumns,
+    rearrangeColumns = false,
   } = props;
   const timestampFormatter = useCallback(
     value => getTimeFormatterForGranularity(timeGrain)(value),
     [timeGrain],
   );
+
+  // keep track of whether column order changed, so that column widths can too
+  const [columnOrderToggle, setColumnOrderToggle] = useState(false);
 
   const handleChange = useCallback(
     (filters: { [x: string]: DataRecordValue[] }) => {
@@ -436,6 +444,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
       toggleFilter,
       totals,
       columnColorFormatters,
+      columnOrderToggle,
     ],
   );
 
@@ -459,6 +468,8 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         height={height}
         serverPagination={serverPagination}
         onServerPaginationChange={handleServerPaginationChange}
+        onColumnOrderChange={() => setColumnOrderToggle(!columnOrderToggle)}
+        rearrangeColumns={rearrangeColumns}
         // 9 page items in > 340px works well even for 100+ pages
         maxPageItemCount={width > 340 ? 9 : 7}
         noResults={(filter: string) => t(filter ? 'No matching records found' : 'No records found')}

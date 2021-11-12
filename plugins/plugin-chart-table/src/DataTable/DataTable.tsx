@@ -60,6 +60,8 @@ export interface DataTableProps<D extends object> extends TableOptions<D> {
   sticky?: boolean;
   rowCount: number;
   wrapperRef?: MutableRefObject<HTMLDivElement>;
+  onColumnOrderChange: () => void;
+  rearrangeColumns: boolean;
 }
 
 export interface RenderHTMLCellProps extends HTMLProps<HTMLTableCellElement> {
@@ -87,13 +89,15 @@ export default function DataTable<D extends object>({
   hooks,
   serverPagination,
   wrapperRef: userWrapperRef,
+  rearrangeColumns,
+  onColumnOrderChange,
   ...moreUseTableOptions
 }: DataTableProps<D>): JSX.Element {
   const tableHooks: PluginHook<D>[] = [
     useGlobalFilter,
     useSortBy,
     usePagination,
-    useColumnOrder,
+    rearrangeColumns ? useColumnOrder : [],
     doSticky ? useSticky : [],
     hooks || [],
   ].flat();
@@ -217,6 +221,8 @@ export default function DataTable<D extends object>({
       const colToBeMoved = currentCols.splice(columnBeingDragged, 1);
       currentCols.splice(newPosition, 0, colToBeMoved[0]);
       setColumnOrder(currentCols);
+      // toggle value in TableChart to trigger column width recalc
+      onColumnOrderChange();
     }
     e.preventDefault();
   };
