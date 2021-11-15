@@ -86,7 +86,7 @@
     "babel-loader": "^8.1.0",
     "chromatic": "^5.4.0",
     "fork-ts-checker-webpack-plugin": "^5.0.7",
-    "ts-loader": "^7.0.4",
+    "ts-loader": "^9.2.1",
     "typescript": "^3.8.3"
   },
   "peerDependencies": {
