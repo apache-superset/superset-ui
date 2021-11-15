@@ -1,3 +1,23 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import { logging } from '@superset-ui/core';
 import Translator from '@superset-ui/core/src/translation/Translator';
 import {
   configure,
@@ -15,6 +35,18 @@ configure({
 });
 
 describe('Translator', () => {
+  const spy = jest.spyOn(logging, 'warn');
+
+  beforeAll(() => {
+    spy.mockImplementation((info: any) => {
+      throw new Error(info);
+    });
+  });
+
+  afterAll(() => {
+    spy.mockRestore();
+  });
+
   describe('new Translator(config)', () => {
     it('initializes when config is not specified', () => {
       expect(new Translator()).toBeInstanceOf(Translator);
@@ -53,23 +85,33 @@ describe('Translator', () => {
       languagePack: languagePackZh,
     });
     it('returns original text for unknown text', () => {
-      expect(translator.translateWithNumber('fish', 'fishes', 1)).toEqual('fish');
+      expect(translator.translateWithNumber('fish', 'fishes', 1)).toEqual(
+        'fish',
+      );
     });
     it('uses 0 as default value', () => {
       expect(translator.translateWithNumber('box', 'boxes')).toEqual('boxes');
     });
     it('translates simple text', () => {
-      expect(translator.translateWithNumber('second', 'seconds', 1)).toEqual('秒');
+      expect(translator.translateWithNumber('second', 'seconds', 1)).toEqual(
+        '秒',
+      );
     });
     it('translates template text with an argument', () => {
-      expect(translator.translateWithNumber('Copy of %s', 'Copies of %s', 12, 12)).toEqual(
-        '12 的副本',
-      );
+      expect(
+        translator.translateWithNumber('Copy of %s', 'Copies of %s', 12, 12),
+      ).toEqual('12 的副本');
     });
     it('translates template text with multiple arguments', () => {
-      expect(translator.translateWithNumber('%d glass %s', '%d glasses %s', 3, 3, 'abc')).toEqual(
-        '3 glasses abc',
-      );
+      expect(
+        translator.translateWithNumber(
+          '%d glass %s',
+          '%d glasses %s',
+          3,
+          3,
+          'abc',
+        ),
+      ).toEqual('3 glasses abc');
     });
   });
   describe('.translateWithNumber(key, num, ...args)', () => {
@@ -78,7 +120,9 @@ describe('Translator', () => {
     });
     it('translates template text with an argument', () => {
       expect(translator.translateWithNumber('%s copies', 1)).toEqual('1 copy');
-      expect(translator.translateWithNumber('%s copies', 2)).toEqual('2 copies');
+      expect(translator.translateWithNumber('%s copies', 2)).toEqual(
+        '2 copies',
+      );
     });
   });
 
@@ -104,7 +148,9 @@ describe('Translator', () => {
       expect(tn('bar', 2)).toEqual('bar');
     });
     it('throw warning on invalid arguments', () => {
-      expect(() => addTranslations(undefined as never)).toThrow('Invalid translations');
+      expect(() => addTranslations(undefined as never)).toThrow(
+        'Invalid translations',
+      );
       expect(tn('bar', '2 foo', 2)).toEqual('2 foo');
     });
     it('throw warning on duplicates', () => {

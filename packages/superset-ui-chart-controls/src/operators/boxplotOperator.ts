@@ -17,21 +17,21 @@
  * under the License.
  */
 import {
-  PostProcessingBoxplot,
-  getMetricLabel,
   ensureIsArray,
-  QueryFormColumn,
+  getColumnLabel,
+  getMetricLabel,
+  PostProcessingBoxplot,
 } from '@superset-ui/core';
 import { PostProcessingFactory } from './types';
 
-type BoxPlotQueryObjectWhiskerType = PostProcessingBoxplot['options']['whisker_type'];
+type BoxPlotQueryObjectWhiskerType =
+  PostProcessingBoxplot['options']['whisker_type'];
 const PERCENTILE_REGEX = /(\d+)\/(\d+) percentiles/;
 
-export const boxplotOperator: PostProcessingFactory<PostProcessingBoxplot | undefined> = (
-  formData,
-  queryObject,
-) => {
-  const { whiskerOptions } = formData;
+export const boxplotOperator: PostProcessingFactory<
+  PostProcessingBoxplot | undefined
+> = (formData, queryObject) => {
+  const { groupby, whiskerOptions } = formData;
 
   if (whiskerOptions) {
     let whiskerType: BoxPlotQueryObjectWhiskerType;
@@ -44,7 +44,10 @@ export const boxplotOperator: PostProcessingFactory<PostProcessingBoxplot | unde
       whiskerType = 'min/max';
     } else if (percentileMatch) {
       whiskerType = 'percentile';
-      percentiles = [parseInt(percentileMatch[1], 10), parseInt(percentileMatch[2], 10)];
+      percentiles = [
+        parseInt(percentileMatch[1], 10),
+        parseInt(percentileMatch[2], 10),
+      ];
     } else {
       throw new Error(`Unsupported whisker type: ${whiskerOptions}`);
     }
@@ -54,7 +57,7 @@ export const boxplotOperator: PostProcessingFactory<PostProcessingBoxplot | unde
       options: {
         whisker_type: whiskerType,
         percentiles,
-        groupby: ensureIsArray(queryObject.groupby as QueryFormColumn[]),
+        groupby: ensureIsArray(groupby).map(getColumnLabel),
         metrics: ensureIsArray(queryObject.metrics).map(getMetricLabel),
       },
     };

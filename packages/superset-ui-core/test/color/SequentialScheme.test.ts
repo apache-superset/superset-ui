@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import SequentialScheme from '@superset-ui/core/src/color/SequentialScheme';
 
 describe('SequentialScheme', () => {
@@ -55,7 +74,10 @@ describe('SequentialScheme', () => {
       it('modifies range instead of domain if set to true', () => {
         const scale = scheme3.createLinearScale([0, 100], true);
         expect(scale.domain()).toEqual([0, 100]);
-        expect(scale.range()).toEqual(['rgb(254, 224, 135)', 'rgb(128, 0, 38)']);
+        expect(scale.range()).toEqual([
+          'rgb(254, 224, 135)',
+          'rgb(128, 0, 38)',
+        ]);
       });
     });
   });
@@ -81,8 +103,14 @@ describe('SequentialScheme', () => {
     });
     describe('extent', () => {
       it('adjust the range if extent is specified', () => {
-        expect(scheme.getColors(2, [0, 0.5])).toEqual(['rgb(255, 255, 255)', 'rgb(119, 119, 119)']);
-        expect(scheme.getColors(2, [0.5, 1])).toEqual(['rgb(119, 119, 119)', 'rgb(0, 0, 0)']);
+        expect(scheme.getColors(2, [0, 0.5])).toEqual([
+          'rgb(255, 255, 255)',
+          'rgb(119, 119, 119)',
+        ]);
+        expect(scheme.getColors(2, [0.5, 1])).toEqual([
+          'rgb(119, 119, 119)',
+          'rgb(0, 0, 0)',
+        ]);
       });
     });
   });

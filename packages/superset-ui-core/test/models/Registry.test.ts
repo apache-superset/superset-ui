@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 /* eslint no-console: 0 */
 import mockConsole from 'jest-mock-console';
 import { Registry, OverwritePolicy } from '@superset-ui/core/src';
@@ -141,13 +160,17 @@ describe('Registry', () => {
       const registry = new Registry();
       registry.registerValue('a', 'testValue');
 
-      return registry.getAsPromise('a').then(value => expect(value).toBe('testValue'));
+      return registry
+        .getAsPromise('a')
+        .then(value => expect(value).toBe('testValue'));
     });
     it('given the key, returns a promise of result of the loader function if the item is a loader', () => {
       const registry = new Registry();
       registry.registerLoader('a', () => 'testValue');
 
-      return registry.getAsPromise('a').then(value => expect(value).toBe('testValue'));
+      return registry
+        .getAsPromise('a')
+        .then(value => expect(value).toBe('testValue'));
     });
     it('returns same promise object for the same key unless user re-registers new value with the key.', () => {
       const registry = new Registry();
@@ -160,7 +183,9 @@ describe('Registry', () => {
       const registry = new Registry();
 
       return registry.getAsPromise('a').then(null, (err: Error) => {
-        expect(err.toString()).toEqual('Error: Item with key "a" is not registered.');
+        expect(err.toString()).toEqual(
+          'Error: Item with key "a" is not registered.',
+        );
       });
     });
     it('If the key was registered multiple times, returns a promise of the most recent item.', async () => {
@@ -297,7 +322,9 @@ describe('Registry', () => {
           const restoreConsole = mockConsole();
           const registry = new Registry();
           registry.registerLoader('a', () => 'testValue');
-          expect(() => registry.registerLoader('a', () => 'testValue2')).not.toThrow();
+          expect(() =>
+            registry.registerLoader('a', () => 'testValue2'),
+          ).not.toThrow();
           expect(registry.get('a')).toEqual('testValue2');
           expect(console.warn).not.toHaveBeenCalled();
           restoreConsole();
@@ -325,7 +352,9 @@ describe('Registry', () => {
             overwritePolicy: OverwritePolicy.WARN,
           });
           registry.registerLoader('a', () => 'testValue');
-          expect(() => registry.registerLoader('a', () => 'testValue2')).not.toThrow();
+          expect(() =>
+            registry.registerLoader('a', () => 'testValue2'),
+          ).not.toThrow();
           expect(registry.get('a')).toEqual('testValue2');
           expect(console.warn).toHaveBeenCalled();
           restoreConsole();
@@ -348,7 +377,9 @@ describe('Registry', () => {
             overwritePolicy: OverwritePolicy.PROHIBIT,
           });
           registry.registerLoader('a', () => 'testValue');
-          expect(() => registry.registerLoader('a', () => 'testValue2')).toThrow();
+          expect(() =>
+            registry.registerLoader('a', () => 'testValue2'),
+          ).toThrow();
         });
       });
     });

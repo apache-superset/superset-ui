@@ -87,7 +87,7 @@ const sequentialSchemeRegistry = getSequentialSchemeRegistry();
 export const PRIMARY_COLOR = { r: 0, g: 122, b: 135, a: 1 };
 
 const ROW_LIMIT_OPTIONS = [10, 50, 100, 250, 500, 1000, 5000, 10000, 50000];
-const SERIES_LIMITS = [0, 5, 10, 25, 50, 100, 500];
+const SERIES_LIMITS = [5, 10, 25, 50, 100, 500];
 
 type Control = {
   savedMetrics?: Metric[] | null;
@@ -102,14 +102,19 @@ const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
   clearable: true,
   default: [],
   includeTime: false,
-  description: t('One or many columns to group by'),
+  description: t(
+    'One or many columns to group by. High cardinality groupings should include a sort by metric ' +
+      'and series limit to limit the number of fetched and rendered series.',
+  ),
   optionRenderer: c => <ColumnOption showType column={c} />,
   valueRenderer: c => <ColumnOption column={c} />,
   valueKey: 'column_name',
   allowAll: true,
   filterOption: ({ data: opt }, text: string) =>
-    (opt.column_name && opt.column_name.toLowerCase().includes(text.toLowerCase())) ||
-    (opt.verbose_name && opt.verbose_name.toLowerCase().includes(text.toLowerCase())) ||
+    (opt.column_name &&
+      opt.column_name.toLowerCase().includes(text.toLowerCase())) ||
+    (opt.verbose_name &&
+      opt.verbose_name.toLowerCase().includes(text.toLowerCase())) ||
     false,
   promptTextCreator: (label: unknown) => label,
   mapStateToProps(state, { includeTime }) {
@@ -134,6 +139,7 @@ const metrics: SharedControlConfig<'MetricsControl'> = {
   mapStateToProps: ({ datasource }) => ({
     columns: datasource ? datasource.columns : [],
     savedMetrics: datasource ? datasource.metrics : [],
+    datasource,
     datasourceType: datasource?.type,
   }),
   description: t('One or many metrics to display'),
@@ -183,7 +189,10 @@ const linear_color_scheme: SharedControlConfig<'ColorSchemeControl'> = {
   type: 'ColorSchemeControl',
   label: t('Linear Color Scheme'),
   choices: () =>
-    (sequentialSchemeRegistry.values() as SequentialScheme[]).map(value => [value.id, value.label]),
+    (sequentialSchemeRegistry.values() as SequentialScheme[]).map(value => [
+      value.id,
+      value.label,
+    ]),
   default: sequentialSchemeRegistry.getDefaultKey(),
   clearable: false,
   description: '',
@@ -323,6 +332,7 @@ const row_limit: SharedControlConfig<'SelectControl'> = {
   validators: [legacyValidateInteger],
   default: 10000,
   choices: formatSelectOptions(ROW_LIMIT_OPTIONS),
+  description: t('Limits the number of rows that get displayed.'),
 };
 
 const limit: SharedControlConfig<'SelectControl'> = {
@@ -330,13 +340,13 @@ const limit: SharedControlConfig<'SelectControl'> = {
   freeForm: true,
   label: t('Series limit'),
   validators: [legacyValidateInteger],
-  default: 100,
   choices: formatSelectOptions(SERIES_LIMITS),
+  clearable: true,
   description: t(
-    'Limits the number of time series that get displayed. A sub query ' +
-      '(or an extra phase where sub queries are not supported) is applied to limit ' +
-      'the number of time series that get fetched and displayed. This feature is useful ' +
-      'when grouping by high cardinality dimension(s).',
+    'Limits the number of series that get displayed. A joined subquery (or an extra phase ' +
+      'where subqueries are not supported) is applied to limit the number of series that get ' +
+      'fetched and rendered. This feature is useful when grouping by high cardinality ' +
+      'column(s) though does increase the query complexity and cost.',
   ),
 };
 
@@ -347,21 +357,25 @@ const series_limit: SharedControlConfig<'SelectControl'> = {
   validators: [legacyValidateInteger],
   choices: formatSelectOptions(SERIES_LIMITS),
   description: t(
-    'Limits the number of series that get displayed. A sub query ' +
-      '(or an extra phase where sub queries are not supported) is applied to limit ' +
-      'the number of series that get fetched and displayed. This feature is useful ' +
-      'when grouping by high cardinality dimension(s).',
+    'Limits the number of series that get displayed. A joined subquery (or an extra phase ' +
+      'where subqueries are not supported) is applied to limit the number of series that get ' +
+      'fetched and rendered. This feature is useful when grouping by high cardinality ' +
+      'column(s) though does increase the query complexity and cost.',
   ),
 };
 
 const sort_by: SharedControlConfig<'MetricsControl'> = {
   type: 'MetricsControl',
-  label: t('Sort By'),
+  label: t('Sort by'),
   default: null,
-  description: t('Metric used to define the top series'),
+  description: t(
+    'Metric used to define how the top series are sorted if a series or row limit is present. ' +
+      'If undefined reverts to the first metric (where appropriate).',
+  ),
   mapStateToProps: ({ datasource }) => ({
     columns: datasource?.columns || [],
     savedMetrics: datasource?.metrics || [],
+    datasource,
     datasourceType: datasource?.type,
   }),
 };
@@ -449,7 +463,8 @@ const adhoc_filters: SharedControlConfig<'AdhocFilterControl'> = {
     columns: datasource?.columns.filter(c => c.filterable) || [],
     savedMetrics: datasource?.metrics || [],
     // current active adhoc metrics
-    selectedMetrics: form_data.metrics || (form_data.metric ? [form_data.metric] : []),
+    selectedMetrics:
+      form_data.metrics || (form_data.metric ? [form_data.metric] : []),
     datasource,
   }),
 };
@@ -462,22 +477,14 @@ const color_scheme: SharedControlConfig<'ColorSchemeControl'> = {
   choices: () => categoricalSchemeRegistry.keys().map(s => [s, s]),
   description: t('The color scheme for rendering chart'),
   schemes: () => categoricalSchemeRegistry.getMap(),
-};
-
-const label_colors: SharedControlConfig<'ColorMapControl'> = {
-  type: 'ColorMapControl',
-  label: t('Color Map'),
-  default: {},
-  renderTrigger: true,
-  mapStateToProps: ({
-    form_data: { color_namespace: colorNamespace, color_scheme: colorScheme },
-  }) => ({
-    colorNamespace,
-    colorScheme,
+  mapStateToProps: state => ({
+    dashboardId: state?.form_data?.dashboardId,
   }),
 };
 
-const enableExploreDnd = isFeatureEnabled(FeatureFlag.ENABLE_EXPLORE_DRAG_AND_DROP);
+const enableExploreDnd = isFeatureEnabled(
+  FeatureFlag.ENABLE_EXPLORE_DRAG_AND_DROP,
+);
 
 const sharedControls = {
   metrics: enableExploreDnd ? dnd_adhoc_metrics : metrics,
@@ -508,7 +515,6 @@ const sharedControls = {
   x_axis_time_format,
   adhoc_filters: enableExploreDnd ? dnd_adhoc_filters : adhoc_filters,
   color_scheme,
-  label_colors,
   series_columns: enableExploreDnd ? dndColumnsControl : columnsControl,
   series_limit,
   series_limit_metric: enableExploreDnd ? dnd_sort_by : sort_by,

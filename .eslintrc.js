@@ -17,8 +17,13 @@
  * under the License.
  */
 module.exports = {
-  extends: ['airbnb', 'prettier', 'prettier/react', 'plugin:react-hooks/recommended'],
-  parser: 'babel-eslint',
+  extends: [
+    'airbnb',
+    'prettier',
+    'prettier/react',
+    'plugin:react-hooks/recommended',
+  ],
+  parser: '@babel/eslint-parser',
   parserOptions: {
     ecmaFeatures: {
       experimentalObjectRestSpread: true,
@@ -34,6 +39,38 @@ module.exports = {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
     },
+    // Allow core/src and core/test, not import modules from lib
+    'import/internal-regex': /^@superset-ui\/core\/(src|test)/,
+    'import/core-modules': [
+      '@superset-ui/core',
+      '@superset-ui/chart-controls',
+      '@superset-ui/legacy-plugin-chart-calendar',
+      '@superset-ui/legacy-plugin-chart-chord',
+      '@superset-ui/legacy-plugin-chart-country-map',
+      '@superset-ui/legacy-plugin-chart-event-flow',
+      '@superset-ui/legacy-plugin-chart-force-directed',
+      '@superset-ui/legacy-plugin-chart-heatmap',
+      '@superset-ui/legacy-plugin-chart-histogram',
+      '@superset-ui/legacy-plugin-chart-horizon',
+      '@superset-ui/legacy-plugin-chart-map-box',
+      '@superset-ui/legacy-plugin-chart-paired-t-test',
+      '@superset-ui/legacy-plugin-chart-parallel-coordinates',
+      '@superset-ui/legacy-plugin-chart-partition',
+      '@superset-ui/legacy-plugin-chart-pivot-table',
+      '@superset-ui/legacy-plugin-chart-rose',
+      '@superset-ui/legacy-plugin-chart-sankey',
+      '@superset-ui/legacy-plugin-chart-sankey-loop',
+      '@superset-ui/legacy-plugin-chart-sunburst',
+      '@superset-ui/legacy-plugin-chart-time-table',
+      '@superset-ui/legacy-plugin-chart-treemap',
+      '@superset-ui/legacy-plugin-chart-world-map',
+      '@superset-ui/legacy-preset-chart-big-number',
+      '@superset-ui/legacy-preset-chart-nvd3',
+      '@superset-ui/plugin-chart-echarts',
+      '@superset-ui/plugin-chart-table',
+      '@superset-ui/plugin-chart-word-cloud',
+      '@superset-ui/preset-chart-xy',
+    ],
     react: {
       version: 'detect',
     },
@@ -82,7 +119,8 @@ module.exports = {
         paths: [
           {
             name: 'antd',
-            message: 'Please import Ant components from the index of common/components',
+            message:
+              'Please import Ant components from the index of common/components',
           },
         ],
       },
@@ -178,6 +216,7 @@ module.exports = {
         'react/prop-types': 0,
         'react/require-default-props': 0,
         'react/static-property-placement': 0, // re-enable up for discussion
+        'react/sort-comp': 0,
         'prettier/prettier': 'error',
       },
       settings: {
@@ -195,7 +234,10 @@ module.exports = {
       rules: {
         // this is to keep eslint from complaining about storybook addons,
         // since they are included as dev dependencies rather than direct dependencies.
-        'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+        'import/no-extraneous-dependencies': [
+          'error',
+          { devDependencies: true },
+        ],
       },
     },
     {
@@ -205,7 +247,13 @@ module.exports = {
       },
     },
     {
-      files: ['*.test.*', './**/test/**/*'],
+      files: [
+        '*.test.ts',
+        '*.test.tsx',
+        '*.test.js',
+        '*.test.jsx',
+        'fixtures.*',
+      ],
       plugins: ['jest', 'jest-dom', 'no-only-tests', 'testing-library'],
       env: {
         'jest/globals': true,

@@ -44,28 +44,33 @@ export default function EchartsTimeseries({
   const lastSelectedLegend = useRef('');
   const clickTimer = useRef<ReturnType<typeof setTimeout>>();
 
-  const handleDoubleClickChange = useCallback((name?: string) => {
-    const echartInstance = echartRef.current?.getEchartInstance();
-    if (!name) {
-      echartInstance?.dispatchAction({
-        type: 'legendAllSelect',
-      });
-    } else {
-      legendData.forEach(datum => {
-        if (datum === name) {
-          echartInstance?.dispatchAction({
-            type: 'legendSelect',
-            name: datum,
-          });
-        } else {
-          echartInstance?.dispatchAction({
-            type: 'legendUnSelect',
-            name: datum,
-          });
-        }
-      });
-    }
-  }, []);
+  const handleDoubleClickChange = useCallback(
+    (name?: string) => {
+      const echartInstance = echartRef.current?.getEchartInstance();
+      if (!name) {
+        currentSeries.legend = '';
+        echartInstance?.dispatchAction({
+          type: 'legendAllSelect',
+        });
+      } else {
+        legendData.forEach(datum => {
+          if (datum === name) {
+            currentSeries.legend = datum;
+            echartInstance?.dispatchAction({
+              type: 'legendSelect',
+              name: datum,
+            });
+          } else {
+            echartInstance?.dispatchAction({
+              type: 'legendUnSelect',
+              name: datum,
+            });
+          }
+        });
+      }
+    },
+    [legendData],
+  );
 
   const getModelInfo = (target: ViewRootGroup, globalModel: GlobalModel) => {
     let el = target;
@@ -134,11 +139,11 @@ export default function EchartsTimeseries({
         }
       }, TIMER_DURATION);
     },
-    mousemove: params => {
-      currentSeries.name = params.seriesName;
-    },
     mouseout: () => {
       currentSeries.name = '';
+    },
+    mouseover: params => {
+      currentSeries.name = params.seriesName;
     },
     legendselectchanged: payload => {
       const currentTime = Date.now();

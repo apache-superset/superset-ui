@@ -1,7 +1,32 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import React, { ReactNode, CSSProperties } from 'react';
 import { XAxis, YAxis } from '@data-ui/xy-chart';
 import { ChartFrame, Margin, mergeMargin, Dimension } from '@superset-ui/core';
-import { ChannelEncoder, PlainObject, Value, XFieldDef, YFieldDef } from 'encodable';
+import {
+  ChannelEncoder,
+  PlainObject,
+  Value,
+  XFieldDef,
+  YFieldDef,
+} from 'encodable';
 import createTickComponent from './createTickComponent';
 import computeAxisLayout, { AxisLayout } from './computeAxisLayout';
 
@@ -10,7 +35,10 @@ export const DEFAULT_LABEL_ANGLE = 40;
 // Additional margin to avoid content hidden behind scroll bar
 const OVERFLOW_MARGIN = 8;
 
-export interface XYChartLayoutConfig<XOutput extends Value, YOutput extends Value> {
+export interface XYChartLayoutConfig<
+  XOutput extends Value,
+  YOutput extends Value,
+> {
   width: number;
   height: number;
   minContentWidth?: number;
@@ -26,7 +54,10 @@ export interface XYChartLayoutConfig<XOutput extends Value, YOutput extends Valu
   autoAdjustYMargin?: boolean;
 }
 
-export default class XYChartLayout<XOutput extends Value, YOutput extends Value> {
+export default class XYChartLayout<
+  XOutput extends Value,
+  YOutput extends Value,
+> {
   chartWidth: number;
 
   chartHeight: number;
@@ -74,8 +105,13 @@ export default class XYChartLayout<XOutput extends Value, YOutput extends Value>
     }
 
     const secondMargin =
-      this.yLayout && autoAdjustYMargin ? mergeMargin(margin, this.yLayout.minMargin) : margin;
-    const innerWidth = Math.max(width - secondMargin.left - secondMargin.right, minContentWidth);
+      this.yLayout && autoAdjustYMargin
+        ? mergeMargin(margin, this.yLayout.minMargin)
+        : margin;
+    const innerWidth = Math.max(
+      width - secondMargin.left - secondMargin.right,
+      minContentWidth,
+    );
 
     if (typeof xEncoder.axis !== 'undefined') {
       this.xLayout = computeAxisLayout(xEncoder.axis, {
@@ -90,10 +126,17 @@ export default class XYChartLayout<XOutput extends Value, YOutput extends Value>
         ? mergeMargin(secondMargin, this.xLayout.minMargin)
         : secondMargin;
 
-    const innerHeight = Math.max(height - finalMargin.top - finalMargin.bottom, minContentHeight);
+    const innerHeight = Math.max(
+      height - finalMargin.top - finalMargin.bottom,
+      minContentHeight,
+    );
 
-    const chartWidth = Math.round(innerWidth + finalMargin.left + finalMargin.right);
-    const chartHeight = Math.round(innerHeight + finalMargin.top + finalMargin.bottom);
+    const chartWidth = Math.round(
+      innerWidth + finalMargin.left + finalMargin.right,
+    );
+    const chartHeight = Math.round(
+      innerHeight + finalMargin.top + finalMargin.bottom,
+    );
 
     const isOverFlowX = chartWidth > width;
     const isOverFlowY = chartHeight > height;
@@ -104,7 +147,9 @@ export default class XYChartLayout<XOutput extends Value, YOutput extends Value>
       finalMargin.right += OVERFLOW_MARGIN;
     }
     this.chartWidth = isOverFlowX ? chartWidth + OVERFLOW_MARGIN : chartWidth;
-    this.chartHeight = isOverFlowY ? chartHeight + OVERFLOW_MARGIN : chartHeight;
+    this.chartHeight = isOverFlowY
+      ? chartHeight + OVERFLOW_MARGIN
+      : chartHeight;
     this.containerWidth = width;
     this.containerHeight = height;
     this.margin = finalMargin;

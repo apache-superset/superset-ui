@@ -1,5 +1,29 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import React, { ReactNode } from 'react';
-import { SupersetClient, Method, makeApi, SupersetApiError } from '@superset-ui/core';
+import {
+  SupersetClient,
+  Method,
+  makeApi,
+  SupersetApiError,
+} from '@superset-ui/core';
 import ErrorMessage from './ErrorMessage';
 
 export type Props = {
@@ -68,7 +92,9 @@ export default class VerifyCORS extends React.Component<Props, State> {
         }
         return { error: 'Must provide valid endpoint and payload.' };
       })
-      .then(result => this.setState({ didVerify: true, error: undefined, payload: result }))
+      .then(result =>
+        this.setState({ didVerify: true, error: undefined, payload: result }),
+      )
       .catch(error => this.setState({ error }));
   }
 
@@ -83,13 +109,18 @@ export default class VerifyCORS extends React.Component<Props, State> {
         <div className="col-md-10">
           This example requires CORS requests from this domain. <br />
           <br />
-          1) enable CORS requests in your Superset App from {`${window.location.origin}`}
+          1) enable CORS requests in your Superset App from{' '}
+          {`${window.location.origin}`}
           <br />
           2) configure your Superset App host name below <br />
-          3) click below to verify authentication. You may debug CORS further using the
-          `@superset-ui/connection` story. <br />
+          3) click below to verify authentication. You may debug CORS further
+          using the `@superset-ui/connection` story. <br />
           <br />
-          <button type="button" className="btn btn-primary btn-sm" onClick={this.handleVerify}>
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            onClick={this.handleVerify}
+          >
             Verify
           </button>
           <br />

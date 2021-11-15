@@ -40,6 +40,8 @@ import {
   ItemStyleOption,
   LineStyleOption,
   OptionName,
+  SeriesLabelOption,
+  SeriesLineLabelOption,
   ZRLineType,
 } from 'echarts/types/src/util/types';
 import {
@@ -58,7 +60,7 @@ import {
   formatAnnotationLabel,
   parseAnnotationOpacity,
 } from '../utils/annotation';
-import { getChartPadding } from '../utils/series';
+import { currentSeries, getChartPadding } from '../utils/series';
 import { OpacityEnum, TIMESERIES_CONSTANTS } from '../constants';
 
 export function transformSeries(
@@ -110,8 +112,11 @@ export function transformSeries(
   const isConfidenceBand =
     forecastSeries.type === ForecastSeriesEnum.ForecastLower ||
     forecastSeries.type === ForecastSeriesEnum.ForecastUpper;
-  const isFiltered = filterState?.selectedValues && !filterState?.selectedValues.includes(name);
-  const opacity = isFiltered ? OpacityEnum.SemiTransparent : OpacityEnum.NonTransparent;
+  const isFiltered =
+    filterState?.selectedValues && !filterState?.selectedValues.includes(name);
+  const opacity = isFiltered
+    ? OpacityEnum.SemiTransparent
+    : OpacityEnum.NonTransparent;
 
   // don't create a series if doing a stack or area chart and the result
   // is a confidence band
@@ -130,7 +135,10 @@ export function transformSeries(
     stackId = forecastSeries.type;
   }
   let plotType;
-  if (!isConfidenceBand && (seriesType === 'scatter' || (hasForecast && isObservation))) {
+  if (
+    !isConfidenceBand &&
+    (seriesType === 'scatter' || (hasForecast && isObservation))
+  ) {
     plotType = 'scatter';
   } else if (isConfidenceBand) {
     plotType = 'line';
@@ -164,7 +172,9 @@ export function transformSeries(
       showSymbol = true;
     }
   }
-  const lineStyle = isConfidenceBand ? { opacity: OpacityEnum.Transparent } : { opacity };
+  const lineStyle = isConfidenceBand
+    ? { opacity: OpacityEnum.Transparent }
+    : { opacity };
   return {
     ...series,
     yAxisIndex,
@@ -173,16 +183,19 @@ export function transformSeries(
     // @ts-ignore
     type: plotType,
     smooth: seriesType === 'smooth',
+    triggerLineEvent: true,
     // @ts-ignore
-    step: ['start', 'middle', 'end'].includes(seriesType as string) ? seriesType : undefined,
+    step: ['start', 'middle', 'end'].includes(seriesType as string)
+      ? seriesType
+      : undefined,
     stack: stackId,
     lineStyle,
-    areaStyle: {
-      opacity:
-        forecastSeries.type === ForecastSeriesEnum.ForecastUpper || area
-          ? opacity * areaOpacity
-          : 0,
-    },
+    areaStyle:
+      area || forecastSeries.type === ForecastSeriesEnum.ForecastUpper
+        ? {
+            opacity: opacity * areaOpacity,
+          }
+        : undefined,
     emphasis,
     showSymbol,
     symbolSize: markerSize,
@@ -194,9 +207,11 @@ export function transformSeries(
           value: [, numericValue],
           dataIndex,
           seriesIndex,
+          seriesName,
         } = params;
+        const isSelectedLegend = currentSeries.legend === seriesName;
         if (!formatter) return numericValue;
-        if (!stack || !onlyTotal) {
+        if (!stack || !onlyTotal || isSelectedLegend) {
           return formatter(numericValue);
         }
         if (seriesIndex === showValueIndexes[dataIndex]) {
@@ -241,10 +256,13 @@ export function transformIntervalAnnotation(
   const series: SeriesOption[] = [];
   const annotations = extractRecordAnnotations(layer, annotationData);
   annotations.forEach(annotation => {
-    const { name, color, opacity } = layer;
+    const { name, color, opacity, showLabel } = layer;
     const { descriptions, intervalEnd, time, title } = annotation;
     const label = formatAnnotationLabel(name, title, descriptions);
-    const intervalData: (MarkArea1DDataItemOption | MarkArea2DDataItemOption)[] = [
+    const intervalData: (
+      | MarkArea1DDataItemOption
+      | MarkArea2DDataItemOption
+    )[] = [
       [
         {
           name: label,
@@ -255,6 +273,32 @@ export function transformIntervalAnnotation(
         },
       ],
     ];
+    const intervalLabel: SeriesLabelOption = showLabel
+      ? {
+          show: true,
+          color: '#000000',
+          position: 'insideTop',
+          verticalAlign: 'top',
+          fontWeight: 'bold',
+          // @ts-ignore
+          emphasis: {
+            position: 'insideTop',
+            verticalAlign: 'top',
+            backgroundColor: '#ffffff',
+          },
+        }
+      : {
+          show: false,
+          color: '#000000',
+          // @ts-ignore
+          emphasis: {
+            fontWeight: 'bold',
+            show: true,
+            position: 'insideTop',
+            verticalAlign: 'top',
+            backgroundColor: '#ffffff',
+          },
+        };
     series.push({
       id: `Interval - ${label}`,
       type: 'line',
@@ -268,18 +312,7 @@ export function transformIntervalAnnotation(
             opacity: 0.8,
           },
         } as ItemStyleOption,
-        label: {
-          show: false,
-          color: '#000000',
-          // @ts-ignore
-          emphasis: {
-            fontWeight: 'bold',
-            show: true,
-            position: 'insideTop',
-            verticalAlign: 'top',
-            backgroundColor: '#ffffff',
-          },
-        },
+        label: intervalLabel,
         data: intervalData,
       },
     });
@@ -296,7 +329,7 @@ export function transformEventAnnotation(
   const series: SeriesOption[] = [];
   const annotations = extractRecordAnnotations(layer, annotationData);
   annotations.forEach(annotation => {
-    const { name, color, opacity, style, width } = layer;
+    const { name, color, opacity, style, width, showLabel } = layer;
     const { descriptions, time, title } = annotation;
     const label = formatAnnotationLabel(name, title, descriptions);
     const eventData: MarkLine1DDataItemOption[] = [
@@ -317,15 +350,19 @@ export function transformEventAnnotation(
       },
     };
 
-    series.push({
-      id: `Event - ${label}`,
-      type: 'line',
-      animation: false,
-      markLine: {
-        silent: false,
-        symbol: 'none',
-        lineStyle,
-        label: {
+    const eventLabel: SeriesLineLabelOption = showLabel
+      ? {
+          show: true,
+          color: '#000000',
+          position: 'insideEndTop',
+          fontWeight: 'bold',
+          formatter: (params: CallbackDataParams) => params.name,
+          // @ts-ignore
+          emphasis: {
+            backgroundColor: '#ffffff',
+          },
+        }
+      : {
           show: false,
           color: '#000000',
           position: 'insideEndTop',
@@ -336,7 +373,17 @@ export function transformEventAnnotation(
             show: true,
             backgroundColor: '#ffffff',
           },
-        },
+        };
+
+    series.push({
+      id: `Event - ${label}`,
+      type: 'line',
+      animation: false,
+      markLine: {
+        silent: false,
+        symbol: 'none',
+        lineStyle,
+        label: eventLabel,
         data: eventData,
       },
     });
@@ -389,7 +436,9 @@ export function getPadding(
   right: number;
   top: number;
 } {
-  const yAxisOffset = addYAxisTitleOffset ? TIMESERIES_CONSTANTS.yAxisLabelTopOffset : 0;
+  const yAxisOffset = addYAxisTitleOffset
+    ? TIMESERIES_CONSTANTS.yAxisLabelTopOffset
+    : 0;
   const xAxisOffset = addXAxisTitleOffset ? xAxisTitleMargin || 0 : 0;
   return getChartPadding(showLegend, legendOrientation, margin, {
     top:
@@ -410,7 +459,9 @@ export function getPadding(
   });
 }
 
-export function getTooltipTimeFormatter(format?: string): TimeFormatter | StringConstructor {
+export function getTooltipTimeFormatter(
+  format?: string,
+): TimeFormatter | StringConstructor {
   if (format === smartDateFormatter.id) {
     return smartDateDetailedFormatter;
   }
@@ -420,7 +471,9 @@ export function getTooltipTimeFormatter(format?: string): TimeFormatter | String
   return String;
 }
 
-export function getXAxisFormatter(format?: string): TimeFormatter | StringConstructor | undefined {
+export function getXAxisFormatter(
+  format?: string,
+): TimeFormatter | StringConstructor | undefined {
   if (format === smartDateFormatter.id || !format) {
     return undefined;
   }

@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import React from 'react';
 import { QueryFormData, DatasourceType } from '@superset-ui/core';
 import {
@@ -65,7 +84,8 @@ describe('ChartPlugin', () => {
           loadBuildQuery: () => buildQuery,
         });
 
-        const fn = plugin.loadBuildQuery!() as BuildQueryFunction<QueryFormData>;
+        const fn =
+          plugin.loadBuildQuery!() as BuildQueryFunction<QueryFormData>;
         expect(fn(FORM_DATA).queries[0]).toEqual({ granularity: 'day' });
         expect(fn(FORM_DATA).force).toEqual(false);
       });
@@ -77,7 +97,8 @@ describe('ChartPlugin', () => {
           buildQuery,
         });
 
-        const fn = plugin.loadBuildQuery!() as BuildQueryFunction<QueryFormData>;
+        const fn =
+          plugin.loadBuildQuery!() as BuildQueryFunction<QueryFormData>;
         expect(fn(FORM_DATA).queries[0]).toEqual({ granularity: 'day' });
       });
     });
@@ -169,7 +190,9 @@ describe('ChartPlugin', () => {
 
     it('throws an error if key is not provided', () => {
       expect(() => plugin.register()).toThrow(Error);
-      expect(() => plugin.configure({ key: 'ab' }).register()).not.toThrow(Error);
+      expect(() => plugin.configure({ key: 'ab' }).register()).not.toThrow(
+        Error,
+      );
     });
     it('add the plugin to the registries', () => {
       plugin.configure({ key: 'cd' }).register();
@@ -207,7 +230,9 @@ describe('ChartPlugin', () => {
 
     it('throws an error if key is not provided', () => {
       expect(() => plugin.unregister()).toThrow(Error);
-      expect(() => plugin.configure({ key: 'abc' }).unregister()).not.toThrow(Error);
+      expect(() => plugin.configure({ key: 'abc' }).unregister()).not.toThrow(
+        Error,
+      );
     });
     it('removes the chart from the registries', () => {
       plugin.configure({ key: 'def' }).register();

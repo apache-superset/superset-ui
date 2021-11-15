@@ -20,6 +20,7 @@ import {
   CategoricalColorNamespace,
   DataRecord,
   DataRecordValue,
+  getColumnLabel,
   getMetricLabel,
   getNumberFormatter,
   getTimeFormatter,
@@ -108,7 +109,8 @@ export function formatTooltip({
 export default function transformProps(
   chartProps: EchartsTreemapChartProps,
 ): TreemapTransformedProps {
-  const { formData, height, queriesData, width, hooks, filterState } = chartProps;
+  const { formData, height, queriesData, width, hooks, filterState } =
+    chartProps;
   const { data = [] } = queriesData[0];
   const { setDataMask = () => {} } = hooks;
   const coltypeMapping = getColtypesMapping(queriesData[0]);
@@ -143,12 +145,12 @@ export default function transformProps(
 
   const transformer = (
     data: DataRecord[],
-    groupbyData: string[],
+    groupbyLabels: string[],
     metric: string,
     depth: number,
     path: string[],
   ): TreemapSeriesNodeItemOption[] => {
-    const [currGroupby, ...restGroupby] = groupbyData;
+    const [currGroupby, ...restGroupby] = groupbyLabels;
     const currGrouping = groupBy(data, currGroupby);
     if (!restGroupby.length) {
       return transform(
@@ -158,7 +160,9 @@ export default function transformProps(
             const name = formatSeriesName(key, {
               numberFormatter,
               timeFormatter: getTimeFormatter(dateFormat),
-              ...(coltypeMapping[currGroupby] && { coltype: coltypeMapping[currGroupby] }),
+              ...(coltypeMapping[currGroupby] && {
+                coltype: coltypeMapping[currGroupby],
+              }),
             });
             const item: TreemapSeriesNodeItemOption = {
               name,
@@ -167,7 +171,10 @@ export default function transformProps(
             const joinedName = path.concat(name).join(',');
             // map(joined_name: [columnLabel_1, columnLabel_2, ...])
             columnsLabelMap.set(joinedName, path.concat(name));
-            if (filterState.selectedValues && !filterState.selectedValues.includes(joinedName)) {
+            if (
+              filterState.selectedValues &&
+              !filterState.selectedValues.includes(joinedName)
+            ) {
               item.itemStyle = {
                 colorAlpha: OpacityEnum.SemiTransparent,
               };
@@ -187,13 +194,24 @@ export default function transformProps(
         const name = formatSeriesName(key, {
           numberFormatter,
           timeFormatter: getTimeFormatter(dateFormat),
-          ...(coltypeMapping[currGroupby] && { coltype: coltypeMapping[currGroupby] }),
+          ...(coltypeMapping[currGroupby] && {
+            coltype: coltypeMapping[currGroupby],
+          }),
         });
-        const children = transformer(value, restGroupby, metric, depth + 1, path.concat(name));
+        const children = transformer(
+          value,
+          restGroupby,
+          metric,
+          depth + 1,
+          path.concat(name),
+        );
         result.push({
           name,
           children,
-          value: children.reduce((prev, cur) => prev + (cur.value as number), 0),
+          value: children.reduce(
+            (prev, cur) => prev + (cur.value as number),
+            0,
+          ),
         });
         result.sort((a, b) => (b.value as number) - (a.value as number));
       },
@@ -213,6 +231,7 @@ export default function transformProps(
   };
 
   const metricLabel = getMetricLabel(metric);
+  const groupbyLabels = groupby.map(getColumnLabel);
   const initialDepth = 1;
   const transformedData: TreemapSeriesNodeItemOption[] = [
     {
@@ -226,7 +245,7 @@ export default function transformProps(
       upperLabel: {
         show: false,
       },
-      children: transformer(data, groupby, metricLabel, initialDepth, []),
+      children: transformer(data, groupbyLabels, metricLabel, initialDepth, []),
     },
   ];
 

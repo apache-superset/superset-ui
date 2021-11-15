@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import fetchMock from 'fetch-mock';
 import {
   SupersetClientClass,
@@ -49,12 +68,20 @@ describe('ChartClient', () => {
   describe('.loadFormData({ sliceId, formData }, options)', () => {
     const sliceId = 123;
     it('fetches formData if given only sliceId', () => {
-      fetchMock.get(`glob:*/api/v1/form_data/?slice_id=${sliceId}`, sankeyFormData);
+      fetchMock.get(
+        `glob:*/api/v1/form_data/?slice_id=${sliceId}`,
+        sankeyFormData,
+      );
 
-      return expect(chartClient.loadFormData({ sliceId })).resolves.toEqual(sankeyFormData);
+      return expect(chartClient.loadFormData({ sliceId })).resolves.toEqual(
+        sankeyFormData,
+      );
     });
     it('fetches formData from sliceId and merges with specify formData if both fields are specified', () => {
-      fetchMock.get(`glob:*/api/v1/form_data/?slice_id=${sliceId}`, sankeyFormData);
+      fetchMock.get(
+        `glob:*/api/v1/form_data/?slice_id=${sliceId}`,
+        sankeyFormData,
+      );
 
       return expect(
         chartClient.loadFormData({
@@ -85,7 +112,9 @@ describe('ChartClient', () => {
         viz_type: 'line',
       }));
     it('rejects if none of sliceId or formData is specified', () =>
-      expect(chartClient.loadFormData({} as SliceIdAndOrFormData)).rejects.toEqual(
+      expect(
+        chartClient.loadFormData({} as SliceIdAndOrFormData),
+      ).rejects.toEqual(
         new Error('At least one of sliceId or formData must be specified'),
       ));
   });
@@ -97,8 +126,9 @@ describe('ChartClient', () => {
         new ChartMetadata({ name: 'Word Cloud', thumbnail: '' }),
       );
 
-      getChartBuildQueryRegistry().registerValue('word_cloud', (formData: QueryFormData) =>
-        buildQueryContext(formData),
+      getChartBuildQueryRegistry().registerValue(
+        'word_cloud',
+        (formData: QueryFormData) => buildQueryContext(formData),
       );
       fetchMock.post('glob:*/api/v1/chart/data', [
         {
@@ -166,10 +196,13 @@ describe('ChartClient', () => {
 
   describe('.loadDatasource(datasourceKey, options)', () => {
     it('fetches datasource', () => {
-      fetchMock.get('glob:*/superset/fetch_datasource_metadata?datasourceKey=1__table', {
-        field1: 'abc',
-        field2: 'def',
-      });
+      fetchMock.get(
+        'glob:*/superset/fetch_datasource_metadata?datasourceKey=1__table',
+        {
+          field1: 'abc',
+          field2: 'def',
+        },
+      );
 
       return expect(chartClient.loadDatasource('1__table')).resolves.toEqual({
         field1: 'abc',
@@ -229,10 +262,13 @@ describe('ChartClient', () => {
         color: 'living-coral',
       });
 
-      fetchMock.get('glob:*/superset/fetch_datasource_metadata?datasourceKey=1__table', {
-        name: 'transactions',
-        schema: 'staging',
-      });
+      fetchMock.get(
+        'glob:*/superset/fetch_datasource_metadata?datasourceKey=1__table',
+        {
+          name: 'transactions',
+          schema: 'staging',
+        },
+      );
 
       fetchMock.post('glob:*/api/v1/chart/data', {
         lorem: 'ipsum',
@@ -245,8 +281,9 @@ describe('ChartClient', () => {
         new ChartMetadata({ name: 'Line', thumbnail: '.gif' }),
       );
 
-      getChartBuildQueryRegistry().registerValue('line', (formData: QueryFormData) =>
-        buildQueryContext(formData),
+      getChartBuildQueryRegistry().registerValue(
+        'line',
+        (formData: QueryFormData) => buildQueryContext(formData),
       );
 
       return expect(

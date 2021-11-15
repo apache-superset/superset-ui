@@ -17,7 +17,11 @@
  * under the License.
  */
 import { t } from '@superset-ui/core';
-import { ControlPanelConfig, formatSelectOptions, sections } from '@superset-ui/chart-controls';
+import {
+  ControlPanelConfig,
+  formatSelectOptions,
+  sections,
+} from '@superset-ui/chart-controls';
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
@@ -31,7 +35,7 @@ const config: ControlPanelConfig = {
       label: t('Chart Options'),
       expanded: true,
       controlSetRows: [
-        ['color_scheme', 'label_colors'],
+        ['color_scheme'],
         [
           {
             name: 'whisker_options',
@@ -40,7 +44,9 @@ const config: ControlPanelConfig = {
               freeForm: true,
               label: t('Whisker/outlier options'),
               default: 'Tukey',
-              description: t('Determines how whiskers and outliers are calculated.'),
+              description: t(
+                'Determines how whiskers and outliers are calculated.',
+              ),
               choices: formatSelectOptions([
                 'Tukey',
                 'Min/max (no outliers)',
@@ -54,7 +60,12 @@ const config: ControlPanelConfig = {
             config: {
               type: 'SelectControl',
               label: t('X Tick Layout'),
-              choices: formatSelectOptions(['auto', 'flat', '45°', 'staggered']),
+              choices: formatSelectOptions([
+                'auto',
+                'flat',
+                '45°',
+                'staggered',
+              ]),
               default: 'auto',
               clearable: false,
               renderTrigger: true,

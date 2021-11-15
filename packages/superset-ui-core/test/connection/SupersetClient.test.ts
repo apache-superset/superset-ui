@@ -18,7 +18,10 @@
  */
 import fetchMock from 'fetch-mock';
 
-import { SupersetClient, SupersetClientClass } from '@superset-ui/core/src/connection';
+import {
+  SupersetClient,
+  SupersetClientClass,
+} from '@superset-ui/core/src/connection';
 import { LOGIN_GLOB } from './fixtures/constants';
 
 describe('SupersetClient', () => {
@@ -53,7 +56,7 @@ describe('SupersetClient', () => {
 
   // this also tests that the ^above doesn't throw if configure is called appropriately
   it('calls appropriate SupersetClient methods when configured', async () => {
-    expect.assertions(10);
+    expect.assertions(15);
     const mockGetUrl = '/mock/get/url';
     const mockPostUrl = '/mock/post/url';
     const mockRequestUrl = '/mock/request/url';
@@ -74,7 +77,10 @@ describe('SupersetClient', () => {
     const postSpy = jest.spyOn(SupersetClientClass.prototype, 'post');
     const putSpy = jest.spyOn(SupersetClientClass.prototype, 'put');
     const deleteSpy = jest.spyOn(SupersetClientClass.prototype, 'delete');
-    const authenticatedSpy = jest.spyOn(SupersetClientClass.prototype, 'isAuthenticated');
+    const authenticatedSpy = jest.spyOn(
+      SupersetClientClass.prototype,
+      'isAuthenticated',
+    );
     const csrfSpy = jest.spyOn(SupersetClientClass.prototype, 'getCSRFToken');
     const requestSpy = jest.spyOn(SupersetClientClass.prototype, 'request');
 
@@ -90,6 +96,22 @@ describe('SupersetClient', () => {
     await SupersetClient.delete({ url: mockDeleteUrl });
     await SupersetClient.put({ url: mockPutUrl });
     await SupersetClient.request({ url: mockRequestUrl });
+
+    // Make sure network calls have  Accept: 'application/json' in headers
+    const networkCalls = [
+      mockGetUrl,
+      mockPostUrl,
+      mockRequestUrl,
+      mockPutUrl,
+      mockDeleteUrl,
+    ];
+    networkCalls.map((url: string) =>
+      expect(fetchMock.calls(url)[0][1]?.headers).toStrictEqual({
+        Accept: 'application/json',
+        'X-CSRFToken': '',
+      }),
+    );
+
     SupersetClient.isAuthenticated();
     await SupersetClient.reAuthenticate();
 

@@ -29,7 +29,7 @@ import {
 
 import { DEFAULT_FORM_DATA } from './types';
 import { EchartsTimeseriesSeriesType } from '../Timeseries/types';
-import { legendSection } from '../controls';
+import { legendSection, richTooltipSection } from '../controls';
 
 const {
   area,
@@ -42,6 +42,7 @@ const {
   orderDesc,
   rowLimit,
   seriesType,
+  showValues,
   stack,
   truncateYAxis,
   yAxisBounds,
@@ -50,7 +51,10 @@ const {
   yAxisIndex,
 } = DEFAULT_FORM_DATA;
 
-function createQuerySection(label: string, controlSuffix: string): ControlPanelSectionConfig {
+function createQuerySection(
+  label: string,
+  controlSuffix: string,
+): ControlPanelSectionConfig {
   return {
     label,
     expanded: true,
@@ -117,7 +121,10 @@ function createQuerySection(label: string, controlSuffix: string): ControlPanelS
   };
 }
 
-function createCustomizeSection(label: string, controlSuffix: string): ControlSetRow[] {
+function createCustomizeSection(
+  label: string,
+  controlSuffix: string,
+): ControlSetRow[] {
   return [
     [<h1 className="section-header">{label}</h1>],
     [
@@ -161,7 +168,23 @@ function createCustomizeSection(label: string, controlSuffix: string): ControlSe
           label: t('Area chart'),
           renderTrigger: true,
           default: area,
-          description: t('Draw area under curves. Only applicable for line types.'),
+          description: t(
+            'Draw area under curves. Only applicable for line types.',
+          ),
+        },
+      },
+    ],
+    [
+      {
+        name: `show_value${controlSuffix}`,
+        config: {
+          type: 'CheckboxControl',
+          label: t('Show Values'),
+          renderTrigger: true,
+          default: showValues,
+          description: t(
+            'Whether to display the numerical values within the cells',
+          ),
         },
       },
     ],
@@ -188,7 +211,9 @@ function createCustomizeSection(label: string, controlSuffix: string): ControlSe
           label: t('Marker'),
           renderTrigger: true,
           default: markerEnabled,
-          description: t('Draw a marker on data points. Only applicable for line types.'),
+          description: t(
+            'Draw a marker on data points. Only applicable for line types.',
+          ),
         },
       },
     ],
@@ -202,7 +227,9 @@ function createCustomizeSection(label: string, controlSuffix: string): ControlSe
           min: 0,
           max: 100,
           default: markerSize,
-          description: t('Size of marker. Also applies to forecast observations.'),
+          description: t(
+            'Size of marker. Also applies to forecast observations.',
+          ),
         },
       },
     ],
@@ -252,7 +279,7 @@ const config: ControlPanelConfig = {
       label: t('Chart Options'),
       expanded: true,
       controlSetRows: [
-        ['color_scheme', 'label_colors'],
+        ['color_scheme'],
         ...createCustomizeSection(t('Query A'), ''),
         ...createCustomizeSection(t('Query B'), 'B'),
         [
@@ -272,30 +299,6 @@ const config: ControlPanelConfig = {
         ['x_axis_time_format'],
         [
           {
-            name: 'xAxisShowMinLabel',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Show Min Label'),
-              default: true,
-              renderTrigger: true,
-              description: t('Show Min Label'),
-            },
-          },
-        ],
-        [
-          {
-            name: 'xAxisShowMaxLabel',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Show Max Label'),
-              default: true,
-              renderTrigger: true,
-              description: t('Show Max Label'),
-            },
-          },
-        ],
-        [
-          {
             name: 'xAxisLabelRotation',
             config: {
               type: 'SelectControl',
@@ -308,24 +311,13 @@ const config: ControlPanelConfig = {
               ],
               default: xAxisLabelRotation,
               renderTrigger: true,
-              description: t('Input field supports custom rotation. e.g. 30 for 30°'),
+              description: t(
+                'Input field supports custom rotation. e.g. 30 for 30°',
+              ),
             },
           },
         ],
-        // eslint-disable-next-line react/jsx-key
-        [<h1 className="section-header">{t('Tooltip')}</h1>],
-        [
-          {
-            name: 'rich_tooltip',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Rich tooltip'),
-              renderTrigger: true,
-              default: true,
-              description: t('Shows a list of all series available at that point in time'),
-            },
-          },
-        ],
+        ...richTooltipSection,
         // eslint-disable-next-line react/jsx-key
         [<h1 className="section-header">{t('Y Axis')}</h1>],
         [

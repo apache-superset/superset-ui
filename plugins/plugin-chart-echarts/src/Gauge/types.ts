@@ -16,7 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartDataResponseResult, ChartProps, QueryFormData } from '@superset-ui/core';
+import {
+  ChartDataResponseResult,
+  ChartProps,
+  QueryFormColumn,
+  QueryFormData,
+} from '@superset-ui/core';
 import { DEFAULT_LEGEND_FORM_DATA, EChartTransformedProps } from '../types';
 
 export type AxisTickLineStyle = {
@@ -26,7 +31,7 @@ export type AxisTickLineStyle = {
 
 export type EchartsGaugeFormData = QueryFormData & {
   colorScheme?: string;
-  groupby: string[];
+  groupby: QueryFormColumn[];
   metric?: object;
   rowLimit: number;
   minVal: number;
@@ -78,4 +83,5 @@ export interface EchartsGaugeChartProps extends ChartProps {
   queriesData: ChartDataResponseResult[];
 }
 
-export type GaugeChartTransformedProps = EChartTransformedProps<EchartsGaugeFormData>;
+export type GaugeChartTransformedProps =
+  EChartTransformedProps<EchartsGaugeFormData>;

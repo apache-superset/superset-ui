@@ -19,13 +19,13 @@
 import {
   QueryFormData,
   DataRecord,
-  AdhocMetric,
   SetDataMaskHook,
   DataRecordValue,
   JsonObject,
   TimeFormatter,
   NumberFormatter,
   QueryFormMetric,
+  QueryFormColumn,
 } from '@superset-ui/core';
 import { ColorFormatters } from '@superset-ui/chart-controls';
 
@@ -38,16 +38,19 @@ export interface PivotTableStylesProps {
 export type FilterType = Record<string, DataRecordValue>;
 export type SelectedFiltersType = Record<string, DataRecordValue[]>;
 
-export type DateFormatter = TimeFormatter | NumberFormatter | ((value: DataRecordValue) => string);
+export type DateFormatter =
+  | TimeFormatter
+  | NumberFormatter
+  | ((value: DataRecordValue) => string);
 export enum MetricsLayoutEnum {
   ROWS = 'ROWS',
   COLUMNS = 'COLUMNS',
 }
 
 interface PivotTableCustomizeProps {
-  groupbyRows: string[];
-  groupbyColumns: string[];
-  metrics: (string | AdhocMetric)[];
+  groupbyRows: QueryFormColumn[];
+  groupbyColumns: QueryFormColumn[];
+  metrics: QueryFormMetric[];
   tableRenderer: string;
   colOrder: string;
   rowOrder: string;

@@ -20,6 +20,7 @@ import {
   CategoricalColorNamespace,
   DataRecordValue,
   ensureIsInt,
+  getColumnLabel,
   getMetricLabel,
   getNumberFormatter,
   getTimeFormatter,
@@ -36,7 +37,12 @@ import {
   RadarChartTransformedProps,
 } from './types';
 import { DEFAULT_LEGEND_FORM_DATA } from '../types';
-import { extractGroupbyLabel, getColtypesMapping, getLegendProps } from '../utils/series';
+import {
+  extractGroupbyLabel,
+  getChartPadding,
+  getColtypesMapping,
+  getLegendProps,
+} from '../utils/series';
 import { defaultGrid, defaultTooltip } from '../defaults';
 import { OpacityEnum } from '../constants';
 
@@ -65,7 +71,8 @@ export function formatLabel({
 export default function transformProps(
   chartProps: EchartsRadarChartProps,
 ): RadarChartTransformedProps {
-  const { formData, height, hooks, filterState, queriesData, width } = chartProps;
+  const { formData, height, hooks, filterState, queriesData, width } =
+    chartProps;
   const { data = [] } = queriesData[0];
   const coltypeMapping = getColtypesMapping(queriesData[0]);
 
@@ -76,6 +83,7 @@ export default function transformProps(
     labelPosition,
     legendOrientation,
     legendType,
+    legendMargin,
     metrics = [],
     numberFormat,
     dateFormat,
@@ -99,7 +107,8 @@ export default function transformProps(
       labelType,
     });
 
-  const metricsLabel = metrics.map(metric => getMetricLabel(metric));
+  const metricLabels = metrics.map(getMetricLabel);
+  const groupbyLabels = groupby.map(getColumnLabel);
 
   const metricLabelAndMaxValueMap = new Map<string, number>();
   const columnsLabelMap = new Map<string, DataRecordValue[]>();
@@ -107,14 +116,14 @@ export default function transformProps(
   data.forEach(datum => {
     const joinedName = extractGroupbyLabel({
       datum,
-      groupby,
+      groupby: groupbyLabels,
       coltypeMapping,
       timeFormatter: getTimeFormatter(dateFormat),
     });
     // map(joined_name: [columnLabel_1, columnLabel_2, ...])
     columnsLabelMap.set(
       joinedName,
-      groupby.map(col => datum[col]),
+      groupbyLabels.map(col => datum[col]),
     );
 
     // put max value of series into metricLabelAndMaxValueMap
@@ -125,7 +134,10 @@ export default function transformProps(
           metricLabel,
           Math.max(
             value as number,
-            ensureIsInt(metricLabelAndMaxValueMap.get(metricLabel), Number.MIN_SAFE_INTEGER),
+            ensureIsInt(
+              metricLabelAndMaxValueMap.get(metricLabel),
+              Number.MIN_SAFE_INTEGER,
+            ),
           ),
         );
       } else {
@@ -134,18 +146,23 @@ export default function transformProps(
     }
 
     const isFiltered =
-      filterState.selectedValues && !filterState.selectedValues.includes(joinedName);
+      filterState.selectedValues &&
+      !filterState.selectedValues.includes(joinedName);
 
     // generate transformedData
     transformedData.push({
-      value: metricsLabel.map(metricLabel => datum[metricLabel]),
+      value: metricLabels.map(metricLabel => datum[metricLabel]),
       name: joinedName,
       itemStyle: {
         color: colorFn(joinedName),
-        opacity: isFiltered ? OpacityEnum.Transparent : OpacityEnum.NonTransparent,
+        opacity: isFiltered
+          ? OpacityEnum.Transparent
+          : OpacityEnum.NonTransparent,
       },
       lineStyle: {
-        opacity: isFiltered ? OpacityEnum.SemiTransparent : OpacityEnum.NonTransparent,
+        opacity: isFiltered
+          ? OpacityEnum.SemiTransparent
+          : OpacityEnum.NonTransparent,
       },
       label: {
         show: showLabels,
@@ -157,7 +174,9 @@ export default function transformProps(
 
   const selectedValues = (filterState.selectedValues || []).reduce(
     (acc: Record<string, number>, selectedValue: string) => {
-      const index = transformedData.findIndex(({ name }) => name === selectedValue);
+      const index = transformedData.findIndex(
+        ({ name }) => name === selectedValue,
+      );
       return {
         ...acc,
         [index]: selectedValue,
@@ -166,14 +185,15 @@ export default function transformProps(
     {},
   );
 
-  const indicator = metricsLabel.map(metricLabel => {
+  const indicator = metricLabels.map(metricLabel => {
     const maxValueInControl = columnConfig?.[metricLabel]?.radarMetricMaxValue;
     // Ensure that 0 is at the center of the polar coordinates
     const metricValueAsMax =
       metricLabelAndMaxValueMap.get(metricLabel) === 0
         ? Number.MAX_SAFE_INTEGER
         : metricLabelAndMaxValueMap.get(metricLabel);
-    const max = maxValueInControl === null ? metricValueAsMax : maxValueInControl;
+    const max =
+      maxValueInControl === null ? metricValueAsMax : maxValueInControl;
     return {
       name: metricLabel,
       max,
@@ -183,6 +203,7 @@ export default function transformProps(
   const series: RadarSeriesOption[] = [
     {
       type: 'radar',
+      ...getChartPadding(showLegend, legendOrientation, legendMargin),
       animation: false,
       emphasis: {
         label: {

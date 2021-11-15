@@ -1,5 +1,29 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import { scaleLinear } from 'd3-scale';
-import { interpolateHcl, interpolateNumber, piecewise, quantize } from 'd3-interpolate';
+import {
+  interpolateHcl,
+  interpolateNumber,
+  piecewise,
+  quantize,
+} from 'd3-interpolate';
 import ColorScheme, { ColorSchemeConfig } from './ColorScheme';
 
 export interface SequentialSchemeConfig extends ColorSchemeConfig {
@@ -32,7 +56,9 @@ export default class SequentialScheme extends ColorScheme {
     return modifyRange || domain.length === this.colors.length
       ? scale.domain(domain).range(this.getColors(domain.length))
       : scale
-          .domain(quantize(piecewise(interpolateNumber, domain), this.colors.length))
+          .domain(
+            quantize(piecewise(interpolateNumber, domain), this.colors.length),
+          )
           .range(this.colors);
   }
 
@@ -44,14 +70,27 @@ export default class SequentialScheme extends ColorScheme {
    * For example [0.2, 1] will rescale the color scheme
    * such that color values in the range [0, 0.2) are excluded from the scheme.
    */
-  getColors(numColors = this.colors.length, extent: number[] = [0, 1]): string[] {
-    if (numColors === this.colors.length && extent[0] === 0 && extent[1] === 1) {
+  getColors(
+    numColors = this.colors.length,
+    extent: number[] = [0, 1],
+  ): string[] {
+    if (
+      numColors === this.colors.length &&
+      extent[0] === 0 &&
+      extent[1] === 1
+    ) {
       return this.colors;
     }
 
-    const piecewiseScale: (t: number) => string = piecewise(interpolateHcl, this.colors);
+    const piecewiseScale: (t: number) => string = piecewise(
+      interpolateHcl,
+      this.colors,
+    );
     const adjustExtent = scaleLinear().range(extent).clamp(true);
 
-    return quantize<string>(t => piecewiseScale(adjustExtent(t) as number), numColors);
+    return quantize<string>(
+      t => piecewiseScale(adjustExtent(t) as number),
+      numColors,
+    );
   }
 }

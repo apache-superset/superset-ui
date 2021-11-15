@@ -58,7 +58,15 @@ const config: ControlPanelConfig = {
               freeForm: true,
               label: t('Max Bubble Size'),
               default: '25',
-              choices: formatSelectOptions(['5', '10', '15', '25', '50', '75', '100']),
+              choices: formatSelectOptions([
+                '5',
+                '10',
+                '15',
+                '25',
+                '50',
+                '75',
+                '100',
+              ]),
             },
           },
         ],
@@ -69,10 +77,7 @@ const config: ControlPanelConfig = {
       label: t('Chart Options'),
       expanded: true,
       tabOverride: 'customize',
-      controlSetRows: [
-        ['color_scheme', 'label_colors'],
-        [showLegend, null],
-      ],
+      controlSetRows: [['color_scheme'], [showLegend, null]],
     },
     {
       label: t('X Axis'),

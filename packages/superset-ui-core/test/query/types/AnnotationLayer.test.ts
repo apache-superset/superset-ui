@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import {
   AnnotationSourceType,
   AnnotationStyle,
@@ -25,6 +44,7 @@ describe('AnnotationLayer type guards', () => {
     value: 'sin(2*x)',
     style: AnnotationStyle.Solid,
     show: true,
+    showLabel: false,
   };
   const eventAnnotationLayer: EventAnnotationLayer = {
     annotationType: AnnotationType.Event,
@@ -32,6 +52,7 @@ describe('AnnotationLayer type guards', () => {
     value: 1,
     style: AnnotationStyle.Solid,
     show: true,
+    showLabel: false,
     sourceType: AnnotationSourceType.Native,
   };
   const intervalAnnotationLayer: IntervalAnnotationLayer = {
@@ -41,6 +62,7 @@ describe('AnnotationLayer type guards', () => {
     value: 1,
     style: AnnotationStyle.Solid,
     show: true,
+    showLabel: false,
   };
   const timeseriesAnnotationLayer: TimeseriesAnnotationLayer = {
     annotationType: AnnotationType.Timeseries,
@@ -49,6 +71,7 @@ describe('AnnotationLayer type guards', () => {
     value: 1,
     style: AnnotationStyle.Solid,
     show: true,
+    showLabel: false,
   };
   const tableAnnotationLayer: TableAnnotationLayer = {
     annotationType: AnnotationType.Interval,
@@ -57,6 +80,7 @@ describe('AnnotationLayer type guards', () => {
     value: 1,
     style: AnnotationStyle.Solid,
     show: true,
+    showLabel: false,
   };
   const timeseriesAnnotationResult: TimeseriesAnnotationResult = [
     {
@@ -83,7 +107,9 @@ describe('AnnotationLayer type guards', () => {
     it('should return false otherwise', () => {
       expect(isFormulaAnnotationLayer(eventAnnotationLayer)).toEqual(false);
       expect(isFormulaAnnotationLayer(intervalAnnotationLayer)).toEqual(false);
-      expect(isFormulaAnnotationLayer(timeseriesAnnotationLayer)).toEqual(false);
+      expect(isFormulaAnnotationLayer(timeseriesAnnotationLayer)).toEqual(
+        false,
+      );
     });
   });
 
@@ -105,18 +131,26 @@ describe('AnnotationLayer type guards', () => {
     it('should return false otherwise', () => {
       expect(isIntervalAnnotationLayer(formulaAnnotationLayer)).toEqual(false);
       expect(isIntervalAnnotationLayer(eventAnnotationLayer)).toEqual(false);
-      expect(isIntervalAnnotationLayer(timeseriesAnnotationLayer)).toEqual(false);
+      expect(isIntervalAnnotationLayer(timeseriesAnnotationLayer)).toEqual(
+        false,
+      );
     });
   });
 
   describe('isTimeseriesAnnotationLayer', () => {
     it('should return true when it is the correct type', () => {
-      expect(isTimeseriesAnnotationLayer(timeseriesAnnotationLayer)).toEqual(true);
+      expect(isTimeseriesAnnotationLayer(timeseriesAnnotationLayer)).toEqual(
+        true,
+      );
     });
     it('should return false otherwise', () => {
-      expect(isTimeseriesAnnotationLayer(formulaAnnotationLayer)).toEqual(false);
+      expect(isTimeseriesAnnotationLayer(formulaAnnotationLayer)).toEqual(
+        false,
+      );
       expect(isTimeseriesAnnotationLayer(eventAnnotationLayer)).toEqual(false);
-      expect(isTimeseriesAnnotationLayer(intervalAnnotationLayer)).toEqual(false);
+      expect(isTimeseriesAnnotationLayer(intervalAnnotationLayer)).toEqual(
+        false,
+      );
     });
   });
 
@@ -131,10 +165,14 @@ describe('AnnotationLayer type guards', () => {
 
   describe('isTimeseriesAnnotationResult', () => {
     it('should return true when it is the correct type', () => {
-      expect(isTimeseriesAnnotationResult(timeseriesAnnotationResult)).toEqual(true);
+      expect(isTimeseriesAnnotationResult(timeseriesAnnotationResult)).toEqual(
+        true,
+      );
     });
     it('should return false otherwise', () => {
-      expect(isTimeseriesAnnotationResult(recordAnnotationResult)).toEqual(false);
+      expect(isTimeseriesAnnotationResult(recordAnnotationResult)).toEqual(
+        false,
+      );
     });
   });
 
@@ -143,7 +181,9 @@ describe('AnnotationLayer type guards', () => {
       expect(isRecordAnnotationResult(recordAnnotationResult)).toEqual(true);
     });
     it('should return false otherwise', () => {
-      expect(isRecordAnnotationResult(timeseriesAnnotationResult)).toEqual(false);
+      expect(isRecordAnnotationResult(timeseriesAnnotationResult)).toEqual(
+        false,
+      );
     });
   });
 });

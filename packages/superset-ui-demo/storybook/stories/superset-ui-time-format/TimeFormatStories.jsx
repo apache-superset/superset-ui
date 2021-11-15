@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 import { formatTime } from '@superset-ui/core';
@@ -40,8 +59,9 @@ class TimeFormatValidator extends React.PureComponent {
           <div className="col-sm">
             <p>
               This <code>@superset-ui/time-format</code> package enriches
-              <code>d3-time-format</code> to handle invalid formats as well as edge case values. Use
-              the validator below to preview outputs from the specified format string. See
+              <code>d3-time-format</code> to handle invalid formats as well as
+              edge case values. Use the validator below to preview outputs from
+              the specified format string. See
               <a
                 href="https://github.com/d3/d3-time-format#locale_format"
                 target="_blank"
@@ -84,7 +104,9 @@ class TimeFormatValidator extends React.PureComponent {
                 {testValues.map(v => (
                   <tr key={v}>
                     <td>
-                      <code>{v instanceof Date ? v.toUTCString() : `${v}`}</code>
+                      <code>
+                        {v instanceof Date ? v.toUTCString() : `${v}`}
+                      </code>
                     </td>
                     <td>
                       <code>&quot;{formatTime(formatString, v)}&quot;</code>

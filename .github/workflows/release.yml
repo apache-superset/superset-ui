@@ -61,7 +61,6 @@ jobs:
 
       - name: Configure npm and git
         run: |
-          npm logout
           echo "@superset-ui:registry=https://registry.npmjs.org/" > .npmrc
           echo "registry=https://registry.npmjs.org/" >> .npmrc
           echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
@@ -75,7 +74,6 @@ jobs:
 
       - name: Bump version and publish package(s)
         run: |
-          git update-index --assume-unchanged .npmrc
           git tag -d `git tag | grep -E '^trigger-'`
           npm run ci:release-from-tag
         env:

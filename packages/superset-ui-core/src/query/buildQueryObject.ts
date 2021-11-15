@@ -1,11 +1,34 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 /* eslint-disable camelcase */
-import { QueryObject, QueryObjectFilterClause } from './types/Query';
-import { QueryFieldAliases, QueryFormData } from './types/QueryFormData';
+import {
+  AdhocFilter,
+  QueryFieldAliases,
+  QueryFormData,
+  QueryObject,
+  QueryObjectFilterClause,
+} from './types';
 import processFilters from './processFilters';
 import extractExtras from './extractExtras';
 import extractQueryFields from './extractQueryFields';
 import { overrideExtraFormData } from './processExtraFormData';
-import { AdhocFilter } from './types';
 
 /**
  * Build the common segments of all query objects (e.g. the granularity field derived from
@@ -46,7 +69,10 @@ export default function buildQueryObject<T extends QueryFormData>(
 
   const numericRowLimit = Number(row_limit);
   const numericRowOffset = Number(row_offset);
-  const { metrics, columns, orderby } = extractQueryFields(residualFormData, queryFields);
+  const { metrics, columns, orderby } = extractQueryFields(
+    residualFormData,
+    queryFields,
+  );
 
   // collect all filters for conversion to simple filters/freeform clauses
   const extras = extractExtras(formData);
@@ -77,8 +103,14 @@ export default function buildQueryObject<T extends QueryFormData>(
     metrics,
     orderby,
     annotation_layers,
-    row_limit: row_limit == null || Number.isNaN(numericRowLimit) ? undefined : numericRowLimit,
-    row_offset: row_offset == null || Number.isNaN(numericRowOffset) ? undefined : numericRowOffset,
+    row_limit:
+      row_limit == null || Number.isNaN(numericRowLimit)
+        ? undefined
+        : numericRowLimit,
+    row_offset:
+      row_offset == null || Number.isNaN(numericRowOffset)
+        ? undefined
+        : numericRowOffset,
     series_columns,
     series_limit,
     series_limit_metric,

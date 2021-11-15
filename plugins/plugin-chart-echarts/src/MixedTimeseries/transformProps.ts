@@ -34,7 +34,7 @@ import {
   EchartsMixedTimeseriesFormData,
   EchartsMixedTimeseriesChartTransformedProps,
 } from './types';
-import { ForecastSeriesEnum, ProphetValue } from '../types';
+import { ForecastSeriesEnum } from '../types';
 import { parseYAxisBound } from '../utils/controls';
 import {
   currentSeries,
@@ -65,7 +65,8 @@ import { TIMESERIES_CONSTANTS } from '../constants';
 export default function transformProps(
   chartProps: EchartsMixedTimeseriesFormData,
 ): EchartsMixedTimeseriesChartTransformedProps {
-  const { width, height, formData, queriesData, hooks, filterState } = chartProps;
+  const { width, height, formData, queriesData, hooks, filterState } =
+    chartProps;
   const { annotation_data: annotationData_ } = queriesData[0];
   const annotationData = annotationData_ || {};
   const data1: TimeseriesDataRecord[] = queriesData[0].data || [];
@@ -91,14 +92,14 @@ export default function transformProps(
     seriesType,
     seriesTypeB,
     showLegend,
+    showValue,
+    showValueB,
     stack,
     stackB,
     truncateYAxis,
     tooltipTimeFormat,
     yAxisFormat,
     yAxisFormatSecondary,
-    xAxisShowMinLabel,
-    xAxisShowMaxLabel,
     xAxisTimeFormat,
     yAxisBounds,
     yAxisIndex,
@@ -106,6 +107,7 @@ export default function transformProps(
     yAxisTitleSecondary,
     zoomable,
     richTooltip,
+    tooltipSortByMetric,
     xAxisLabelRotation,
     groupby,
     groupbyB,
@@ -128,19 +130,28 @@ export default function transformProps(
 
   const series: SeriesOption[] = [];
   const formatter = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormat);
-  const formatterSecondary = getNumberFormatter(contributionMode ? ',.0%' : yAxisFormatSecondary);
+  const formatterSecondary = getNumberFormatter(
+    contributionMode ? ',.0%' : yAxisFormatSecondary,
+  );
 
   const primarySeries = new Set<string>();
   const secondarySeries = new Set<string>();
-  const mapSeriesIdToAxis = (seriesOption: SeriesOption, index?: number): void => {
+  const mapSeriesIdToAxis = (
+    seriesOption: SeriesOption,
+    index?: number,
+  ): void => {
     if (index === 1) {
       secondarySeries.add(seriesOption.id as string);
     } else {
       primarySeries.add(seriesOption.id as string);
     }
   };
-  rawSeriesA.forEach(seriesOption => mapSeriesIdToAxis(seriesOption, yAxisIndex));
-  rawSeriesB.forEach(seriesOption => mapSeriesIdToAxis(seriesOption, yAxisIndexB));
+  rawSeriesA.forEach(seriesOption =>
+    mapSeriesIdToAxis(seriesOption, yAxisIndex),
+  );
+  rawSeriesB.forEach(seriesOption =>
+    mapSeriesIdToAxis(seriesOption, yAxisIndexB),
+  );
 
   rawSeriesA.forEach(entry => {
     const transformedSeries = transformSeries(entry, colorScale, {
@@ -149,6 +160,7 @@ export default function transformProps(
       markerSize,
       areaOpacity: opacity,
       seriesType,
+      showValue,
       stack,
       yAxisIndex,
       filterState,
@@ -162,6 +174,7 @@ export default function transformProps(
       markerSize: markerSizeB,
       areaOpacity: opacityB,
       seriesType: seriesTypeB,
+      showValue: showValueB,
       stack: stackB,
       yAxisIndex: yAxisIndexB,
       filterState,
@@ -175,11 +188,27 @@ export default function transformProps(
       if (isFormulaAnnotationLayer(layer))
         series.push(transformFormulaAnnotation(layer, data1, colorScale));
       else if (isIntervalAnnotationLayer(layer)) {
-        series.push(...transformIntervalAnnotation(layer, data1, annotationData, colorScale));
+        series.push(
+          ...transformIntervalAnnotation(
+            layer,
+            data1,
+            annotationData,
+            colorScale,
+          ),
+        );
       } else if (isEventAnnotationLayer(layer)) {
-        series.push(...transformEventAnnotation(layer, data1, annotationData, colorScale));
+        series.push(
+          ...transformEventAnnotation(layer, data1, annotationData, colorScale),
+        );
       } else if (isTimeseriesAnnotationLayer(layer)) {
-        series.push(...transformTimeseriesAnnotation(layer, markerSize, data1, annotationData));
+        series.push(
+          ...transformTimeseriesAnnotation(
+            layer,
+            markerSize,
+            data1,
+            annotationData,
+          ),
+        );
       }
     });
 
@@ -239,8 +268,6 @@ export default function transformProps(
       nameGap: xAxisTitleMargin,
       nameLocation: 'middle',
       axisLabel: {
-        showMinLabel: xAxisShowMinLabel,
-        showMaxLabel: xAxisShowMaxLabel,
         formatter: xAxisFormatter,
         rotate: xAxisLabelRotation,
       },
@@ -277,11 +304,17 @@ export default function transformProps(
       appendToBody: true,
       trigger: richTooltip ? 'axis' : 'item',
       formatter: (params: any) => {
-        const value: number = !richTooltip ? params.value : params[0].value[0];
-        const prophetValue = !richTooltip ? [params] : params;
+        const xValue: number = richTooltip
+          ? params[0].value[0]
+          : params.value[0];
+        const prophetValue: any[] = richTooltip ? params : [params];
 
-        const rows: Array<string> = [`${tooltipTimeFormatter(value)}`];
-        const prophetValues: Record<string, ProphetValue> =
+        if (richTooltip && tooltipSortByMetric) {
+          prophetValue.sort((a, b) => b.data[1] - a.data[1]);
+        }
+
+        const rows: Array<string> = [`${tooltipTimeFormatter(xValue)}`];
+        const prophetValues =
           extractProphetValuesFromTooltipParams(prophetValue);
 
         Object.keys(prophetValues).forEach(key => {

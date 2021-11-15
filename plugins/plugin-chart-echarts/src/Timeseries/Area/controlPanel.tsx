@@ -32,7 +32,11 @@ import {
   EchartsTimeseriesContributionType,
   EchartsTimeseriesSeriesType,
 } from '../types';
-import { legendSection, showValueSection } from '../../controls';
+import {
+  legendSection,
+  richTooltipSection,
+  showValueSection,
+} from '../../controls';
 
 const {
   contributionMode,
@@ -43,7 +47,6 @@ const {
   opacity,
   rowLimit,
   seriesType,
-  tooltipTimeFormat,
   truncateYAxis,
   yAxisBounds,
   zoomable,
@@ -100,7 +103,7 @@ const config: ControlPanelConfig = {
       label: t('Chart Options'),
       expanded: true,
       controlSetRows: [
-        ['color_scheme', 'label_colors'],
+        ['color_scheme'],
         [
           {
             name: 'seriesType',
@@ -131,7 +134,9 @@ const config: ControlPanelConfig = {
               max: 1,
               step: 0.1,
               default: opacity,
-              description: t('Opacity of Area Chart. Also applies to confidence band.'),
+              description: t(
+                'Opacity of Area Chart. Also applies to confidence band.',
+              ),
             },
           },
         ],
@@ -144,7 +149,9 @@ const config: ControlPanelConfig = {
               label: t('Marker'),
               renderTrigger: true,
               default: markerEnabled,
-              description: t('Draw a marker on data points. Only applicable for line types.'),
+              description: t(
+                'Draw a marker on data points. Only applicable for line types.',
+              ),
             },
           },
         ],
@@ -158,7 +165,9 @@ const config: ControlPanelConfig = {
               min: 0,
               max: 20,
               default: markerSize,
-              description: t('Size of marker. Also applies to forecast observations.'),
+              description: t(
+                'Size of marker. Also applies to forecast observations.',
+              ),
               visibility: ({ controls }: ControlPanelsContainerProps) =>
                 Boolean(controls?.markerEnabled?.value),
             },
@@ -204,35 +213,13 @@ const config: ControlPanelConfig = {
               ],
               default: xAxisLabelRotation,
               renderTrigger: true,
-              description: t('Input field supports custom rotation. e.g. 30 for 30°'),
+              description: t(
+                'Input field supports custom rotation. e.g. 30 for 30°',
+              ),
             },
           },
         ],
-        // eslint-disable-next-line react/jsx-key
-        [<h1 className="section-header">{t('Tooltip')}</h1>],
-        [
-          {
-            name: 'rich_tooltip',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Rich tooltip'),
-              renderTrigger: true,
-              default: true,
-              description: t('Shows a list of all series available at that point in time'),
-            },
-          },
-        ],
-        [
-          {
-            name: 'tooltipTimeFormat',
-            config: {
-              ...sharedControls.x_axis_time_format,
-              label: t('Tooltip time format'),
-              default: tooltipTimeFormat,
-              clearable: false,
-            },
-          },
-        ],
+        ...richTooltipSection,
         // eslint-disable-next-line react/jsx-key
         [<h1 className="section-header">{t('Y Axis')}</h1>],
         ['y_axis_format'],

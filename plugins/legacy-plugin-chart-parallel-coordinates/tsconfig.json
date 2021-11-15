@@ -2,13 +2,14 @@
   "compilerOptions": {
     "declarationDir": "lib",
     "outDir": "lib",
-    "rootDir": "src"
+    "rootDir": "src",
+    "allowJs": false
   },
   "exclude": [
     "lib",
     "test"
   ],
-  "extends": "../../tsconfig.options.json",
+  "extends": "../../tsconfig.json",
   "include": [
     "src/**/*",
     "types/**/*",

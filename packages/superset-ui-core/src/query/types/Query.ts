@@ -28,7 +28,7 @@ import { JsonObject } from '../../connection';
 import { TimeGranularity } from '../../time-format';
 
 export type QueryObjectFilterClause = {
-  col: string;
+  col: QueryFormColumn;
   grain?: TimeGranularity;
   isExtra?: boolean;
 } & (
@@ -71,7 +71,10 @@ export type ResidualQueryObjectData = {
  * for client-side processing and chart rendering should happen in `buildQuery`
  * and `transformProps`.
  */
-export interface QueryObject extends QueryFields, TimeRange, ResidualQueryObjectData {
+export interface QueryObject
+  extends QueryFields,
+    TimeRange,
+    ResidualQueryObjectData {
   /**
    * Definition for annotation layers.
    */

@@ -5,3 +5,5 @@ esm/
 lib/
 tmp/
 dist/
+temporary-plugins/
+storybook-static/

@@ -19,6 +19,7 @@
 import {
   CategoricalColorNamespace,
   DataRecordValue,
+  getColumnLabel,
   getMetricLabel,
   getNumberFormatter,
   getTimeFormatter,
@@ -81,8 +82,11 @@ export function formatPieLabel({
   }
 }
 
-export default function transformProps(chartProps: EchartsPieChartProps): PieChartTransformedProps {
-  const { formData, height, hooks, filterState, queriesData, width } = chartProps;
+export default function transformProps(
+  chartProps: EchartsPieChartProps,
+): PieChartTransformedProps {
+  const { formData, height, hooks, filterState, queriesData, width } =
+    chartProps;
   const { data = [] } = queriesData[0];
   const coltypeMapping = getColtypesMapping(queriesData[0]);
 
@@ -105,30 +109,38 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
     showLegend,
     showLabelsThreshold,
     emitFilter,
-  }: EchartsPieFormData = { ...DEFAULT_LEGEND_FORM_DATA, ...DEFAULT_PIE_FORM_DATA, ...formData };
+  }: EchartsPieFormData = {
+    ...DEFAULT_LEGEND_FORM_DATA,
+    ...DEFAULT_PIE_FORM_DATA,
+    ...formData,
+  };
   const metricLabel = getMetricLabel(metric);
+  const groupbyLabels = groupby.map(getColumnLabel);
   const minShowLabelAngle = (showLabelsThreshold || 0) * 3.6;
 
   const keys = data.map(datum =>
     extractGroupbyLabel({
       datum,
-      groupby,
+      groupby: groupbyLabels,
       coltypeMapping,
       timeFormatter: getTimeFormatter(dateFormat),
     }),
   );
-  const labelMap = data.reduce((acc: Record<string, DataRecordValue[]>, datum) => {
-    const label = extractGroupbyLabel({
-      datum,
-      groupby,
-      coltypeMapping,
-      timeFormatter: getTimeFormatter(dateFormat),
-    });
-    return {
-      ...acc,
-      [label]: groupby.map(col => datum[col]),
-    };
-  }, {});
+  const labelMap = data.reduce(
+    (acc: Record<string, DataRecordValue[]>, datum) => {
+      const label = extractGroupbyLabel({
+        datum,
+        groupby: groupbyLabels,
+        coltypeMapping,
+        timeFormatter: getTimeFormatter(dateFormat),
+      });
+      return {
+        ...acc,
+        [label]: groupbyLabels.map(col => datum[col]),
+      };
+    },
+    {},
+  );
 
   const { setDataMask = () => {} } = hooks;
 
@@ -138,26 +150,31 @@ export default function transformProps(chartProps: EchartsPieChartProps): PieCha
   const transformedData: PieSeriesOption[] = data.map(datum => {
     const name = extractGroupbyLabel({
       datum,
-      groupby,
+      groupby: groupbyLabels,
       coltypeMapping,
       timeFormatter: getTimeFormatter(dateFormat),
     });
 
-    const isFiltered = filterState.selectedValues && !filterState.selectedValues.includes(name);
+    const isFiltered =
+      filterState.selectedValues && !filterState.selectedValues.includes(name);
 
     return {
       value: datum[metricLabel],
       name,
       itemStyle: {
         color: colorFn(name),
-        opacity: isFiltered ? OpacityEnum.SemiTransparent : OpacityEnum.NonTransparent,
+        opacity: isFiltered
+          ? OpacityEnum.SemiTransparent
+          : OpacityEnum.NonTransparent,
       },
     };
   });
 
   const selectedValues = (filterState.selectedValues || []).reduce(
     (acc: Record<string, number>, selectedValue: string) => {
-      const index = transformedData.findIndex(({ name }) => name === selectedValue);
+      const index = transformedData.findIndex(
+        ({ name }) => name === selectedValue,
+      );
       return {
         ...acc,
         [index]: selectedValue,

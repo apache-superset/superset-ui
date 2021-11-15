@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 /**
  * Merge typing interfaces for UseTable hooks.
  *
@@ -24,7 +43,11 @@ import {
   TableFooterProps,
 } from 'react-table';
 
-import { UseStickyState, UseStickyTableOptions, UseStickyInstanceProps } from '../hooks/useSticky';
+import {
+  UseStickyState,
+  UseStickyTableOptions,
+  UseStickyInstanceProps,
+} from '../hooks/useSticky';
 
 declare module 'react-table' {
   export interface TableOptions<D extends object>
@@ -80,8 +103,12 @@ declare module 'react-table' {
   export interface ColumnInstance<D extends object>
     extends UseGlobalFiltersColumnOptions<D>,
       UseSortByColumnProps<D> {
-    getSortByToggleProps: (props?: Partial<TableSortByToggleProps>) => TableSortByToggleProps;
+    getSortByToggleProps: (
+      props?: Partial<TableSortByToggleProps>,
+    ) => TableSortByToggleProps;
   }
 
-  export interface Hooks<D extends object> extends UseTableHooks<D>, UseSortByHooks<D> {}
+  export interface Hooks<D extends object>
+    extends UseTableHooks<D>,
+      UseSortByHooks<D> {}
 }

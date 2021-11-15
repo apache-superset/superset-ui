@@ -25,6 +25,7 @@ import {
   QueryFormData,
   ChartProps,
   ChartDataResponseResult,
+  QueryFormColumn,
 } from '@superset-ui/core';
 import {
   DEFAULT_LEGEND_FORM_DATA,
@@ -57,8 +58,6 @@ export type EchartsMixedTimeseriesFormData = QueryFormData & {
   zoomable: boolean;
   richTooltip: boolean;
   xAxisLabelRotation: number;
-  xAxisShowMinLabel?: boolean;
-  xAxisShowMaxLabel?: boolean;
   colorScheme?: string;
   // types specific to Query A and Query B
   area: boolean;
@@ -77,12 +76,14 @@ export type EchartsMixedTimeseriesFormData = QueryFormData & {
   rowLimitB: number;
   seriesType: EchartsTimeseriesSeriesType;
   seriesTypeB: EchartsTimeseriesSeriesType;
+  showValue: boolean;
+  showValueB: boolean;
   stack: boolean;
   stackB: boolean;
   yAxisIndex?: number;
   yAxisIndexB?: number;
-  groupby: string[];
-  groupbyB: string[];
+  groupby: QueryFormColumn[];
+  groupbyB: QueryFormColumn[];
   emitFilter: boolean;
 } & EchartsLegendFormData &
   EchartsTitleFormData;
@@ -117,14 +118,14 @@ export const DEFAULT_FORM_DATA: EchartsMixedTimeseriesFormData = {
   rowLimitB: TIMESERIES_DEFAULTS.rowLimit,
   seriesType: TIMESERIES_DEFAULTS.seriesType,
   seriesTypeB: TIMESERIES_DEFAULTS.seriesType,
+  showValue: TIMESERIES_DEFAULTS.showValue,
+  showValueB: TIMESERIES_DEFAULTS.showValue,
   stack: TIMESERIES_DEFAULTS.stack,
   stackB: TIMESERIES_DEFAULTS.stack,
   yAxisIndex: 0,
   yAxisIndexB: 0,
   groupby: [],
   groupbyB: [],
-  xAxisShowMinLabel: TIMESERIES_DEFAULTS.xAxisShowMinLabel,
-  xAxisShowMaxLabel: TIMESERIES_DEFAULTS.xAxisShowMaxLabel,
   zoomable: TIMESERIES_DEFAULTS.zoomable,
   richTooltip: TIMESERIES_DEFAULTS.richTooltip,
   xAxisLabelRotation: TIMESERIES_DEFAULTS.xAxisLabelRotation,
@@ -144,8 +145,8 @@ export type EchartsMixedTimeseriesChartTransformedProps = {
   emitFilter: boolean;
   emitFilterB: boolean;
   setDataMask: SetDataMaskHook;
-  groupby: string[];
-  groupbyB: string[];
+  groupby: QueryFormColumn[];
+  groupbyB: QueryFormColumn[];
   labelMap: Record<string, DataRecordValue[]>;
   labelMapB: Record<string, DataRecordValue[]>;
   selectedValues: Record<number, string>;

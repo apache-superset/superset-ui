@@ -20,9 +20,16 @@
 import { Maybe } from '../../types';
 import { Column } from './Column';
 
-export type Aggregate = 'AVG' | 'COUNT' | 'COUNT_DISTINCT' | 'MAX' | 'MIN' | 'SUM';
+export type Aggregate =
+  | 'AVG'
+  | 'COUNT'
+  | 'COUNT_DISTINCT'
+  | 'MAX'
+  | 'MIN'
+  | 'SUM';
 
 export interface AdhocMetricBase {
+  hasCustomLabel?: boolean;
   label?: string;
   optionName?: string;
 }
@@ -66,3 +73,9 @@ export interface Metric {
 }
 
 export default {};
+
+export function isAdhocMetricSimple(
+  metric: AdhocMetric,
+): metric is AdhocMetricSimple {
+  return metric.expressionType === 'SIMPLE';
+}

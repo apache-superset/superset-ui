@@ -75,7 +75,9 @@ export const datasourceAndVizType: ControlPanelSectionConfig = {
           type: 'HiddenControl',
           label: t('URL Parameters'),
           hidden: true,
-          description: t('Extra url parameters for use in Jinja templated queries'),
+          description: t(
+            'Extra url parameters for use in Jinja templated queries',
+          ),
         },
       },
       {
@@ -104,7 +106,7 @@ export const datasourceAndVizType: ControlPanelSectionConfig = {
 
 export const colorScheme: ControlPanelSectionConfig = {
   label: t('Color Scheme'),
-  controlSetRows: [['color_scheme', 'label_colors']],
+  controlSetRows: [['color_scheme']],
 };
 
 export const annotations: ControlPanelSectionConfig = {

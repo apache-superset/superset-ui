@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 /* eslint camelcase: 0 */
 import { DataRecord } from './QueryResponse';
 import { TimeGranularity } from '../../time-format';
@@ -35,6 +54,7 @@ type BaseAnnotationLayer = {
   name: string;
   opacity?: AnnotationOpacity;
   show: boolean;
+  showLabel: boolean;
   style: AnnotationStyle;
   width?: number;
 };
@@ -107,11 +127,15 @@ export type AnnotationLayer =
   | FormulaAnnotationLayer
   | TimeseriesAnnotationLayer;
 
-export function isFormulaAnnotationLayer(layer: AnnotationLayer): layer is FormulaAnnotationLayer {
+export function isFormulaAnnotationLayer(
+  layer: AnnotationLayer,
+): layer is FormulaAnnotationLayer {
   return layer.annotationType === AnnotationType.Formula;
 }
 
-export function isEventAnnotationLayer(layer: AnnotationLayer): layer is EventAnnotationLayer {
+export function isEventAnnotationLayer(
+  layer: AnnotationLayer,
+): layer is EventAnnotationLayer {
   return layer.annotationType === AnnotationType.Event;
 }
 
@@ -127,7 +151,9 @@ export function isTimeseriesAnnotationLayer(
   return layer.annotationType === AnnotationType.Timeseries;
 }
 
-export function isTableAnnotationLayer(layer: AnnotationLayer): layer is TableAnnotationLayer {
+export function isTableAnnotationLayer(
+  layer: AnnotationLayer,
+): layer is TableAnnotationLayer {
   return layer.sourceType === AnnotationSourceType.Table;
 }
 
@@ -140,7 +166,9 @@ export type TimeseriesAnnotationResult = [
   { key: string; values: { x: string | number; y?: number }[] },
 ];
 
-export type AnnotationResult = RecordAnnotationResult | TimeseriesAnnotationResult;
+export type AnnotationResult =
+  | RecordAnnotationResult
+  | TimeseriesAnnotationResult;
 
 export function isTimeseriesAnnotationResult(
   result: AnnotationResult,

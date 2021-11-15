@@ -20,6 +20,7 @@ import {
   AnnotationLayer,
   ChartDataResponseResult,
   ChartProps,
+  QueryFormColumn,
   QueryFormData,
   TimeGranularity,
 } from '@superset-ui/core';
@@ -70,8 +71,6 @@ export type EchartsTimeseriesFormData = QueryFormData & {
   tooltipTimeFormat?: string;
   truncateYAxis: boolean;
   yAxisFormat?: string;
-  xAxisShowMinLabel?: boolean;
-  xAxisShowMaxLabel?: boolean;
   xAxisTimeFormat?: string;
   timeGrainSqla?: TimeGranularity;
   yAxisBounds: [number | undefined | null, number | undefined | null];
@@ -79,7 +78,7 @@ export type EchartsTimeseriesFormData = QueryFormData & {
   richTooltip: boolean;
   xAxisLabelRotation: number;
   emitFilter: boolean;
-  groupby: string[];
+  groupby: QueryFormColumn[];
   showValue: boolean;
   onlyTotal: boolean;
 } & EchartsLegendFormData &
@@ -93,9 +92,12 @@ export const DEFAULT_FORM_DATA: EchartsTimeseriesFormData = {
   forecastEnabled: sections.FORECAST_DEFAULT_DATA.forecastEnabled,
   forecastInterval: sections.FORECAST_DEFAULT_DATA.forecastInterval,
   forecastPeriods: sections.FORECAST_DEFAULT_DATA.forecastPeriods,
-  forecastSeasonalityDaily: sections.FORECAST_DEFAULT_DATA.forecastSeasonalityDaily,
-  forecastSeasonalityWeekly: sections.FORECAST_DEFAULT_DATA.forecastSeasonalityWeekly,
-  forecastSeasonalityYearly: sections.FORECAST_DEFAULT_DATA.forecastSeasonalityYearly,
+  forecastSeasonalityDaily:
+    sections.FORECAST_DEFAULT_DATA.forecastSeasonalityDaily,
+  forecastSeasonalityWeekly:
+    sections.FORECAST_DEFAULT_DATA.forecastSeasonalityWeekly,
+  forecastSeasonalityYearly:
+    sections.FORECAST_DEFAULT_DATA.forecastSeasonalityYearly,
   logAxis: false,
   markerEnabled: false,
   markerSize: 6,
@@ -106,7 +108,7 @@ export const DEFAULT_FORM_DATA: EchartsTimeseriesFormData = {
   seriesType: EchartsTimeseriesSeriesType.Line,
   stack: false,
   tooltipTimeFormat: 'smart_date',
-  truncateYAxis: true,
+  truncateYAxis: false,
   yAxisBounds: [null, null],
   zoomable: false,
   richTooltip: true,
@@ -123,4 +125,5 @@ export interface EchartsTimeseriesChartProps extends ChartProps {
   queriesData: ChartDataResponseResult[];
 }
 
-export type TimeseriesChartTransformedProps = EChartTransformedProps<EchartsTimeseriesFormData>;
+export type TimeseriesChartTransformedProps =
+  EChartTransformedProps<EchartsTimeseriesFormData>;

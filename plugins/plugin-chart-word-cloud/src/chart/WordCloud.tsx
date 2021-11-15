@@ -1,6 +1,30 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import React from 'react';
 import cloudLayout, { Word } from 'd3-cloud';
-import { PlainObject, createEncoderFactory, DeriveEncoding, Encoder } from 'encodable';
+import {
+  PlainObject,
+  createEncoderFactory,
+  DeriveEncoding,
+  Encoder,
+} from 'encodable';
 import { SupersetThemeProps, withTheme, seedRandom } from '@superset-ui/core';
 
 export const ROTATION = {
@@ -46,7 +70,9 @@ const defaultProps: Required<WordCloudVisualProps> = {
   rotation: 'flat',
 };
 
-type FullWordCloudProps = WordCloudProps & typeof defaultProps & SupersetThemeProps;
+type FullWordCloudProps = WordCloudProps &
+  typeof defaultProps &
+  SupersetThemeProps;
 
 const SCALE_FACTOR_STEP = 0.5;
 const MAX_SCALE_FACTOR = 3;
@@ -54,7 +80,10 @@ const MAX_SCALE_FACTOR = 3;
 // Needed to avoid clutter when shrinking a chart with many records.
 const TOP_RESULTS_PERCENTAGE = 0.1;
 
-class WordCloud extends React.PureComponent<FullWordCloudProps, WordCloudState> {
+class WordCloud extends React.PureComponent<
+  FullWordCloudProps,
+  WordCloudState
+> {
   static defaultProps = defaultProps;
 
   // Cannot name it isMounted because of conflict
@@ -126,15 +155,21 @@ class WordCloud extends React.PureComponent<FullWordCloudProps, WordCloudState> 
 
     const sortedData = [...data].sort(
       (a, b) =>
-        encoder.channels.fontSize.encodeDatum(b, 0) - encoder.channels.fontSize.encodeDatum(a, 0),
+        encoder.channels.fontSize.encodeDatum(b, 0) -
+        encoder.channels.fontSize.encodeDatum(a, 0),
     );
-    const topResultsCount = Math.max(sortedData.length * TOP_RESULTS_PERCENTAGE, 10);
+    const topResultsCount = Math.max(
+      sortedData.length * TOP_RESULTS_PERCENTAGE,
+      10,
+    );
     const topResults = sortedData.slice(0, topResultsCount);
 
     // Ensure top results are always included in the final word cloud by scaling chart down if needed
     this.generateCloud(encoder, 1, (words: Word[]) =>
       topResults.every((d: PlainObject) =>
-        words.find(({ text }) => encoder.channels.text.getValueFromDatum(d) === text),
+        words.find(
+          ({ text }) => encoder.channels.text.getValueFromDatum(d) === text,
+        ),
       ),
     );
   }
@@ -154,7 +189,10 @@ class WordCloud extends React.PureComponent<FullWordCloudProps, WordCloudState> 
       .rotate(ROTATION[rotation] || ROTATION.flat)
       .text(d => encoder.channels.text.getValueFromDatum(d))
       .font(d =>
-        encoder.channels.fontFamily.encodeDatum(d, this.props.theme.typography.families.sansSerif),
+        encoder.channels.fontFamily.encodeDatum(
+          d,
+          this.props.theme.typography.families.sansSerif,
+        ),
       )
       .fontWeight(d => encoder.channels.fontWeight.encodeDatum(d, 'normal'))
       .fontSize(d => encoder.channels.fontSize.encodeDatum(d, 0))
@@ -185,7 +223,9 @@ class WordCloud extends React.PureComponent<FullWordCloudProps, WordCloudState> 
       <svg
         width={width}
         height={height}
-        viewBox={`-${viewBoxWidth / 2} -${viewBoxHeight / 2} ${viewBoxWidth} ${viewBoxHeight}`}
+        viewBox={`-${viewBoxWidth / 2} -${
+          viewBoxHeight / 2
+        } ${viewBoxWidth} ${viewBoxHeight}`}
       >
         <g>
           {words.map(w => (
