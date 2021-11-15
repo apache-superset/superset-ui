@@ -96,7 +96,9 @@ declare module 'react-table' {
       UseSortByColumnOptions<D> {
     // must define as a new property because it's not possible to override
     // the existing `Header` renderer option
-    Header?: Renderer<TableSortByToggleProps & HeaderProps<D> & TableRearrangeColumnsProps>;
+    Header?: Renderer<
+      TableSortByToggleProps & HeaderProps<D> & TableRearrangeColumnsProps
+    >;
     Footer?: Renderer<TableFooterProps<D>>;
   }
 

@@ -216,13 +216,17 @@ export default function DataTable<D extends object>({
 
   const onDragStart = (e: React.DragEvent) => {
     const el = e.target as HTMLTableCellElement;
-    columnBeingDragged = allColumns.findIndex(col => col.id === el.dataset.columnName);
+    columnBeingDragged = allColumns.findIndex(
+      col => col.id === el.dataset.columnName,
+    );
     e.dataTransfer.setData('text/plain', `${columnBeingDragged}`);
   };
 
   const onDrop = (e: React.DragEvent) => {
     const el = e.target as HTMLTableCellElement;
-    const newPosition = allColumns.findIndex(col => col.id === el.dataset.columnName);
+    const newPosition = allColumns.findIndex(
+      col => col.id === el.dataset.columnName,
+    );
 
     if (newPosition !== -1) {
       const currentCols = allColumns.map(c => c.id);
