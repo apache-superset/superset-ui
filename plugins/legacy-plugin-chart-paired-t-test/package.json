@@ -30,7 +30,7 @@
   "dependencies": {
     "@superset-ui/chart-controls": "0.18.25",
     "@superset-ui/core": "0.18.25",
-    "distributions": "^1.0.0",
+    "distributions": "^2.1.0",
     "prop-types": "^15.6.2",
     "reactable": "^1.1.0"
   },
