@@ -48,5 +48,6 @@ export default function buildQueryContext(
     }),
     result_format: formData.result_format || 'json',
     result_type: formData.result_type || 'full',
+    viz_type: formData.viz_type || '',
   };
 }
