@@ -100,7 +100,7 @@ export default function DataTable<D extends object>({
     useGlobalFilter,
     useSortBy,
     usePagination,
-    rearrangeColumns ? useColumnOrder : [],
+    useColumnOrder,
     doSticky ? useSticky : [],
     hooks || [],
   ].flat();
