@@ -44,6 +44,18 @@ export default function EchartsTimeseries({
           filters:
             values.length === 0
               ? []
+              : groupby.length === 0
+              ? // special case when there are no series
+                // the only value we are given is the time in epoch seconds
+                // create a filter with the grain of the chart
+                [
+                  {
+                    col: formData.granularitySqla,
+                    op: '==',
+                    val: values[0],
+                    grain: formData.timeGrainSqla,
+                  },
+                ]
               : groupby.map((col, idx) => {
                   const val = groupbyValues.map(v => v[idx]);
                   if (val === null || val === undefined)
@@ -70,12 +82,25 @@ export default function EchartsTimeseries({
 
   const eventHandlers: EventHandlers = {
     click: props => {
-      const { seriesName: name } = props;
+      const { seriesName: name, value: arrayOfValuesClicked } = props;
+      // special case when there are no series (nothing in the groupby)
+      // the only aggregation is against the grain
+      // When the user clicks in the chart we get a datatime and metric columns
+      // The first value is the datetime selected
+      const datetime = arrayOfValuesClicked[0];
+
+      let chosenValue = name;
+      if (groupby.length === 0) {
+        // Get the time in seconds epcho, this is the value we will use
+        // in the emit filter.
+        chosenValue = datetime.getTime();
+      }
+
       const values = Object.values(selectedValues);
-      if (values.includes(name)) {
-        handleChange(values.filter(v => v !== name));
+      if (values.includes(chosenValue)) {
+        handleChange(values.filter(v => v !== chosenValue));
       } else {
-        handleChange([name]);
+        handleChange([chosenValue]);
       }
     },
   };
