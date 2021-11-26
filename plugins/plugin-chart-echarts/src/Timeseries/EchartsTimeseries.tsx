@@ -19,7 +19,7 @@
 import React, { useCallback } from 'react';
 import { EventHandlers } from '../types';
 import Echart from '../components/Echart';
-import { TimeseriesChartTransformedProps } from './types';
+import { doesSupportGrainSelection, TimeseriesChartTransformedProps } from './types';
 
 // @ts-ignore
 export default function EchartsTimeseries({
@@ -44,7 +44,7 @@ export default function EchartsTimeseries({
           filters:
             values.length === 0
               ? []
-              : groupby.length === 0
+              : doesSupportGrainSelection(formData.seriesType) && groupby.length === 0
               ? // special case when there are no series
                 // the only value we are given is the time in epoch seconds
                 // create a filter with the grain of the chart

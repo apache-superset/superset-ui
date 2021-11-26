@@ -32,6 +32,7 @@ import {
 import { EChartsOption, SeriesOption } from 'echarts';
 import {
   DEFAULT_FORM_DATA,
+  doesSupportGrainSelection,
   EchartsTimeseriesChartProps,
   EchartsTimeseriesFormData,
   TimeseriesChartTransformedProps,
@@ -135,7 +136,7 @@ export default function transformProps(
 
   const tooltipFormatter = getTooltipTimeFormatter(tooltipTimeFormat);
 
-  if (groupby.length === 0) {
+  if (doesSupportGrainSelection(seriesType) && groupby.length === 0) {
     // special case when there are no series (nothing in the groupby)
     // the only aggregation is against the grain
     // In that situation we create series for each grain value (for example each month)
@@ -327,7 +328,7 @@ export default function transformProps(
   // In the special case where there is no groupby our series will
   // be the grain values. In this case we only value to display per series
   // we align all the bars to the left.
-  if (groupby.length === 0) {
+  if (doesSupportGrainSelection(seriesType) && groupby.length === 0) {
     echartOptions.barGap = '-100%';
   }
 
