@@ -24,6 +24,7 @@ import transformProps, {
 } from './transformProps';
 import example from './images/Big_Number_Trendline.jpg';
 import thumbnail from './images/thumbnail.png';
+import buildQuery from './buildQuery';
 
 const metadata = new ChartMetadata({
   category: t('KPI'),
@@ -43,7 +44,6 @@ const metadata = new ChartMetadata({
     t('Trend'),
   ],
   thumbnail,
-  useLegacyApi: true,
 });
 
 export default class BigNumberChartPlugin extends ChartPlugin<
@@ -52,7 +52,8 @@ export default class BigNumberChartPlugin extends ChartPlugin<
 > {
   constructor() {
     super({
-      loadChart: () => import('./BigNumber'),
+      buildQuery,
+      loadChart: () => import('../BigNumber'),
       metadata,
       transformProps,
       controlPanel,

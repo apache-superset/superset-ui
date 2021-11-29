@@ -21,10 +21,11 @@ import controlPanel from './controlPanel';
 import transformProps, {
   BigNumberChartProps,
   BigNumberFormData,
-} from '../BigNumber/transformProps';
+} from './transformProps';
 import example1 from './images/BigNumber.jpg';
 import example2 from './images/BigNumber2.jpg';
 import thumbnail from './images/thumbnail.png';
+import buildQuery from './buildQuery';
 
 const metadata = new ChartMetadata({
   category: t('KPI'),
@@ -47,7 +48,6 @@ const metadata = new ChartMetadata({
     t('Description'),
   ],
   thumbnail,
-  useLegacyApi: true,
 });
 
 export default class BigNumberTotalChartPlugin extends ChartPlugin<
@@ -56,7 +56,8 @@ export default class BigNumberTotalChartPlugin extends ChartPlugin<
 > {
   constructor() {
     super({
-      loadChart: () => import('../BigNumber/BigNumber'),
+      buildQuery,
+      loadChart: () => import('../BigNumber'),
       metadata,
       transformProps,
       controlPanel,
