@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { CSSProperties, useCallback, useMemo } from 'react';
+import React, { CSSProperties, useCallback, useMemo, useRef } from 'react';
 import { ColumnInstance, ColumnWithLooseAccessor, DefaultSortTypes } from 'react-table';
 import { extent as d3Extent, max as d3Max } from 'd3-array';
 import { FaSort } from '@react-icons/all-files/fa/FaSort';
@@ -177,6 +177,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     sticky = true, // whether to use sticky header
     columnColorFormatters,
   } = props;
+  const selectedMetricRows = useRef<D[]>([]);
   const timestampFormatter = useCallback(
     value => getTimeFormatterForGranularity(timeGrain)(value),
     [timeGrain],
@@ -253,10 +254,17 @@ export default function TableChart<D extends DataRecord = DataRecord>(
   );
 
   const isActiveFilterValue = useCallback(
-    function isActiveFilterValue(key: string, val: DataRecordValue) {
+    function isActiveFilterValue(key: string, val: DataRecordValue, row?: D) {
+      if (selectedMetricRows && selectedMetricRows.current.length > 0) {
+        if (!filters) {
+          selectedMetricRows.current = [];
+          return false;
+        }
+        return selectedMetricRows.current.some(r => r.id == row?.id);
+      }
       return !!filters && filters[key]?.includes(val);
     },
-    [filters],
+    [selectedMetricRows, filters],
   );
 
   function getEmitTarget(col: string) {
@@ -265,22 +273,53 @@ export default function TableChart<D extends DataRecord = DataRecord>(
   }
 
   const toggleFilter = useCallback(
-    function toggleFilter(key: string, val: DataRecordValue) {
+    function toggleFilter(key: string, val: DataRecordValue, row: D, column: DataColumnMeta) {
       let updatedFilters = { ...(filters || {}) };
-      const target = getEmitTarget(key);
-      if (filters && isActiveFilterValue(target, val)) {
+      let target = getEmitTarget(key);
+
+      if (column.isMetric) {
+        // filters for metrics are derived from the selectedMetricRows
         updatedFilters = {};
+
+        // add or remove the selected row from selectedMetricRows
+        if (selectedMetricRows.current.some(r => r?.id == row.id)) {
+          const newList = selectedMetricRows.current.filter(r => r.id != row.id);
+          selectedMetricRows.current.splice(0, selectedMetricRows.current.length, ...newList);
+        } else {
+          selectedMetricRows.current.push(row);
+        }
+
+        // update the filters according to the selected rows
+        columnsMeta
+          .filter(c => !c.isMetric)
+          .map(c => {
+            const valuesForColumn = selectedMetricRows.current.map(r => {
+              const original = r.original as { [key: string]: any };
+              return original[c.key];
+            });
+            const unique = [...new Set(valuesForColumn)];
+            updatedFilters[c.key] = unique;
+          });
       } else {
-        updatedFilters = {
-          [target]: [val],
-        };
-      }
-      if (Array.isArray(updatedFilters[target]) && updatedFilters[target].length === 0) {
-        delete updatedFilters[target];
+        // clicked on regular column
+        if (selectedMetricRows && selectedMetricRows.current.length > 0) {
+          // we had previously selected metrics, flipping to column mode, so clear previous filters and previous selected rows
+          selectedMetricRows.current = [];
+          updatedFilters = {};
+        }
+
+        if (filters && isActiveFilterValue(target, val)) {
+          updatedFilters = {};
+        } else {
+          updatedFilters = { [target]: [val] };
+        }
+        if (Array.isArray(updatedFilters[target]) && updatedFilters[target].length === 0) {
+          delete updatedFilters[target];
+        }
       }
       handleChange(updatedFilters);
     },
-    [filters, handleChange, isActiveFilterValue],
+    [selectedMetricRows, filters, handleChange, isActiveFilterValue],
   );
 
   const getSharedStyle = (column: DataColumnMeta): CSSProperties => {
@@ -331,7 +370,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         // typing is incorrect in current version of `@types/react-table`
         // so we ask TS not to check.
         accessor: ((datum: D) => datum[key]) as never,
-        Cell: ({ value }: { value: DataRecordValue }) => {
+        Cell: ({ value, row }: { value: DataRecordValue; row: D }) => {
           const [isHtml, text] = formatColumnValue(column, value);
           const html = isHtml ? { __html: text } : undefined;
 
@@ -350,11 +389,11 @@ export default function TableChart<D extends DataRecord = DataRecord>(
           const cellProps = {
             // show raw number in title in case of numeric values
             title: typeof value === 'number' ? String(value) : undefined,
-            onClick: emitFilter && !valueRange ? () => toggleFilter(key, value) : undefined,
+            onClick: emitFilter ? () => toggleFilter(key, value, row, column) : undefined,
             className: [
               className,
               value == null ? 'dt-is-null' : '',
-              isActiveFilterValue(key, value) ? ' dt-is-active-filter' : '',
+              isActiveFilterValue(key, value, row) ? ' dt-is-active-filter' : '',
             ].join(' '),
             style: {
               ...sharedStyle,
