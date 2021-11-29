@@ -144,7 +144,8 @@ export default function transformProps(
     // The name is the value selected and emitted in this case the truncated timestamp in seconds
     // The data is single time/metric pair
     rawSeries.forEach(entry => {
-      entry.data.forEach(datapoint => {
+      const data = entry.data as any[];
+      data.forEach(datapoint => {
         let newEntry = {
           id: `${tooltipFormatter(datapoint[0])}`,
           name: '' + datapoint[0].getTime(),
