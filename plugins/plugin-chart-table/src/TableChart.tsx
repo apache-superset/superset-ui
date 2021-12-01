@@ -297,8 +297,10 @@ export default function TableChart<D extends DataRecord = DataRecord>(
               const original = r.original as { [key: string]: any };
               return original[c.key];
             });
-            const unique = [...new Set(valuesForColumn)];
-            updatedFilters[c.key] = unique;
+            if (valuesForColumn.length > 0) {
+              const unique = [...new Set(valuesForColumn)];
+              updatedFilters[c.key] = unique;
+            }
           });
       } else {
         // clicked on regular column
