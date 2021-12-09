@@ -4,6 +4,8 @@
 [![Build Status](https://img.shields.io/travis/com/apache-superset/superset-ui/master.svg?style=flat-square)](https://travis-ci.com/apache-superset/superset-ui)
 [![David](https://img.shields.io/david/dev/apache-superset/superset-ui.svg?style=flat-square)](https://david-dm.org/apache-superset/superset-ui?type=dev)
 
+**🔴This repo has been archived, and is no longer receiving issues/pull requests. Please open all new issues/PRs on the [Apache Superset GitHub repo](http://github.com/apache/superset).🔴**
+
 Collection of packages that power the
 [Apache Superset](https://github.com/apache/incubator-superset) UI, and can be used to craft custom
 data applications that leverage a Superset backend :chart_with_upwards_trend:
